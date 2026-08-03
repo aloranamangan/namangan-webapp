@@ -1861,3 +1861,10 @@ setInterval(svProfileController, 600);
   }, 1500);
   setTimeout(() => clearInterval(t), 30000);
 })();
+
+setTimeout(function(){
+  var d = document.createElement('div');
+  d.style.cssText='position:fixed;top:0;left:0;right:0;z-index:2147483647;background:#c00;color:#fff;padding:8px;font-size:12px;text-align:center;font-family:monospace';
+  d.textContent = 'P:' + (typeof svMyProfile) + ' A:' + (svMyProfile && svMyProfile.approved) + ' T:' + (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user ? window.Telegram.WebApp.initDataUnsafe.user.id : 'yoq');
+  document.body.appendChild(d);
+}, 6000);
