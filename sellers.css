@@ -1,0 +1,684 @@
+:root{
+  --sv-primary:#0A2A1F;
+  --sv-gold:#CBA135;
+  --sv-ink:#14241D;
+  --sv-muted:#6B7A70;
+  --sv-line:#E4E1D5;
+  --sv-card:#FFFFFF;
+  --sv-bg:#FAF8F3;
+}
+.sv-trigger-btn{width:40px;height:40px;border-radius:50%;border:none;background:rgba(10,42,31,.08);font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;margin-right:8px;}
+.sv-view{position:fixed;inset:0;z-index:9999;background:var(--sv-bg);overflow-y:auto;font-family:'Manrope',sans-serif;color:var(--sv-ink);}
+.sv-header{display:flex;align-items:center;justify-content:space-between;padding:18px 18px 10px;}
+.sv-header h1{font-family:'Marcellus',serif;font-size:20px;margin:0;}
+.sv-close{width:34px;height:34px;border-radius:50%;border:none;background:rgba(0,0,0,.06);font-size:16px;cursor:pointer;}
+.sv-tabs{display:flex;gap:8px;padding:0 18px 14px;}
+.sv-tab-btn{flex:1;padding:10px 0;border-radius:12px;border:1.5px solid var(--sv-line);background:var(--sv-card);font-weight:700;font-size:13.5px;color:var(--sv-muted);cursor:pointer;}
+.sv-tab-btn.active{background:var(--sv-primary);border-color:var(--sv-primary);color:#fff;}
+.sv-panel{display:none;padding:0 18px 90px;}
+.sv-panel.active{display:block;}
+.sv-section-head{display:flex;align-items:baseline;justify-content:space-between;margin:4px 0 4px;}
+.sv-section-title{font-family:'Marcellus',serif;font-size:17px;}
+.sv-section-note{font-size:11px;color:var(--sv-muted);}
+.sv-seller-row{display:flex;align-items:center;gap:12px;background:var(--sv-card);border:1px solid var(--sv-line);border-radius:14px;padding:11px 13px;margin-top:10px;position:relative;overflow:hidden;}
+.sv-rank-tile{width:26px;height:30px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#fff;background:var(--sv-muted);clip-path:polygon(50% 0%,100% 15%,100% 100%,0% 100%,0% 15%);}
+.sv-seller-row.sv-top1 .sv-rank-tile{background:var(--sv-gold);}
+.sv-seller-row.sv-top2 .sv-rank-tile{background:#B08B3E;}
+.sv-seller-row.sv-top3 .sv-rank-tile{background:#8F7434;}
+.sv-avatar{width:44px;height:44px;border-radius:12px 12px 12px 4px;object-fit:cover;border:2px solid var(--sv-bg);box-shadow:0 0 0 1.5px var(--sv-line);}
+.sv-seller-info{flex:1;min-width:0;}
+.sv-seller-name{font-weight:700;font-size:14px;display:flex;align-items:center;gap:5px;}
+.sv-badge-check{width:13px;height:13px;border-radius:50%;background:var(--sv-primary);flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;}
+.sv-badge-check svg{width:8px;height:8px;}
+.sv-seller-meta{font-size:11px;color:var(--sv-muted);margin-top:2px;display:flex;gap:8px;}
+.sv-top-pill{position:absolute;top:0;right:0;background:var(--sv-gold);color:#33280C;font-size:9px;font-weight:800;letter-spacing:.06em;padding:3px 9px 3px 11px;border-radius:0 0 0 9px;}
+.sv-search-box{display:flex;align-items:center;gap:8px;background:var(--sv-card);border:1.5px solid var(--sv-line);border-radius:12px;padding:10px 13px;margin:6px 0 14px;}
+.sv-search-box input{border:none;outline:none;background:none;font-size:13.5px;width:100%;color:var(--sv-ink);}
+.sv-explore-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;}
+.sv-explore-item{position:relative;aspect-ratio:1/1;overflow:hidden;cursor:pointer;background:#ddd;}
+.sv-explore-item img,.sv-explore-item video{width:100%;height:100%;object-fit:cover;display:block;}
+.sv-price-tag{position:absolute;left:5px;bottom:5px;background:rgba(10,42,31,.85);color:#fff;font-size:9px;font-weight:600;padding:3px 6px;border-radius:6px;z-index:2;}
+.sv-video-flag{position:absolute;top:5px;right:5px;width:14px;height:14px;z-index:2;filter:drop-shadow(0 1px 2px rgba(0,0,0,.5));}
+.sv-video-progress{position:absolute;left:0;right:0;bottom:0;height:2px;background:rgba(255,255,255,.3);z-index:2;}
+.sv-video-progress i{display:block;height:100%;width:0%;background:var(--sv-gold);}
+.sv-profile-back{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--sv-muted);padding:16px 0 4px;cursor:pointer;}
+.sv-profile-head{display:flex;gap:13px;align-items:center;margin-top:8px;}
+.sv-profile-avatar{width:60px;height:60px;border-radius:16px 16px 16px 5px;object-fit:cover;border:2px solid var(--sv-bg);box-shadow:0 0 0 1.5px var(--sv-line);}
+.sv-profile-name{font-family:'Marcellus',serif;font-size:18px;display:flex;align-items:center;gap:6px;}
+.sv-profile-id{font-size:11px;color:var(--sv-muted);margin-top:2px;}
+.sv-stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:16px 0;}
+.sv-stat-cell{background:var(--sv-card);border:1px solid var(--sv-line);border-radius:11px;padding:9px 5px;text-align:center;}
+.sv-stat-num{font-weight:700;font-size:13px;}
+.sv-stat-label{font-size:9px;color:var(--sv-muted);margin-top:2px;}
+.sv-cta-row{display:flex;gap:8px;margin-bottom:16px;}
+.sv-cta{flex:1;text-align:center;padding:12px 0;border-radius:11px;font-weight:700;font-size:13px;cursor:pointer;border:none;}
+.sv-cta-primary{background:var(--sv-primary);color:#fff;}
+.sv-cta-ghost{background:var(--sv-card);color:var(--sv-ink);border:1.5px solid var(--sv-line);}
+
+/* ---------- Pastki navigatsiya (Sotuvchilar bo'limi) ---------- */
+.app{padding-bottom:78px;}
+.sv-bottom-nav{position:fixed;left:0;right:0;bottom:0;z-index:500;display:flex;background:#fff;border-top:1px solid var(--sv-line);padding:8px 6px calc(10px + env(safe-area-inset-bottom));box-shadow:0 -2px 10px rgba(0,0,0,.06);}
+.sv-nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;font-size:10px;font-weight:700;color:var(--sv-muted);padding:4px 0;cursor:pointer;}
+.sv-nav-item .sv-nav-icon{font-size:19px;line-height:1;}
+.sv-nav-item.active{color:var(--sv-primary);}
+
+/* Profil oynasi Sotuvchilar/Qidiruv ustida ochilishi uchun */
+#svProfileView{z-index:10000;}
+
+/* ---------- Shikoyatda sotuvchi tanlash ---------- */
+.sv-target-picker{width:100%;display:flex;align-items:center;gap:10px;background:var(--sv-card);border:1.5px dashed var(--sv-line);border-radius:12px;padding:11px 13px;cursor:pointer;text-align:left;}
+.sv-target-picker .sv-target-placeholder{color:var(--sv-muted);font-size:13.5px;}
+.sv-target-picker .sv-target-chip{display:flex;align-items:center;gap:9px;}
+.sv-target-picker .sv-target-avatar{width:30px;height:30px;border-radius:9px;object-fit:cover;}
+.sv-target-picker .sv-target-name{font-weight:700;font-size:13.5px;color:var(--sv-ink);}
+.sv-picker-hint{background:#FFF6E8;border:1px solid var(--sv-gold);color:#5C4A17;font-size:12px;padding:9px 12px;border-radius:10px;margin:0 18px 4px;}
+
+/* ---------- Instagram uslubidagi profil statistikasi ---------- */
+.sv-ig-stats{display:flex;justify-content:space-around;margin:16px 0 8px;padding:14px 0;background:var(--sv-card);border:1px solid var(--sv-line);border-radius:14px;}
+.sv-ig-stat{text-align:center;}
+.sv-ig-stat-num{font-weight:800;font-size:16px;color:var(--sv-ink);}
+.sv-ig-stat-label{font-size:10.5px;color:var(--sv-muted);margin-top:2px;}
+
+/* ---------- Post ko'rish oynasi ---------- */
+.sv-post-media{width:100%;aspect-ratio:1/1;background:#000;border-radius:14px;overflow:hidden;margin-bottom:12px;}
+.sv-post-media img, .sv-post-media video{width:100%;height:100%;object-fit:cover;display:block;}
+.sv-post-seller-row{display:flex;align-items:center;gap:9px;margin-bottom:10px;cursor:pointer;}
+.sv-post-seller-row img{width:34px;height:34px;border-radius:10px;object-fit:cover;}
+.sv-post-seller-row .sv-post-seller-name{font-weight:700;font-size:13.5px;}
+.sv-post-price{font-weight:800;font-size:15px;color:var(--sv-primary);margin-bottom:10px;}
+.sv-post-actionbar{display:flex;gap:20px;padding:8px 0 14px;border-bottom:1px solid var(--sv-line);margin-bottom:14px;}
+.sv-post-action{display:flex;align-items:center;gap:6px;background:none;border:none;font-size:13px;font-weight:700;color:var(--sv-ink);cursor:pointer;padding:0;}
+.sv-post-action svg{width:21px;height:21px;}
+.sv-post-action.liked{color:#E0245E;}
+.sv-post-action.liked svg{fill:#E0245E;stroke:#E0245E;}
+.sv-post-views{margin-left:auto;font-size:11.5px;color:var(--sv-muted);font-weight:600;}
+.sv-comment-input-row{display:flex;gap:8px;margin-bottom:16px;}
+.sv-comment-input-row input{flex:1;border:1.5px solid var(--sv-line);border-radius:20px;padding:9px 14px;font-size:13px;font-family:'Manrope',sans-serif;}
+.sv-comment-input-row input:focus{outline:none;border-color:var(--sv-primary);}
+.sv-comment-send{background:var(--sv-primary);color:#fff;border:none;border-radius:20px;padding:9px 16px;font-size:12.5px;font-weight:700;cursor:pointer;}
+.sv-comment-item{display:flex;gap:9px;margin-bottom:14px;align-items:flex-start;}
+.sv-comment-avatar{width:28px;height:28px;border-radius:8px;object-fit:cover;flex-shrink:0;}
+.sv-comment-item b{font-size:13px;}
+.sv-comment-item .sv-comment-text{font-size:13px;color:var(--sv-ink);}
+.sv-comment-empty{color:var(--sv-muted);font-size:12.5px;text-align:center;padding:14px 0;}
+
+/* ---------- Instagram uslubidagi profil statistikasi ---------- */
+.sv-ig-stats{display:flex;justify-content:space-around;margin:16px 0 8px;padding:14px 0;background:var(--sv-card);border:1px solid var(--sv-line);border-radius:14px;}
+.sv-ig-stat{text-align:center;}
+.sv-ig-stat-num{font-weight:800;font-size:16px;color:var(--sv-ink);}
+.sv-ig-stat-label{font-size:10.5px;color:var(--sv-muted);margin-top:2px;}
+
+/* ---------- Post ko'rish oynasi ---------- */
+.sv-post-media{width:100%;aspect-ratio:1/1;background:#000;border-radius:14px;overflow:hidden;margin-bottom:12px;}
+.sv-post-media img, .sv-post-media video{width:100%;height:100%;object-fit:cover;display:block;}
+.sv-post-seller-row{display:flex;align-items:center;gap:9px;margin-bottom:10px;cursor:pointer;}
+.sv-post-seller-row img{width:34px;height:34px;border-radius:10px;object-fit:cover;}
+.sv-post-seller-row .sv-post-seller-name{font-weight:700;font-size:13.5px;}
+.sv-post-price{font-weight:800;font-size:15px;color:var(--sv-primary);margin-bottom:10px;}
+.sv-post-actionbar{display:flex;gap:20px;padding:8px 0 14px;border-bottom:1px solid var(--sv-line);margin-bottom:14px;}
+.sv-post-action{display:flex;align-items:center;gap:6px;background:none;border:none;font-size:13px;font-weight:700;color:var(--sv-ink);cursor:pointer;padding:0;}
+.sv-post-action svg{width:21px;height:21px;}
+.sv-post-action.liked{color:#E0245E;}
+.sv-post-action.liked svg{fill:#E0245E;stroke:#E0245E;}
+.sv-post-views{margin-left:auto;font-size:11.5px;color:var(--sv-muted);font-weight:600;}
+.sv-comment-input-row{display:flex;gap:8px;margin-bottom:16px;}
+.sv-comment-input-row input{flex:1;border:1.5px solid var(--sv-line);border-radius:20px;padding:9px 14px;font-size:13px;font-family:'Manrope',sans-serif;}
+.sv-comment-input-row input:focus{outline:none;border-color:var(--sv-primary);}
+.sv-comment-send{background:var(--sv-primary);color:#fff;border:none;border-radius:20px;padding:9px 16px;font-size:12.5px;font-weight:700;cursor:pointer;}
+.sv-comment-item{display:flex;gap:9px;margin-bottom:14px;align-items:flex-start;}
+.sv-comment-avatar{width:28px;height:28px;border-radius:8px;object-fit:cover;flex-shrink:0;}
+.sv-comment-item b{font-size:13px;}
+.sv-comment-item .sv-comment-text{font-size:13px;color:var(--sv-ink);}
+.sv-comment-empty{color:var(--sv-muted);font-size:12.5px;text-align:center;padding:14px 0;}
+
+/* 5 ta tugma uchun kichikroq matn/ikonka */
+.sv-bottom-nav .sv-nav-item{font-size:9.5px;}
+.sv-bottom-nav .sv-nav-icon{font-size:17px;}
+
+/* ---------- Sevimlilar ---------- */
+.sv-post-action.saved{color:var(--sv-gold);}
+.sv-post-action.saved svg{fill:var(--sv-gold);stroke:var(--sv-gold);}
+.sv-fav-empty{text-align:center;padding:50px 20px;color:var(--sv-muted);}
+.sv-fav-empty .sv-fav-icon{font-size:44px;margin-bottom:12px;}
+.sv-fav-empty p{font-size:14px;font-weight:700;color:var(--sv-ink);margin:0 0 4px;}
+.sv-fav-empty span{font-size:12.5px;}
+
+/* ---------- Ro'yxatdan o'tish ---------- */
+.sv-reg-photo{display:flex;align-items:center;gap:14px;margin-bottom:6px;}
+.sv-reg-photo-preview{width:70px;height:70px;border-radius:18px;background:var(--sv-line);display:flex;align-items:center;justify-content:center;font-size:26px;overflow:hidden;flex-shrink:0;}
+.sv-reg-photo-preview img{width:100%;height:100%;object-fit:cover;}
+.sv-reg-photo-btn{background:var(--sv-card);border:1.5px solid var(--sv-line);border-radius:11px;padding:10px 16px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Manrope',sans-serif;}
+.sv-reg-done{display:flex;align-items:center;gap:13px;background:var(--sv-card);border:1px solid var(--sv-line);border-radius:14px;padding:14px;margin-bottom:6px;}
+.sv-reg-done img{width:54px;height:54px;border-radius:15px;object-fit:cover;}
+.sv-reg-done-name{font-weight:800;font-size:15px;}
+.sv-reg-done-user{font-size:12.5px;color:var(--sv-primary);font-weight:700;margin-top:1px;}
+.sv-reg-done-phone{font-size:12px;color:var(--sv-muted);margin-top:2px;}
+
+/* ---------- Ijtimoiy tarmoqlar (pullik) ---------- */
+.sv-social-locked{text-align:center;background:var(--sv-card);border:1.5px dashed var(--sv-gold);border-radius:14px;padding:26px 18px;}
+.sv-social-locked .sv-lock-icon{font-size:34px;margin-bottom:8px;}
+.sv-social-locked p{font-weight:800;font-size:14.5px;margin:0 0 5px;}
+.sv-social-locked span{font-size:12.5px;color:var(--sv-muted);display:block;margin-bottom:14px;line-height:1.45;}
+.sv-social-price{font-family:'Marcellus',serif;font-size:23px;color:var(--sv-primary);font-weight:700;margin-bottom:14px;}
+
+/* ---------- Rol belgilari (Sotuvchi / Ijarachi) ---------- */
+.sv-role-badge{display:inline-block;font-size:9.5px;font-weight:800;padding:2px 8px;border-radius:20px;margin-right:4px;letter-spacing:.02em;vertical-align:middle;}
+.sv-role-sell{background:#E8F3EC;color:#1E6B3E;border:1px solid #B9DCC6;}
+.sv-role-rent{background:#FFF4E3;color:#8A5B12;border:1px solid #F0D3A0;}
+.sv-role-row{margin-top:4px;}
+.sv-role-choice{display:flex;gap:9px;margin-top:4px;}
+.sv-role-opt{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;background:var(--sv-card);border:1.5px solid var(--sv-line);border-radius:12px;padding:12px 8px;cursor:pointer;font-size:13px;font-weight:700;}
+.sv-role-opt input{accent-color:var(--sv-primary);width:16px;height:16px;}
+
+/* O'z profilini ajratib ko'rsatish */
+.sv-seller-row.sv-me{border:1.5px solid var(--sv-primary);background:#F4F9F6;}
+.sv-me-pill{position:absolute;top:0;left:0;background:var(--sv-primary);color:#fff;font-size:9px;font-weight:800;padding:3px 11px 3px 9px;border-radius:0 0 10px 0;}
+
+/* ---------- Bepul sinov banneri ---------- */
+.sv-trial-banner{background:#EAF4EE;border:1.5px solid #A9CFB8;border-radius:13px;padding:13px 15px;margin-bottom:6px;}
+.sv-trial-banner b{display:block;font-size:13.5px;color:#1E6B3E;margin-bottom:3px;}
+.sv-trial-banner span{font-size:11.5px;color:var(--sv-muted);line-height:1.45;display:block;}
+.sv-trial-urgent{background:#FFF1E6;border-color:#F0BE8E;}
+.sv-trial-urgent b{color:#9A4E10;}
+.sv-trial-paid{background:#F0F6FF;border-color:#AFC9EC;}
+.sv-trial-paid b{color:#1B4E93;}
+
+/* ---------- Bepul sinov banneri ---------- */
+.sv-trial-banner{background:#EAF4EE;border:1.5px solid #A9CFB8;border-radius:13px;padding:13px 15px;margin-bottom:6px;}
+.sv-trial-banner b{display:block;font-size:13.5px;color:#1E6B3E;margin-bottom:3px;}
+.sv-trial-banner span{font-size:11.5px;color:var(--sv-muted);line-height:1.45;display:block;}
+.sv-trial-urgent{background:#FFF1E6;border-color:#F0BE8E;}
+.sv-trial-urgent b{color:#9A4E10;}
+.sv-trial-paid{background:#F0F6FF;border-color:#AFC9EC;}
+.sv-trial-paid b{color:#1B4E93;}
+
+/* ---------- Tariflar ---------- */
+.sv-plans{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0 6px;}
+.sv-plan{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;background:var(--sv-card);border:1.5px solid var(--sv-line);border-radius:14px;padding:16px 6px 12px;cursor:pointer;font-family:'Manrope',sans-serif;transition:.15s;}
+.sv-plan:active{transform:scale(.97);}
+.sv-plan-label{font-size:12px;font-weight:700;color:var(--sv-muted);}
+.sv-plan-price{font-family:'Marcellus',serif;font-size:18px;font-weight:700;color:var(--sv-ink);line-height:1.1;}
+.sv-plan-cur{font-size:10px;color:var(--sv-muted);}
+.sv-plan-save{font-size:9px;color:#1E6B3E;font-weight:700;margin-top:3px;}
+.sv-plan-badge{position:absolute;top:-8px;left:50%;transform:translateX(-50%);background:var(--sv-gold);color:#3A2A0C;font-size:8.5px;font-weight:800;padding:2px 8px;border-radius:10px;white-space:nowrap;}
+.sv-plan[data-plan="3m"]{border-color:var(--sv-gold);}
+
+/* ---------- Instagram uslubidagi profil ---------- */
+.sv-my-header{display:flex;align-items:center;gap:16px;padding:4px 0 14px;}
+.sv-my-avatar-wrap{position:relative;flex-shrink:0;}
+.sv-my-avatar{width:82px;height:82px;border-radius:50%;object-fit:cover;border:3px solid var(--sv-card);box-shadow:0 0 0 2.5px var(--sv-gold);}
+.sv-my-counts{flex:1;display:flex;justify-content:space-around;}
+.sv-my-count{text-align:center;}
+.sv-my-count b{display:block;font-size:17px;font-weight:800;}
+.sv-my-count span{font-size:10.5px;color:var(--sv-muted);}
+.sv-my-bio{margin-bottom:14px;}
+.sv-my-bio-name{font-weight:800;font-size:15px;display:flex;align-items:center;gap:5px;}
+.sv-my-bio-user{font-size:12.5px;color:var(--sv-primary);font-weight:700;margin-top:1px;}
+.sv-my-bio-phone{font-size:12.5px;color:var(--sv-muted);margin-top:3px;}
+.sv-social-links{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0;}
+.sv-social-link{display:inline-flex;align-items:center;gap:6px;background:var(--sv-card);border:1.5px solid var(--sv-line);border-radius:20px;padding:7px 14px;font-size:12px;font-weight:700;color:var(--sv-ink);text-decoration:none;}
+.sv-social-link span{font-size:14px;}
+.sv-upload-cta{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:var(--sv-primary);color:#fff;border:none;border-radius:12px;padding:13px 0;font-size:13.5px;font-weight:700;cursor:pointer;margin:6px 0 18px;font-family:'Manrope',sans-serif;}
+.sv-section-divider{display:flex;align-items:center;gap:9px;margin:18px 0 10px;}
+.sv-section-divider::before,.sv-section-divider::after{content:'';flex:1;height:1px;background:var(--sv-line);}
+.sv-section-divider span{font-size:10.5px;font-weight:800;letter-spacing:.12em;color:var(--sv-muted);text-transform:uppercase;}
+.sv-grid-empty{grid-column:1/-1;text-align:center;padding:36px 10px;color:var(--sv-muted);}
+.sv-grid-empty p{font-size:13px;font-weight:700;color:var(--sv-ink);margin:6px 0 0;}
+
+/* ---------- Media yuklash ---------- */
+.sv-upload-preview{width:100%;aspect-ratio:1/1;background:var(--sv-line);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:40px;overflow:hidden;margin-bottom:12px;}
+.sv-upload-preview img,.sv-upload-preview video{width:100%;height:100%;object-fit:cover;}
+.sv-upload-btn{display:block;text-align:center;background:var(--sv-card);border:1.5px dashed var(--sv-line);border-radius:12px;padding:13px;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:8px;}
+
+/* ---------- Makler ariza bo'limi ---------- */
+#svMaklerBox{padding:0 4px 30px;}
+.sv-reg-intro{font-size:12.5px;color:var(--sv-muted);line-height:1.5;margin:0 0 6px;}
+.sv-pending-box{text-align:center;background:#FFF6E8;border:1.5px solid var(--sv-gold);border-radius:14px;padding:26px 18px;}
+.sv-pending-icon{font-size:36px;margin-bottom:8px;}
+.sv-pending-box p{font-weight:800;font-size:14.5px;margin:0 0 5px;color:var(--sv-ink);}
+.sv-pending-box span{font-size:12.5px;color:var(--sv-muted);line-height:1.45;display:block;}
+
+/* ---------- Makler bo'limini profil uslubiga moslash ---------- */
+#svMaklerBox .sv-reg-intro{color:rgba(255,255,255,.62);}
+#svMaklerBox .sv-field-label{color:#E8D9A8;font-weight:600;}
+#svMaklerBox .sv-select,
+#svMaklerBox .sv-textarea{background:rgba(255,255,255,.05);border:1px solid rgba(203,161,53,.35);color:#fff;}
+#svMaklerBox .sv-select::placeholder,
+#svMaklerBox .sv-textarea::placeholder{color:rgba(255,255,255,.35);}
+#svMaklerBox .sv-select:focus,
+#svMaklerBox .sv-textarea:focus{border-color:var(--sv-gold);outline:none;}
+#svMaklerBox .sv-reg-photo-preview{background:rgba(255,255,255,.06);border:1px solid rgba(203,161,53,.3);}
+#svMaklerBox .sv-reg-photo-btn{background:rgba(255,255,255,.05);border:1px solid rgba(203,161,53,.35);color:#E8D9A8;}
+#svMaklerBox .sv-role-opt{background:rgba(255,255,255,.05);border:1px solid rgba(203,161,53,.35);color:#fff;}
+#svMaklerBox .sv-submit-btn{background:linear-gradient(135deg,#CBA135,#A8842A);color:#14241D;font-weight:800;}
+#svMaklerBox .sv-pending-box{background:rgba(203,161,53,.1);border:1px solid rgba(203,161,53,.45);}
+#svMaklerBox .sv-pending-box p{color:#E8D9A8;}
+#svMaklerBox .sv-pending-box span{color:rgba(255,255,255,.6);}
+.profile-content .sv-section-divider span{color:rgba(232,217,168,.7);}
+.profile-content .sv-section-divider::before,
+.profile-content .sv-section-divider::after{background:rgba(203,161,53,.28);}
+#svMaklerBox .sv-my-bio-name,
+#svMaklerBox .sv-my-count b{color:#fff;}
+#svMaklerBox .sv-my-count span,
+#svMaklerBox .sv-my-bio-phone{color:rgba(255,255,255,.55);}
+#svMaklerBox .sv-my-bio-user{color:var(--sv-gold);}
+#svMaklerBox .sv-upload-cta{background:linear-gradient(135deg,#CBA135,#A8842A);color:#14241D;}
+#svMaklerBox .sv-social-link{background:rgba(255,255,255,.05);border:1px solid rgba(203,161,53,.35);color:#fff;}
+#svMaklerBox .sv-trial-banner{background:rgba(203,161,53,.1);border:1px solid rgba(203,161,53,.4);}
+#svMaklerBox .sv-trial-banner b{color:#E8D9A8;}
+#svMaklerBox .sv-trial-banner span{color:rgba(255,255,255,.6);}
+#svMaklerBox .sv-plan{background:rgba(255,255,255,.05);border:1px solid rgba(203,161,53,.35);}
+#svMaklerBox .sv-plan-price{color:#fff;}
+#svMaklerBox .sv-plan-label,
+#svMaklerBox .sv-plan-cur{color:rgba(255,255,255,.55);}
+#svMaklerBox .sv-social-locked{background:rgba(255,255,255,.04);border:1.5px dashed rgba(203,161,53,.5);}
+#svMaklerBox .sv-social-locked p{color:#E8D9A8;}
+#svMaklerBox .sv-social-locked span{color:rgba(255,255,255,.55);}
+
+/* ---------- Shikoyat bo'limini profil uslubiga moslash ---------- */
+#svComplaintView{background:linear-gradient(160deg,#0F3327,#0A2A1F 55%,#08211A);}
+#svComplaintView .sv-header h1{color:#fff;}
+#svComplaintView .sv-close{background:rgba(255,255,255,.1);color:#fff;}
+#svComplaintView .sv-field-label{color:#E8D9A8;font-weight:600;}
+#svComplaintView .sv-select,
+#svComplaintView .sv-textarea{background:rgba(255,255,255,.05);border:1px solid rgba(203,161,53,.35);color:#fff;}
+#svComplaintView .sv-select::placeholder,
+#svComplaintView .sv-textarea::placeholder{color:rgba(255,255,255,.35);}
+#svComplaintView .sv-select:focus,
+#svComplaintView .sv-textarea:focus{border-color:var(--sv-gold);outline:none;}
+#svComplaintView .sv-select option{background:#0F3327;color:#fff;}
+#svComplaintView .sv-submit-btn{background:linear-gradient(135deg,#CBA135,#A8842A);color:#14241D;font-weight:800;}
+#svComplaintView .sv-target-picker{background:rgba(255,255,255,.05);border:1.5px dashed rgba(203,161,53,.45);}
+#svComplaintView .sv-target-placeholder{color:rgba(255,255,255,.45);}
+#svComplaintView .sv-target-name{color:#fff;}
+#svComplaintView .sv-complaint-success h3{color:#fff;}
+#svComplaintView .sv-complaint-success p{color:rgba(255,255,255,.6);}
+
+/* Tepadagi profil tugmasini yashirish (pastda Profil bor) */
+.topbar .profile-btn{display:none !important;}
+/* Sarlavhani markazga */
+.topbar{justify-content:center !important;}
+.topbar .brand{justify-content:center;}
+
+/* "Hammasi" tugmalarini yashirish */
+.type-tab[data-type="hammasi"]{display:none !important;}
+.tab[data-cat="hammasi"]{display:none !important;}
+
+/* ---------- Obuna tugmasi ---------- */
+.sv-sub-wrap{display:flex;align-items:center;gap:6px;flex-shrink:0;}
+.sv-sub-btn{border:none;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:800;cursor:pointer;font-family:'Manrope',sans-serif;background:var(--sv-primary);color:#fff;white-space:nowrap;}
+.sv-sub-btn.subbed{background:var(--sv-card);color:var(--sv-muted);border:1.5px solid var(--sv-line);}
+.sv-sub-more{width:28px;height:28px;border-radius:50%;border:none;background:transparent;color:var(--sv-muted);font-size:16px;font-weight:800;cursor:pointer;line-height:1;}
+.sv-sheet-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:11000;display:flex;align-items:flex-end;}
+.sv-sheet{width:100%;max-width:430px;margin:0 auto;background:var(--sv-card);border-radius:18px 18px 0 0;padding:8px 0 20px;}
+.sv-sheet-handle{width:38px;height:4px;border-radius:3px;background:var(--sv-line);margin:6px auto 12px;}
+.sv-sheet-title{text-align:center;font-size:12.5px;color:var(--sv-muted);padding-bottom:10px;border-bottom:1px solid var(--sv-line);}
+.sv-sheet-item{width:100%;background:none;border:none;padding:15px 20px;font-size:14px;font-weight:600;text-align:left;cursor:pointer;font-family:'Manrope',sans-serif;color:var(--sv-ink);border-bottom:1px solid var(--sv-line);}
+.sv-sheet-item.danger{color:#C0392B;}
+.sv-sheet-item:last-child{border-bottom:none;}
+
+/* Arizani o'chirish tugmasi */
+.sv-delete-btn{width:100%;margin-top:20px;padding:13px 0;border-radius:12px;border:1.5px solid rgba(192,57,43,.5);background:rgba(192,57,43,.12);color:#E88B80;font-weight:700;font-size:13.5px;cursor:pointer;font-family:'Manrope',sans-serif;}
+
+/* Asosiy sahifadan olib tashlanadiganlar */
+.app .search-bar{display:none !important;}
+.app .tabs{display:none !important;}
+.app .filter-bar{display:none !important;}
+.topbar .brand-text{display:none !important;}
+.topbar .brand-mark{display:none !important;}
+
+/* ---------- Storieslar ---------- */
+.sv-stories{display:flex;gap:14px;overflow-x:auto;padding:14px 16px 12px;scrollbar-width:none;}
+.sv-stories::-webkit-scrollbar{display:none;}
+.sv-story{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;background:none;border:none;padding:0;}
+.sv-story-ring{width:66px;height:66px;border-radius:50%;padding:2.5px;background:linear-gradient(45deg,#CBA135,#E8D9A8,#CBA135);}
+.sv-story-ring.seen{background:rgba(255,255,255,.18);}
+.sv-story-ring img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:2.5px solid #0A2A1F;}
+.sv-story-name{font-size:10.5px;color:rgba(255,255,255,.75);max-width:68px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:'Manrope',sans-serif;}
+.sv-stories-empty{padding:16px;text-align:center;font-size:12.5px;color:rgba(255,255,255,.4);}
+
+/* ---------- Lenta ---------- */
+.sv-feed{padding:0 0 20px;}
+.sv-feed-item{border-bottom:1px solid rgba(203,161,53,.18);padding-bottom:14px;margin-bottom:14px;}
+.sv-feed-head{display:flex;align-items:center;gap:10px;padding:10px 16px;}
+.sv-feed-head img{width:34px;height:34px;border-radius:50%;object-fit:cover;}
+.sv-feed-name{font-weight:700;font-size:13.5px;color:#fff;}
+.sv-feed-media{width:100%;aspect-ratio:1/1;background:#000;overflow:hidden;}
+.sv-feed-media img,.sv-feed-media video{width:100%;height:100%;object-fit:cover;display:block;}
+.sv-feed-body{padding:10px 16px 0;}
+.sv-feed-price{font-weight:800;font-size:15px;color:var(--sv-gold);margin-bottom:4px;}
+.sv-feed-desc{font-size:13px;color:rgba(255,255,255,.75);line-height:1.45;}
+.sv-feed-empty{text-align:center;padding:50px 24px;color:rgba(255,255,255,.45);}
+.sv-feed-empty p{font-size:14px;font-weight:700;color:rgba(255,255,255,.75);margin:8px 0 4px;}
+.sv-feed-empty span{font-size:12.5px;}
+
+/* ---------- E'lon joylash oynasi ---------- */
+.sv-post-sheet{background:#0F3327;padding:0 0 18px;}
+.sv-post-body{padding:0 18px;}
+.sv-post-preview{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:16px;display:block;margin-bottom:16px;background:#000;}
+.sv-type-row{display:flex;gap:10px;margin-bottom:18px;}
+.sv-type-btn{flex:1;padding:13px 0;border-radius:12px;border:1.5px solid rgba(203,161,53,.35);background:rgba(255,255,255,.05);color:rgba(255,255,255,.7);font-size:13px;font-weight:700;cursor:pointer;font-family:'Manrope',sans-serif;}
+.sv-type-btn.active{background:linear-gradient(135deg,#CBA135,#A8842A);color:#14241D;border-color:transparent;}
+.sv-post-label{display:block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#E8D9A8;margin:0 0 7px;font-family:'Manrope',sans-serif;}
+.sv-post-input,.sv-post-textarea{width:100%;box-sizing:border-box;background:rgba(255,255,255,.06);border:1.5px solid rgba(203,161,53,.3);border-radius:12px;padding:13px 14px;font-size:14px;color:#fff;font-family:'Manrope',sans-serif;margin-bottom:16px;}
+.sv-post-input::placeholder,.sv-post-textarea::placeholder{color:rgba(255,255,255,.32);}
+.sv-post-input:focus,.sv-post-textarea:focus{outline:none;border-color:#CBA135;}
+.sv-post-textarea{min-height:84px;resize:vertical;line-height:1.5;}
+.sv-post-send{width:100%;padding:15px 0;border:none;border-radius:13px;background:linear-gradient(135deg,#CBA135,#A8842A);color:#14241D;font-size:14.5px;font-weight:800;cursor:pointer;font-family:'Manrope',sans-serif;margin-bottom:8px;}
+.sv-post-send:disabled{opacity:.6;}
+.sv-post-cancel{width:100%;padding:13px 0;border:none;background:none;color:rgba(255,255,255,.5);font-size:13.5px;font-weight:600;cursor:pointer;font-family:'Manrope',sans-serif;}
+
+/* Ko'p media tanlash */
+.sv-media-strip{display:flex;gap:8px;overflow-x:auto;padding-bottom:10px;margin-bottom:14px;scrollbar-width:none;}
+.sv-media-strip::-webkit-scrollbar{display:none;}
+.sv-media-thumb{position:relative;flex-shrink:0;width:76px;height:76px;border-radius:12px;overflow:hidden;background:#000;}
+.sv-media-thumb img,.sv-media-thumb video{width:100%;height:100%;object-fit:cover;}
+.sv-media-del{position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;border:none;background:rgba(0,0,0,.65);color:#fff;font-size:12px;line-height:1;cursor:pointer;padding:0;}
+.sv-media-add{flex-shrink:0;width:76px;height:76px;border-radius:12px;border:1.5px dashed rgba(203,161,53,.5);background:rgba(255,255,255,.04);color:#E8D9A8;font-size:24px;cursor:pointer;}
+.sv-media-count{font-size:11px;color:rgba(255,255,255,.45);margin-bottom:10px;}
+
+/* ---------- Lenta amallari ---------- */
+.sv-feed-actions{display:flex;align-items:center;gap:18px;padding:11px 16px 6px;}
+.sv-fa-btn{display:flex;align-items:center;gap:5px;background:none;border:none;padding:0;cursor:pointer;color:rgba(255,255,255,.85);font-size:13px;font-weight:600;font-family:'Manrope',sans-serif;}
+.sv-fa-btn svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.9;}
+.sv-fa-btn.liked{color:#E74C3C;}
+.sv-fa-btn.liked svg{fill:#E74C3C;stroke:#E74C3C;}
+.sv-fa-save{margin-left:auto;}
+.sv-fa-save.saved svg{fill:var(--sv-gold);stroke:var(--sv-gold);}
+
+/* ---------- Rol tanlash ---------- */
+.sv-role-ask{padding:26px 18px 10px;text-align:center;}
+.sv-role-ask h3{font-size:16px;font-weight:800;color:#fff;margin:0 0 6px;font-family:'Manrope',sans-serif;}
+.sv-role-ask p{font-size:12.5px;color:rgba(255,255,255,.5);margin:0 0 20px;line-height:1.5;}
+.sv-role-cards{display:flex;flex-direction:column;gap:12px;}
+.sv-role-card{display:flex;align-items:center;gap:14px;padding:16px;border-radius:14px;border:1px solid #262626;background:#121212;cursor:pointer;text-align:left;font-family:'Manrope',sans-serif;}
+.sv-role-card:active{background:#1c1c1c;}
+.sv-role-ico{font-size:26px;flex-shrink:0;}
+.sv-role-txt b{display:block;font-size:14px;font-weight:800;color:#fff;margin-bottom:3px;}
+.sv-role-txt span{font-size:11.5px;color:rgba(255,255,255,.45);line-height:1.4;}
+.sv-role-back{width:100%;margin-top:16px;padding:12px 0;border:none;background:none;color:rgba(255,255,255,.4);font-size:13px;font-weight:600;cursor:pointer;font-family:'Manrope',sans-serif;}
+
+/* ================= QORA MAVZU ================= */
+:root{
+  --sv-bg:#000000;
+  --sv-card:#121212;
+  --sv-line:#262626;
+  --sv-ink:#FFFFFF;
+  --sv-muted:#8E8E8E;
+  --sv-primary:#0095F6;
+  --sv-gold:#CBA135;
+}
+body,.app{background:#000 !important;color:#fff !important;}
+.topbar{background:#000 !important;border-bottom:1px solid #262626 !important;}
+.sv-view{background:#000 !important;}
+.sv-header{background:#000 !important;border-bottom:1px solid #262626 !important;}
+.sv-header h1{color:#fff !important;}
+.sv-close{background:#1c1c1c !important;color:#fff !important;}
+.sv-panel{background:#000 !important;}
+.sv-nav{background:#000 !important;border-top:1px solid #262626 !important;}
+.sv-nav-item{color:#8E8E8E !important;}
+.sv-nav-item.active{color:#fff !important;}
+
+/* Profil oynasi */
+.profile-view,.profile-content,.profile-header{background:#000 !important;}
+.profile-name{color:#fff !important;}
+.profile-username{color:#8E8E8E !important;}
+.profile-stat,.profile-menu-item{background:#121212 !important;border:1px solid #262626 !important;color:#fff !important;}
+.profile-stat b,.profile-stat strong{color:#fff !important;}
+.profile-stat span{color:#8E8E8E !important;}
+.profile-menu-item span{color:#8E8E8E !important;}
+.profile-avatar{border-color:#262626 !important;}
+
+/* Makler bo'limi */
+#svMaklerBox .sv-field-label,.sv-post-label,.profile-content .sv-section-divider span{color:#8E8E8E !important;}
+.profile-content .sv-section-divider::before,.profile-content .sv-section-divider::after,.sv-section-divider::before,.sv-section-divider::after{background:#262626 !important;}
+#svMaklerBox .sv-select,#svMaklerBox .sv-textarea,.sv-post-input,.sv-post-textarea{background:#121212 !important;border:1px solid #262626 !important;color:#fff !important;}
+#svMaklerBox .sv-reg-photo-preview,#svMaklerBox .sv-reg-photo-btn,#svMaklerBox .sv-role-opt{background:#121212 !important;border:1px solid #262626 !important;color:#fff !important;}
+#svMaklerBox .sv-submit-btn,.sv-post-send,.sv-upload-cta,#svMaklerBox .sv-upload-cta{background:#0095F6 !important;color:#fff !important;}
+.sv-my-avatar{box-shadow:0 0 0 2px #262626 !important;border-color:#000 !important;}
+#svMaklerBox .sv-my-bio-user{color:#0095F6 !important;}
+#svMaklerBox .sv-my-count b,#svMaklerBox .sv-my-bio-name{color:#fff !important;}
+#svMaklerBox .sv-my-count span,#svMaklerBox .sv-my-bio-phone{color:#8E8E8E !important;}
+#svMaklerBox .sv-social-link,#svMaklerBox .sv-plan{background:#121212 !important;border:1px solid #262626 !important;color:#fff !important;}
+#svMaklerBox .sv-trial-banner,#svMaklerBox .sv-pending-box{background:#121212 !important;border:1px solid #262626 !important;}
+#svMaklerBox .sv-trial-banner b,#svMaklerBox .sv-pending-box p{color:#fff !important;}
+#svMaklerBox .sv-trial-banner span,#svMaklerBox .sv-pending-box span,#svMaklerBox .sv-reg-intro{color:#8E8E8E !important;}
+
+/* Shikoyat */
+#svComplaintView{background:#000 !important;}
+#svComplaintView .sv-select,#svComplaintView .sv-textarea{background:#121212 !important;border:1px solid #262626 !important;color:#fff !important;}
+#svComplaintView .sv-select option{background:#121212 !important;}
+#svComplaintView .sv-field-label{color:#8E8E8E !important;}
+#svComplaintView .sv-submit-btn{background:#0095F6 !important;color:#fff !important;}
+#svComplaintView .sv-target-picker{background:#121212 !important;border:1px dashed #363636 !important;}
+
+/* Sotuvchilar */
+.sv-seller-row{background:#000 !important;border-bottom:1px solid #1a1a1a !important;}
+.sv-seller-name{color:#fff !important;}
+.sv-seller-meta,.sv-rank-tile{color:#8E8E8E !important;}
+.sv-sub-btn{background:#0095F6 !important;color:#fff !important;}
+.sv-sub-btn.subbed{background:#121212 !important;color:#fff !important;border:1px solid #363636 !important;}
+
+/* Lenta / storieslar */
+.sv-story-ring img{border-color:#000 !important;}
+.sv-story-name{color:#fff !important;}
+.sv-feed-item{border-bottom:1px solid #1a1a1a !important;}
+.sv-feed-name{color:#fff !important;}
+.sv-feed-price{color:#fff !important;}
+.sv-feed-desc{color:#c9c9c9 !important;}
+
+/* Post oynasi */
+.sv-sheet,.sv-post-sheet{background:#121212 !important;}
+.sv-sheet-item{color:#fff !important;border-bottom:1px solid #262626 !important;}
+.sv-sheet-title{color:#8E8E8E !important;border-bottom:1px solid #262626 !important;}
+.sv-type-btn{background:#121212 !important;border:1px solid #262626 !important;color:#8E8E8E !important;}
+.sv-type-btn.active{background:#0095F6 !important;color:#fff !important;border-color:#0095F6 !important;}
+.sv-media-add{border:1px dashed #363636 !important;background:#121212 !important;color:#8E8E8E !important;}
+.sv-delete-btn{background:#121212 !important;border:1px solid #363636 !important;color:#ED4956 !important;}
+
+/* ---------- Makler forma tartibi ---------- */
+#svMaklerBox #svRegForm{display:block;padding:0 4px;}
+#svMaklerBox .sv-field-label{display:block !important;width:100%;font-size:11px !important;font-weight:700 !important;letter-spacing:.06em;text-transform:uppercase;color:#8E8E8E !important;margin:0 0 8px !important;text-align:left !important;}
+#svMaklerBox .sv-select,#svMaklerBox input[type="tel"],#svMaklerBox input[type="text"]{display:block !important;width:100% !important;box-sizing:border-box !important;padding:14px 15px !important;font-size:14px !important;border-radius:12px !important;margin:0 0 18px !important;}
+#svMaklerBox .sv-reg-intro{text-align:left !important;margin-bottom:20px !important;line-height:1.5;}
+#svMaklerBox .sv-reg-photo{display:flex !important;align-items:center;gap:14px;margin-bottom:20px;}
+#svMaklerBox .sv-reg-photo-preview{width:74px !important;height:74px !important;border-radius:50% !important;display:flex !important;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;overflow:hidden;}
+#svMaklerBox .sv-reg-photo-preview img{width:100%;height:100%;object-fit:cover;}
+#svMaklerBox .sv-reg-photo-btn{display:inline-block !important;padding:11px 18px !important;border-radius:10px !important;font-size:13px !important;font-weight:700;cursor:pointer;}
+#svMaklerBox .sv-role-choice{display:flex !important;gap:10px;margin-bottom:18px;}
+#svMaklerBox .sv-role-opt{flex:1;display:flex !important;align-items:center;justify-content:center;gap:8px;padding:14px 0 !important;border-radius:12px !important;font-size:13.5px;font-weight:700;cursor:pointer;}
+#svMaklerBox .sv-role-opt input{width:17px;height:17px;accent-color:#0095F6;margin:0;}
+#svMaklerBox .sv-submit-btn{display:block !important;width:100% !important;padding:15px 0 !important;border-radius:12px !important;font-size:14.5px !important;font-weight:800 !important;border:none !important;margin-top:4px;cursor:pointer;}
+
+/* ================= PREMIUM MAKLER FORMA ================= */
+#svMaklerBox{
+  position:relative;
+  padding:26px 20px 30px !important;
+  margin:8px 0 24px;
+  border-radius:24px;
+  background:
+    radial-gradient(120% 80% at 50% 0%, rgba(203,161,53,.16) 0%, transparent 60%),
+    linear-gradient(180deg, rgba(255,255,255,.06) 0%, rgba(255,255,255,.02) 100%);
+  border:1px solid rgba(203,161,53,.28);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  box-shadow:0 18px 44px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.08);
+  overflow:hidden;
+}
+#svMaklerBox::before{
+  content:'';position:absolute;top:0;left:12%;right:12%;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(232,217,168,.75),transparent);
+}
+
+#svMaklerBox .sv-reg-intro{
+  text-align:center !important;
+  font-size:12.5px !important;
+  color:rgba(255,255,255,.5) !important;
+  line-height:1.6 !important;
+  margin:0 0 26px !important;
+  padding:0 6px;
+}
+
+#svMaklerBox .sv-field-label{
+  display:block !important;
+  font-size:9.5px !important;
+  font-weight:800 !important;
+  letter-spacing:.18em !important;
+  text-transform:uppercase;
+  color:rgba(232,217,168,.72) !important;
+  margin:0 0 9px 2px !important;
+  text-align:left !important;
+}
+
+#svMaklerBox .sv-select,
+#svMaklerBox input[type="tel"],
+#svMaklerBox input[type="text"]{
+  display:block !important;
+  width:100% !important;
+  box-sizing:border-box !important;
+  padding:15px 17px !important;
+  font-size:14.5px !important;
+  color:#fff !important;
+  background:rgba(255,255,255,.045) !important;
+  border:1px solid rgba(255,255,255,.10) !important;
+  border-radius:14px !important;
+  margin:0 0 20px !important;
+  transition:border-color .2s, box-shadow .2s, background .2s;
+  font-family:'Manrope',sans-serif;
+}
+#svMaklerBox .sv-select::placeholder,
+#svMaklerBox input::placeholder{color:rgba(255,255,255,.26) !important;}
+#svMaklerBox .sv-select:focus,
+#svMaklerBox input:focus{
+  outline:none !important;
+  background:rgba(255,255,255,.07) !important;
+  border-color:rgba(203,161,53,.65) !important;
+  box-shadow:0 0 0 3px rgba(203,161,53,.14) !important;
+}
+
+/* Avatar */
+#svMaklerBox .sv-reg-photo{
+  display:flex !important;flex-direction:column;align-items:center;
+  gap:13px;margin:0 0 26px !important;
+}
+#svMaklerBox .sv-reg-photo-preview{
+  width:96px !important;height:96px !important;
+  border-radius:50% !important;
+  display:flex !important;align-items:center;justify-content:center;
+  font-size:30px;flex-shrink:0;overflow:hidden;
+  background:rgba(255,255,255,.05) !important;
+  border:1px solid rgba(203,161,53,.3) !important;
+  box-shadow:0 0 0 5px rgba(203,161,53,.08), 0 8px 22px rgba(0,0,0,.5);
+}
+#svMaklerBox .sv-reg-photo-preview img{width:100%;height:100%;object-fit:cover;}
+#svMaklerBox .sv-reg-photo-btn{
+  display:inline-block !important;
+  padding:9px 20px !important;
+  border-radius:100px !important;
+  font-size:11.5px !important;font-weight:800;letter-spacing:.05em;
+  color:#E8D9A8 !important;
+  background:rgba(203,161,53,.10) !important;
+  border:1px solid rgba(203,161,53,.4) !important;
+  cursor:pointer;
+}
+
+/* Yo'nalish */
+#svMaklerBox .sv-role-choice{display:flex !important;gap:11px;margin:0 0 24px !important;}
+#svMaklerBox .sv-role-opt{
+  flex:1;display:flex !important;align-items:center;justify-content:center;gap:9px;
+  padding:15px 0 !important;
+  border-radius:14px !important;
+  font-size:13.5px;font-weight:700;color:rgba(255,255,255,.82) !important;
+  background:rgba(255,255,255,.045) !important;
+  border:1px solid rgba(255,255,255,.10) !important;
+  cursor:pointer;transition:all .2s;
+}
+#svMaklerBox .sv-role-opt:has(input:checked){
+  background:rgba(203,161,53,.14) !important;
+  border-color:rgba(203,161,53,.6) !important;
+  color:#fff !important;
+}
+#svMaklerBox .sv-role-opt input{width:17px;height:17px;accent-color:#CBA135;margin:0;}
+
+/* Tugma */
+#svMaklerBox .sv-submit-btn{
+  display:block !important;width:100% !important;
+  padding:17px 0 !important;
+  border:none !important;border-radius:15px !important;
+  font-size:14px !important;font-weight:800 !important;
+  letter-spacing:.06em;text-transform:uppercase;
+  color:#14100A !important;
+  background:linear-gradient(135deg,#E8D9A8 0%,#CBA135 45%,#A8842A 100%) !important;
+  box-shadow:0 10px 26px rgba(203,161,53,.28);
+  cursor:pointer;margin-top:6px;
+  font-family:'Manrope',sans-serif;
+}
+#svMaklerBox .sv-submit-btn:active{transform:translateY(1px);}
+
+/* Bo'lim sarlavhasi */
+.profile-content .sv-section-divider span{
+  font-size:9.5px !important;letter-spacing:.24em !important;
+  color:rgba(232,217,168,.6) !important;
+}
+.profile-content .sv-section-divider::before,
+.profile-content .sv-section-divider::after{
+  background:linear-gradient(90deg,transparent,rgba(203,161,53,.35),transparent) !important;
+  height:1px !important;
+}
+
+/* ---------- Ikki marta bosib layk ---------- */
+.sv-feed-media{position:relative;}
+.sv-dbl-heart{
+  position:absolute;top:50%;left:50%;
+  width:96px;height:96px;margin:-48px 0 0 -48px;
+  pointer-events:none;opacity:0;z-index:5;
+  filter:drop-shadow(0 4px 16px rgba(0,0,0,.5));
+}
+.sv-dbl-heart.pop{animation:svHeartPop .95s ease-out forwards;}
+@keyframes svHeartPop{
+  0%{opacity:0;transform:scale(.3) rotate(-12deg);}
+  18%{opacity:1;transform:scale(1.18) rotate(4deg);}
+  32%{transform:scale(.94) rotate(-2deg);}
+  46%{transform:scale(1.04) rotate(0deg);}
+  70%{opacity:1;transform:scale(1);}
+  100%{opacity:0;transform:scale(1.15) translateY(-14px);}
+}
+
+/* ================= INSTAGRAM PROFIL ================= */
+.sv-ig-top{display:flex;align-items:center;justify-content:space-between;padding:14px 4px 18px;}
+.sv-ig-user{display:flex;align-items:center;gap:7px;font-size:19px;font-weight:800;color:#fff;font-family:'Manrope',sans-serif;}
+.sv-ig-verified{width:17px;height:17px;flex-shrink:0;}
+
+.sv-ig-head{display:flex;align-items:center;gap:22px;padding:0 4px 18px;}
+.sv-ig-avatar-wrap{position:relative;flex-shrink:0;}
+.sv-ig-avatar{width:88px;height:88px;border-radius:50%;object-fit:cover;border:1.5px solid rgba(255,255,255,.15);}
+.sv-ig-avatar-add{position:absolute;right:-2px;bottom:-2px;width:26px;height:26px;border-radius:50%;background:#0095F6;border:3px solid #000;color:#fff;font-size:15px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;}
+.sv-ig-stats{flex:1;display:flex;justify-content:space-around;}
+.sv-ig-stat{text-align:center;cursor:pointer;}
+.sv-ig-stat b{display:block;font-size:17px;font-weight:800;color:#fff;line-height:1.25;}
+.sv-ig-stat span{font-size:12.5px;color:rgba(255,255,255,.85);}
+
+.sv-ig-bio{padding:0 4px 16px;}
+.sv-ig-bio-name{font-size:14px;font-weight:800;color:#fff;margin-bottom:3px;}
+.sv-ig-bio-text{font-size:13.5px;color:rgba(255,255,255,.9);line-height:1.5;white-space:pre-wrap;}
+.sv-ig-bio-phone{font-size:13px;color:rgba(255,255,255,.55);margin-top:5px;}
+
+.sv-ig-chips{display:flex;flex-wrap:wrap;gap:8px;padding:0 4px 16px;}
+.sv-ig-chip{display:inline-flex;align-items:center;gap:6px;padding:8px 15px;border-radius:100px;background:#1a1a1a;border:1px solid #2a2a2a;font-size:12.5px;font-weight:600;color:#fff;text-decoration:none;font-family:'Manrope',sans-serif;}
+
+.sv-ig-actions{display:flex;gap:8px;padding:0 4px 18px;}
+.sv-ig-btn{flex:1;padding:9px 0;border-radius:9px;border:none;background:#262626;color:#fff;font-size:13.5px;font-weight:700;cursor:pointer;font-family:'Manrope',sans-serif;}
+.sv-ig-btn.primary{background:#0095F6;}
+
+.sv-ig-tabs{display:flex;border-top:1px solid #262626;}
+.sv-ig-tab{flex:1;display:flex;align-items:center;justify-content:center;padding:12px 0;background:none;border:none;border-bottom:1.5px solid transparent;cursor:pointer;color:rgba(255,255,255,.35);}
+.sv-ig-tab.active{color:#fff;border-bottom-color:#fff;}
+.sv-ig-tab svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.9;}
+
+.sv-ig-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;padding-top:2px;}
+.sv-ig-cell{position:relative;aspect-ratio:1/1;background:#111;overflow:hidden;cursor:pointer;}
+.sv-ig-cell img,.sv-ig-cell video{width:100%;height:100%;object-fit:cover;display:block;}
+.sv-ig-cell-multi{position:absolute;top:6px;right:6px;width:15px;height:15px;filter:drop-shadow(0 1px 3px rgba(0,0,0,.6));}
+.sv-ig-empty{grid-column:1/-1;text-align:center;padding:60px 20px;color:rgba(255,255,255,.4);}
+.sv-ig-empty p{font-size:15px;font-weight:700;color:#fff;margin:10px 0 5px;}
+.sv-ig-empty span{font-size:13px;}

@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Namangan Ijara</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0A2A1F">
+<link rel="icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="sellers.css?v=1785789557">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css">
+</head>
+<body>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+<div class="referral-view" id="referralView" hidden>
+  <div class="coin-rain" id="coinRain"></div>
+  <div class="referral-content">
+    <div class="ref-icon">🎁</div>
+    <h1 class="ref-title">Referal dasturi</h1>
+    <p class="ref-subtitle">Do'stlaringizni taklif qiling, pul ishlang!</p>
+
+    <div class="ref-stats">
+      <div class="ref-stat-box">
+        <div class="ref-stat-value" id="refCount">0</div>
+        <div class="ref-stat-label">Taklif qilingan</div>
+      </div>
+      <div class="ref-stat-box">
+        <div class="ref-stat-value" id="refEarnings">0</div>
+        <div class="ref-stat-label">so'm ishlangan</div>
+      </div>
+    </div>
+
+    <div class="ref-progress-wrap">
+      <div class="ref-progress-label">
+        <span id="refProgressText">0 / 3 600 000 so'm</span>
+      </div>
+      <div class="ref-progress-bar">
+        <div class="ref-progress-fill" id="refProgressFill"></div>
+      </div>
+    </div>
+
+    <div class="ref-link-box">
+      <div class="ref-link-title">Sizning referal havolangiz:</div>
+      <div class="ref-link-value" id="refLinkValue">...</div>
+      <button class="ref-copy-btn" id="refCopyBtn">📋 Nusxalash</button>
+    </div>
+
+    <div class="ref-disclaimer">
+      Siz topgan pullar faqat <b>uy joylashtirish to'lovi</b> uchun ishlatiladi.
+      Kartaga yoki naqd pul qilib berilmaydi — qancha topsangiz, shuncha oylik
+      to'lovlaringiz avtomatik qoplanadi.
+    </div>
+  </div>
+</div>
+
+<div class="profile-view" id="profileView" hidden>
+  <button class="profile-close" id="profileClose">✕</button>
+  <div class="profile-content">
+    <img id="profileAvatar" class="profile-avatar" src="" alt="">
+    <h2 id="profileName" class="profile-name">...</h2>
+    <p id="profileUsername" class="profile-username"></p>
+
+    <div class="profile-stats">
+      <div class="profile-stat-box" data-target="sevimli">
+        <div class="profile-stat-value" id="statFavorites">0</div>
+        <div class="profile-stat-label">Sevimlilar</div>
+      </div>
+      <div class="profile-stat-box" data-target="mening">
+        <div class="profile-stat-value" id="statMyListings">0</div>
+        <div class="profile-stat-label">E'lonlarim</div>
+      </div>
+      <div class="profile-stat-box">
+        <div class="profile-stat-value" id="statViewed">0</div>
+        <div class="profile-stat-label">Ko'rilgan</div>
+      </div>
+    </div>
+
+    <div class="profile-menu">
+      <button class="profile-menu-item" data-target="sevimli">❤️ Sevimlilar <span>›</span></button>
+      <button class="profile-menu-item" data-target="mening">📋 Mening e'lonlarim <span>›</span></button>
+      <button class="profile-menu-item" id="profileContactAdmin">💬 Admin bilan bog'lanish <span>›</span></button>
+    </div>
+
+    <div class="sv-section-divider"><span>Makler bo'limi</span></div>
+    <div id="svMaklerBox">
+
+      <form id="svRegForm">
+        <p class="sv-reg-intro">Makler bo'lib ishlash uchun ariza qoldiring. Admin tasdiqlagach profilingiz Sotuvchilar bo'limida chiqadi.</p>
+
+        <label class="sv-field-label">Profil rasmi</label>
+        <div class="sv-reg-photo">
+          <div class="sv-reg-photo-preview" id="svRegPhotoPreview">📷</div>
+          <label class="sv-reg-photo-btn">Rasm tanlash
+            <input type="file" id="svRegPhoto" accept="image/*" hidden>
+          </label>
+        </div>
+
+        <label class="sv-field-label">Ism familiya</label>
+        <input class="sv-select" id="svRegName" placeholder="Bahromjon Karimov">
+
+        <label class="sv-field-label">Username (@ orqali topiladi)</label>
+        <input class="sv-select" id="svRegUsername" placeholder="bahromjon_makler">
+
+        <label class="sv-field-label">Yo'nalishingiz</label>
+        <div class="sv-role-choice">
+          <label class="sv-role-opt"><input type="checkbox" id="svRoleSell"> Sotuvchi</label>
+          <label class="sv-role-opt"><input type="checkbox" id="svRoleRent"> Ijarachi</label>
+        </div>
+
+        <label class="sv-field-label">Telefon raqam</label>
+        <input class="sv-select" id="svRegPhone" type="tel" placeholder="+998901234567">
+
+        <button type="submit" class="sv-submit-btn">Ariza yuborish</button>
+      </form>
+
+      <div id="svRegPending" hidden>
+        <div class="sv-pending-box">
+          <div class="sv-pending-icon">⏳</div>
+          <p>Arizangiz ko'rib chiqilmoqda</p>
+          <span>Admin tasdiqlagach profilingiz Sotuvchilar bo'limida paydo bo'ladi.</span>
+        </div>
+      </div>
+
+      <div id="svRegDone" hidden>
+        <div class="sv-my-header">
+          <div class="sv-my-avatar-wrap"><img class="sv-my-avatar" id="svRegDoneAvatar" src=""></div>
+          <div class="sv-my-counts">
+            <div class="sv-my-count"><b id="svMyPosts">0</b><span>post</span></div>
+            <div class="sv-my-count"><b id="svMyFollowers">0</b><span>obunachi</span></div>
+            <div class="sv-my-count"><b id="svMyViews">0</b><span>ko'rish</span></div>
+          </div>
+        </div>
+        <div class="sv-my-bio">
+          <div class="sv-my-bio-name" id="svRegDoneName"></div>
+          <div class="sv-my-bio-user" id="svRegDoneUser"></div>
+          <div class="sv-my-bio-phone" id="svRegDonePhone"></div>
+        </div>
+        <button class="sv-upload-cta" id="svOpenUploadBtn">＋ E'lon qo'shish</button>
+        <div class="sv-section-divider"><span>Havolalar</span></div>
+        <div id="svSocialBox"></div>
+        <div class="sv-section-divider"><span>Mening e'lonlarim</span></div>
+        <div class="sv-explore-grid" id="svMyGrid"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="lang-select-overlay" id="langSelectOverlay" style="display:none !important;">
+  <div class="lang-select-box">
+    <div class="lang-select-icon">🌐</div>
+    <h2>Tilni tanlang / Выберите язык / Choose language</h2>
+    <button class="lang-btn" data-lang="uz">🇺🇿 O'zbekcha</button>
+    <button class="lang-btn" data-lang="ru">🇷🇺 Русский</button>
+    <button class="lang-btn" data-lang="en">🇬🇧 English</button>
+  </div>
+</div>
+
+<div class="app">
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">NI</div>
+      <div class="brand-text">
+        <h1>Namangan <span>Ijara</span></h1>
+        <p>Ishonchli ijara e'lonlari</p>
+      </div>
+    </div>
+    <button class="profile-btn" id="profileBtn">👤</button>
+  </header>
+
+  <div class="sv-stories" id="svStories"></div>
+  <div class="sv-feed" id="svFeed"></div>
+
+  <nav class="type-tabs" id="typeTabs">
+    <button class="type-tab active" data-type="hammasi">Hammasi</button>
+    <button class="type-tab" data-type="sotish">Sotuv</button>
+    <button class="type-tab" data-type="ijara">Ijara</button>
+    <button class="type-tab" data-type="sevimli">❤️ Sevimli</button>
+    <button class="type-tab" data-type="mashhur">📈 Mashhur</button>
+  </nav>
+
+  <button class="map-toggle-btn" id="mapToggleBtn">🗺 Xaritadan qidirish</button>
+  <div id="mapView" class="map-view" hidden></div>
+
+  <div class="search-bar">
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" id="searchInput" placeholder="Uy, tuman yoki kalit so'z...">
+  </div>
+
+  <nav class="tabs" id="tabs">
+    <button class="tab active" data-cat="hammasi">✨ Hammasi</button>
+    <button class="tab" data-cat="kvartira">🏢 Kvartira</button>
+    <button class="tab" data-cat="uy">🏡 Uy</button>
+    <button class="tab" data-cat="ofis">🏬 Ofis</button>
+    <button class="tab" data-cat="dokon">🏪 Do'kon</button>
+  </nav>
+
+  <div class="filter-bar">
+    <button class="filter-chip" id="openFilters">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
+      Filtr
+    </button>
+    <span class="result-count" id="resultCount"></span>
+  </div>
+
+  <main class="listing-grid" id="listingGrid"></main>
+
+  <div class="empty-state" id="emptyState" hidden>
+    <div class="empty-glyph">◱</div>
+    <p>Bu bo'yicha e'lon topilmadi</p>
+    <span>Filtrni o'zgartirib ko'ring</span>
+  </div>
+
+</div>
+
+<!-- Filter Sheet -->
+<div class="sheet-overlay" id="sheetOverlay">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <h2>Filtr</h2>
+
+    <label class="field-label">Narx oralig'i (so'm)</label>
+    <div class="range-row">
+      <input type="number" id="minPrice" placeholder="Dan">
+      <span>—</span>
+      <input type="number" id="maxPrice" placeholder="Gacha">
+    </div>
+
+    <label class="field-label">Tuman</label>
+    <select id="districtSelect">
+      <option value="">Barcha tumanlar</option>
+    </select>
+
+    <div class="sheet-actions">
+      <button class="btn-ghost" id="resetFilters">Tozalash</button>
+      <button class="btn-gold" id="applyFilters">Qo'llash</button>
+    </div>
+  </div>
+</div>
+
+<!-- Detail Sheet -->
+<div class="sheet-overlay" id="detailOverlay">
+  <div class="sheet detail-sheet">
+    <div class="sheet-handle"></div>
+    <div class="gallery" id="gallery"></div>
+    <div class="dots" id="dots"></div>
+
+    <div class="detail-body">
+      <div class="detail-price" id="detailPrice"></div>
+      <h2 id="detailTitle"></h2>
+      <div class="detail-meta" id="detailMeta"></div>
+      <p class="detail-desc" id="detailDesc"></p>
+    </div>
+
+    <button class="btn-gold btn-360" id="panoBtn" hidden>🔄 360° Ko'rish</button>
+    <div class="contact-buttons">
+      <button class="btn-gold btn-contact-half" id="callBtn">📞 Telefon</button>
+      <button class="btn-tg btn-contact-half" id="telegramBtn">✈️ Telegram</button>
+    </div>
+  </div>
+</div>
+
+<div id="panoOverlay" class="pano-overlay" hidden>
+  <button id="panoClose" class="pano-close">✕</button>
+  <div id="panoViewer" style="width:100%;height:100%;"></div>
+</div>
+
+<nav class="sv-bottom-nav" id="svBottomNav">
+  <button class="sv-nav-item active" data-sv-nav="home"><span class="sv-nav-icon">🏠</span>Asosiy</button>
+  <button class="sv-nav-item" data-sv-nav="sellers"><span class="sv-nav-icon">🎖️</span>Sotuvchilar</button>
+  <button class="sv-nav-item" data-sv-nav="search"><span class="sv-nav-icon">🔍</span>Qidiruv</button>
+  <button class="sv-nav-item" data-sv-nav="complaint"><span class="sv-nav-icon">⚠️</span>Shikoyat</button>
+  <button class="sv-nav-item" data-sv-nav="favorites"><span class="sv-nav-icon">❤️</span>Sevimli</button>
+  <button class="sv-nav-item" data-sv-nav="profile"><span class="sv-nav-icon">👤</span>Profil</button>
+</nav>
+
+<div class="sv-view" id="sellersView" hidden>
+  <div class="sv-header">
+    <h1 id="svRankTitle">Sotuvchilar</h1>
+    <button class="sv-close" id="svClose">✕</button>
+  </div>
+  <div class="sv-panel active">
+    <div class="sv-section-head">
+      <div class="sv-section-title">Eng ko'p obunachi</div>
+      <div class="sv-section-note" id="svRankCount"></div>
+    </div>
+    <div id="svRankList"></div>
+  </div>
+</div>
+
+<div class="sv-view" id="svSearchView" hidden>
+  <div class="sv-header">
+    <h1>Qidiruv</h1>
+    <button class="sv-close" id="svSearchClose">✕</button>
+  </div>
+  <div class="sv-panel active">
+    <div class="sv-search-box">
+      <span>🔍</span>
+      <input type="text" id="svSearchInput" placeholder="Sotuvchi nomi bo'yicha qidiring">
+    </div>
+    <div class="sv-explore-grid" id="svSearchGrid"></div>
+  </div>
+</div>
+
+<div class="sv-view" id="svProfileView" hidden>
+  <div class="sv-header">
+    <button class="sv-close" id="svProfileClose">&larr;</button>
+  </div>
+  <div class="sv-panel active">
+    <div class="sv-profile-head">
+      <img class="sv-profile-avatar" id="svPAvatar" src="">
+      <div>
+        <div class="sv-profile-name" id="svPName"></div>
+        <div class="sv-profile-id" id="svPId"></div>
+      </div>
+    </div>
+
+    <div class="sv-ig-stats">
+      <div class="sv-ig-stat"><div class="sv-ig-stat-num" id="svPPosts"></div><div class="sv-ig-stat-label">Postlar</div></div>
+      <div class="sv-ig-stat"><div class="sv-ig-stat-num" id="svPFollowers"></div><div class="sv-ig-stat-label">Obunachilar</div></div>
+      <div class="sv-ig-stat"><div class="sv-ig-stat-num" id="svPFollowing"></div><div class="sv-ig-stat-label">Obunalar</div></div>
+    </div>
+
+    <div class="sv-stat-grid">
+      <div class="sv-stat-cell"><div class="sv-stat-num" id="svPElon"></div><div class="sv-stat-label">E'lonlar</div></div>
+      <div class="sv-stat-cell"><div class="sv-stat-num" id="svPKorish"></div><div class="sv-stat-label">Ko'rishlar</div></div>
+      <div class="sv-stat-cell"><div class="sv-stat-num" id="svPObuna"></div><div class="sv-stat-label">Obunachi</div></div>
+      <div class="sv-stat-cell"><div class="sv-stat-num" id="svPSotuv"></div><div class="sv-stat-label">Sotuvlar</div></div>
+    </div>
+    <div class="sv-cta-row">
+      <button class="sv-cta sv-cta-ghost">Qo'ng'iroq</button>
+      <button class="sv-cta sv-cta-primary">Sotuvchiga yozing</button>
+    </div>
+    <div class="sv-explore-grid" id="svPListings"></div>
+  </div>
+</div>
+
+<div class="sv-view" id="svComplaintView" hidden>
+  <div class="sv-header">
+    <h1>Shikoyat</h1>
+    <button class="sv-close" id="svComplaintClose">✕</button>
+  </div>
+  <div class="sv-panel active">
+    <form id="svComplaintForm">
+      <label class="sv-field-label">Kim ustidan (sotuvchi/ijarachi)</label>
+      <button type="button" class="sv-target-picker" id="svTargetPicker">
+        <span class="sv-target-placeholder" id="svTargetPlaceholder">@ Tanlang</span>
+      </button>
+      <input type="hidden" id="svTargetSellerId">
+
+      <label class="sv-field-label">Shikoyat sababi</label>
+      <select class="sv-select" id="svComplaintReason" required>
+        <option value="">Tanlang...</option>
+        <option value="Soxta e'lon">Soxta e'lon</option>
+        <option value="Firibgarlik / pul talab qilish">Firibgarlik / pul talab qilish</option>
+        <option value="Narx boshqacha ko'rsatilgan">Narx boshqacha ko'rsatilgan</option>
+        <option value="Nomunosib muomala">Nomunosib muomala</option>
+        <option value="Boshqa">Boshqa</option>
+      </select>
+
+      <label class="sv-field-label">Izoh</label>
+      <textarea class="sv-textarea" id="svComplaintText" placeholder="Nima bo'lganini qisqacha yozing..." required></textarea>
+
+      <button type="submit" class="sv-submit-btn">Yuborish</button>
+    </form>
+
+    <div class="sv-complaint-success" id="svComplaintSuccess">
+      <div class="sv-icon">✅</div>
+      <h3>Qabul qilindi</h3>
+      <p>Shikoyatingiz administratorga yuborildi, tez orada ko'rib chiqiladi.</p>
+    </div>
+  </div>
+</div>
+
+<div class="sv-view" id="svPostView" hidden>
+  <div class="sv-header">
+    <button class="sv-close" id="svPostBack">&larr;</button>
+  </div>
+  <div class="sv-panel active">
+    <div class="sv-post-media" id="svPostMedia"></div>
+
+    <div class="sv-post-seller-row" id="svPostSellerRow">
+      <img id="svPostAvatar" src="">
+      <span class="sv-post-seller-name" id="svPostSellerName"></span>
+    </div>
+
+    <div class="sv-post-price" id="svPostPrice"></div>
+
+    <div class="sv-post-actionbar">
+      <button class="sv-post-action" id="svLikeBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+        <span id="svLikeCount">0</span>
+      </button>
+      <button class="sv-post-action" id="svCommentFocusBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <span id="svCommentCount">0</span>
+      </button>
+      <button class="sv-post-action" id="svRepostBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+        <span id="svRepostCount">0</span>
+      </button>
+      <button class="sv-post-action" id="svSaveBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+      </button>
+      <span class="sv-post-views" id="svPostViews"></span>
+    </div>
+
+    <div class="sv-comment-input-row">
+      <input type="text" id="svCommentInput" placeholder="Komentariya yozing...">
+      <button class="sv-comment-send" id="svCommentSendBtn">Yuborish</button>
+    </div>
+
+    <div id="svCommentList"></div>
+  </div>
+</div>
+
+<div class="sv-view" id="svFavView" hidden>
+  <div class="sv-header">
+    <h1>Sevimlilar</h1>
+    <button class="sv-close" id="svFavClose">✕</button>
+  </div>
+  <div class="sv-panel active">
+    <div class="sv-explore-grid" id="svFavGrid"></div>
+    <div class="sv-fav-empty" id="svFavEmpty" hidden>
+      <div class="sv-fav-icon">🔖</div>
+      <p>Hali sevimlilar yo'q</p>
+      <span>Yoqqan e'lonni ochib, 🔖 tugmasini bosing</span>
+    </div>
+  </div>
+</div>
+
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+<script src="script.js"></script>
+<script src="app2.js"></script>
+</body>
+</html>

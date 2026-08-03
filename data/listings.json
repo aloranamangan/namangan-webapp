@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "category": "kvartira",
+    "listing_type": "sotish",
+    "tariff": "oddiy",
+    "title": "Kvartira, Pahlavon mahallasi, 11-dom 11-kvartira",
+    "district": "Pahlavon mahallasi, 11-dom 11-kvartira",
+    "price": 318000000,
+    "rooms": 2,
+    "area": 0,
+    "floor": "-",
+    "description": "🏢 Kvartira e'lon matnini shu tartibda to'ldirib yuboring:\n🏬 Necha qavatda: 4\n🚪 Necha xonali: 2 xonali\n🛠 Holati: Yaxshi holatda\n🔥💧⚡️ Gaz, suv, svet: bor\n✅ Jihozlari qoladi: ha",
+    "phone": "+998901234567",
+    "images": [
+      "images/1_0.jpg",
+      "images/1_1.jpg",
+      "images/1_2.jpg"
+    ],
+    "lat": 39.77707,
+    "lng": 64.416446,
+    "tg_username": "Dikkiylord1717",
+    "tg_user_id": 8111931348,
+    "likes": 1
+  }
+]
