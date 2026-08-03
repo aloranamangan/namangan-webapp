@@ -1037,7 +1037,7 @@ function svEnsureDeleteBtn(){
   done.appendChild(btn);
 }
 
-setInterval(svEnsureDeleteBtn, 1000);
+// setInterval(svEnsureDeleteBtn, 1000);
 
 // ---------- Storieslar va lenta ----------
 function svRenderStories(){
@@ -1783,65 +1783,51 @@ function svIgEditProfile(){
   });
 }
 
-function svIgAutoRender(){
+
+// ============ YAGONA PROFIL BOSHQARUVCHISI ============
+let svProfileRendered = false;
+
+function svProfileController(){
   const box = document.getElementById('svMaklerBox');
-  if(!box || !svMyProfile || !svMyProfile.approved) return;
-  if(box.querySelector('.sv-ig-head')) return;
-  svRenderIgProfile();
+  if(!box) return;
+
+  const form = document.getElementById('svRegForm');
+  const pending = document.getElementById('svRegPending');
+  const done = document.getElementById('svRegDone');
+  const intro = box.querySelector('.sv-reg-intro');
+
+  // 1) Tasdiqlangan makler -> Instagram profil
+  if(svMyProfile && svMyProfile.approved){
+    if(form) form.style.display = 'none';
+    if(pending) pending.style.display = 'none';
+    if(done) done.style.display = 'none';
+    if(intro) intro.style.display = 'none';
+
+    if(!svProfileRendered || !box.querySelector('.sv-ig-head')){
+      try {
+        svRenderIgProfile();
+        svProfileRendered = true;
+      } catch(e){ console.warn('IG profil:', e); }
+    }
+    return;
+  }
+
+  svProfileRendered = false;
+
+  // 2) Ariza yuborilgan, kutilmoqda
+  if(svMyProfile && !svMyProfile.approved){
+    if(form) form.style.display = 'none';
+    if(done) done.style.display = 'none';
+    if(intro) intro.style.display = 'none';
+    if(pending) pending.style.display = '';
+    return;
+  }
+
+  // 3) Hali ariza yo'q -> forma
+  if(form) form.style.display = '';
+  if(pending) pending.style.display = 'none';
+  if(done) done.style.display = 'none';
+  if(intro) intro.style.display = '';
 }
 
-setInterval(svIgAutoRender, 900);
-
-// Instagram profilni majburiy ko'rsatish
-(function svIgForce(){
-  let tries = 0;
-  const t = setInterval(() => {
-    tries++;
-    const box = document.getElementById('svMaklerBox');
-    if(box && svMyProfile && svMyProfile.approved){
-      if(!box.querySelector('.sv-ig-head')){
-        try { svRenderIgProfile(); } catch(e){ console.warn('IG profil xatosi:', e); }
-      }
-    }
-    if(tries > 60) clearInterval(t);
-  }, 700);
-})();
-
-// Vaqtinchalik tekshiruv
-setTimeout(() => {
-  const box = document.getElementById('svMaklerBox');
-  const info = 'box: ' + (box ? 'bor' : 'yoq') +
-               ' | profil: ' + (svMyProfile ? 'bor' : 'yoq') +
-               ' | approved: ' + (svMyProfile ? svMyProfile.approved : '-') +
-               ' | funksiya: ' + (typeof svRenderIgProfile);
-  const d = document.createElement('div');
-  d.style.cssText = 'position:fixed;bottom:70px;left:0;right:0;z-index:99999;background:#c00;color:#fff;padding:10px;font-size:11px;';
-  d.textContent = info;
-  document.body.appendChild(d);
-}, 4000);
-
-// Tasdiqlangan profilda formani yashirish + IG profilni ko'rsatish
-(function svFixProfile(){
-  setInterval(() => {
-    if(!svMyProfile || !svMyProfile.approved) return;
-
-    const form = document.getElementById('svRegForm');
-    const pending = document.getElementById('svRegPending');
-    const intro = document.querySelector('#svMaklerBox .sv-reg-intro');
-    const done = document.getElementById('svRegDone');
-
-    if(form) form.hidden = true;
-    if(pending) pending.hidden = true;
-    if(intro) intro.style.display = 'none';
-    if(done) done.hidden = false;
-  }, 500);
-})();
-
-setTimeout(() => {
-  const d = document.createElement('div');
-  d.style.cssText = 'position:fixed;bottom:64px;left:0;right:0;z-index:999999;background:#c00;color:#fff;padding:9px;font-size:11px;text-align:center;';
-  d.textContent = 'profil:' + (svMyProfile ? 'bor' : 'yoq') +
-                  ' approved:' + (svMyProfile ? String(svMyProfile.approved) : '-') +
-                  ' user:' + (svMyProfile ? svMyProfile.username : '-');
-  document.body.appendChild(d);
-}, 5000);
+setInterval(svProfileController, 600);
