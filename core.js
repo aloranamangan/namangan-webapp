@@ -6,7 +6,35 @@ function tgReady(){
 }
 
 function myId(){
-  try { return TG.initDataUnsafe.user.id; } catch(e){ return null; }
+  try {
+    if(TG && TG.initDataUnsafe && TG.initDataUnsafe.user && TG.initDataUnsafe.user.id){
+      return TG.initDataUnsafe.user.id;
+    }
+  } catch(e){}
+  try {
+    const raw = (TG && TG.initData) ? TG.initData : '';
+    if(raw){
+      const p = new URLSearchParams(raw);
+      const u = p.get('user');
+      if(u){
+        const obj = JSON.parse(decodeURIComponent(u));
+        if(obj && obj.id) return obj.id;
+      }
+    }
+  } catch(e){}
+  try {
+    const h = location.hash || '';
+    const m = h.match(/tgWebAppData=([^&]+)/);
+    if(m){
+      const p2 = new URLSearchParams(decodeURIComponent(m[1]));
+      const u2 = p2.get('user');
+      if(u2){
+        const o2 = JSON.parse(u2);
+        if(o2 && o2.id) return o2.id;
+      }
+    }
+  } catch(e){}
+  return null;
 }
 
 function initData(){
