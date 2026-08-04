@@ -1831,33 +1831,3 @@ function svProfileController(){
 }
 
 setInterval(svProfileController, 600);
-
-// Serverdan holatni majburiy tekshirish
-(function svForceApproved(){
-  let done = false;
-  const t = setInterval(() => {
-    const tgId = svMyTgId();
-    if(!tgId || done) return;
-    fetch(SV_API + '/api/mening-profilim?tg_id=' + tgId)
-      .then(r => r.json())
-      .then(d => {
-        if(d.ok && d.status === 'approved'){
-          if(!svMyProfile){
-            svMyProfile = {
-              id: tgId, name: d.name, username: d.username, phone: d.phone,
-              roles: d.roles || [], avatar: 'https://picsum.photos/seed/' + encodeURIComponent(d.username) + '/200',
-              obuna: d.followers || 0, following: 0, posts: 0, elon: 0, korish: 0, sotuv: 0,
-              verified: false, socials: {}, createdAt: Date.now(), paidUntil: 0, approved: true
-            };
-          } else {
-            svMyProfile.approved = true;
-            svMyProfile.obuna = d.followers || 0;
-          }
-          try { svPersistMyProfile(); } catch(e){}
-          done = true;
-          clearInterval(t);
-        }
-      }).catch(()=>{});
-  }, 1500);
-  setTimeout(() => clearInterval(t), 30000);
-})();
