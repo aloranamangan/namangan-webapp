@@ -24,11 +24,19 @@ let picked = [];
 const MAX_MEDIA = 10;
 
 function boot(){
-  if(!myId()){
-    el('root').innerHTML = '<div class="empty"><div class="ic">&#128241;</div>' +
-      '<p>Telegram kerak</p><span>Bu bolim faqat Telegram ilovasi ichida ishlaydi.</span></div>';
-    return;
-  }
+  let tries = 0;
+  const wait = setInterval(function(){
+    tries++;
+    if(myId()){ clearInterval(wait); start(); return; }
+    if(tries > 12){
+      clearInterval(wait);
+      el('root').innerHTML = '<div class="empty"><div class="ic">&#128241;</div>' +
+        '<p>Telegram kerak</p><span>Ilovani qayta oching yoki Telegramni yangilang.</span></div>';
+    }
+  }, 400);
+}
+
+function start(){
   checkUser(function(u){
     if(needReg()){
       showReg('makler', loadProfile);
