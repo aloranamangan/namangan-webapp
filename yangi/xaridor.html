@@ -272,20 +272,6 @@ function bindPosts(box){
     art.querySelector('.post-head').addEventListener('click', function(){ openSeller(p.username); });
   });
 
-  if(window.IntersectionObserver){
-    const seen = {};
-    const vio = new IntersectionObserver(function(en){
-      en.forEach(function(e){
-        if(!e.isIntersecting) return;
-        const id = parseInt(e.target.dataset.id);
-        if(!id || seen[id]) return;
-        seen[id] = true;
-        apiPost('/api/korish', { post_id: id }).catch(function(){});
-      });
-    }, { threshold: 0.5 });
-    box.querySelectorAll('.post').forEach(function(a){ vio.observe(a); });
-  }
-
   const vids = box.querySelectorAll('video');
   if(vids.length && window.IntersectionObserver){
     const io = new IntersectionObserver(function(en){

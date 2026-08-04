@@ -24,19 +24,11 @@ let picked = [];
 const MAX_MEDIA = 10;
 
 function boot(){
-  let tries = 0;
-  const wait = setInterval(function(){
-    tries++;
-    if(myId()){ clearInterval(wait); start(); return; }
-    if(tries > 12){
-      clearInterval(wait);
-      el('root').innerHTML = '<div class="empty"><div class="ic">&#128241;</div>' +
-        '<p>Telegram kerak</p><span>Ilovani qayta oching yoki Telegramni yangilang.</span></div>';
-    }
-  }, 400);
-}
-
-function start(){
+  if(!myId()){
+    el('root').innerHTML = '<div class="empty"><div class="ic">&#128241;</div>' +
+      '<p>Telegram kerak</p><span>Bu bolim faqat Telegram ilovasi ichida ishlaydi.</span></div>';
+    return;
+  }
   checkUser(function(u){
     if(needReg()){
       showReg('makler', loadProfile);
@@ -153,13 +145,10 @@ function renderCabinet(){
       '<button id="shareBtn">Ulashish</button>' +
     '</div>' +
 
-    '<div class="stat-card" id="statCard">' +
-      '<div class="stat-sub">Yuklanmoqda...</div></div>' +
     '<div class="grid" id="grid"></div>' +
     '<div class="wrap"><button class="btn danger" id="delBtn">Kabinetni ochirish</button></div>';
 
   drawGrid();
-  loadStats();
   el('addBtn').addEventListener('click', openUpload);
   el('newBtn').addEventListener('click', openUpload);
   el('shareBtn').addEventListener('click', shareMe);
@@ -318,44 +307,6 @@ function showSheet(){
       });
     });
   }
-}
-
-
-function loadStats(){
-  api('/api/statistika?username=' + encodeURIComponent(ME.username))
-    .then(function(d){ drawStats(d.ok ? d : { days: [], total: 0 }); })
-    .catch(function(){ drawStats({ days: [], total: 0 }); });
-}
-
-function drawStats(d){
-  const box = el('statCard');
-  if(!box) return;
-
-  const map = {};
-  (d.days || []).forEach(function(r){ map[r.date] = r.count; });
-
-  const days = [];
-  const now = new Date();
-  for(let i = 29; i >= 0; i--){
-    const dt = new Date(now.getTime() - i * 86400000);
-    const key = dt.toISOString().slice(0, 10);
-    days.push({ key: key, n: map[key] || 0 });
-  }
-
-  const max = Math.max(1, Math.max.apply(null, days.map(function(x){ return x.n; })));
-  const bars = days.map(function(x){
-    const hp = Math.round(x.n / max * 100);
-    return '<div class="bar" style="height:' + Math.max(3, hp) + '%" title="' + x.key + ': ' + x.n + '"></div>';
-  }).join('');
-
-  const first = days[0].key.slice(5).replace('-', '.');
-  const last = days[29].key.slice(5).replace('-', '.');
-
-  box.innerHTML =
-    '<div class="stat-head"><b>' + fmt(d.total || 0) + '</b><span>oxirgi 30 kun</span></div>' +
-    '<div class="stat-sub">Korishlar</div>' +
-    '<div class="chart">' + bars + '</div>' +
-    '<div class="chart-x"><span>' + first + '</span><span>' + last + '</span></div>';
 }
 
 document.addEventListener('DOMContentLoaded', boot);
