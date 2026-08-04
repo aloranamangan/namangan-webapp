@@ -448,13 +448,5 @@
   <div class="sv-panel active" id="svMyPageBody"></div>
 </div>
 
-<script>
-window.addEventListener('error', function(e){
-  var d = document.createElement('div');
-  d.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:2147483647;background:#c00;color:#fff;padding:10px;font-size:11px;font-family:monospace;';
-  d.textContent = 'XATO: ' + e.message + ' @ ' + (e.filename||'').split('/').pop() + ':' + e.lineno;
-  document.body.appendChild(d);
-});
-</script>
 </body>
 </html>
