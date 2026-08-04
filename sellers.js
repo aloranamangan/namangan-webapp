@@ -1819,20 +1819,3 @@ setTimeout(() => {
   d.textContent = info;
   document.body.appendChild(d);
 }, 4000);
-
-// Tasdiqlangan profilda formani yashirish + IG profilni ko'rsatish
-(function svFixProfile(){
-  setInterval(() => {
-    if(!svMyProfile || !svMyProfile.approved) return;
-
-    const form = document.getElementById('svRegForm');
-    const pending = document.getElementById('svRegPending');
-    const intro = document.querySelector('#svMaklerBox .sv-reg-intro');
-    const done = document.getElementById('svRegDone');
-
-    if(form) form.hidden = true;
-    if(pending) pending.hidden = true;
-    if(intro) intro.style.display = 'none';
-    if(done) done.hidden = false;
-  }, 500);
-})();
