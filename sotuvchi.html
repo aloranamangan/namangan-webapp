@@ -345,15 +345,14 @@ function drawStats(d){
   const max = Math.max(1, Math.max.apply(null, days.map(function(x){ return x.n; })));
   const bars = days.map(function(x){
     const hp = Math.round(x.n / max * 100);
-    return '<div class="bar" style="height:' + Math.max(3, hp) + '%" title="' + x.key + ': ' + x.n + '"></div>';
+    return '<div class="bar" style="height:' + Math.max(3, hp) + '%"></div>';
   }).join('');
 
   const first = days[0].key.slice(5).replace('-', '.');
   const last = days[29].key.slice(5).replace('-', '.');
 
   box.className = 'stat-mini';
-  box.innerHTML =
-    '<b>Professional panel</b>' +
+  box.innerHTML = '<b>Professional panel</b>' +
     '<span>' + fmt(d.total || 0) + ' korish oxirgi 30 kunda</span>';
 
   box.onclick = function(){ showFullStats(d, bars, first, last); };
