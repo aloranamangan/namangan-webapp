@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Sotuvchi kabineti</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+
+<header class="topbar">
+  <h1>Sotuvchi <span class="gold">kabineti</span></h1>
+</header>
+
+<div id="root"><div class="load">Yuklanmoqda...</div></div>
+
+<script src="core.js"></script>
+<script src="reg.js"></script>
+<script>
+let ME = null;
+let POSTS = [];
+let picked = [];
+const MAX_MEDIA = 10;
+
+function boot(){
+  if(!myId()){
+    el('root').innerHTML = '<div class="empty"><div class="ic">&#128241;</div>' +
+      '<p>Telegram kerak</p><span>Bu bolim faqat Telegram ilovasi ichida ishlaydi.</span></div>';
+    return;
+  }
+  checkUser(function(u){
+    if(needReg()){
+      showReg('makler', loadProfile);
+      return;
+    }
+    loadProfile();
+  });
+}
+
+function loadProfile(){
+  el('root').innerHTML = '<div class="load">Yuklanmoqda...</div>';
+  api('/api/mening-profilim?tg_id=' + myId())
+    .then(function(d){
+      ME = d.ok ? d : null;
+      return api('/api/postlar' + (ME ? '?username=' + encodeURIComponent(ME.username) : ''));
+    })
+    .then(function(p){
+      POSTS = (p && p.ok) ? p.posts : [];
+      render();
+    })
+    .catch(function(){ ME = null; POSTS = []; render(); });
+}
+
+function render(){
+  if(!ME){ renderForm(); return; }
+  if(ME.status !== 'approved'){ renderPending(); return; }
+  renderCabinet();
+}
+
+function renderPending(){
+  el('root').innerHTML = '<div class="empty"><div class="ic">&#9203;</div>' +
+    '<p>Arizangiz korib chiqilmoqda</p>' +
+    '<span>Admin tasdiqlagach kabinetingiz ochiladi.</span></div>';
+}
+
+function renderForm(){
+  el('root').innerHTML =
+    '<div class="wrap">' +
+      '<div class="empty" style="padding:10px 0 22px;">' +
+        '<div class="ic">&#127968;</div><p>Makler bolib ishlang</p>' +
+        '<span>Ariza qoldiring &mdash; admin tasdiqlagach<br>elon joylay boshlaysiz.</span>' +
+      '</div>' +
+      '<label class="label">Ism familiya</label>' +
+      '<input class="inp" id="fName" placeholder="Bahromjon Karimov">' +
+      '<label class="label">Username</label>' +
+      '<input class="inp" id="fUser" placeholder="bahromjon_makler">' +
+      '<label class="label">Yonalishingiz</label>' +
+      '<div class="checks">' +
+        '<label class="check"><input type="checkbox" id="cSell"> Sotuvchi</label>' +
+        '<label class="check"><input type="checkbox" id="cRent"> Ijarachi</label>' +
+      '</div>' +
+      '<button class="btn" id="sendBtn">Ariza yuborish</button>' +
+    '</div>';
+
+  el('sendBtn').addEventListener('click', function(){
+    const name = el('fName').value.trim();
+    const user = el('fUser').value.trim().replace(/^@/, '');
+    const roles = [];
+    if(el('cSell').checked) roles.push('sotuvchi');
+    if(el('cRent').checked) roles.push('ijarachi');
+
+    if(name.length < 3){ toast('Ismni toliq kiriting'); return; }
+    if(!/^[a-zA-Z0-9_]{3,32}$/.test(user)){ toast('Username: lotin harflari, raqam, _'); return; }
+    if(!roles.length){ toast('Yonalish tanlang'); return; }
+
+    const b = el('sendBtn');
+    b.disabled = true;
+    b.textContent = 'Yuborilmoqda...';
+
+    apiPost('/api/makler-ariza', {
+      name: name, username: user, phone: USER.phone, roles: roles
+    }).then(function(d){
+      if(d.ok){
+        haptic('medium');
+        ME = { username: user, name: name, phone: USER.phone, roles: roles, status: 'pending', followers: 0 };
+        render();
+      } else {
+        toast('Xato: ' + (d.error || 'server'));
+        b.disabled = false;
+        b.textContent = 'Ariza yuborish';
+      }
+    }).catch(function(){
+      toast('Server bilan boglanishda xato');
+      b.disabled = false;
+      b.textContent = 'Ariza yuborish';
+    });
+  });
+}
+
+function renderCabinet(){
+  const ava = 'https://api.dicebear.com/7.x/initials/svg?seed=' + encodeURIComponent(ME.name);
+  const roles = (ME.roles || []).map(function(r){
+    return r === 'sotuvchi' ? '<span class="role s">Sotuvchi</span>'
+                            : '<span class="role i">Ijarachi</span>';
+  }).join('');
+  const views = POSTS.reduce(function(a, p){ return a + (p.views || 0); }, 0);
+
+  el('root').innerHTML =
+    '<div class="pro-top">' +
+      '<div class="pro-ava-wrap"><img class="pro-ava" src="' + ava + '">' +
+      '<button class="pro-add" id="addBtn">+</button></div>' +
+      '<div class="pro-stats">' +
+        '<div class="pro-stat"><b>' + POSTS.length + '</b><span>elon</span></div>' +
+        '<div class="pro-stat"><b>' + fmt(ME.followers) + '</b><span>obunachi</span></div>' +
+        '<div class="pro-stat"><b>' + fmt(views) + '</b><span>korish</span></div>' +
+      '</div></div>' +
+
+    '<div class="pro-bio"><b>' + esc(ME.name) + '</b>' +
+      '<div class="roles">' + roles + '</div>' +
+      '<div class="ph">@' + esc(ME.username) + ' &middot; ' + esc(ME.phone) + '</div></div>' +
+
+    '<div class="pro-btns">' +
+      '<button id="newBtn">&#65291; Elon qoshish</button>' +
+      '<button id="shareBtn">Ulashish</button>' +
+    '</div>' +
+
+    '<div class="grid" id="grid"></div>' +
+    '<div class="wrap"><button class="btn danger" id="delBtn">Kabinetni ochirish</button></div>';
+
+  drawGrid();
+  el('addBtn').addEventListener('click', openUpload);
+  el('newBtn').addEventListener('click', openUpload);
+  el('shareBtn').addEventListener('click', shareMe);
+  el('delBtn').addEventListener('click', deleteMe);
+}
+
+function drawGrid(){
+  const g = el('grid');
+  if(!POSTS.length){
+    g.innerHTML = '<div class="empty" style="grid-column:1/-1;">' +
+      '<div class="ic">&#128247;</div><p>Hali elon yoq</p>' +
+      '<span>&#65291; tugmasi bilan birinchi eloningizni joylang</span></div>';
+    return;
+  }
+  g.innerHTML = POSTS.map(function(p){
+    const m = (p.media && p.media.length) ? p.media : [{ file_id: p.file_id, is_video: p.is_video }];
+    const f = m[0] || {};
+    const url = f.file_id ? mediaUrl(f.file_id) : '';
+    const inner = f.is_video
+      ? '<video src="' + url + '" muted preload="metadata"></video>'
+      : '<img src="' + url + '" loading="lazy">';
+    const multi = m.length > 1
+      ? '<svg class="multi" viewBox="0 0 24 24" fill="#fff"><rect x="7" y="3" width="14" height="14" rx="2"/><rect x="3" y="7" width="14" height="14" rx="2" opacity=".85"/></svg>'
+      : '';
+    return '<div class="cell">' + inner + multi + '</div>';
+  }).join('');
+}
+
+function shareMe(){
+  const txt = ME.name + ' - Namangan Ijara\n@' + ME.username;
+  const url = 'https://t.me/share/url?url=' + encodeURIComponent('https://t.me/Ijaraga_uybot') +
+              '&text=' + encodeURIComponent(txt);
+  if(TG && TG.openTelegramLink) TG.openTelegramLink(url);
+  else window.open(url, '_blank');
+}
+
+function deleteMe(){
+  if(!confirm('Kabinetingizni butunlay ochirasizmi?')) return;
+  apiPost('/api/makler-ochirish', { username: ME.username })
+    .then(function(d){
+      if(d.ok){ toast('Ochirildi'); ME = null; POSTS = []; render(); }
+      else toast('Xato yuz berdi');
+    })
+    .catch(function(){ toast('Server xatosi'); });
+}
+
+function openUpload(){
+  pickFiles(true, function(items){
+    if(!items.length){ toast('Fayl tanlanmadi'); return; }
+    picked = items.slice(0, MAX_MEDIA);
+    showSheet();
+  });
+}
+
+function showSheet(){
+  let type = 'sotuv';
+  const bg = document.createElement('div');
+  bg.className = 'sheet-bg';
+  bg.innerHTML = '<div class="sheet" id="uSheet"><div class="sheet-bar"></div>' +
+    '<div class="wrap" style="padding-top:4px;">' +
+      '<div class="count" id="cnt"></div>' +
+      '<div class="strip" id="strip"></div>' +
+      '<div class="seg" style="margin-top:16px;">' +
+        '<button class="on" data-t="sotuv">Sotiladi</button>' +
+        '<button data-t="ijara">Ijaraga beriladi</button>' +
+      '</div>' +
+      '<label class="label">Sarlavha</label>' +
+      '<input class="inp" id="uTitle" placeholder="Kvartira, Pahlavon mahallasi">' +
+      '<label class="label">Narx</label>' +
+      '<input class="inp" id="uPrice" placeholder="85 000 000 som">' +
+      '<label class="label">Malumot</label>' +
+      '<textarea class="txt" id="uDesc" placeholder="Manzil, xonalar soni, qavat..."></textarea>' +
+      '<button class="btn" id="uSend">Joylash</button>' +
+      '<button class="btn ghost" id="uCancel" style="margin-top:9px;">Bekor qilish</button>' +
+    '</div></div>';
+
+  document.body.appendChild(bg);
+  bg.addEventListener('click', function(e){ if(e.target === bg) close(); });
+  el('uSheet').addEventListener('click', function(e){ e.stopPropagation(); });
+
+  drawStrip();
+
+  bg.querySelectorAll('.seg button').forEach(function(b){
+    b.addEventListener('click', function(){
+      bg.querySelectorAll('.seg button').forEach(function(x){ x.classList.remove('on'); });
+      b.classList.add('on');
+      type = b.dataset.t;
+    });
+  });
+
+  el('uCancel').addEventListener('click', close);
+
+  el('uSend').addEventListener('click', function(){
+    const title = el('uTitle').value.trim();
+    const price = el('uPrice').value.trim();
+    const desc = el('uDesc').value.trim();
+
+    if(!picked.length){ toast('Rasm tanlang'); return; }
+    if(!title){ toast('Sarlavhani kiriting'); return; }
+    if(!price){ toast('Narxni kiriting'); return; }
+
+    const b = el('uSend');
+    b.disabled = true;
+    b.textContent = 'Yuklanmoqda...';
+
+    const head = type === 'sotuv' ? 'Sotiladi' : 'Ijaraga beriladi';
+    const full = head + '\n' + title + (desc ? '\n' + desc : '');
+
+    apiPost('/api/post-qoshish', { items: picked, price: price, description: full })
+      .then(function(d){
+        if(d.ok){
+          haptic('medium');
+          toast('Elon joylandi');
+          picked = [];
+          close();
+          setTimeout(loadProfile, 1500);
+        } else {
+          toast('Xato: ' + (d.error || 'server'));
+          b.disabled = false;
+          b.textContent = 'Joylash';
+        }
+      })
+      .catch(function(){
+        toast('Server bilan boglanishda xato');
+        b.disabled = false;
+        b.textContent = 'Joylash';
+      });
+  });
+
+  function close(){ picked = []; bg.remove(); }
+
+  function drawStrip(){
+    const s = el('strip');
+    if(!s) return;
+    s.innerHTML = picked.map(function(it, i){
+      const inner = it.is_video
+        ? '<video src="' + it.media + '" muted></video>'
+        : '<img src="' + it.media + '">';
+      return '<div class="thumb">' + inner + '<button data-i="' + i + '">&times;</button></div>';
+    }).join('') + (picked.length < MAX_MEDIA ? '<button class="add-more" id="addMore">&#65291;</button>' : '');
+
+    el('cnt').textContent = picked.length + ' / ' + MAX_MEDIA;
+
+    s.querySelectorAll('.thumb button').forEach(function(b){
+      b.addEventListener('click', function(){
+        picked.splice(parseInt(b.dataset.i), 1);
+        drawStrip();
+      });
+    });
+
+    const am = el('addMore');
+    if(am) am.addEventListener('click', function(){
+      pickFiles(true, function(items){
+        picked = picked.concat(items).slice(0, MAX_MEDIA);
+        drawStrip();
+      });
+    });
+  }
+}
+
+document.addEventListener('DOMContentLoaded', boot);
+</script>
+</body>
+</html>
