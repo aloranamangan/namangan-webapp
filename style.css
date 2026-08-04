@@ -208,3 +208,8 @@ body{
 .chart{display:flex;align-items:flex-end;gap:3px;height:88px;}
 .bar{flex:1;background:linear-gradient(180deg,var(--blue),#0066b3);border-radius:3px 3px 0 0;min-height:3px;transition:height .3s;}
 .chart-x{display:flex;justify-content:space-between;margin-top:8px;font-size:10px;color:var(--muted);}
+
+/* Ixcham statistika paneli (Instagram uslubi) */
+.stat-mini{margin:0 16px 14px;background:#1a1a1a;border-radius:12px;padding:14px 16px;cursor:pointer;}
+.stat-mini b{display:block;font-size:14px;font-weight:800;margin-bottom:3px;}
+.stat-mini span{font-size:12.5px;color:var(--muted);}

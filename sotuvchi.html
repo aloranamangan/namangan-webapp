@@ -351,11 +351,35 @@ function drawStats(d){
   const first = days[0].key.slice(5).replace('-', '.');
   const last = days[29].key.slice(5).replace('-', '.');
 
+  box.className = 'stat-mini';
   box.innerHTML =
-    '<div class="stat-head"><b>' + fmt(d.total || 0) + '</b><span>oxirgi 30 kun</span></div>' +
-    '<div class="stat-sub">Korishlar</div>' +
-    '<div class="chart">' + bars + '</div>' +
-    '<div class="chart-x"><span>' + first + '</span><span>' + last + '</span></div>';
+    '<b>Professional panel</b>' +
+    '<span>' + fmt(d.total || 0) + ' korish oxirgi 30 kunda</span>';
+
+  box.onclick = function(){ showFullStats(d, bars, first, last); };
+}
+
+function showFullStats(d, bars, first, last){
+  const bg = document.createElement('div');
+  bg.className = 'sheet-bg';
+  bg.innerHTML = '<div class="sheet" id="stSheet"><div class="sheet-bar"></div>' +
+    '<div class="sheet-title">Statistika</div>' +
+    '<div class="wrap">' +
+      '<div class="stat-card" style="margin:0 0 14px;">' +
+        '<div class="stat-head"><b>' + fmt(d.total || 0) + '</b><span>oxirgi 30 kun</span></div>' +
+        '<div class="stat-sub">Korishlar</div>' +
+        '<div class="chart">' + bars + '</div>' +
+        '<div class="chart-x"><span>' + first + '</span><span>' + last + '</span></div>' +
+      '</div>' +
+      '<div class="stat-card" style="margin:0;">' +
+        '<div class="stat-head"><b>' + POSTS.length + '</b><span>jami</span></div>' +
+        '<div class="stat-sub">Elonlar</div>' +
+      '</div>' +
+    '</div></div>';
+
+  document.body.appendChild(bg);
+  bg.addEventListener('click', function(e){ if(e.target === bg) bg.remove(); });
+  el('stSheet').addEventListener('click', function(e){ e.stopPropagation(); });
 }
 
 document.addEventListener('DOMContentLoaded', boot);
