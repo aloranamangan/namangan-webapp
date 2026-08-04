@@ -1836,12 +1836,3 @@ setTimeout(() => {
     if(done) done.hidden = false;
   }, 500);
 })();
-
-setTimeout(() => {
-  const d = document.createElement('div');
-  d.style.cssText = 'position:fixed;bottom:64px;left:0;right:0;z-index:999999;background:#c00;color:#fff;padding:9px;font-size:11px;text-align:center;';
-  d.textContent = 'profil:' + (svMyProfile ? 'bor' : 'yoq') +
-                  ' approved:' + (svMyProfile ? String(svMyProfile.approved) : '-') +
-                  ' user:' + (svMyProfile ? svMyProfile.username : '-');
-  document.body.appendChild(d);
-}, 5000);
