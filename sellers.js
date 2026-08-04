@@ -2068,16 +2068,9 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.sv-nav-item').forEach(btn => {
     if(btn.dataset.svNav !== 'mypage') return;
     btn.addEventListener('click', () => {
-      setTimeout(() => {
-        svCloseAllViews();
-        const pv = document.getElementById('profileView');
-        if(pv) pv.hidden = true;
-        document.querySelectorAll('.profile-view,.sv-view').forEach(el => {
-          if(el.id !== 'svMyPageView') el.hidden = true;
-        });
-        const v = document.getElementById('svMyPageView');
-        if(v){ v.hidden = false; mpLoad(); }
-      }, 60);
+      svCloseAllViews();
+      const v = document.getElementById('svMyPageView');
+      if(v){ v.hidden = false; mpLoad(); }
     });
   });
   const c = document.getElementById('svMyPageClose');
