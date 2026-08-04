@@ -438,6 +438,14 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+<script>
+window.onerror = function(m, s, l){
+  var d = document.createElement('div');
+  d.style.cssText='position:fixed;top:0;left:0;right:0;z-index:2147483647;background:#c00;color:#fff;padding:9px;font-size:11px;font-family:monospace';
+  d.textContent = 'XATO: ' + m + ' | ' + String(s).split('/').pop() + ':' + l;
+  document.body.appendChild(d);
+};
+</script>
 <script src="script.js"></script>
 <script src="sellers.js"></script>
 </body>
