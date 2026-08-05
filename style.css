@@ -213,3 +213,20 @@ body{
 .stat-mini{margin:0 16px 14px;background:#1a1a1a;border-radius:12px;padding:14px 16px;cursor:pointer;}
 .stat-mini b{display:block;font-size:14px;font-weight:800;margin-bottom:3px;}
 .stat-mini span{font-size:12.5px;color:var(--muted);}
+
+/* ---------- Bildirishnomalar ---------- */
+.bell{position:relative;width:34px;height:34px;border:none;background:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.bell svg{width:25px;height:25px;stroke:currentColor;fill:none;stroke-width:1.9;}
+.bell .dot-n{
+  position:absolute;top:-2px;right:-4px;min-width:17px;height:17px;
+  border-radius:9px;background:#ED4956;color:#fff;font-size:10px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;padding:0 4px;
+  border:2px solid #000;
+}
+.nf{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid #1a1a1a;}
+.nf img{width:42px;height:42px;border-radius:50%;object-fit:cover;flex-shrink:0;}
+.nf-txt{flex:1;font-size:13.5px;line-height:1.45;}
+.nf-txt b{font-weight:700;}
+.nf-txt span{color:var(--muted);}
+.nf-ic{font-size:18px;flex-shrink:0;}
+.nf.new{background:rgba(0,149,246,.07);}
