@@ -61,8 +61,8 @@ function openChats(){
     box.style.display = 'flex';
     box.innerHTML = onl.map(function(c){
       return '<button class="dm-note" data-u="' + c.user_id + '" data-n="' + esc(c.name) + '">' +
-        '<div class="dm-note-ava"><img src="https://api.dicebear.com/7.x/initials/svg?seed=' +
-        encodeURIComponent(c.name) + '"><span class="onl"></span></div>' +
+        '<div class="dm-note-ava"><img src="' + (c.avatar ? mediaUrl(c.avatar) : 'https://api.dicebear.com/7.x/initials/svg?seed=' +
+        encodeURIComponent(c.name)) + '"><span class="onl"></span></div>' +
         '<span>' + esc(c.name) + '</span></button>';
     }).join('');
     box.querySelectorAll('.dm-note').forEach(function(b){
@@ -113,8 +113,8 @@ function openChats(){
       const onl = c.online ? '<span class="onl"></span>' : '';
       const sub = c.online ? 'Hozir onlayn' : esc(c.last);
       return '<div class="chat-row' + (c.seen ? '' : ' unread') + '" data-u="' + c.user_id + '" data-n="' + esc(c.name) + '">' +
-        '<div class="chat-ava"><img src="https://api.dicebear.com/7.x/initials/svg?seed=' +
-          encodeURIComponent(c.name) + '">' + onl + '</div>' +
+        '<div class="chat-ava"><img src="' + (c.avatar ? mediaUrl(c.avatar) : 'https://api.dicebear.com/7.x/initials/svg?seed=' +
+          encodeURIComponent(c.name)) + '">' + onl + '</div>' +
         '<div class="ci"><b>' + esc(c.name) + '</b><span>' + sub + '</span></div>' +
         (c.seen ? '' : '<div class="nd"></div>') + '</div>';
     }).join('');
