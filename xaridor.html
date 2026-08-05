@@ -143,6 +143,7 @@ function sellerOf(u){
 
 function avaOf(u){
   const s = sellerOf(u);
+  if(s && s.avatar) return mediaUrl(s.avatar);
   return 'https://api.dicebear.com/7.x/initials/svg?seed=' + encodeURIComponent(s ? s.name : u);
 }
 

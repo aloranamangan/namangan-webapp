@@ -155,7 +155,9 @@ function renderForm(){
 }
 
 function renderCabinet(){
-  const ava = 'https://api.dicebear.com/7.x/initials/svg?seed=' + encodeURIComponent(ME.name);
+  const ava = ME.avatar
+    ? mediaUrl(ME.avatar)
+    : 'https://api.dicebear.com/7.x/initials/svg?seed=' + encodeURIComponent(ME.name);
   const roles = (ME.roles || []).map(function(r){
     return r === 'sotuvchi' ? '<span class="role s">Sotuvchi</span>'
                             : '<span class="role i">Ijarachi</span>';
@@ -197,6 +199,12 @@ function renderCabinet(){
   el('newBtn').addEventListener('click', openUpload);
   el('shareBtn').addEventListener('click', shareMe);
   el('storyBtn').addEventListener('click', addStory);
+
+  const av = document.querySelector('.pro-ava');
+  if(av){
+    av.style.cursor = 'pointer';
+    av.addEventListener('click', changeAvatar);
+  }
   drawMyStories();
   drawHighlights();
   el('delBtn').addEventListener('click', deleteMe);
@@ -627,6 +635,26 @@ function addHighlight(){
       });
     });
   }).catch(function(){ toast('Xato'); });
+}
+
+
+function changeAvatar(){
+  pickFiles(false, function(items){
+    if(!items.length) return;
+    const it = items[0];
+    if(it.is_video){ toast('Faqat rasm tanlang'); return; }
+    toast('Yuklanmoqda...');
+    apiPost('/api/avatar', { media: it.media })
+      .then(function(d){
+        if(d.ok){
+          haptic('medium');
+          ME.avatar = d.file_id;
+          toast('Profil rasmi yangilandi');
+          renderCabinet();
+        } else toast('Xato yuz berdi');
+      })
+      .catch(function(){ toast('Server xatosi'); });
+  });
 }
 
 document.addEventListener('DOMContentLoaded', boot);
