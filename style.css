@@ -416,3 +416,17 @@ body{
   background:rgba(237,73,86,.12);border:1px solid rgba(237,73,86,.4);
   color:#ED4956;font-size:14px;font-weight:700;
 }
+
+/* Sheet menyu — chiroyli */
+.sheet-item{
+  display:flex;align-items:center;gap:12px;
+  padding:16px 22px !important;font-size:15px !important;font-weight:600 !important;
+  border-bottom:1px solid #1c1c1c !important;transition:background .15s;
+}
+.sheet-item:active{background:#1a1a1a;}
+.sheet-title{
+  font-size:15px !important;font-weight:800 !important;
+  padding:6px 20px 16px !important;letter-spacing:-.2px;
+}
+.sheet{background:#131313 !important;border-radius:20px 20px 0 0 !important;}
+.sheet-bar{background:#333 !important;width:42px !important;}

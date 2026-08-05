@@ -132,10 +132,8 @@ function openUserMenu(u){
     '<div class="sheet-bar"></div>' +
     '<div class="sheet-title">' + esc(nm) + '</div>' +
     '<button class="sheet-item" data-a="edit">&#9999;&#65039; Tahrirlash</button>' +
-    (u.username
-      ? '<button class="sheet-item" data-a="' + (u.verified ? 'unverify' : 'verify') + '">' +
-        (u.verified ? '&#10060; Galichkani olish' : '&#9989; Galichka berish') + '</button>'
-      : '') +
+    '<button class="sheet-item" data-a="' + (u.verified ? 'unverify' : 'verify') + '">' +
+      (u.verified ? '&#10060; Galichkani olish' : '&#9989; Galichka berish') + '</button>' +
     '<button class="sheet-item" data-a="' + (u.paused ? 'unpause' : 'pause') + '">' +
       (u.paused ? '&#9654;&#65039; Ishga tushirish' : '&#9208;&#65039; Vaqtincha toxtatish') + '</button>' +
     '<button class="sheet-item" data-a="' + (u.blocked ? 'unblock' : 'block') + '">' +
