@@ -98,6 +98,19 @@ function openStory(group, startIdx){
       if(e.clientX < w * 0.3) prev(); else next();
     });
 
+    // Tepaga surish -> ko'rganlar
+    let ty = null;
+    v.addEventListener('touchstart', function(e){ ty = e.touches[0].clientY; }, { passive: true });
+    v.addEventListener('touchend', function(e){
+      if(ty === null) return;
+      const dy = e.changedTouches[0].clientY - ty;
+      ty = null;
+      if(dy < -80){
+        clearInterval(timer);
+        showViewers(it.id);
+      }
+    }, { passive: true });
+
     // Progress
     const bar = v.querySelectorAll('.sv-bar')[idx];
     const fill = bar ? bar.querySelector('i') : null;
