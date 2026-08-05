@@ -458,8 +458,14 @@ function drawSellers(){
   });
 }
 
+const OWNER = 'bahromjon';
+
 function toggleFollow(u){
   if(!myId()){ toast('Telegram ilovasida oching'); return; }
+  if(u === OWNER && SUBS[u]){
+    toast('Bu kanaldan chiqib bolmaydi');
+    return;
+  }
   const on = !!SUBS[u];
   apiPost('/api/obuna', { action: on ? 'unfollow' : 'follow', username: u })
     .then(function(d){
