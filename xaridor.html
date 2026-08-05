@@ -371,6 +371,12 @@ function openComments(p){
     draw();
     apiPost('/api/koment', { post_id: p.id, text: t }).catch(function(){});
     haptic('light');
+
+    const art = document.querySelector('.post[data-id="' + p.id + '"]');
+    if(art){
+      const sp = art.querySelector('.cm span');
+      if(sp) sp.textContent = fmt(p.comments.length);
+    }
   }
 
   function draw(){
