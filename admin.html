@@ -82,12 +82,90 @@ function draw(list){
     if(u.instagram) links.push('<a href="https://instagram.com/' + esc(u.instagram.replace(/^@/,'')) + '" target="_blank">IG</a>');
     links.push('<a href="tg://user?id=' + u.tg_id + '">TG</a>');
 
-    return '<div class="au">' +
+    const bl = u.blocked ? '<span class="rb" style="background:rgba(237,73,86,.16);color:#ED4956;">Bloklangan</span>' : '';
+    const ps = u.paused ? '<span class="rb pd">Toxtatilgan</span>' : '';
+
+    return '<div class="au" data-id="' + u.tg_id + '">' +
       '<img src="https://api.dicebear.com/7.x/initials/svg?seed=' + encodeURIComponent(nm) + '">' +
       '<div class="ai"><b>' + esc(nm) + '</b>' +
       '<div class="ln">' + links.join(' &middot; ') + '</div>' +
-      '<div style="display:flex;gap:5px;margin-top:5px;">' + role + st + '</div></div></div>';
+      '<div style="display:flex;gap:5px;margin-top:5px;flex-wrap:wrap;">' + role + st + bl + ps + '</div></div>' +
+      '<button class="icon-btn menu-btn">&#8942;</button></div>';
   }).join('');
+
+  box.querySelectorAll('.menu-btn').forEach(function(b){
+    b.addEventListener('click', function(e){
+      e.stopPropagation();
+      const id = b.closest('.au').dataset.id;
+      const u = USERS.filter(function(x){ return String(x.tg_id) === String(id); })[0];
+      if(u) openUserMenu(u);
+    });
+  });
+}
+
+function openUserMenu(u){
+  const nm = u.name || u.instagram || ('ID ' + u.tg_id);
+  const bg = document.createElement('div');
+  bg.className = 'sheet-bg';
+  bg.innerHTML = '<div class="sheet" id="umSheet">' +
+    '<div class="sheet-bar"></div>' +
+    '<div class="sheet-title">' + esc(nm) + '</div>' +
+    '<button class="sheet-item" data-a="edit">&#9999;&#65039; Tahrirlash</button>' +
+    '<button class="sheet-item" data-a="' + (u.paused ? 'unpause' : 'pause') + '">' +
+      (u.paused ? '&#9654;&#65039; Ishga tushirish' : '&#9208;&#65039; Vaqtincha toxtatish') + '</button>' +
+    '<button class="sheet-item" data-a="' + (u.blocked ? 'unblock' : 'block') + '">' +
+      (u.blocked ? '&#128275; Blokdan chiqarish' : '&#128683; Bloklash') + '</button>' +
+    '<button class="sheet-item danger" data-a="delete">&#128465;&#65039; Butunlay ochirish</button>' +
+    '</div>';
+
+  document.body.appendChild(bg);
+  bg.addEventListener('click', function(e){ if(e.target === bg) bg.remove(); });
+  el('umSheet').addEventListener('click', function(e){ e.stopPropagation(); });
+
+  bg.querySelectorAll('.sheet-item').forEach(function(b){
+    b.addEventListener('click', function(){
+      const a = b.dataset.a;
+      if(a === 'edit'){ bg.remove(); editUser(u); return; }
+      if(a === 'delete' && !confirm('Butunlay ochirasizmi?\n\nBarcha elonlar, obunachilar, xabarlar ochadi.')) return;
+      doAdmin(a, u.tg_id, {});
+      bg.remove();
+    });
+  });
+}
+
+function editUser(u){
+  const bg = document.createElement('div');
+  bg.className = 'sheet-bg';
+  bg.innerHTML = '<div class="sheet" id="edSheet">' +
+    '<div class="sheet-bar"></div><div class="sheet-title">Tahrirlash</div>' +
+    '<div class="wrap">' +
+      '<label class="label">Ism</label>' +
+      '<input class="inp" id="edN" value="' + esc(u.name || '') + '">' +
+      '<label class="label">Username</label>' +
+      '<input class="inp" id="edU" value="' + esc(u.username || '') + '">' +
+      '<button class="btn" id="edS">Saqlash</button>' +
+    '</div></div>';
+
+  document.body.appendChild(bg);
+  bg.addEventListener('click', function(e){ if(e.target === bg) bg.remove(); });
+  el('edSheet').addEventListener('click', function(e){ e.stopPropagation(); });
+
+  el('edS').addEventListener('click', function(){
+    doAdmin('edit', u.tg_id, {
+      name: el('edN').value.trim(),
+      username: el('edU').value.trim().replace(/^@/, '')
+    });
+    bg.remove();
+  });
+}
+
+function doAdmin(action, tgId, extra){
+  const body = { action: action, tg_id: tgId };
+  for(const k in extra) body[k] = extra[k];
+  apiPost('/api/admin-amal', body).then(function(d){
+    if(d.ok){ toast('Bajarildi'); boot(); }
+    else toast('Xato: ' + (d.error || ''));
+  }).catch(function(){ toast('Server xatosi'); });
 }
 
 document.addEventListener('DOMContentLoaded', function(){
