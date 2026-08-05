@@ -219,3 +219,148 @@ document.addEventListener('DOMContentLoaded', function(){
   setTimeout(pingOnline, 1500);
   setInterval(pingOnline, 30000);
 });
+
+// ---------- Yuborish oynasi (Instagram uslubi) ----------
+function openShare(post){
+  const id = myId();
+  if(!id){ toast('Telegram ilovasida oching'); return; }
+
+  const first = (post.media && post.media[0]) ? post.media[0] : null;
+  const fileId = first ? first.url.split('/media/')[1] : null;
+  const isVid = first ? !!first.video : false;
+
+  const bg = document.createElement('div');
+  bg.className = 'sheet-bg';
+  bg.innerHTML = '<div class="sheet" id="shSheet" style="max-height:92vh;height:92vh;overflow-y:auto;">' +
+    '<div class="sheet-bar"></div>' +
+    '<div class="share-acts">' +
+      '<button class="share-act" id="shStory"><span class="ic">&#10133;</span>Storiyga</button>' +
+      '<button class="share-act" id="shDl"><span class="ic">&#11015;&#65039;</span>Yuklab olish</button>' +
+      '<button class="share-act" id="shTg"><span class="ic">&#9992;&#65039;</span>Telegram</button>' +
+      '<button class="share-act" id="shCopy"><span class="ic">&#128279;</span>Havola</button>' +
+    '</div>' +
+    '<div class="share-list" id="shList"><div class="load">Yuklanmoqda...</div></div>' +
+    '<div class="share-send" id="shBar" style="display:none;">' +
+      '<button class="btn" id="shSend">Yuborish</button></div>' +
+    '</div>';
+
+  document.body.appendChild(bg);
+  bg.addEventListener('click', function(e){ if(e.target === bg) bg.remove(); });
+  el('shSheet').addEventListener('click', function(e){ e.stopPropagation(); });
+
+  const chosen = {};
+
+  // Storiyga qo'yish
+  el('shStory').addEventListener('click', function(){
+    if(!fileId){ toast('Media topilmadi'); return; }
+    apiPost('/api/story-qoshish', { file_id: fileId, is_video: isVid })
+      .then(function(d){
+        if(d.ok){ haptic('medium'); toast('Storiyga qoshildi'); bg.remove(); }
+        else toast('Xato yuz berdi');
+      }).catch(function(){ toast('Server xatosi'); });
+  });
+
+  // Yuklab olish
+  el('shDl').addEventListener('click', function(){
+    if(!first){ toast('Media topilmadi'); return; }
+    const a = document.createElement('a');
+    a.href = first.url;
+    a.download = isVid ? 'namangan-ijara.mp4' : 'namangan-ijara.jpg';
+    a.target = '_blank';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    toast('Yuklanmoqda...');
+  });
+
+  // Telegramga ulashish
+  el('shTg').addEventListener('click', function(){
+    const txt = [post.desc, post.price ? 'Narx: ' + post.price : '', '@' + post.username]
+      .filter(Boolean).join('\n');
+    const u = 'https://t.me/share/url?url=' + encodeURIComponent('https://t.me/Ijaraga_uybot') +
+              '&text=' + encodeURIComponent(txt);
+    if(TG && TG.openTelegramLink) TG.openTelegramLink(u); else window.open(u, '_blank');
+  });
+
+  // Havola nusxalash
+  el('shCopy').addEventListener('click', function(){
+    const link = 'https://t.me/Ijaraga_uybot';
+    if(navigator.clipboard) navigator.clipboard.writeText(link);
+    toast('Havola nusxalandi');
+  });
+
+  // Foydalanuvchilar ro'yxati
+  Promise.all([
+    api('/api/chatlar?me=' + id).catch(function(){ return { chats: [] }; }),
+    api('/api/maklerlar').catch(function(){ return { maklers: [] }; })
+  ]).then(function(r){
+    const seen = {};
+    const list = [];
+
+    (r[0].chats || []).forEach(function(c){
+      if(seen[c.user_id]) return;
+      seen[c.user_id] = 1;
+      list.push({ id: c.user_id, name: c.name, sub: c.online ? 'Onlayn' : '' });
+    });
+
+    (r[1].maklers || []).forEach(function(m){
+      if(!m.tg_id || seen[m.tg_id]) return;
+      seen[m.tg_id] = 1;
+      list.push({ id: m.tg_id, name: m.name, sub: '@' + m.username });
+    });
+
+    const box = el('shList');
+    if(!box) return;
+    if(!list.length){
+      box.innerHTML = '<div class="empty" style="padding:44px 16px;">' +
+        '<span>Yuboriladigan odam yoq</span></div>';
+      return;
+    }
+
+    box.innerHTML = list.map(function(u){
+      return '<div class="share-row" data-u="' + u.id + '">' +
+        '<img src="https://api.dicebear.com/7.x/initials/svg?seed=' + encodeURIComponent(u.name) + '">' +
+        '<div class="si"><b>' + esc(u.name) + '</b><span>' + esc(u.sub) + '</span></div>' +
+        '<div class="share-chk"></div></div>';
+    }).join('');
+
+    box.querySelectorAll('.share-row').forEach(function(row){
+      row.addEventListener('click', function(){
+        const uid = row.dataset.u;
+        const chk = row.querySelector('.share-chk');
+        if(chosen[uid]){
+          delete chosen[uid];
+          chk.classList.remove('on');
+          chk.innerHTML = '';
+        } else {
+          chosen[uid] = 1;
+          chk.classList.add('on');
+          chk.innerHTML = '&#10003;';
+        }
+        const n = Object.keys(chosen).length;
+        el('shBar').style.display = n ? 'block' : 'none';
+        el('shSend').textContent = n > 1 ? ('Yuborish (' + n + ')') : 'Yuborish';
+      });
+    });
+  });
+
+  el('shSend').addEventListener('click', function(){
+    const ids = Object.keys(chosen);
+    if(!ids.length || !fileId) return;
+
+    const b = el('shSend');
+    b.disabled = true;
+    b.textContent = 'Yuborilmoqda...';
+
+    const txt = [post.price ? 'Narx: ' + post.price : '', post.desc].filter(Boolean).join('\n');
+
+    apiPost('/api/post-yuborish', {
+      to_ids: ids, file_id: fileId, is_video: isVid, text: txt
+    }).then(function(d){
+      if(d.ok){ haptic('medium'); toast('Yuborildi'); bg.remove(); }
+      else { toast('Xato yuz berdi'); b.disabled = false; b.textContent = 'Yuborish'; }
+    }).catch(function(){
+      toast('Server xatosi'); b.disabled = false; b.textContent = 'Yuborish';
+    });
+  });
+}

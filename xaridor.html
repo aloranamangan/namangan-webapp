@@ -276,7 +276,7 @@ function bindPosts(box){
       if(p.likes > 0) openLikers(p);
     });
     art.querySelector('.cm').addEventListener('click', function(){ openComments(p); });
-    art.querySelector('.share').addEventListener('click', function(){ sharePost(p); });
+    art.querySelector('.share').addEventListener('click', function(){ openShare(p); });
     art.querySelector('.save').addEventListener('click', function(){ doSave(art, p); });
     art.querySelector('.post-head').addEventListener('click', function(){ openSeller(p.username); });
   });
