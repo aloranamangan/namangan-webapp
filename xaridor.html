@@ -128,6 +128,12 @@ function normalize(p){
   };
 }
 
+function vBadge(s){
+  return (s && s.verified)
+    ? '<svg class="vbadge" viewBox="0 0 24 24" fill="#0095F6"><path d="M12 1l2.5 2.2 3.3-.4 1 3.2 3 1.5-1.2 3.1 1.2 3.1-3 1.5-1 3.2-3.3-.4L12 23l-2.5-2.2-3.3.4-1-3.2-3-1.5 1.2-3.1L2.2 10l3-1.5 1-3.2 3.3.4z"/><path d="M10.5 15.2l-3-3 1.2-1.2 1.8 1.8 4.3-4.3 1.2 1.2z" fill="#000"/></svg>'
+    : '';
+}
+
 function sellerOf(u){
   for(let i = 0; i < SELLERS.length; i++){
     if(SELLERS[i].username === u) return SELLERS[i];
@@ -225,7 +231,7 @@ function postHTML(p){
   return '<article class="post" data-id="' + p.id + '">' +
     '<div class="post-head" data-u="' + esc(p.username) + '">' +
       '<img src="' + avaOf(p.username) + '">' +
-      '<b>' + esc(s ? s.name : p.username) + '</b>' +
+      '<b>' + esc(s ? s.name : p.username) + vBadge(s) + '</b>' +
       '<span class="badge">' + fmt(p.views) + ' korish</span>' +
     '</div>' +
     '<div class="slider"><div class="slides">' + slides + '</div>' + dots +
@@ -438,7 +444,7 @@ function drawSellers(){
     const txt = SUBS[s.username] ? 'Obuna bolingan' : 'Obuna bolish';
     return '<div class="seller" data-u="' + esc(s.username) + '">' +
       '<img src="' + avaOf(s.username) + '">' +
-      '<div class="seller-info"><b>' + esc(s.name) + '</b>' +
+      '<div class="seller-info"><b>' + esc(s.name) + vBadge(s) + '</b>' +
       '<span>@' + esc(s.username) + ' &middot; ' + fmt(s.followers) + ' obunachi</span>' +
       '<div class="roles">' + roles + '</div></div>' +
       '<button class="follow-btn' + on + '" data-f="' + esc(s.username) + '">' + txt + '</button></div>';
@@ -493,7 +499,7 @@ function openSeller(u){
     '<div class="pro-top"><div class="pro-ava-wrap"><img class="pro-ava" src="' + avaOf(u) + '"></div>' +
     '<div class="pro-stats"><div class="pro-stat"><b>' + mine.length + '</b><span>elon</span></div>' +
     '<div class="pro-stat"><b>' + fmt(s.followers) + '</b><span>obunachi</span></div></div></div>' +
-    '<div class="pro-bio"><b>' + esc(s.name) + '</b><div class="ph">@' + esc(u) + '</div></div>' +
+    '<div class="pro-bio"><b>' + esc(s.name) + vBadge(s) + '</b><div class="ph">@' + esc(u) + '</div></div>' +
     '<div class="pro-btns"><button class="follow-btn' + on + '" id="spF" style="flex:1;padding:10px 0;">' + txt + '</button>' +
     '<button id="spM">Yozish</button><button id="spC">Qongiroq</button></div>' +
     '<div class="grid" id="spGrid"></div></div>';
