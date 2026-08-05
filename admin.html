@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Admin panel</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+.au{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid #1a1a1a;}
+.au img{width:46px;height:46px;border-radius:50%;object-fit:cover;flex-shrink:0;}
+.au .ai{flex:1;min-width:0;}
+.au .ai b{display:block;font-size:14px;font-weight:700;}
+.au .ai .ln{font-size:12px;color:var(--muted);margin-top:2px;}
+.au .ai .ln a{color:var(--blue);text-decoration:none;}
+.rb{font-size:9.5px;font-weight:800;padding:2px 7px;border-radius:4px;}
+.rb.m{background:rgba(46,204,113,.16);color:#2ECC71;}
+.rb.x{background:rgba(0,149,246,.16);color:#0095F6;}
+.rb.ok{background:rgba(46,204,113,.16);color:#2ECC71;}
+.rb.pd{background:rgba(255,193,7,.16);color:#FFC107;}
+.hdr{display:flex;gap:10px;padding:12px 16px;}
+.hdr .box{flex:1;background:#121212;border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center;}
+.hdr .box b{display:block;font-size:20px;font-weight:800;}
+.hdr .box span{font-size:11px;color:var(--muted);}
+</style>
+</head>
+<body>
+
+<header class="topbar"><h1>Admin <span class="gold">panel</span></h1></header>
+<div class="hdr" id="stats"></div>
+<div class="search-bar"><input id="q" placeholder="Qidirish: ism, telefon, username"></div>
+<div id="list"><div class="load">Yuklanmoqda...</div></div>
+
+<script src="core.js"></script>
+<script>
+let USERS = [];
+
+function boot(){
+  api('/api/admin-users?init_data=' + encodeURIComponent(initData()))
+    .then(function(d){
+      if(!d.ok){
+        el('list').innerHTML = '<div class="empty"><div class="ic">&#128274;</div>' +
+          '<p>Ruxsat yoq</p><span>Bu bolim faqat admin uchun</span></div>';
+        return;
+      }
+      USERS = d.users || [];
+      drawStats();
+      draw(USERS);
+    })
+    .catch(function(){
+      el('list').innerHTML = '<div class="empty"><span>Xato yuz berdi</span></div>';
+    });
+}
+
+function drawStats(){
+  const m = USERS.filter(function(u){ return u.role === 'makler'; }).length;
+  const x = USERS.filter(function(u){ return u.role === 'xaridor'; }).length;
+  el('stats').innerHTML =
+    '<div class="box"><b>' + USERS.length + '</b><span>jami</span></div>' +
+    '<div class="box"><b>' + m + '</b><span>sotuvchi</span></div>' +
+    '<div class="box"><b>' + x + '</b><span>xaridor</span></div>';
+}
+
+function draw(list){
+  const box = el('list');
+  if(!list.length){
+    box.innerHTML = '<div class="empty"><span>Topilmadi</span></div>';
+    return;
+  }
+  box.innerHTML = list.map(function(u){
+    const nm = u.name || u.instagram || ('ID ' + u.tg_id);
+    const role = u.role === 'makler'
+      ? '<span class="rb m">Sotuvchi</span>'
+      : (u.role === 'xaridor' ? '<span class="rb x">Xaridor</span>' : '');
+    const st = u.status === 'approved'
+      ? '<span class="rb ok">Tasdiqlangan</span>'
+      : (u.status === 'pending' ? '<span class="rb pd">Kutilmoqda</span>' : '');
+
+    const links = [];
+    if(u.phone) links.push('<a href="tel:' + esc(u.phone) + '">' + esc(u.phone) + '</a>');
+    if(u.whatsapp) links.push('<a href="https://wa.me/' + esc(u.whatsapp.replace(/[^0-9]/g,'')) + '" target="_blank">WA</a>');
+    if(u.instagram) links.push('<a href="https://instagram.com/' + esc(u.instagram.replace(/^@/,'')) + '" target="_blank">IG</a>');
+    links.push('<a href="tg://user?id=' + u.tg_id + '">TG</a>');
+
+    return '<div class="au">' +
+      '<img src="https://api.dicebear.com/7.x/initials/svg?seed=' + encodeURIComponent(nm) + '">' +
+      '<div class="ai"><b>' + esc(nm) + '</b>' +
+      '<div class="ln">' + links.join(' &middot; ') + '</div>' +
+      '<div style="display:flex;gap:5px;margin-top:5px;">' + role + st + '</div></div></div>';
+  }).join('');
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  el('q').addEventListener('input', function(e){
+    const q = e.target.value.trim().toLowerCase();
+    if(!q){ draw(USERS); return; }
+    draw(USERS.filter(function(u){
+      return (u.name || '').toLowerCase().indexOf(q) !== -1 ||
+             (u.phone || '').indexOf(q) !== -1 ||
+             (u.instagram || '').toLowerCase().indexOf(q) !== -1 ||
+             (u.username || '').toLowerCase().indexOf(q) !== -1 ||
+             String(u.tg_id).indexOf(q) !== -1;
+    }));
+  });
+  setTimeout(boot, 400);
+});
+</script>
+</body>
+</html>
