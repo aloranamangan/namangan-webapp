@@ -28,9 +28,8 @@ function openChats(){
   if(!id){ toast('Telegram ilovasida oching'); return; }
 
   const bg = document.createElement('div');
-  bg.className = 'sheet-bg';
-  bg.innerHTML = '<div class="sheet" id="clSheet" style="max-height:94vh;height:94vh;overflow-y:auto;">' +
-    '<div class="sheet-bar"></div>' +
+  bg.className = 'dm-full';
+  bg.innerHTML = '<div id="clSheet">' +
     '<div class="dm-top"><h2>Xabarlar</h2><button id="clClose">&times;</button></div>' +
     '<div class="dm-notes" id="clNotes"></div>' +
     '<div class="dm-tabs" id="clTabs"></div>' +
@@ -134,10 +133,13 @@ function openChat(otherId, otherName){
   if(!me) return;
 
   const bg = document.createElement('div');
-  bg.className = 'sheet-bg';
-  bg.innerHTML = '<div class="sheet" id="chSheet" style="max-height:94vh;height:94vh;display:flex;flex-direction:column;">' +
-    '<div class="sheet-bar"></div>' +
-    '<div class="sheet-title">' + esc(otherName || 'Chat') + '</div>' +
+  bg.className = 'chat-full';
+  bg.innerHTML = '<div id="chSheet" style="display:flex;flex-direction:column;height:100%;">' +
+    '<div class="chat-hd">' +
+      '<button id="chBack">&#8592;</button>' +
+      '<img src="https://api.dicebear.com/7.x/initials/svg?seed=' + encodeURIComponent(otherName || 'U') + '">' +
+      '<div class="hi"><b>' + esc(otherName || 'Chat') + '</b></div>' +
+    '</div>' +
     '<div class="msgs" id="chBody" style="flex:1;overflow-y:auto;padding-bottom:16px;">' +
       '<div class="load">Yuklanmoqda...</div></div>' +
     '<div class="msg-bar" style="position:relative;">' +
@@ -149,6 +151,8 @@ function openChat(otherId, otherName){
   document.body.appendChild(bg);
   bg.addEventListener('click', function(e){ if(e.target === bg){ clearInterval(dmTimer); bg.remove(); } });
   el('chSheet').addEventListener('click', function(e){ e.stopPropagation(); });
+  const bk = el('chBack');
+  if(bk) bk.addEventListener('click', function(){ clearInterval(dmTimer); bg.remove(); });
 
   let pending = null;
 

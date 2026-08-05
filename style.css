@@ -308,3 +308,23 @@ body{
 .viewer img,.viewer video{max-width:100%;max-height:88vh;object-fit:contain;}
 .viewer-close{position:absolute;top:calc(14px + env(safe-area-inset-top));right:16px;width:36px;height:36px;border-radius:50%;border:none;background:rgba(255,255,255,.15);color:#fff;font-size:20px;cursor:pointer;z-index:2;}
 .viewer-dl{position:absolute;bottom:calc(22px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);padding:12px 26px;border-radius:100px;border:none;background:rgba(255,255,255,.16);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;}
+
+/* Direct to'liq ekran */
+.dm-full{
+  position:fixed;inset:0;z-index:900;background:#000;
+  display:flex;flex-direction:column;
+  padding-top:env(safe-area-inset-top);
+  padding-bottom:76px;
+  overflow-y:auto;
+}
+.dm-full .dm-top{padding-top:16px;}
+.chat-full{
+  position:fixed;inset:0;z-index:950;background:#000;
+  display:flex;flex-direction:column;
+  padding-top:env(safe-area-inset-top);
+}
+.chat-hd{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line);}
+.chat-hd button{background:none;border:none;color:#fff;font-size:22px;cursor:pointer;padding:0;}
+.chat-hd img{width:36px;height:36px;border-radius:50%;object-fit:cover;}
+.chat-hd .hi b{display:block;font-size:15px;font-weight:700;}
+.chat-hd .hi span{font-size:11.5px;color:#31C05C;}
