@@ -57,6 +57,7 @@
 <script src="core.js"></script>
 <script src="reg.js"></script>
 <script src="dm.js"></script>
+<script src="story.js"></script>
 <script>
 let POSTS = [];
 let SELLERS = [];
@@ -156,17 +157,21 @@ function keepLocal(){
 
 function drawStories(){
   const box = el('stories');
-  const sub = SELLERS.filter(function(s){ return SUBS[s.username]; });
-  const list = sub.length ? sub : SELLERS.slice(0, 12);
-  if(!list.length){ box.style.display = 'none'; return; }
-  box.style.display = 'flex';
-  box.innerHTML = list.map(function(s){
-    return '<button class="story" data-u="' + esc(s.username) + '">' +
-      '<div class="story-ring"><img src="' + avaOf(s.username) + '"></div>' +
-      '<span>' + esc(s.username) + '</span></button>';
-  }).join('');
-  box.querySelectorAll('.story').forEach(function(b){
-    b.addEventListener('click', function(){ openSeller(b.dataset.u); });
+  loadStories(function(){
+    const groups = groupStories();
+    if(!groups.length){ box.style.display = 'none'; return; }
+    box.style.display = 'flex';
+    box.innerHTML = groups.map(function(g, i){
+      return '<button class="story" data-i="' + i + '">' +
+        '<div class="story-ring"><img src="https://api.dicebear.com/7.x/initials/svg?seed=' +
+        encodeURIComponent(g.name) + '"></div>' +
+        '<span>' + esc(g.name) + '</span></button>';
+    }).join('');
+    box.querySelectorAll('.story').forEach(function(b){
+      b.addEventListener('click', function(){
+        openStory(groups[parseInt(b.dataset.i)], 0);
+      });
+    });
   });
 }
 

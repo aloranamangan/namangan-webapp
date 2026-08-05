@@ -330,3 +330,24 @@ body{
 .chat-hd img{width:36px;height:36px;border-radius:50%;object-fit:cover;}
 .chat-hd .hi b{display:block;font-size:15px;font-weight:700;}
 .chat-hd .hi span{font-size:11.5px;color:#31C05C;}
+
+/* ---------- Storiy ko'ruvchi ---------- */
+.sv-view-full{position:fixed;inset:0;z-index:6000;background:#000;display:flex;flex-direction:column;}
+.sv-bars{display:flex;gap:4px;padding:calc(10px + env(safe-area-inset-top)) 12px 8px;}
+.sv-bar{flex:1;height:2.5px;border-radius:2px;background:rgba(255,255,255,.3);overflow:hidden;}
+.sv-bar i{display:block;height:100%;width:0;background:#fff;}
+.sv-bar.done i{width:100%;}
+.sv-hd{display:flex;align-items:center;gap:10px;padding:4px 14px 10px;}
+.sv-hd img{width:34px;height:34px;border-radius:50%;object-fit:cover;}
+.sv-hd b{font-size:14px;font-weight:700;flex:1;}
+.sv-hd button{background:none;border:none;color:#fff;font-size:24px;cursor:pointer;padding:0;}
+.sv-media{flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.sv-media img,.sv-media video{max-width:100%;max-height:100%;object-fit:contain;}
+.sv-foot{display:flex;align-items:center;gap:10px;padding:12px 14px calc(12px + env(safe-area-inset-bottom));}
+.sv-foot input{flex:1;background:none;border:1.2px solid rgba(255,255,255,.4);border-radius:100px;padding:11px 18px;color:#fff;font-size:14px;font-family:inherit;}
+.sv-foot input:focus{outline:none;border-color:#fff;}
+.sv-foot button{background:none;border:none;color:#fff;cursor:pointer;padding:0;}
+.sv-foot svg{width:26px;height:26px;stroke:#fff;fill:none;stroke-width:1.9;}
+.sv-foot .liked svg{fill:#ED4956;stroke:#ED4956;}
+.sv-stat{display:flex;align-items:center;gap:6px;padding:10px 16px;font-size:13px;color:rgba(255,255,255,.85);cursor:pointer;}
+.sv-stat svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;}
