@@ -355,3 +355,12 @@ body{
 /* Grid rasmlariga bosish */
 .cell{cursor:pointer;}
 .cell img,.cell video{pointer-events:none;}
+
+/* ---------- Aktual (highlights) ---------- */
+.hl-row{display:flex;gap:16px;overflow-x:auto;padding:14px 16px;scrollbar-width:none;border-top:1px solid var(--line);}
+.hl-row::-webkit-scrollbar{display:none;}
+.hl{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:6px;width:70px;background:none;border:none;cursor:pointer;padding:0;}
+.hl-c{width:62px;height:62px;border-radius:50%;border:1.5px solid #3a3a3a;overflow:hidden;background:#111;display:flex;align-items:center;justify-content:center;}
+.hl-c img,.hl-c video{width:100%;height:100%;object-fit:cover;}
+.hl-c.add{border-style:dashed;color:var(--muted);font-size:26px;}
+.hl span{font-size:11px;color:#ddd;max-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}

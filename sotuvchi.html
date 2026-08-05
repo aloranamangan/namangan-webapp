@@ -156,6 +156,7 @@ function renderCabinet(){
   const views = POSTS.reduce(function(a, p){ return a + (p.views || 0); }, 0);
 
   el('root').innerHTML =
+    '<div class="stories" id="myStories"></div>' +
     '<div class="pro-top">' +
       '<div class="pro-ava-wrap"><img class="pro-ava" src="' + ava + '">' +
       '<button class="pro-add" id="addBtn">+</button></div>' +
@@ -174,10 +175,11 @@ function renderCabinet(){
       '<button id="storyBtn">&#128248; Storiy</button>' +
       '<button id="shareBtn">Ulashish</button>' +
     '</div>' +
-    '<div class="stories" id="myStories"></div>' +
+
 
     '<div class="stat-card" id="statCard">' +
       '<div class="stat-sub">Yuklanmoqda...</div></div>' +
+    '<div class="hl-row" id="hlRow"></div>' +
     '<div class="grid" id="grid"></div>' +
     '<div class="wrap"><button class="btn danger" id="delBtn">Kabinetni ochirish</button></div>';
 
@@ -189,6 +191,7 @@ function renderCabinet(){
   el('shareBtn').addEventListener('click', shareMe);
   el('storyBtn').addEventListener('click', addStory);
   drawMyStories();
+  drawHighlights();
   el('delBtn').addEventListener('click', deleteMe);
 }
 
@@ -535,6 +538,87 @@ function drawMyStories(){
       });
     });
   });
+}
+
+
+function drawHighlights(){
+  const box = el('hlRow');
+  if(!box || !myId()) return;
+
+  api('/api/aktuallar?tg_id=' + myId()).then(function(d){
+    const list = d.items || [];
+    box.innerHTML =
+      '<button class="hl" id="hlAdd"><div class="hl-c add">&#65291;</div><span>Yangi</span></button>' +
+      list.map(function(x){
+        const u = mediaUrl(x.file_id);
+        const inner = x.is_video
+          ? '<video src="' + u + '" muted></video>'
+          : '<img src="' + u + '">';
+        return '<button class="hl" data-id="' + x.id + '" data-u="' + u + '" data-v="' +
+          (x.is_video ? '1' : '0') + '"><div class="hl-c">' + inner + '</div>' +
+          '<span>' + esc(x.title) + '</span></button>';
+      }).join('');
+
+    el('hlAdd').addEventListener('click', addHighlight);
+
+    box.querySelectorAll('.hl[data-id]').forEach(function(b){
+      b.addEventListener('click', function(){
+        openGallery([{ url: b.dataset.u, video: b.dataset.v === '1' }], 0, false, null);
+      });
+      let t = null;
+      b.addEventListener('touchstart', function(){
+        t = setTimeout(function(){
+          if(confirm('Aktualni ochirasizmi?')){
+            apiPost('/api/aktual-ochirish', { id: b.dataset.id })
+              .then(function(){ drawHighlights(); });
+          }
+        }, 700);
+      }, { passive: true });
+      b.addEventListener('touchend', function(){ clearTimeout(t); }, { passive: true });
+    });
+  }).catch(function(){});
+}
+
+function addHighlight(){
+  api('/api/mening-storylarim?tg_id=' + myId()).then(function(d){
+    const list = d.stories || [];
+    if(!list.length){ toast('Avval storiy qoying'); return; }
+
+    const bg = document.createElement('div');
+    bg.className = 'sheet-bg';
+    bg.innerHTML = '<div class="sheet" id="hlSheet" style="max-height:80vh;">' +
+      '<div class="sheet-bar"></div>' +
+      '<div class="sheet-title">Aktualga qoshish</div>' +
+      '<div class="wrap"><label class="label">Nomi</label>' +
+      '<input class="inp" id="hlTitle" placeholder="Kvartiralar" value="Aktual">' +
+      '<label class="label">Storiy tanlang</label>' +
+      '<div class="grid" id="hlPick" style="border:none;"></div></div></div>';
+
+    document.body.appendChild(bg);
+    bg.addEventListener('click', function(e){ if(e.target === bg) bg.remove(); });
+    el('hlSheet').addEventListener('click', function(e){ e.stopPropagation(); });
+
+    el('hlPick').innerHTML = list.map(function(s){
+      const u = mediaUrl(s.file_id);
+      const inner = s.is_video
+        ? '<video src="' + u + '" muted></video>'
+        : '<img src="' + u + '">';
+      return '<div class="cell" data-f="' + s.file_id + '" data-v="' + (s.is_video ? '1' : '0') + '">' +
+        inner + '</div>';
+    }).join('');
+
+    el('hlPick').querySelectorAll('.cell').forEach(function(c){
+      c.addEventListener('click', function(){
+        const title = el('hlTitle').value.trim() || 'Aktual';
+        apiPost('/api/aktual-qoshish', {
+          file_id: c.dataset.f, is_video: c.dataset.v === '1', title: title
+        }).then(function(r){
+          if(r.ok){ haptic('medium'); toast('Aktualga qoshildi'); bg.remove(); drawHighlights(); }
+          else toast('Xato');
+        }).catch(function(){ toast('Server xatosi'); });
+      });
+    });
+  }).catch(function(){ toast('Xato'); });
 }
 
 document.addEventListener('DOMContentLoaded', boot);
