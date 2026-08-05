@@ -48,9 +48,12 @@ function openChats(){
       return;
     }
     box.innerHTML = list.map(function(c){
+      const onl = c.online ? '<span class="onl"></span>' : '';
+      const sub = c.online ? 'Onlayn' : esc(c.last);
       return '<div class="chat-row' + (c.seen ? '' : ' unread') + '" data-u="' + c.user_id + '" data-n="' + esc(c.name) + '">' +
-        '<img src="https://api.dicebear.com/7.x/initials/svg?seed=' + encodeURIComponent(c.name) + '">' +
-        '<div class="ci"><b>' + esc(c.name) + '</b><span>' + esc(c.last) + '</span></div>' +
+        '<div class="chat-ava"><img src="https://api.dicebear.com/7.x/initials/svg?seed=' +
+          encodeURIComponent(c.name) + '">' + onl + '</div>' +
+        '<div class="ci"><b>' + esc(c.name) + '</b><span>' + sub + '</span></div>' +
         (c.seen ? '' : '<div class="nd"></div>') + '</div>';
     }).join('');
 
@@ -143,3 +146,13 @@ function openChat(otherId, otherName){
   el('chSend').addEventListener('click', send);
   el('chInp').addEventListener('keypress', function(e){ if(e.key === 'Enter') send(); });
 }
+
+
+// Onlayn signali
+function pingOnline(){
+  if(myId()) apiPost('/api/onlayn', {}).catch(function(){});
+}
+document.addEventListener('DOMContentLoaded', function(){
+  setTimeout(pingOnline, 1500);
+  setInterval(pingOnline, 30000);
+});

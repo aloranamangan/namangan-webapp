@@ -252,3 +252,16 @@ body{
 .msg-bar input:focus{outline:none;}
 .msg-bar button{background:none;border:none;color:var(--blue);font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;padding:0 4px;}
 .msg-bar .clip{color:var(--muted);font-size:20px;}
+
+/* ---------- Direct (Instagram uslubi) ---------- */
+.chat-row{padding:11px 16px;border-bottom:none;}
+.chat-ava{position:relative;flex-shrink:0;}
+.chat-ava img{width:56px;height:56px;border-radius:50%;object-fit:cover;}
+.chat-ava .onl{
+  position:absolute;right:1px;bottom:1px;width:14px;height:14px;
+  border-radius:50%;background:#31C05C;border:2.5px solid #000;
+}
+.chat-row .ci b{font-size:14.5px;font-weight:600;margin-bottom:2px;}
+.chat-row.unread .ci b{font-weight:800;}
+.chat-row .ci span{font-size:13px;}
+.chat-row .nd{width:8px;height:8px;background:#0095F6;}
