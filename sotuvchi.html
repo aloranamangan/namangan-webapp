@@ -37,6 +37,7 @@
 <script src="core.js"></script>
 <script src="reg.js"></script>
 <script src="dm.js"></script>
+<script src="story.js"></script>
 <script>
 let ME = null;
 let POSTS = [];
@@ -170,8 +171,10 @@ function renderCabinet(){
 
     '<div class="pro-btns">' +
       '<button id="newBtn">&#65291; Elon qoshish</button>' +
+      '<button id="storyBtn">&#128248; Storiy</button>' +
       '<button id="shareBtn">Ulashish</button>' +
     '</div>' +
+    '<div class="stories" id="myStories"></div>' +
 
     '<div class="stat-card" id="statCard">' +
       '<div class="stat-sub">Yuklanmoqda...</div></div>' +
@@ -184,6 +187,8 @@ function renderCabinet(){
   el('addBtn').addEventListener('click', openUpload);
   el('newBtn').addEventListener('click', openUpload);
   el('shareBtn').addEventListener('click', shareMe);
+  el('storyBtn').addEventListener('click', addStory);
+  drawMyStories();
   el('delBtn').addEventListener('click', deleteMe);
 }
 
@@ -469,6 +474,54 @@ document.addEventListener('DOMContentLoaded', function(){
   if(b) b.addEventListener('click', openNotifs);
   setInterval(loadNotifs, 25000);
 });
+
+
+function addStory(){
+  pickFiles(false, function(items){
+    if(!items.length) return;
+    const it = items[0];
+    toast('Yuklanmoqda...');
+    apiPost('/api/post-qoshish', { items: [it], price: '', description: 'STORY' })
+      .then(function(){
+        setTimeout(function(){
+          api('/api/postlar?username=' + encodeURIComponent(ME.username)).then(function(p){
+            const list = (p.posts || []).filter(function(x){ return x.description === 'STORY'; });
+            if(!list.length){ toast('Xato'); return; }
+            const last = list[0];
+            const m = (last.media && last.media[0]) ? last.media[0] : { file_id: last.file_id, is_video: last.is_video };
+            apiPost('/api/story-qoshish', { file_id: m.file_id, is_video: m.is_video })
+              .then(function(d){
+                if(d.ok){ haptic('medium'); toast('Storiyga qoshildi'); drawMyStories(); }
+                else toast('Xato');
+              });
+          });
+        }, 2500);
+      })
+      .catch(function(){ toast('Server xatosi'); });
+  });
+}
+
+function drawMyStories(){
+  const box = el('myStories');
+  if(!box || !ME) return;
+
+  loadStories(function(){
+    const groups = groupStories();
+    if(!groups.length){ box.style.display = 'none'; return; }
+    box.style.display = 'flex';
+    box.innerHTML = groups.map(function(g, i){
+      return '<button class="story" data-i="' + i + '">' +
+        '<div class="story-ring"><img src="https://api.dicebear.com/7.x/initials/svg?seed=' +
+        encodeURIComponent(g.name) + '"></div>' +
+        '<span>' + esc(g.name) + '</span></button>';
+    }).join('');
+    box.querySelectorAll('.story').forEach(function(b){
+      b.addEventListener('click', function(){
+        openStory(groups[parseInt(b.dataset.i)], 0);
+      });
+    });
+  });
+}
 
 document.addEventListener('DOMContentLoaded', boot);
 
