@@ -214,9 +214,16 @@ function drawGrid(){
       inner + multi + '</div>';
   }).join('');
 
-  g.querySelectorAll('.cell[data-full]').forEach(function(c){
+  const gal = POSTS.map(function(p){
+    const mm = (p.media && p.media.length) ? p.media : [{ file_id: p.file_id, is_video: p.is_video }];
+    return { media: mm.filter(function(x){ return x.file_id; }).map(function(x){
+      return { url: mediaUrl(x.file_id), video: !!x.is_video };
+    }) };
+  });
+
+  g.querySelectorAll('.cell').forEach(function(c, i){
     c.addEventListener('click', function(){
-      openViewer(c.dataset.full, c.dataset.v === '1', true);
+      openGallery(gal[i].media, 0, true, gal, i);
     });
   });
 }

@@ -377,46 +377,99 @@ function openShare(post){
 
 // ---------- To'liq ekran ko'rish ----------
 function openViewer(url, isVideo, showStory){
+  openGallery([{ url: url, video: isVideo }], 0, showStory, null);
+}
+
+// posts: [{media:[{url,video}], ...}] — pastga/tepaga surilsa keyingi e'lon
+function openGallery(items, startIdx, showStory, posts, postIdx){
+  let mi = startIdx || 0;
+  let pi = postIdx || 0;
+  let list = items;
+
   const v = document.createElement('div');
   v.className = 'viewer';
-  v.innerHTML =
-    '<button class="viewer-close">&times;</button>' +
-    (isVideo
-      ? '<video src="' + url + '" controls autoplay playsinline></video>'
-      : '<img src="' + url + '">') +
-    '<div style="position:absolute;bottom:calc(22px + env(safe-area-inset-bottom));left:0;right:0;display:flex;gap:10px;justify-content:center;padding:0 16px;">' +
-      (showStory ? '<button class="viewer-dl" id="vwStory" style="position:static;transform:none;">&#128248; Storiyga</button>' : '') +
-      '<button class="viewer-dl" id="vwDl" style="position:static;transform:none;">&#11015;&#65039; Yuklab olish</button>' +
-    '</div>';
-
   document.body.appendChild(v);
 
-  const stBtn = v.querySelector('#vwStory');
-  if(stBtn){
-    stBtn.addEventListener('click', function(e){
+  function draw(){
+    const it = list[mi];
+    if(!it){ v.remove(); return; }
+
+    const dots = list.length > 1
+      ? '<div class="dots" style="bottom:78px;">' + list.map(function(_, i){
+          return '<div class="dot' + (i === mi ? ' on' : '') + '"></div>';
+        }).join('') + '</div>'
+      : '';
+
+    v.innerHTML =
+      '<button class="viewer-close">&times;</button>' +
+      (it.video
+        ? '<video src="' + it.url + '" controls autoplay playsinline></video>'
+        : '<img src="' + it.url + '">') +
+      dots +
+      '<div style="position:absolute;bottom:calc(18px + env(safe-area-inset-bottom));left:0;right:0;display:flex;gap:10px;justify-content:center;padding:0 16px;">' +
+        (showStory ? '<button class="viewer-dl" id="vwStory" style="position:static;transform:none;">&#128248; Storiyga</button>' : '') +
+        '<button class="viewer-dl" id="vwDl" style="position:static;transform:none;">&#11015;&#65039; Yuklab olish</button>' +
+      '</div>';
+
+    v.querySelector('.viewer-close').addEventListener('click', function(){ v.remove(); });
+
+    const st = v.querySelector('#vwStory');
+    if(st) st.addEventListener('click', function(e){
       e.stopPropagation();
-      const fid = url.split('/media/')[1];
+      const fid = it.url.split('/media/')[1];
       if(!fid){ toast('Media topilmadi'); return; }
-      apiPost('/api/story-qoshish', { file_id: fid, is_video: isVideo })
+      apiPost('/api/story-qoshish', { file_id: fid, is_video: it.video })
         .then(function(d){
           if(d.ok){ haptic('medium'); toast('Storiyga qoshildi'); v.remove(); }
-          else toast('Xato yuz berdi');
+          else toast('Xato');
         }).catch(function(){ toast('Server xatosi'); });
+    });
+
+    v.querySelector('#vwDl').addEventListener('click', function(e){
+      e.stopPropagation();
+      const a = document.createElement('a');
+      a.href = it.url;
+      a.download = it.video ? 'video.mp4' : 'rasm.jpg';
+      a.target = '_blank';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      toast('Yuklanmoqda...');
     });
   }
 
-  v.querySelector('.viewer-close').addEventListener('click', function(){ v.remove(); });
-  v.addEventListener('click', function(e){ if(e.target === v) v.remove(); });
+  let sx = null, sy = null;
+  v.addEventListener('touchstart', function(e){
+    sx = e.touches[0].clientX;
+    sy = e.touches[0].clientY;
+  }, { passive: true });
 
-  v.querySelector('#vwDl').addEventListener('click', function(e){
-    e.stopPropagation();
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = isVideo ? 'video.mp4' : 'rasm.jpg';
-    a.target = '_blank';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    toast('Yuklanmoqda...');
-  });
+  v.addEventListener('touchend', function(e){
+    if(sx === null) return;
+    const dx = e.changedTouches[0].clientX - sx;
+    const dy = e.changedTouches[0].clientY - sy;
+    sx = null; sy = null;
+
+    // Yonga — shu e'lon ichidagi rasmlar
+    if(Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 55){
+      if(dx < 0 && mi < list.length - 1) mi++;
+      else if(dx > 0 && mi > 0) mi--;
+      else return;
+      draw();
+      return;
+    }
+
+    // Pastga/tepaga — keyingi e'lon
+    if(Math.abs(dy) > 70 && posts && posts.length > 1){
+      if(dy < 0 && pi < posts.length - 1) pi++;
+      else if(dy > 0 && pi > 0) pi--;
+      else return;
+      list = posts[pi].media || [];
+      mi = 0;
+      haptic('light');
+      draw();
+    }
+  }, { passive: true });
+
+  draw();
 }
