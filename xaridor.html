@@ -11,6 +11,7 @@
 
 <header class="topbar">
   <h1>Namangan <span class="gold">Ijara</span></h1>
+  <button class="dm-btn" id="dmBtn"><svg viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg></button>
 </header>
 
 <div class="view on" id="vFeed">
@@ -52,6 +53,7 @@
 
 <script src="core.js"></script>
 <script src="reg.js"></script>
+<script src="dm.js"></script>
 <script>
 let POSTS = [];
 let SELLERS = [];
@@ -469,7 +471,7 @@ function openSeller(u){
     '<div class="pro-stat"><b>' + fmt(s.followers) + '</b><span>obunachi</span></div></div></div>' +
     '<div class="pro-bio"><b>' + esc(s.name) + '</b><div class="ph">@' + esc(u) + '</div></div>' +
     '<div class="pro-btns"><button class="follow-btn' + on + '" id="spF" style="flex:1;padding:10px 0;">' + txt + '</button>' +
-    '<button id="spC">Qongiroq</button></div>' +
+    '<button id="spM">Yozish</button><button id="spC">Qongiroq</button></div>' +
     '<div class="grid" id="spGrid"></div></div>';
 
   document.body.appendChild(bg);
@@ -487,6 +489,12 @@ function openSeller(u){
     st.addEventListener('click', function(){ openFollowers(u); });
   }
   el('spF').addEventListener('click', function(){ toggleFollow(u); bg.remove(); });
+  const mb = el('spM');
+  if(mb) mb.addEventListener('click', function(){
+    if(!s.tg_id){ toast('Bu sotuvchiga yozib bolmaydi'); return; }
+    bg.remove();
+    openChat(s.tg_id, s.name);
+  });
   el('spC').addEventListener('click', function(){
     if(s.phone) window.open('tel:' + s.phone);
     else toast('Telefon korsatilmagan');
@@ -589,6 +597,13 @@ document.addEventListener('DOMContentLoaded', function(){
   });
   el('q').addEventListener('input', function(e){ drawSearch(e.target.value); });
   boot();
+});
+
+document.addEventListener('DOMContentLoaded', function(){
+  const db_ = el('dmBtn');
+  if(db_) db_.addEventListener('click', openChats);
+  setTimeout(function(){ dmUnreadCheck('dmBtn'); }, 2000);
+  setInterval(function(){ dmUnreadCheck('dmBtn'); }, 25000);
 });
 </script>
 </body>

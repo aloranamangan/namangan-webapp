@@ -11,6 +11,7 @@
 
 <header class="topbar">
   <h1>Sotuvchi <span class="gold">kabineti</span></h1>
+  <button class="dm-btn" id="dmBtn"><svg viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg></button>
   <button class="bell" id="bellBtn" style="display:none;">
     <svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1L12 21l7.7-7.6 1.1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
     <span class="dot-n" id="bellN" style="display:none;">0</span>
@@ -21,6 +22,7 @@
 
 <script src="core.js"></script>
 <script src="reg.js"></script>
+<script src="dm.js"></script>
 <script>
 let ME = null;
 let POSTS = [];
@@ -455,6 +457,13 @@ document.addEventListener('DOMContentLoaded', function(){
 });
 
 document.addEventListener('DOMContentLoaded', boot);
+
+document.addEventListener('DOMContentLoaded', function(){
+  const db_ = el('dmBtn');
+  if(db_) db_.addEventListener('click', openChats);
+  setTimeout(function(){ dmUnreadCheck('dmBtn'); }, 2000);
+  setInterval(function(){ dmUnreadCheck('dmBtn'); }, 25000);
+});
 </script>
 </body>
 </html>
