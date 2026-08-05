@@ -364,3 +364,7 @@ body{
 .hl-c img,.hl-c video{width:100%;height:100%;object-fit:cover;}
 .hl-c.add{border-style:dashed;color:var(--muted);font-size:26px;}
 .hl span{font-size:11px;color:#ddd;max-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+/* Storiy halqasi: yangi / ko'rilgan */
+.story-ring.seen{background:#3a3a3a !important;}
+.story-ring.fresh{background:linear-gradient(45deg,#F58529,#FEDA77,#DD2A7B,#8134AF,#515BD4) !important;}

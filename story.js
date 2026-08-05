@@ -62,6 +62,7 @@ function openStory(group, startIdx){
 
     // Ko'rildi
     apiPost('/api/story-korish', { story_id: it.id }).catch(function(){});
+    markStorySeen(it.id);
 
     if(isMine){
       api('/api/story-stat?story_id=' + it.id).then(function(d){
@@ -167,4 +168,20 @@ function showViewers(storyId){
     bg.addEventListener('click', function(e){ if(e.target === bg) bg.remove(); });
     el('vwSheet').addEventListener('click', function(e){ e.stopPropagation(); });
   }).catch(function(){});
+}
+
+// ---------- Ko'rilgan storieslar ----------
+function seenStore(){
+  try { return JSON.parse(localStorage.getItem('ni_story_seen')) || {}; }
+  catch(e){ return {}; }
+}
+
+function isStorySeen(id){
+  return !!seenStore()[id];
+}
+
+function markStorySeen(id){
+  const s = seenStore();
+  s[id] = 1;
+  try { localStorage.setItem('ni_story_seen', JSON.stringify(s)); } catch(e){}
 }

@@ -186,7 +186,7 @@ function renderCabinet(){
   drawGrid();
   loadStats();
   loadNotifs();
-  el('addBtn').addEventListener('click', openUpload);
+  el('addBtn').addEventListener('click', addStory);
   el('newBtn').addEventListener('click', openUpload);
   el('shareBtn').addEventListener('click', shareMe);
   el('storyBtn').addEventListener('click', addStory);
@@ -527,8 +527,9 @@ function drawMyStories(){
     if(!groups.length){ box.style.display = 'none'; return; }
     box.style.display = 'flex';
     box.innerHTML = groups.map(function(g, i){
+      const seenAll = g.items.every(function(s){ return isStorySeen(s.id); });
       return '<button class="story" data-i="' + i + '">' +
-        '<div class="story-ring"><img src="https://api.dicebear.com/7.x/initials/svg?seed=' +
+        '<div class="story-ring ' + (seenAll ? 'seen' : 'fresh') + '"><img src="https://api.dicebear.com/7.x/initials/svg?seed=' +
         encodeURIComponent(g.name) + '"></div>' +
         '<span>' + esc(g.name) + '</span></button>';
     }).join('');
