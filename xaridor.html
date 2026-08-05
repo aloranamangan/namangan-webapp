@@ -66,6 +66,13 @@ let LIKED = {};
 let SAVED = [];
 
 function boot(){
+  checkRestriction(function(stop){
+    if(stop) return;
+    bootReal();
+  });
+}
+
+function bootReal(){
   loadLocal();
   checkUser(function(u){
     if(needReg()){

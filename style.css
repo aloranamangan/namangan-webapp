@@ -368,3 +368,51 @@ body{
 /* Storiy halqasi: yangi / ko'rilgan */
 .story-ring.seen{background:#3a3a3a !important;}
 .story-ring.fresh{background:linear-gradient(45deg,#F58529,#FEDA77,#DD2A7B,#8134AF,#515BD4) !important;}
+
+/* ---------- Bloklangan ekrani ---------- */
+.blocked-screen{
+  position:fixed;inset:0;z-index:9000;background:#0a0a0a;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:40px 28px;text-align:center;
+}
+.bl-circle{
+  width:130px;height:130px;border-radius:50%;
+  border:5px solid #ED4956;position:relative;margin-bottom:34px;
+  display:flex;align-items:center;justify-content:center;
+}
+.bl-circle::after{
+  content:'';position:absolute;width:150%;height:5px;
+  background:#ED4956;transform:rotate(-45deg);border-radius:3px;
+}
+.bl-circle span{font-size:52px;}
+.blocked-screen h2{font-size:24px;font-weight:800;color:#fff;margin-bottom:12px;line-height:1.3;}
+.blocked-screen p{font-size:15px;color:#999;line-height:1.6;}
+.bl-until{
+  margin-top:22px;padding:12px 22px;border-radius:100px;
+  background:rgba(237,73,86,.12);border:1px solid rgba(237,73,86,.4);
+  color:#ED4956;font-size:14px;font-weight:700;
+}
+
+/* ---------- Bloklangan ekrani ---------- */
+.blocked-screen{
+  position:fixed;inset:0;z-index:9000;background:#0a0a0a;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:40px 28px;text-align:center;
+}
+.bl-circle{
+  width:130px;height:130px;border-radius:50%;
+  border:5px solid #ED4956;position:relative;margin-bottom:34px;
+  display:flex;align-items:center;justify-content:center;
+}
+.bl-circle::after{
+  content:'';position:absolute;width:150%;height:5px;
+  background:#ED4956;transform:rotate(-45deg);border-radius:3px;
+}
+.bl-circle span{font-size:52px;}
+.blocked-screen h2{font-size:24px;font-weight:800;color:#fff;margin-bottom:12px;line-height:1.3;}
+.blocked-screen p{font-size:15px;color:#999;line-height:1.6;}
+.bl-until{
+  margin-top:22px;padding:12px 22px;border-radius:100px;
+  background:rgba(237,73,86,.12);border:1px solid rgba(237,73,86,.4);
+  color:#ED4956;font-size:14px;font-weight:700;
+}

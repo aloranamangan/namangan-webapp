@@ -45,6 +45,13 @@ let picked = [];
 const MAX_MEDIA = 10;
 
 function boot(){
+  checkRestriction(function(stop){
+    if(stop) return;
+    bootReal();
+  });
+}
+
+function bootReal(){
   let tries = 0;
   const wait = setInterval(function(){
     tries++;

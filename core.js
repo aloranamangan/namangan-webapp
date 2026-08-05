@@ -145,3 +145,98 @@ function pickFiles(multiple, cb){
 }
 
 document.addEventListener('DOMContentLoaded', tgReady);
+
+// ---------- Cheklovni tekshirish ----------
+function checkRestriction(cb){
+  const id = myId();
+  if(!id){ cb(false); return; }
+
+  api('/api/cheklov?tg_id=' + id).then(function(d){
+    if(d.blocked){ showBlocked('block', d.block_until); cb(true); return; }
+    if(d.paused){ showBlocked('pause', d.pause_until); cb(true); return; }
+    cb(false);
+  }).catch(function(){ cb(false); });
+}
+
+function showBlocked(kind, until){
+  const isBlock = kind === 'block';
+  const d = document.createElement('div');
+  d.className = 'blocked-screen';
+
+  let untilTxt = '';
+  if(until && until.length > 4){
+    const dt = new Date(until.replace(' ', 'T'));
+    if(!isNaN(dt)){
+      const days = Math.max(0, Math.ceil((dt - new Date()) / 86400000));
+      untilTxt = '<div class="bl-until">' + days + ' kundan keyin ochiladi</div>';
+    }
+  }
+
+  d.innerHTML =
+    '<div class="bl-circle"><span>' + (isBlock ? '&#128683;' : '&#9208;&#65039;') + '</span></div>' +
+    '<h2>' + (isBlock ? 'Vaqtincha bloklandingiz' : 'Vaqtincha toxtatildingiz') + '</h2>' +
+    '<p>' + (isBlock
+      ? 'Qoidalarni buzganingiz uchun hisobingiz cheklandi.<br>Savol boisa admin bilan boglaning.'
+      : 'Hisobingiz vaqtincha toxtatib qoyildi.<br>Muddat tugagach avtomatik ochiladi.') + '</p>' +
+    untilTxt +
+    '<button id="blAdmin" style="margin-top:26px;padding:14px 30px;border:none;border-radius:100px;' +
+    'background:#0095F6;color:#fff;font-size:15px;font-weight:800;cursor:pointer;' +
+    'font-family:inherit;">&#128172; Admin bilan boglanish</button>';
+
+  document.body.innerHTML = '';
+  document.body.appendChild(d);
+
+  const b = document.getElementById('blAdmin');
+  if(b) b.addEventListener('click', function(){
+    const u = 'https://t.me/Ijara_admin_namangan';
+    if(TG && TG.openTelegramLink) TG.openTelegramLink(u);
+    else window.open(u, '_blank');
+  });
+}
+
+// ---------- Cheklovni tekshirish ----------
+function checkRestriction(cb){
+  const id = myId();
+  if(!id){ cb(false); return; }
+  api('/api/cheklov?tg_id=' + id).then(function(d){
+    if(d.blocked){ showBlocked('block', d.block_until); cb(true); return; }
+    if(d.paused){ showBlocked('pause', d.pause_until); cb(true); return; }
+    cb(false);
+  }).catch(function(){ cb(false); });
+}
+
+function showBlocked(kind, until){
+  const isBlock = kind === 'block';
+  const d = document.createElement('div');
+  d.className = 'blocked-screen';
+
+  let untilTxt = '';
+  if(until && until.length > 4){
+    const dt = new Date(until.replace(' ', 'T'));
+    if(!isNaN(dt)){
+      const days = Math.max(0, Math.ceil((dt - new Date()) / 86400000));
+      untilTxt = '<div class="bl-until">' + days + ' kundan keyin ochiladi</div>';
+    }
+  }
+
+  d.innerHTML =
+    '<div class="bl-circle"><span>' + (isBlock ? '&#128683;' : '&#9208;&#65039;') + '</span></div>' +
+    '<h2>' + (isBlock ? 'Vaqtincha bloklandingiz' : 'Vaqtincha toxtatildingiz') + '</h2>' +
+    '<p>' + (isBlock
+      ? 'Qoidalarni buzganingiz uchun hisobingiz cheklandi.<br>Savol boisa admin bilan boglaning.'
+      : 'Hisobingiz vaqtincha toxtatib qoyildi.<br>Muddat tugagach avtomatik ochiladi.') + '</p>' +
+    untilTxt +
+    '<button id="blAdmin" style="margin-top:26px;padding:14px 30px;border:none;border-radius:100px;' +
+    'background:#0095F6;color:#fff;font-size:15px;font-weight:800;cursor:pointer;' +
+    'font-family:inherit;">&#128172; Admin bilan boglanish</button>';
+
+  document.body.innerHTML = '';
+  document.body.appendChild(d);
+
+  const b = document.getElementById('blAdmin');
+  if(b) b.addEventListener('click', function(){
+    const u = 'https://t.me/Ijara_admin_namangan';
+    if(TG && TG.openTelegramLink) TG.openTelegramLink(u);
+    else window.open(u, '_blank');
+  });
+}
