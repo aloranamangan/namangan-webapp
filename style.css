@@ -319,10 +319,12 @@ body{
 }
 .dm-full .dm-top{padding-top:16px;}
 .chat-full{
-  position:fixed;inset:0;z-index:950;background:#000;
+  position:fixed;top:0;left:0;right:0;bottom:76px;z-index:950;background:#000;
   display:flex;flex-direction:column;
   padding-top:env(safe-area-inset-top);
 }
+.chat-full .msg-bar{position:absolute;bottom:0;left:0;right:0;padding-bottom:11px;}
+.chat-full .msgs{padding-bottom:70px;}
 .chat-hd{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line);}
 .chat-hd button{background:none;border:none;color:#fff;font-size:22px;cursor:pointer;padding:0;}
 .chat-hd img{width:36px;height:36px;border-radius:50%;object-fit:cover;}
