@@ -216,7 +216,7 @@ function drawGrid(){
 
   g.querySelectorAll('.cell[data-full]').forEach(function(c){
     c.addEventListener('click', function(){
-      openViewer(c.dataset.full, c.dataset.v === '1');
+      openViewer(c.dataset.full, c.dataset.v === '1', true);
     });
   });
 }

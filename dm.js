@@ -376,7 +376,7 @@ function openShare(post){
 }
 
 // ---------- To'liq ekran ko'rish ----------
-function openViewer(url, isVideo){
+function openViewer(url, isVideo, showStory){
   const v = document.createElement('div');
   v.className = 'viewer';
   v.innerHTML =
@@ -384,14 +384,31 @@ function openViewer(url, isVideo){
     (isVideo
       ? '<video src="' + url + '" controls autoplay playsinline></video>'
       : '<img src="' + url + '">') +
-    '<button class="viewer-dl">&#11015;&#65039; Yuklab olish</button>';
+    '<div style="position:absolute;bottom:calc(22px + env(safe-area-inset-bottom));left:0;right:0;display:flex;gap:10px;justify-content:center;padding:0 16px;">' +
+      (showStory ? '<button class="viewer-dl" id="vwStory" style="position:static;transform:none;">&#128248; Storiyga</button>' : '') +
+      '<button class="viewer-dl" id="vwDl" style="position:static;transform:none;">&#11015;&#65039; Yuklab olish</button>' +
+    '</div>';
 
   document.body.appendChild(v);
+
+  const stBtn = v.querySelector('#vwStory');
+  if(stBtn){
+    stBtn.addEventListener('click', function(e){
+      e.stopPropagation();
+      const fid = url.split('/media/')[1];
+      if(!fid){ toast('Media topilmadi'); return; }
+      apiPost('/api/story-qoshish', { file_id: fid, is_video: isVideo })
+        .then(function(d){
+          if(d.ok){ haptic('medium'); toast('Storiyga qoshildi'); v.remove(); }
+          else toast('Xato yuz berdi');
+        }).catch(function(){ toast('Server xatosi'); });
+    });
+  }
 
   v.querySelector('.viewer-close').addEventListener('click', function(){ v.remove(); });
   v.addEventListener('click', function(e){ if(e.target === v) v.remove(); });
 
-  v.querySelector('.viewer-dl').addEventListener('click', function(e){
+  v.querySelector('#vwDl').addEventListener('click', function(e){
     e.stopPropagation();
     const a = document.createElement('a');
     a.href = url;
