@@ -82,6 +82,7 @@ function draw(list){
     if(u.instagram) links.push('<a href="https://instagram.com/' + esc(u.instagram.replace(/^@/,'')) + '" target="_blank">IG</a>');
     links.push('<a href="tg://user?id=' + u.tg_id + '">TG</a>');
 
+    const vr = u.verified ? '<span class="rb" style="background:rgba(0,149,246,.18);color:#0095F6;">&#10004; Galichka</span>' : '';
     const bl = u.blocked ? '<span class="rb" style="background:rgba(237,73,86,.16);color:#ED4956;">Bloklangan</span>' : '';
     const ps = u.paused ? '<span class="rb pd">Toxtatilgan</span>' : '';
 
@@ -89,8 +90,8 @@ function draw(list){
       '<img src="https://api.dicebear.com/7.x/initials/svg?seed=' + encodeURIComponent(nm) + '">' +
       '<div class="ai"><b>' + esc(nm) + '</b>' +
       '<div class="ln">' + links.join(' &middot; ') + '</div>' +
-      '<div style="display:flex;gap:5px;margin-top:5px;flex-wrap:wrap;">' + role + st + bl + ps + '</div></div>' +
-      '<button class="icon-btn menu-btn">&#8942;</button></div>';
+      '<div style="display:flex;gap:5px;margin-top:5px;flex-wrap:wrap;">' + role + st + vr + bl + ps + '</div></div>' +
+      '<button class="menu-btn" style="width:34px;height:34px;border:none;background:none;color:#fff;font-size:20px;cursor:pointer;flex-shrink:0;">&#8942;</button></div>';
   }).join('');
 
   box.querySelectorAll('.menu-btn').forEach(function(b){
@@ -111,6 +112,10 @@ function openUserMenu(u){
     '<div class="sheet-bar"></div>' +
     '<div class="sheet-title">' + esc(nm) + '</div>' +
     '<button class="sheet-item" data-a="edit">&#9999;&#65039; Tahrirlash</button>' +
+    (u.username
+      ? '<button class="sheet-item" data-a="' + (u.verified ? 'unverify' : 'verify') + '">' +
+        (u.verified ? '&#10060; Galichkani olish' : '&#9989; Galichka berish') + '</button>'
+      : '') +
     '<button class="sheet-item" data-a="' + (u.paused ? 'unpause' : 'pause') + '">' +
       (u.paused ? '&#9654;&#65039; Ishga tushirish' : '&#9208;&#65039; Vaqtincha toxtatish') + '</button>' +
     '<button class="sheet-item" data-a="' + (u.blocked ? 'unblock' : 'block') + '">' +
@@ -127,7 +132,7 @@ function openUserMenu(u){
       const a = b.dataset.a;
       if(a === 'edit'){ bg.remove(); editUser(u); return; }
       if(a === 'delete' && !confirm('Butunlay ochirasizmi?\n\nBarcha elonlar, obunachilar, xabarlar ochadi.')) return;
-      doAdmin(a, u.tg_id, {});
+      doAdmin(a, u.tg_id, { username: u.username || '' });
       bg.remove();
     });
   });
