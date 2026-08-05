@@ -167,12 +167,18 @@ function openChat(otherId, otherName){
         if(m.file_id){
           const u = mediaUrl(m.file_id);
           inner += m.is_video
-            ? '<video src="' + u + '" controls playsinline></video>'
-            : '<img src="' + u + '">';
+            ? '<video src="' + u + '" playsinline muted data-full="' + u + '" data-v="1"></video>'
+            : '<img src="' + u + '" data-full="' + u + '" data-v="0">';
         }
         if(m.text) inner += esc(m.text);
         return '<div class="msg ' + (mine ? 'me' : 'you') + '">' + inner + '</div>';
       }).join('');
+      box.querySelectorAll('[data-full]').forEach(function(m){
+        m.style.cursor = 'pointer';
+        m.addEventListener('click', function(){
+          openViewer(m.dataset.full, m.dataset.v === '1');
+        });
+      });
       box.scrollTop = box.scrollHeight;
     }).catch(function(){});
   }
@@ -362,5 +368,34 @@ function openShare(post){
     }).catch(function(){
       toast('Server xatosi'); b.disabled = false; b.textContent = 'Yuborish';
     });
+  });
+}
+
+// ---------- To'liq ekran ko'rish ----------
+function openViewer(url, isVideo){
+  const v = document.createElement('div');
+  v.className = 'viewer';
+  v.innerHTML =
+    '<button class="viewer-close">&times;</button>' +
+    (isVideo
+      ? '<video src="' + url + '" controls autoplay playsinline></video>'
+      : '<img src="' + url + '">') +
+    '<button class="viewer-dl">&#11015;&#65039; Yuklab olish</button>';
+
+  document.body.appendChild(v);
+
+  v.querySelector('.viewer-close').addEventListener('click', function(){ v.remove(); });
+  v.addEventListener('click', function(e){ if(e.target === v) v.remove(); });
+
+  v.querySelector('.viewer-dl').addEventListener('click', function(e){
+    e.stopPropagation();
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = isVideo ? 'video.mp4' : 'rasm.jpg';
+    a.target = '_blank';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    toast('Yuklanmoqda...');
   });
 }
