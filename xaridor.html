@@ -357,10 +357,18 @@ function openComments(p){
   bg.addEventListener('click', function(e){ if(e.target === bg) bg.remove(); });
   el('cmSheet').addEventListener('click', function(e){ e.stopPropagation(); });
 
-  draw();
+  el('cmList').innerHTML = '<div class="load">Yuklanmoqda...</div>';
   api('/api/komentlar?post_id=' + p.id)
-    .then(function(d){ if(d.ok){ p.comments = d.comments || []; draw(); } })
-    .catch(function(){});
+    .then(function(d){
+      p.comments = (d.ok && d.comments) ? d.comments : [];
+      draw();
+      const art = document.querySelector('.post[data-id="' + p.id + '"]');
+      if(art){
+        const sp = art.querySelector('.cm span');
+        if(sp) sp.textContent = fmt(p.comments.length);
+      }
+    })
+    .catch(function(){ draw(); });
 
   el('cmSend').addEventListener('click', send);
   el('cmInp').addEventListener('keypress', function(e){ if(e.key === 'Enter') send(); });
