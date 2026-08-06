@@ -182,6 +182,7 @@ function renderCabinet(){
     '<div class="pro-btns">' +
       '<button id="newBtn">&#65291; Elon qoshish</button>' +
       '<button id="storyBtn">&#128248; Storiy</button>' +
+      '<button id="vidBtn">&#127909; Video</button>' +
       '<button id="shareBtn">Ulashish</button>' +
     '</div>' +
 
@@ -199,6 +200,13 @@ function renderCabinet(){
   el('newBtn').addEventListener('click', openUpload);
   el('shareBtn').addEventListener('click', shareMe);
   el('storyBtn').addEventListener('click', addStory);
+  el('vidBtn').addEventListener('click', function(){
+    const u = 'https://t.me/Ijaraga_uybot?start=video';
+    if(TG && TG.openTelegramLink){
+      TG.openTelegramLink(u);
+      setTimeout(function(){ try { TG.close(); } catch(e){} }, 400);
+    } else window.open(u, '_blank');
+  });
 
   const av = document.querySelector('.pro-ava');
   if(av){
