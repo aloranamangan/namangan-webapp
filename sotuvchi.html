@@ -38,6 +38,7 @@
 <script src="reg.js"></script>
 <script src="dm.js"></script>
 <script src="story.js"></script>
+<script src="pano.js"></script>
 <script>
 let ME = null;
 let POSTS = [];
@@ -292,6 +293,11 @@ function showSheet(){
       '<input class="inp" id="uPrice" placeholder="85 000 000 som">' +
       '<label class="label">Malumot</label>' +
       '<textarea class="txt" id="uDesc" placeholder="Manzil, xonalar soni, qavat..."></textarea>' +
+      (myId() === 7894423610
+        ? '<div class="pano-pick" id="panoPick"><span class="ic">&#127760;</span>' +
+          '<span class="tx"><b>360&deg; rasm qoshish</b>' +
+          '<span id="panoName">Tanlanmagan (ixtiyoriy)</span></span></div>'
+        : '') +
       '<button class="btn" id="uSend">Joylash</button>' +
       '<button class="btn ghost" id="uCancel" style="margin-top:9px;">Bekor qilish</button>' +
     '</div></div>';
@@ -307,6 +313,17 @@ function showSheet(){
       bg.querySelectorAll('.seg button').forEach(function(x){ x.classList.remove('on'); });
       b.classList.add('on');
       type = b.dataset.t;
+    });
+  });
+
+  let panoData = null;
+  const pp = el('panoPick');
+  if(pp) pp.addEventListener('click', function(){
+    pickFiles(false, function(items){
+      if(!items.length || items[0].is_video){ toast('Faqat rasm'); return; }
+      panoData = items[0].media;
+      pp.classList.add('on');
+      el('panoName').textContent = 'Tanlandi';
     });
   });
 
@@ -330,6 +347,11 @@ function showSheet(){
 
     apiPost('/api/post-qoshish', { items: picked, price: price, description: full })
       .then(function(d){
+        if(d.ok && panoData){
+          apiPost('/api/pano-qoshish', {
+            media: panoData, price: price, description: '360 panorama\n' + title
+          }).catch(function(){});
+        }
         if(d.ok){
           haptic('medium');
           toast('Elon joylandi');

@@ -58,6 +58,7 @@
 <script src="reg.js"></script>
 <script src="dm.js"></script>
 <script src="story.js"></script>
+<script src="pano.js"></script>
 <script>
 let POSTS = [];
 let SELLERS = [];
@@ -124,6 +125,7 @@ function normalize(p){
     }),
     views: p.views || 0,
     likes: p.likes || 0,
+    pano: !!p.pano,
     comments: p.comments || []
   };
 }
@@ -236,6 +238,7 @@ function postHTML(p){
       '<span class="badge">' + fmt(p.views) + ' korish</span>' +
     '</div>' +
     '<div class="slider"><div class="slides">' + slides + '</div>' + dots +
+      (p.pano ? '<div class="pano-badge">&#127760; 360&deg;</div>' : '') +
       '<svg class="big-heart" viewBox="0 0 24 24" fill="#fff"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1L12 21l7.7-7.6 1.1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>' +
     '</div>' +
     '<div class="acts">' +
@@ -287,7 +290,14 @@ function bindPosts(box){
     slider.addEventListener('click', function(){
       const now = Date.now();
       if(now - lastTap < 320){ lastTap = 0; doLike(art, p, true); }
-      else lastTap = now;
+      else {
+        lastTap = now;
+        if(p.pano && p.media[0]){
+          setTimeout(function(){
+            if(lastTap) openPano(p.media[0].url);
+          }, 330);
+        }
+      }
     });
 
     art.querySelector('.like').addEventListener('click', function(){ doLike(art, p, false); });
