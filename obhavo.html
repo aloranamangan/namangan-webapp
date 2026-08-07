@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Ob-havo</title>
+<link rel="stylesheet" href="weather.css">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+
+<div id="fx"></div>
+<div class="bolt" id="bolt"></div>
+
+<div class="wrap">
+  <div class="top">
+    <div class="city">
+      <h1 id="cName">Namangan</h1>
+      <p id="cTime">—</p>
+    </div>
+    <button class="ico-btn" id="btnTheme">🌙</button>
+    <button class="ico-btn" id="btnGeo">📍</button>
+  </div>
+
+  <div class="view on" id="vHome"><div class="load">Yuklanmoqda...</div></div>
+  <div class="view" id="vHours"></div>
+  <div class="view" id="vAir"></div>
+  <div class="view" id="vCities"></div>
+</div>
+
+<nav class="nav">
+  <button class="on" data-v="vHome"><span class="ni">☀️</span>Bugun</button>
+  <button data-v="vHours"><span class="ni">📊</span>Prognoz</button>
+  <button data-v="vAir"><span class="ni">🌬️</span>Havo</button>
+  <button data-v="vCities"><span class="ni">🔍</span>Shaharlar</button>
+</nav>
+
+<script>
+const TG = (window.Telegram && window.Telegram.WebApp) ? window.Telegram.WebApp : null;
+try { if(TG){ TG.ready(); TG.expand(); } } catch(e){}
+
+let LAT = 40.9983, LON = 71.6726, CITY = 'Namangan';
+let DATA = null, AIR = null;
+
+const el = id => document.getElementById(id);
+
+const WMO = {
+  0:['Ochiq osmon','☀️','sunny'], 1:['Asosan ochiq','🌤️','sunny'],
+  2:['Qisman bulutli','⛅','cloudy'], 3:['Bulutli','☁️','cloudy'],
+  45:['Tuman','🌫️','fog'], 48:['Qirovli tuman','🌫️','fog'],
+  51:['Yengil shivalama','🌦️','rain'], 53:['Shivalama','🌦️','rain'], 55:['Kuchli shivalama','🌧️','rain'],
+  61:['Yengil yomgir','🌦️','rain'], 63:['Yomgir','🌧️','rain'], 65:['Kuchli yomgir','🌧️','rain'],
+  66:['Muzli yomgir','🌨️','snow'], 67:['Kuchli muzli yomgir','🌨️','snow'],
+  71:['Yengil qor','🌨️','snow'], 73:['Qor','❄️','snow'], 75:['Kuchli qor','❄️','snow'],
+  77:['Qor donalari','❄️','snow'],
+  80:['Yomgir jala','🌦️','rain'], 81:['Jala','🌧️','rain'], 82:['Kuchli jala','⛈️','rain'],
+  85:['Qor jalasi','🌨️','snow'], 86:['Kuchli qor jalasi','❄️','snow'],
+  95:['Momaqaldiroq','⛈️','storm'], 96:['Dol bilan momaqaldiroq','⛈️','storm'],
+  99:['Kuchli momaqaldiroq','⛈️','storm']
+};
+
+const GRAD = {
+  sunny:['#2E5BFF','#5AC8FA'], sunnyNight:['#0B1026','#1a2980'],
+  cloudy:['#3E5151','#7F8C8D'], rain:['#1F1C2C','#3A6073'],
+  storm:['#0F0C29','#302B63'], snow:['#4A6B8A','#96C5E8'],
+  fog:['#4B5563','#9CA3AF']
+};
+
+function wmo(c){ return WMO[c] || ['—','🌡️','cloudy']; }
+
+// ===== Fon effektlari =====
+function setFx(kind, isNight){
+  const fx = el('fx');
+  fx.innerHTML = '';
+
+  const g = isNight && kind === 'sunny' ? GRAD.sunnyNight : (GRAD[kind] || GRAD.cloudy);
+  document.body.style.setProperty('--g1', g[0]);
+  document.body.style.setProperty('--g2', g[1]);
+
+  if(isNight){
+    const m = document.createElement('div');
+    m.className = 'moon';
+    fx.appendChild(m);
+    for(let i = 0; i < 46; i++){
+      const s = document.createElement('div');
+      s.className = 'star';
+      s.style.left = Math.random() * 100 + '%';
+      s.style.top = Math.random() * 62 + '%';
+      s.style.animationDelay = (Math.random() * 3) + 's';
+      s.style.width = s.style.height = (Math.random() * 2 + 1.2) + 'px';
+      fx.appendChild(s);
+    }
+  } else if(kind === 'sunny'){
+    const s = document.createElement('div');
+    s.className = 'sun-core';
+    fx.appendChild(s);
+  }
+
+  if(kind === 'cloudy' || kind === 'rain' || kind === 'storm' || kind === 'snow'){
+    const n = kind === 'cloudy' ? 5 : 4;
+    for(let i = 0; i < n; i++){
+      const c = document.createElement('div');
+      c.className = 'cloud';
+      const w = 110 + Math.random() * 130;
+      c.style.width = w + 'px';
+      c.style.height = (w * 0.3) + 'px';
+      c.style.top = (6 + Math.random() * 34) + '%';
+      c.style.opacity = 0.3 + Math.random() * 0.35;
+      c.style.animationDuration = (26 + Math.random() * 34) + 's';
+      c.style.animationDelay = '-' + (Math.random() * 30) + 's';
+      fx.appendChild(c);
+    }
+  }
+
+  if(kind === 'rain' || kind === 'storm'){
+    for(let i = 0; i < 70; i++){
+      const d = document.createElement('div');
+      d.className = 'drop';
+      d.style.left = Math.random() * 100 + '%';
+      d.style.top = '-' + (Math.random() * 30 + 8) + 'vh';
+      d.style.height = (14 + Math.random() * 22) + 'px';
+      d.style.opacity = 0.25 + Math.random() * 0.5;
+      d.style.animationDuration = (0.55 + Math.random() * 0.65) + 's';
+      d.style.animationDelay = '-' + (Math.random() * 2) + 's';
+      fx.appendChild(d);
+    }
+  }
+
+  if(kind === 'snow'){
+    for(let i = 0; i < 42; i++){
+      const f = document.createElement('div');
+      f.className = 'flake';
+      f.textContent = '❄';
+      f.style.left = Math.random() * 100 + '%';
+      f.style.fontSize = (7 + Math.random() * 13) + 'px';
+      f.style.opacity = 0.4 + Math.random() * 0.6;
+      f.style.animationDuration = (7 + Math.random() * 10) + 's';
+      f.style.animationDelay = '-' + (Math.random() * 12) + 's';
+      fx.appendChild(f);
+    }
+  }
+
+  if(kind === 'fog'){
+    for(let i = 0; i < 5; i++){
+      const m = document.createElement('div');
+      m.className = 'mist';
+      m.style.top = (12 + i * 18) + '%';
+      m.style.animationDuration = (16 + Math.random() * 18) + 's';
+      m.style.animationDelay = '-' + (Math.random() * 14) + 's';
+      fx.appendChild(m);
+    }
+  }
+
+  if(window.__blt) clearInterval(window.__blt);
+  if(kind === 'storm'){
+    window.__blt = setInterval(function(){
+      const b = el('bolt');
+      b.classList.remove('flash');
+      void b.offsetWidth;
+      b.classList.add('flash');
+    }, 3800 + Math.random() * 3600);
+  }
+}
+
+// ===== Ma'lumot olish =====
+function load(){
+  el('vHome').innerHTML = '<div class="load">Yuklanmoqda...</div>';
+
+  const u = 'https://api.open-meteo.com/v1/forecast?latitude=' + LAT + '&longitude=' + LON +
+    '&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,' +
+    'weather_code,cloud_cover,pressure_msl,wind_speed_10m,wind_direction_10m,visibility,dew_point_2m' +
+    '&hourly=temperature_2m,weather_code,precipitation_probability' +
+    '&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,' +
+    'precipitation_probability_max&timezone=auto&forecast_days=10';
+
+  const a = 'https://air-quality-api.open-meteo.com/v1/air-quality?latitude=' + LAT +
+    '&longitude=' + LON + '&current=european_aqi,pm10,pm2_5,carbon_monoxide,nitrogen_dioxide,ozone' +
+    '&timezone=auto';
+
+  Promise.all([
+    fetch(u).then(r => r.json()),
+    fetch(a).then(r => r.json()).catch(() => null)
+  ]).then(function(r){
+    DATA = r[0];
+    AIR = r[1];
+    render();
+  }).catch(function(){
+    el('vHome').innerHTML = '<div class="load">Malumot olinmadi.<br>Internetni tekshiring.</div>';
+  });
+}
+
+function render(){
+  if(!DATA || !DATA.current) return;
+  const c = DATA.current, d = DATA.daily;
+  const w = wmo(c.weather_code);
+  const night = c.is_day === 0;
+
+  setFx(w[2], night);
+
+  el('cName').textContent = CITY;
+  el('cTime').textContent = new Date().toLocaleString('uz-UZ', {
+    weekday: 'long', hour: '2-digit', minute: '2-digit'
+  });
+
+  drawHome(c, d, w);
+  drawHours();
+  drawAir();
+}
+
+function drawHome(c, d, w){
+  const uv = (d.uv_index_max && d.uv_index_max[0]) || 0;
+  const aqi = (AIR && AIR.current) ? AIR.current.european_aqi : null;
+  const vis = c.visibility ? (c.visibility / 1000).toFixed(1) : '—';
+
+  let h = '';
+
+  if(c.weather_code >= 95){
+    h += '<div class="alert"><span style="font-size:20px;">⚠️</span>' +
+      '<div><b>Momaqaldiroq ogohlantirishi</b>' +
+      '<span>Ochiq joyda yurmang, daraxt tagida turmang.</span></div></div>';
+  }
+
+  h += '<div class="hero">' +
+    '<div class="deg">' + Math.round(c.temperature_2m) + '°</div>' +
+    '<div class="cond">' + w[1] + ' ' + w[0] + '</div>' +
+    '<div class="feels">His qilinadi ' + Math.round(c.apparent_temperature) + '°</div>' +
+    '<div class="mm">↑ ' + Math.round(d.temperature_2m_max[0]) + '°  ↓ ' +
+      Math.round(d.temperature_2m_min[0]) + '°</div>' +
+  '</div>';
+
+  // 24 soat
+  h += '<div class="glass"><div class="ttl">🕐 24 soatlik prognoz</div>' +
+    '<div class="hours">' + hoursHTML(24) + '</div></div>';
+
+  // 10 kun
+  h += '<div class="glass"><div class="ttl">📅 10 kunlik prognoz</div>' + daysHTML() + '</div>';
+
+  // Quyosh
+  h += '<div class="glass">' + sunHTML(d) + '</div>';
+
+  // Ko'rsatkichlar
+  h += '<div class="grid2">' +
+    cellHTML('💧 Namlik', c.relative_humidity_2m + '%',
+      'Shudring nuqtasi ' + Math.round(c.dew_point_2m) + '°',
+      c.relative_humidity_2m, '#5AC8FA') +
+    cellHTML('💨 Shamol', Math.round(c.wind_speed_10m) + ' <span style="font-size:15px">km/s</span>',
+      windDir(c.wind_direction_10m), Math.min(100, c.wind_speed_10m * 2.2), '#34C759') +
+    cellHTML('🌡 Bosim', Math.round(c.pressure_msl) + ' <span style="font-size:14px">gPa</span>',
+      c.pressure_msl > 1013 ? 'Yuqori bosim' : 'Past bosim',
+      Math.min(100, Math.max(0, (c.pressure_msl - 970) / 0.7)), '#FF9500') +
+    cellHTML('☀️ UV indeks', Math.round(uv), uvText(uv), Math.min(100, uv * 9), uvColor(uv)) +
+    cellHTML('👁 Korinish', vis + ' <span style="font-size:15px">km</span>',
+      vis > 10 ? 'Ajoyib' : (vis > 5 ? 'Yaxshi' : 'Cheklangan'),
+      Math.min(100, vis * 5), '#AF52DE') +
+    cellHTML('☁️ Bulutlar', c.cloud_cover + '%',
+      c.cloud_cover < 25 ? 'Ochiq' : (c.cloud_cover < 70 ? 'Qisman' : 'Qoplangan'),
+      c.cloud_cover, '#8E8E93') +
+  '</div>';
+
+  if(aqi !== null && aqi !== undefined){
+    h += '<div class="glass"><div class="ttl">🌬️ Havo sifati</div>' +
+      '<div style="display:flex;align-items:center;gap:16px;">' +
+      '<div style="font-size:44px;font-weight:300;color:' + aqiColor(aqi) + ';">' + Math.round(aqi) + '</div>' +
+      '<div><div style="font-size:16px;font-weight:700;">' + aqiText(aqi) + '</div>' +
+      '<div style="font-size:12.5px;color:var(--sub);margin-top:3px;">Yevropa AQI shkalasi</div></div></div>' +
+      '<div class="bar" style="margin-top:14px;"><i style="width:' +
+      Math.min(100, aqi) + '%;background:' + aqiColor(aqi) + '"></i></div></div>';
+  }
+
+  // Oy fazasi
+  h += '<div class="glass"><div class="ttl">🌙 Oy fazasi</div>' + moonHTML() + '</div>';
+
+  el('vHome').innerHTML = h;
+  animateSun(d);
+}
+
+function cellHTML(lb, val, sm, pct, col){
+  return '<div class="cell"><div class="lb">' + lb + '</div>' +
+    '<div class="vv">' + val + '</div>' +
+    '<div class="bar"><i style="width:' + Math.max(3, pct) + '%;background:' + col + '"></i></div>' +
+    '<div class="sm">' + sm + '</div></div>';
+}
+
+function hoursHTML(n){
+  const hh = DATA.hourly;
+  const now = new Date();
+  let start = 0;
+  for(let i = 0; i < hh.time.length; i++){
+    if(new Date(hh.time[i]) >= now){ start = Math.max(0, i - 1); break; }
+  }
+  let s = '';
+  for(let i = start; i < start + n && i < hh.time.length; i++){
+    const t = new Date(hh.time[i]);
+    const w = wmo(hh.weather_code[i]);
+    const p = hh.precipitation_probability ? hh.precipitation_probability[i] : 0;
+    s += '<div class="hr' + (i === start ? ' now' : '') + '">' +
+      '<div class="t">' + (i === start ? 'Hozir' : t.getHours() + ':00') + '</div>' +
+      '<div class="i">' + w[1] + '</div>' +
+      '<div class="d">' + Math.round(hh.temperature_2m[i]) + '°</div>' +
+      (p > 15 ? '<div class="p">' + p + '%</div>' : '<div class="p">&nbsp;</div>') +
+      '</div>';
+  }
+  return s;
+}
+
+function daysHTML(){
+  const d = DATA.daily;
+  let lo = Math.min.apply(null, d.temperature_2m_min);
+  let hi = Math.max.apply(null, d.temperature_2m_max);
+  const span = Math.max(1, hi - lo);
+  const nm = ['Yak','Dsh','Sesh','Chor','Pay','Jum','Shan'];
+  let s = '';
+  for(let i = 0; i < d.time.length; i++){
+    const dt = new Date(d.time[i]);
+    const w = wmo(d.weather_code[i]);
+    const a = (d.temperature_2m_min[i] - lo) / span * 100;
+    const b = (d.temperature_2m_max[i] - lo) / span * 100;
+    s += '<div class="day">' +
+      '<div class="n">' + (i === 0 ? 'Bugun' : nm[dt.getDay()]) + '</div>' +
+      '<div class="i">' + w[1] + '</div>' +
+      '<div class="lo">' + Math.round(d.temperature_2m_min[i]) + '°</div>' +
+      '<div class="r"><i style="left:' + a + '%;width:' + Math.max(6, b - a) + '%"></i></div>' +
+      '<div class="hi">' + Math.round(d.temperature_2m_max[i]) + '°</div>' +
+      '</div>';
+  }
+  return s;
+}
+
+function sunHTML(d){
+  const sr = new Date(d.sunrise[0]), ss = new Date(d.sunset[0]);
+  return '<div class="ttl">🌅 Quyosh chiqishi va botishi</div>' +
+    '<div class="sunbox">' +
+    '<svg class="arc" viewBox="0 0 300 74" preserveAspectRatio="none">' +
+    '<path d="M10,68 Q150,-6 290,68" fill="none" stroke="rgba(255,255,255,.24)" stroke-width="2" stroke-dasharray="4 5"/>' +
+    '</svg><div class="sundot" id="sdot" style="left:50%;top:20%"></div></div>' +
+    '<div class="suntimes"><span>🌅 ' + tm(sr) + '</span><span>🌇 ' + tm(ss) + '</span></div>';
+}
+
+function animateSun(d){
+  const dot = el('sdot');
+  if(!dot) return;
+  const sr = new Date(d.sunrise[0]).getTime();
+  const ss = new Date(d.sunset[0]).getTime();
+  const now = Date.now();
+  let p = (now - sr) / (ss - sr);
+  p = Math.max(0, Math.min(1, p));
+  const x = 10 + p * 280;
+  const y = 68 - Math.sin(p * Math.PI) * 66;
+  setTimeout(function(){
+    dot.style.left = (x / 300 * 100) + '%';
+    dot.style.top = (y / 74 * 100) + '%';
+  }, 220);
+}
+
+function moonHTML(){
+  const ph = moonPhase();
+  const names = ['Yangi oy','Osuvchi oroq','Birinchi chorak','Osuvchi oy',
+                 'Toliq oy','Kamayuvchi oy','Oxirgi chorak','Kamayuvchi oroq'];
+  const idx = Math.floor(ph * 8) % 8;
+  const shift = (ph < 0.5 ? ph * 2 : (1 - ph) * 2);
+  return '<div class="moonbox">' +
+    '<div class="moonvis"><i style="transform:translateX(' +
+      (ph < 0.5 ? (shift * 100) : (-shift * 100)) + '%)"></i></div>' +
+    '<div><div style="font-size:16px;font-weight:700;">' + names[idx] + '</div>' +
+    '<div style="font-size:12.5px;color:var(--sub);margin-top:4px;">Yoritilgan: ' +
+      Math.round(shift * 100) + '%</div></div></div>';
+}
+
+function moonPhase(){
+  const d = new Date();
+  const c = (d.getTime() / 1000) / 86400 + 2440587.5;
+  return ((c - 2451550.1) / 29.530588853) % 1;
+}
+
+// ===== Prognoz ekrani =====
+function drawHours(){
+  if(!DATA) return;
+  const d = DATA.daily;
+  let h = '<div class="glass"><div class="ttl">📊 48 soatlik batafsil</div>' +
+    '<div class="hours">' + hoursHTML(48) + '</div></div>';
+  h += '<div class="glass"><div class="ttl">📅 10 kunlik</div>' + daysHTML() + '</div>';
+
+  h += '<div class="glass"><div class="ttl">🌧 Yogingarchilik ehtimoli</div>';
+  const nm = ['Yak','Dsh','Sesh','Chor','Pay','Jum','Shan'];
+  for(let i = 0; i < d.time.length; i++){
+    const p = d.precipitation_probability_max ? d.precipitation_probability_max[i] : 0;
+    const dt = new Date(d.time[i]);
+    h += '<div class="day"><div class="n">' + (i === 0 ? 'Bugun' : nm[dt.getDay()]) + '</div>' +
+      '<div class="r" style="margin:0 10px;"><i style="left:0;width:' + Math.max(3, p) +
+      '%;background:linear-gradient(90deg,#5AC8FA,#0A84FF)"></i></div>' +
+      '<div class="hi">' + p + '%</div></div>';
+  }
+  h += '</div>';
+  el('vHours').innerHTML = h;
+}
+
+// ===== Havo sifati =====
+function drawAir(){
+  if(!AIR || !AIR.current){
+    el('vAir').innerHTML = '<div class="load">Havo malumoti yoq</div>';
+    return;
+  }
+  const a = AIR.current;
+  const aqi = a.european_aqi || 0;
+
+  let h = '<div class="glass" style="text-align:center;padding:26px 18px;">' +
+    '<div style="font-size:12px;font-weight:800;letter-spacing:.14em;color:var(--sub);">HAVO SIFATI INDEKSI</div>' +
+    '<div style="font-size:76px;font-weight:200;color:' + aqiColor(aqi) + ';line-height:1.1;margin:8px 0;">' +
+      Math.round(aqi) + '</div>' +
+    '<div style="font-size:19px;font-weight:700;">' + aqiText(aqi) + '</div>' +
+    '<div class="bar" style="margin-top:18px;height:8px;"><i style="width:' +
+      Math.min(100, aqi) + '%;background:' + aqiColor(aqi) + '"></i></div>' +
+    '<div style="font-size:12.5px;color:var(--sub);margin-top:12px;line-height:1.5;">' +
+      aqiAdvice(aqi) + '</div></div>';
+
+  h += '<div class="grid2">' +
+    cellHTML('PM2.5', (a.pm2_5 || 0).toFixed(1) + ' <span style="font-size:13px">µg/m³</span>',
+      'Mayda zarrachalar', Math.min(100, (a.pm2_5 || 0) * 4), '#FF9500') +
+    cellHTML('PM10', (a.pm10 || 0).toFixed(1) + ' <span style="font-size:13px">µg/m³</span>',
+      'Yirik zarrachalar', Math.min(100, (a.pm10 || 0) * 2), '#FF6482') +
+    cellHTML('Ozon', (a.ozone || 0).toFixed(0) + ' <span style="font-size:13px">µg/m³</span>',
+      'O₃', Math.min(100, (a.ozone || 0) / 2), '#5AC8FA') +
+    cellHTML('NO₂', (a.nitrogen_dioxide || 0).toFixed(1) + ' <span style="font-size:13px">µg/m³</span>',
+      'Azot dioksidi', Math.min(100, (a.nitrogen_dioxide || 0) * 2), '#BF5AF2') +
+  '</div>';
+
+  const uv = (DATA && DATA.daily.uv_index_max) ? DATA.daily.uv_index_max[0] : 0;
+  h += '<div class="glass"><div class="ttl">☀️ UV indeks</div>' +
+    '<div style="display:flex;align-items:center;gap:18px;">' +
+    '<div style="font-size:52px;font-weight:200;color:' + uvColor(uv) + ';">' + Math.round(uv) + '</div>' +
+    '<div><div style="font-size:16px;font-weight:700;">' + uvText(uv) + '</div>' +
+    '<div style="font-size:12.5px;color:var(--sub);margin-top:4px;line-height:1.5;">' +
+      uvAdvice(uv) + '</div></div></div>' +
+    '<div class="bar" style="margin-top:14px;"><i style="width:' +
+      Math.min(100, uv * 9) + '%;background:' + uvColor(uv) + '"></i></div></div>';
+
+  el('vAir').innerHTML = h;
+}
+
+// ===== Shaharlar =====
+const CITIES = [
+  ['Namangan', 40.9983, 71.6726], ['Toshkent', 41.2995, 69.2401],
+  ['Samarqand', 39.6270, 66.9750], ['Andijon', 40.7821, 72.3442],
+  ['Fargona', 40.3864, 71.7864], ['Buxoro', 39.7747, 64.4286],
+  ['Nukus', 42.4531, 59.6103], ['Qarshi', 38.8606, 65.7891],
+  ['Navoiy', 40.0844, 65.3792], ['Jizzax', 40.1158, 67.8422],
+  ['Guliston', 40.4897, 68.7842], ['Termiz', 37.2242, 67.2783],
+  ['Urganch', 41.5500, 60.6333], ['Chirchiq', 41.4689, 69.5822]
+];
+
+function drawCities(){
+  let h = '<input class="search-in" id="cq" placeholder="Shahar qidirish...">' +
+    '<div id="clist"></div>';
+  el('vCities').innerHTML = h;
+
+  function draw(q){
+    q = (q || '').toLowerCase();
+    const list = CITIES.filter(c => c[0].toLowerCase().indexOf(q) !== -1);
+    el('clist').innerHTML = list.map(function(c){
+      return '<div class="city-row" data-la="' + c[1] + '" data-lo="' + c[2] + '" data-n="' + c[0] + '">' +
+        '<div><b>' + c[0] + '</b><br><span>Ozbekiston</span></div>' +
+        '<span style="font-size:18px;">→</span></div>';
+    }).join('');
+
+    document.querySelectorAll('.city-row').forEach(function(r){
+      r.addEventListener('click', function(){
+        LAT = parseFloat(r.dataset.la);
+        LON = parseFloat(r.dataset.lo);
+        CITY = r.dataset.n;
+        try { localStorage.setItem('w_city', JSON.stringify([CITY, LAT, LON])); } catch(e){}
+        go('vHome');
+        load();
+      });
+    });
+  }
+
+  draw('');
+  el('cq').addEventListener('input', e => draw(e.target.value));
+}
+
+// ===== Yordamchilar =====
+function tm(d){
+  return d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0');
+}
+function windDir(deg){
+  const d = ['Shimol','Sh-Sharq','Sharq','J-Sharq','Janub','J-Garb','Garb','Sh-Garb'];
+  return d[Math.round(deg / 45) % 8] + ' shamoli';
+}
+function uvText(u){
+  if(u < 3) return 'Past';
+  if(u < 6) return 'Ortacha';
+  if(u < 8) return 'Yuqori';
+  if(u < 11) return 'Juda yuqori';
+  return 'Ekstremal';
+}
+function uvColor(u){
+  if(u < 3) return '#34C759';
+  if(u < 6) return '#FFD60A';
+  if(u < 8) return '#FF9500';
+  if(u < 11) return '#FF3B30';
+  return '#BF5AF2';
+}
+function uvAdvice(u){
+  if(u < 3) return 'Himoya kerak emas';
+  if(u < 6) return 'Soyada yuring, kozoynak taqing';
+  if(u < 8) return 'Krem suring, shlyapa kiying';
+  return 'Quyoshdan saqlaning, 11:00-16:00 orasida chiqmang';
+}
+function aqiText(a){
+  if(a <= 20) return 'Ajoyib';
+  if(a <= 40) return 'Yaxshi';
+  if(a <= 60) return 'Ortacha';
+  if(a <= 80) return 'Yomon';
+  if(a <= 100) return 'Juda yomon';
+  return 'Xavfli';
+}
+function aqiColor(a){
+  if(a <= 20) return '#34C759';
+  if(a <= 40) return '#9EDF3C';
+  if(a <= 60) return '#FFD60A';
+  if(a <= 80) return '#FF9500';
+  if(a <= 100) return '#FF3B30';
+  return '#BF5AF2';
+}
+function aqiAdvice(a){
+  if(a <= 40) return 'Havo toza. Ochiq havoda faoliyat uchun ajoyib.';
+  if(a <= 60) return 'Sezgir odamlar uzoq yurishni cheklashi mumkin.';
+  if(a <= 80) return 'Nafas olish kasalliklari bolganlar ehtiyot bolsin.';
+  return 'Ochiq havoda uzoq bolmang, deraza yopiq tursin.';
+}
+
+function go(v){
+  document.querySelectorAll('.view').forEach(x => x.classList.remove('on'));
+  document.querySelectorAll('.nav button').forEach(x => x.classList.remove('on'));
+  const t = el(v);
+  if(t) t.classList.add('on');
+  const b = document.querySelector('.nav button[data-v="' + v + '"]');
+  if(b) b.classList.add('on');
+  window.scrollTo(0, 0);
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  try {
+    const s = JSON.parse(localStorage.getItem('w_city'));
+    if(s){ CITY = s[0]; LAT = s[1]; LON = s[2]; }
+  } catch(e){}
+
+  try {
+    if(localStorage.getItem('w_theme') === 'light'){
+      document.body.classList.add('light');
+      el('btnTheme').textContent = '☀️';
+    }
+  } catch(e){}
+
+  document.querySelectorAll('.nav button').forEach(function(b){
+    b.addEventListener('click', function(){
+      go(b.dataset.v);
+      if(b.dataset.v === 'vCities') drawCities();
+    });
+  });
+
+  el('btnTheme').addEventListener('click', function(){
+    document.body.classList.toggle('light');
+    const l = document.body.classList.contains('light');
+    el('btnTheme').textContent = l ? '☀️' : '🌙';
+    try { localStorage.setItem('w_theme', l ? 'light' : 'dark'); } catch(e){}
+  });
+
+  el('btnGeo').addEventListener('click', function(){
+    if(!navigator.geolocation){ alert('Geolokatsiya qollab-quvvatlanmaydi'); return; }
+    el('btnGeo').textContent = '⏳';
+    navigator.geolocation.getCurrentPosition(function(p){
+      LAT = p.coords.latitude;
+      LON = p.coords.longitude;
+      CITY = 'Mening joylashuvim';
+      el('btnGeo').textContent = '📍';
+      load();
+    }, function(){
+      el('btnGeo').textContent = '📍';
+      alert('Joylashuv aniqlanmadi');
+    });
+  });
+
+  load();
+  setInterval(load, 600000);
+});
+</script>
+</body>
+</html>
