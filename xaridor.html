@@ -27,6 +27,10 @@
   <div id="sellers"><div class="load">Yuklanmoqda...</div></div>
 </div>
 
+<div class="view" id="vProfile">
+  <div id="profBody"><div class="load">Yuklanmoqda...</div></div>
+</div>
+
 <div class="view" id="vSaved">
   <div id="saved"></div>
 </div>
@@ -51,6 +55,10 @@
   <button data-v="vSaved">
     <svg class="fillable" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
     Saqlangan
+  </button>
+  <button data-v="vProfile">
+    <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    Profil
   </button>
 </nav>
 
@@ -657,6 +665,7 @@ document.addEventListener('DOMContentLoaded', function(){
       const v = el(b.dataset.v);
       if(v) v.classList.add('on');
       if(b.dataset.v === 'vSaved') drawSaved();
+      if(b.dataset.v === 'vProfile') drawProfile();
       if(b.dataset.v === 'vSearch') drawSearch(el('q').value);
       window.scrollTo(0, 0);
     });
@@ -664,6 +673,75 @@ document.addEventListener('DOMContentLoaded', function(){
   el('q').addEventListener('input', function(e){ drawSearch(e.target.value); });
   boot();
 });
+
+
+function drawProfile(){
+  const box = el('profBody');
+  if(!box) return;
+  const u = USER || {};
+  const ava = u.avatar
+    ? mediaUrl(u.avatar)
+    : 'https://api.dicebear.com/7.x/initials/svg?seed=' + encodeURIComponent(u.name || 'U');
+
+  box.innerHTML =
+    '<div class="pro-top">' +
+      '<div class="pro-ava-wrap"><img class="pro-ava" id="pfAva" src="' + ava + '">' +
+      '<button class="pro-add" id="pfAvaBtn">+</button></div>' +
+      '<div style="flex:1;">' +
+        '<div style="font-size:17px;font-weight:800;">' + esc(u.name || 'Ismingiz') + '</div>' +
+        '<div style="font-size:13px;color:var(--muted);margin-top:3px;">' +
+          (u.nickname ? '@' + esc(u.nickname) : 'nik nomingiz') + '</div>' +
+      '</div>' +
+    '</div>' +
+
+    '<div class="wrap">' +
+      '<label class="label">Ism familiya</label>' +
+      '<input class="inp" id="pfName" value="' + esc(u.name || '') + '" placeholder="Bahromjon Karimov">' +
+      '<label class="label">Nik nomi</label>' +
+      '<input class="inp" id="pfNick" value="' + esc(u.nickname || '') + '" placeholder="bahromjon">' +
+      '<label class="label">Telefon</label>' +
+      '<div class="inp" style="color:#2ECC71;">&#10003; ' + esc(u.phone || '') + '</div>' +
+      '<label class="label">Instagram</label>' +
+      '<div class="inp">' + esc(u.instagram || '-') + '</div>' +
+      '<label class="label">WhatsApp</label>' +
+      '<div class="inp">' + esc(u.whatsapp || '-') + '</div>' +
+      '<button class="btn" id="pfSave">Saqlash</button>' +
+    '</div>';
+
+  el('pfAvaBtn').addEventListener('click', pickProfAva);
+  el('pfAva').addEventListener('click', pickProfAva);
+
+  el('pfSave').addEventListener('click', function(){
+    const n = el('pfName').value.trim();
+    const nk = el('pfNick').value.trim().replace(/^@/, '');
+    if(n.length < 2){ toast('Ismni kiriting'); return; }
+    apiPost('/api/profil-saqlash', { name: n, nickname: nk })
+      .then(function(d){
+        if(d.ok){
+          haptic('medium');
+          USER.name = n; USER.nickname = nk;
+          toast('Saqlandi');
+          drawProfile();
+        } else toast('Xato');
+      }).catch(function(){ toast('Server xatosi'); });
+  });
+}
+
+function pickProfAva(){
+  pickFiles(false, function(items){
+    if(!items.length || items[0].is_video){ toast('Faqat rasm'); return; }
+    toast('Yuklanmoqda...');
+    apiPost('/api/profil-avatar', { media: items[0].media })
+      .then(function(d){
+        if(d.ok){
+          haptic('medium');
+          USER.avatar = d.file_id;
+          toast('Rasm yangilandi');
+          drawProfile();
+        } else toast('Xato');
+      }).catch(function(){ toast('Server xatosi'); });
+  });
+}
 
 document.addEventListener('DOMContentLoaded', function(){
   const db_ = el('dmBtn');
