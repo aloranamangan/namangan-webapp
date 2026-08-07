@@ -24,6 +24,14 @@
 </div>
 
 <div class="view" id="vSellers">
+  <div class="top-hd">
+    <h2>&#127942; TOP 10 sotuvchi</h2>
+    <span>Obunachi, korish va layk boyicha</span>
+  </div>
+  <div id="topList"></div>
+  <div class="top-hd" style="padding-top:22px;">
+    <h2>Barcha sotuvchilar</h2>
+  </div>
   <div id="sellers"><div class="load">Yuklanmoqda...</div></div>
 </div>
 
@@ -117,6 +125,7 @@ function realBoot(){
       drawStories();
       drawFeed();
       drawSellers();
+      drawTop();
     });
   });
 }
@@ -463,6 +472,46 @@ function openComments(p){
         '</b><p>' + esc(c.text) + '</p></div></div>';
     }).join('');
   }
+}
+
+
+function drawTop(){
+  const box = el('topList');
+  if(!box) return;
+
+  api('/api/top').then(function(d){
+    const list = d.top || [];
+    if(!list.length){
+      box.innerHTML = '<div class="empty" style="padding:30px 16px;">' +
+        '<span>Hali reyting yoq</span></div>';
+      return;
+    }
+
+    box.innerHTML = list.map(function(s, i){
+      const n = i + 1;
+      const m = n <= 3 ? ('m' + n) : '';
+      const rowM = n <= 3 ? ('medal-' + n) : '';
+      const ico = n === 1 ? '&#129351;' : (n === 2 ? '&#129352;' : (n === 3 ? '&#129353;' : n));
+      const ava = s.avatar
+        ? mediaUrl(s.avatar)
+        : 'https://api.dicebear.com/7.x/initials/svg?seed=' + encodeURIComponent(s.name);
+      const vb = s.verified
+        ? '<svg class="vbadge" viewBox="0 0 24 24" fill="#0095F6"><path d="M12 1l2.5 2.2 3.3-.4 1 3.2 3 1.5-1.2 3.1 1.2 3.1-3 1.5-1 3.2-3.3-.4L12 23l-2.5-2.2-3.3.4-1-3.2-3-1.5 1.2-3.1L2.2 10l3-1.5 1-3.2 3.3.4z"/><path d="M10.5 15.2l-3-3 1.2-1.2 1.8 1.8 4.3-4.3 1.2 1.2z" fill="#000"/></svg>'
+        : '';
+
+      return '<div class="top-row ' + rowM + '" data-u="' + esc(s.username) + '">' +
+        '<div class="top-num ' + m + '">' + ico + '</div>' +
+        '<div class="top-ava ' + m + '"><img src="' + ava + '"></div>' +
+        '<div class="top-info"><b>' + esc(s.name) + vb + '</b>' +
+        '<div class="st">' + fmt(s.followers) + ' obunachi &middot; ' +
+          fmt(s.views) + ' korish &middot; ' + fmt(s.likes) + ' layk</div></div>' +
+        '<div class="top-score">' + fmt(s.score) + '</div></div>';
+    }).join('');
+
+    box.querySelectorAll('.top-row').forEach(function(r){
+      r.addEventListener('click', function(){ openSeller(r.dataset.u); });
+    });
+  }).catch(function(){});
 }
 
 function drawSellers(){
