@@ -145,6 +145,7 @@ function openChat(otherId, otherName){
     '<div class="msg-bar" style="position:relative;">' +
       '<button class="clip" id="chClip">&#128206;</button>' +
       '<input id="chInp" placeholder="Xabar yozing...">' +
+      '<button class="mic-btn" id="chMic">&#127908;</button>' +
       '<button id="chSend">Yuborish</button>' +
     '</div></div>';
 
@@ -170,11 +171,15 @@ function openChat(otherId, otherName){
         let inner = '';
         if(m.file_id){
           const u = mediaUrl(m.file_id);
-          inner += m.is_video
-            ? '<video src="' + u + '" playsinline muted data-full="' + u + '" data-v="1"></video>'
-            : '<img src="' + u + '" data-full="' + u + '" data-v="0">';
+          if(m.text === '\u0001VOICE'){
+            inner += '<div class="msg-voice"><audio controls src="' + u + '"></audio></div>';
+          } else if(m.is_video){
+            inner += '<video src="' + u + '" playsinline muted data-full="' + u + '" data-v="1"></video>';
+          } else {
+            inner += '<img src="' + u + '" data-full="' + u + '" data-v="0">';
+          }
         }
-        if(m.text) inner += esc(m.text);
+        if(m.text && m.text !== '\u0001VOICE') inner += esc(m.text);
         return '<div class="msg ' + (mine ? 'me' : 'you') + '">' + inner + '</div>';
       }).join('');
       box.querySelectorAll('[data-full]').forEach(function(m){
@@ -215,6 +220,33 @@ function openChat(otherId, otherName){
       else toast('Yuborilmadi');
     }).catch(function(){ toast('Server xatosi'); });
   }
+
+  let recording = false;
+  const mic = el('chMic');
+  if(mic) mic.addEventListener('click', function(){
+    if(!recording){
+      recording = true;
+      mic.classList.add('rec');
+      mic.innerHTML = '&#9209;&#65039;';
+      toast('Yozilmoqda... toxtatish uchun qayta bosing');
+      startRec(function(dataUrl){
+        recording = false;
+        mic.classList.remove('rec');
+        mic.innerHTML = '&#127908;';
+        apiPost('/api/xabar', {
+          to_id: otherId, text: '', media: dataUrl, is_voice: true
+        }).then(function(d){
+          if(d.ok){ load(); haptic('medium'); }
+          else toast('Yuborilmadi');
+        }).catch(function(){ toast('Server xatosi'); });
+      });
+    } else {
+      recording = false;
+      mic.classList.remove('rec');
+      mic.innerHTML = '&#127908;';
+      stopRec();
+    }
+  });
 
   el('chSend').addEventListener('click', send);
   el('chInp').addEventListener('keypress', function(e){ if(e.key === 'Enter') send(); });
@@ -472,4 +504,45 @@ function openGallery(items, startIdx, showStory, posts, postIdx){
   }, { passive: true });
 
   draw();
+}
+
+// ---------- Ovozli xabar ----------
+let mediaRec = null;
+let recChunks = [];
+let recTimer = null;
+
+function startRec(onDone){
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+    toast('Mikrofon qollab-quvvatlanmaydi');
+    return;
+  }
+  navigator.mediaDevices.getUserMedia({ audio: true })
+    .then(function(stream){
+      recChunks = [];
+      let mime = 'audio/webm';
+      try {
+        if(MediaRecorder.isTypeSupported('audio/ogg;codecs=opus')) mime = 'audio/ogg;codecs=opus';
+        else if(MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) mime = 'audio/webm;codecs=opus';
+      } catch(e){}
+
+      mediaRec = new MediaRecorder(stream, { mimeType: mime });
+      mediaRec.ondataavailable = function(e){ if(e.data.size) recChunks.push(e.data); };
+      mediaRec.onstop = function(){
+        stream.getTracks().forEach(function(t){ t.stop(); });
+        const blob = new Blob(recChunks, { type: mime });
+        const r = new FileReader();
+        r.onload = function(){ onDone(r.result); };
+        r.readAsDataURL(blob);
+      };
+      mediaRec.start();
+      haptic('light');
+    })
+    .catch(function(){ toast('Mikrofonga ruxsat berilmadi'); });
+}
+
+function stopRec(){
+  if(mediaRec && mediaRec.state !== 'inactive'){
+    try { mediaRec.stop(); } catch(e){}
+  }
+  mediaRec = null;
 }
