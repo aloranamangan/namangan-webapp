@@ -690,40 +690,99 @@ function drawProfile(){
       '<div style="flex:1;">' +
         '<div style="font-size:17px;font-weight:800;">' + esc(u.name || 'Ismingiz') + '</div>' +
         '<div style="font-size:13px;color:var(--muted);margin-top:3px;">' +
-          (u.nickname ? '@' + esc(u.nickname) : 'nik nomingiz') + '</div>' +
+          (u.nickname ? '@' + esc(u.nickname) : 'nik nomi kiritilmagan') + '</div>' +
       '</div>' +
     '</div>' +
 
-    '<div class="wrap">' +
-      '<label class="label">Ism familiya</label>' +
-      '<input class="inp" id="pfName" value="' + esc(u.name || '') + '" placeholder="Bahromjon Karimov">' +
-      '<label class="label">Nik nomi</label>' +
-      '<input class="inp" id="pfNick" value="' + esc(u.nickname || '') + '" placeholder="bahromjon">' +
+    '<div class="pro-btns"><button id="pfEdit">Profilni tahrirlash</button></div>' +
+
+    '<div class="wrap" style="padding-top:6px;">' +
       '<label class="label">Telefon</label>' +
-      '<div class="inp" style="color:#2ECC71;">&#10003; ' + esc(u.phone || '') + '</div>' +
+      '<div class="inp" style="color:#2ECC71;">&#10003; ' + esc(u.phone || '-') + '</div>' +
       '<label class="label">Instagram</label>' +
       '<div class="inp">' + esc(u.instagram || '-') + '</div>' +
       '<label class="label">WhatsApp</label>' +
       '<div class="inp">' + esc(u.whatsapp || '-') + '</div>' +
-      '<button class="btn" id="pfSave">Saqlash</button>' +
     '</div>';
 
   el('pfAvaBtn').addEventListener('click', pickProfAva);
-  el('pfAva').addEventListener('click', pickProfAva);
+  el('pfEdit').addEventListener('click', openEditProfile);
+}
 
-  el('pfSave').addEventListener('click', function(){
-    const n = el('pfName').value.trim();
-    const nk = el('pfNick').value.trim().replace(/^@/, '');
+function openEditProfile(){
+  const u = USER || {};
+
+  if(u.can_edit === false){
+    const bg = document.createElement('div');
+    bg.className = 'sheet-bg';
+    bg.innerHTML = '<div class="sheet" id="lkSheet"><div class="sheet-bar"></div>' +
+      '<div class="empty" style="padding:44px 26px;">' +
+      '<div class="ic">&#128274;</div>' +
+      '<p>Hozircha ozgartirib bolmaydi</p>' +
+      '<span>Profil malumotlarini oyiga bir marta ozgartirish mumkin.<br><br>' +
+      '<b style="color:#fff;">' + (u.edit_days || 0) + ' kundan keyin</b> qayta ochiladi.</span>' +
+      '</div></div>';
+    document.body.appendChild(bg);
+    bg.addEventListener('click', function(e){ if(e.target === bg) bg.remove(); });
+    el('lkSheet').addEventListener('click', function(e){ e.stopPropagation(); });
+    return;
+  }
+
+  const bg = document.createElement('div');
+  bg.className = 'sheet-bg';
+  bg.innerHTML = '<div class="sheet" id="epSheet" style="max-height:80vh;">' +
+    '<div class="sheet-bar"></div>' +
+    '<div class="sheet-title">Profilni tahrirlash</div>' +
+    '<div class="wrap">' +
+      '<div style="background:rgba(255,193,7,.1);border:1px solid rgba(255,193,7,.35);' +
+      'border-radius:12px;padding:13px;margin-bottom:20px;font-size:12.5px;color:#FFC107;' +
+      'line-height:1.5;">&#9888;&#65039; Diqqat: profilni <b>oyiga bir marta</b> ozgartirish mumkin.</div>' +
+      '<label class="label">Ism familiya</label>' +
+      '<input class="inp" id="epName" value="' + esc(u.name || '') + '" placeholder="Bahromjon Karimov">' +
+      '<label class="label">Nik nomi</label>' +
+      '<input class="inp" id="epNick" value="' + esc(u.nickname || '') + '" placeholder="bahromjon">' +
+      '<button class="btn" id="epSave">Saqlash</button>' +
+      '<button class="btn ghost" id="epCancel" style="margin-top:9px;">Bekor qilish</button>' +
+    '</div></div>';
+
+  document.body.appendChild(bg);
+  bg.addEventListener('click', function(e){ if(e.target === bg) bg.remove(); });
+  el('epSheet').addEventListener('click', function(e){ e.stopPropagation(); });
+  el('epCancel').addEventListener('click', function(){ bg.remove(); });
+
+  el('epSave').addEventListener('click', function(){
+    const n = el('epName').value.trim();
+    const nk = el('epNick').value.trim().replace(/^@/, '');
     if(n.length < 2){ toast('Ismni kiriting'); return; }
+    if(!confirm('Saqlaysizmi?\n\nKeyingi ozgartirish 30 kundan keyin mumkin boladi.')) return;
+
+    const b = el('epSave');
+    b.disabled = true;
+    b.textContent = 'Saqlanmoqda...';
+
     apiPost('/api/profil-saqlash', { name: n, nickname: nk })
       .then(function(d){
         if(d.ok){
           haptic('medium');
           USER.name = n; USER.nickname = nk;
+          USER.can_edit = false; USER.edit_days = 30;
           toast('Saqlandi');
+          bg.remove();
           drawProfile();
-        } else toast('Xato');
-      }).catch(function(){ toast('Server xatosi'); });
+        } else if(d.error === 'locked'){
+          toast((d.days || 0) + ' kundan keyin ozgartirasiz');
+          b.disabled = false;
+          b.textContent = 'Saqlash';
+        } else {
+          toast('Xato');
+          b.disabled = false;
+          b.textContent = 'Saqlash';
+        }
+      }).catch(function(){
+        toast('Server xatosi');
+        b.disabled = false;
+        b.textContent = 'Saqlash';
+      });
   });
 }
 
