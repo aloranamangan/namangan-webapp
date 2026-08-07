@@ -40,6 +40,11 @@ function openChats(){
   el('clSheet').addEventListener('click', function(e){ e.stopPropagation(); });
   el('clClose').addEventListener('click', function(){ bg.remove(); });
 
+  // Boshqa panelga o'tilsa yopilsin
+  document.querySelectorAll('.nav button[data-v]').forEach(function(nb){
+    nb.addEventListener('click', function(){ bg.remove(); }, { once: true });
+  });
+
   let all = [];
   let mode = 'all';
 
