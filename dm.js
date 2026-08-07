@@ -170,6 +170,21 @@ function openChat(otherId, otherName){
   const bk = el('chBack');
   if(bk) bk.addEventListener('click', function(){ clearInterval(dmTimer); bg.remove(); });
 
+  // Pastki paneldan boshqa bo'limga o'tish
+  const closeAll = function(){ clearInterval(dmTimer); bg.remove(); };
+  document.querySelectorAll('.nav button').forEach(function(nb){
+    nb.addEventListener('click', closeAll);
+  });
+  const mo2 = new MutationObserver(function(){
+    if(!document.body.contains(bg)){
+      document.querySelectorAll('.nav button').forEach(function(nb){
+        nb.removeEventListener('click', closeAll);
+      });
+      mo2.disconnect();
+    }
+  });
+  mo2.observe(document.body, { childList: true });
+
   let pending = null;
 
   function load(){
