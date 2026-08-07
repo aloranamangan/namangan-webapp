@@ -528,3 +528,8 @@ body{
 .chat-full .msg-bar{position:absolute !important;bottom:0 !important;z-index:945;}
 .dm-full{z-index:930 !important;bottom:76px !important;}
 .nav{z-index:1000 !important;}
+
+/* Xabarlar oynasi navigatsiyani to'smasin */
+.dm-full{pointer-events:auto;}
+.nav{pointer-events:auto !important;}
+.nav button{pointer-events:auto !important;}

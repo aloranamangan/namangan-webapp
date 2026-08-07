@@ -41,9 +41,19 @@ function openChats(){
   el('clClose').addEventListener('click', function(){ bg.remove(); });
 
   // Boshqa panelga o'tilsa yopilsin
+  const navClose = function(){ bg.remove(); };
   document.querySelectorAll('.nav button[data-v]').forEach(function(nb){
-    nb.addEventListener('click', function(){ bg.remove(); }, { once: true });
+    nb.addEventListener('click', navClose);
   });
+  const mo = new MutationObserver(function(){
+    if(!document.body.contains(bg)){
+      document.querySelectorAll('.nav button[data-v]').forEach(function(nb){
+        nb.removeEventListener('click', navClose);
+      });
+      mo.disconnect();
+    }
+  });
+  mo.observe(document.body, { childList: true });
 
   let all = [];
   let mode = 'all';
