@@ -522,3 +522,9 @@ body{
   font-size:11px;font-weight:800;color:var(--gold);
   background:rgba(203,161,53,.12);padding:4px 9px;border-radius:8px;flex-shrink:0;
 }
+
+/* Chat oynasi panelni to'smasin */
+.chat-full{bottom:76px !important;z-index:940 !important;}
+.chat-full .msg-bar{position:absolute !important;bottom:0 !important;z-index:945;}
+.dm-full{z-index:930 !important;bottom:76px !important;}
+.nav{z-index:1000 !important;}
