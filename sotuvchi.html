@@ -689,7 +689,11 @@ document.addEventListener('DOMContentLoaded', boot);
 
 document.addEventListener('DOMContentLoaded', function(){
   const db_ = el('dmBtn');
-  if(db_) db_.addEventListener('click', openChats);
+  if(db_) db_.addEventListener('click', function(){
+    document.querySelectorAll('.nav button').forEach(function(x){ x.classList.remove('on'); });
+    db_.classList.add('on');
+    openChats();
+  });
   setTimeout(function(){ dmUnreadCheck('dmBtn'); }, 2000);
   setInterval(function(){ dmUnreadCheck('dmBtn'); }, 25000);
 });

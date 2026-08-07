@@ -533,3 +533,18 @@ body{
 .dm-full{pointer-events:auto;}
 .nav{pointer-events:auto !important;}
 .nav button{pointer-events:auto !important;}
+
+/* Chat oynasi to'liq balandlik */
+.chat-full{
+  bottom:76px !important;
+  height:auto !important;
+}
+.chat-full #chSheet{height:100% !important;}
+.chat-full .msgs{
+  flex:1 !important;
+  min-height:0 !important;
+  overflow-y:auto !important;
+  padding-bottom:76px !important;
+}
+.dm-full{height:auto !important;}
+.dm-full #clSheet{min-height:100%;}
