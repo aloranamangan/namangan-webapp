@@ -3,24 +3,26 @@ function showSplash(done){
   const S = [
     {
       bg: 'linear-gradient(160deg,#0B2545 0%,#134074 55%,#1B4965 100%)',
-      ico: '🏛️',
+      art: '<div class="ns-photo"><img src="img/slide1.png"></div>',
       t: 'NAMANGAN',
-      s: 'Vodiyning yuragi',
-      d: 'Shaharning ishonchli ko\'chmas mulk platformasi'
+      s: "Vodiyning yuragi",
+      d: "Namangan avtovokzal ko'chasi"
     },
     {
-      bg: 'linear-gradient(160deg,#1A1A2E 0%,#16213E 50%,#0F3460 100%)',
-      ico: '👑',
+      bg: 'linear-gradient(160deg,#1A0F00 0%,#2D1810 50%,#0F0A05 100%)',
+      art: '<div class="crown-wrap">' +
+           '<div class="fire"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>' +
+           '<div class="crown">👑</div></div>',
       t: 'DIKKIYLORD',
       s: 'JAMOASI',
-      d: 'Sifat va ishonch bilan xizmatingizdamiz'
+      d: '📞 +998 94 501 18 18<br>📞 +998 50 977 76 76<br><b>Call center</b>'
     },
     {
       bg: 'linear-gradient(160deg,#134E5E 0%,#1B7A6E 50%,#71B280 100%)',
-      ico: '🗺️',
+      art: '<div class="ns-photo"><img src="img/slide3.png"></div>',
       t: 'Namangan',
       s: 'Yangi uylar siz bilan',
-      d: 'Barcha uylar shu yerda'
+      d: "Namangan xohlagan yeringizdan uy topib beramiz"
     }
   ];
 
@@ -64,7 +66,7 @@ function showSplash(done){
     ov.innerHTML =
       '<button class="skip">O\'tkazish</button>' +
       '<div class="fade">' +
-        '<div class="ic">' + c.ico + '</div>' +
+        (c.art || ('<div class="ic">' + (c.ico || '') + '</div>')) +
         '<h2>' + c.t + '</h2>' +
         '<h3>' + c.s + '</h3>' +
         '<p>' + c.d + '</p>' +
