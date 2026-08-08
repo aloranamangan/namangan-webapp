@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Valyuta</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;700;800&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{
+  font-family:'Manrope',-apple-system,sans-serif;color:#fff;min-height:100vh;
+  background:linear-gradient(165deg,#0F2027 0%,#203A43 50%,#2C5364 100%);
+  background-attachment:fixed;padding:0 18px 40px;
+}
+.top{display:flex;align-items:center;gap:12px;padding:20px 0 8px;}
+.top h1{font-size:23px;font-weight:800;letter-spacing:-.4px;flex:1;}
+.top .rf{
+  width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.10);color:#fff;font-size:16px;cursor:pointer;
+}
+.upd{font-size:11.5px;color:rgba(255,255,255,.5);padding-bottom:16px;}
+.card{
+  background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);
+  border-radius:24px;backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+  box-shadow:0 8px 32px rgba(0,0,0,.3);padding:18px;margin-bottom:14px;
+}
+.row{display:flex;align-items:center;gap:12px;}
+.flag{font-size:30px;flex-shrink:0;}
+.cinfo{flex:1;min-width:0;}
+.cinfo b{display:block;font-size:15px;font-weight:700;}
+.cinfo span{font-size:11.5px;color:rgba(255,255,255,.55);}
+.amt{
+  width:100%;background:none;border:none;color:#fff;
+  font-size:30px;font-weight:300;text-align:right;font-family:inherit;
+  letter-spacing:-.5px;min-width:0;
+}
+.amt:focus{outline:none;}
+.swap{display:flex;justify-content:center;margin:-6px 0 8px;}
+.swap button{
+  width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,.2);
+  background:rgba(255,255,255,.14);color:#fff;font-size:19px;cursor:pointer;
+  transition:transform .3s;
+}
+.swap button:active{transform:rotate(180deg);}
+.pick{display:flex;gap:9px;overflow-x:auto;padding:2px 0 6px;scrollbar-width:none;}
+.pick::-webkit-scrollbar{display:none;}
+.pk{
+  flex-shrink:0;display:flex;align-items:center;gap:7px;
+  padding:9px 15px;border-radius:100px;cursor:pointer;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);
+  font-size:13px;font-weight:700;font-family:inherit;color:#fff;
+}
+.pk.on{background:#fff;color:#0F2027;border-color:#fff;}
+.ttl{
+  font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+  color:rgba(255,255,255,.55);margin-bottom:13px;
+}
+.rate{
+  display:flex;align-items:center;gap:12px;padding:12px 0;
+  border-bottom:1px solid rgba(255,255,255,.10);
+}
+.rate:last-child{border:none;}
+.rate .f{font-size:24px;}
+.rate .n{flex:1;}
+.rate .n b{display:block;font-size:14px;font-weight:600;}
+.rate .n span{font-size:11.5px;color:rgba(255,255,255,.5);}
+.rate .v{font-size:16px;font-weight:700;text-align:right;}
+.rate .v small{display:block;font-size:11px;font-weight:600;margin-top:2px;}
+.up{color:#34C759;}
+.dn{color:#FF453A;}
+.load{text-align:center;padding:60px 0;color:rgba(255,255,255,.5);font-size:14px;}
+.quick{display:flex;gap:8px;margin-top:12px;}
+.quick button{
+  flex:1;padding:11px 0;border-radius:13px;border:1px solid rgba(255,255,255,.16);
+  background:rgba(255,255,255,.07);color:#fff;font-size:13px;font-weight:700;
+  cursor:pointer;font-family:inherit;
+}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <h1>💱 Valyuta</h1>
+  <button class="rf" id="btnRef">↻</button>
+</div>
+<div class="upd" id="upd">Yuklanmoqda...</div>
+
+<div class="card">
+  <div class="pick" id="pickA"></div>
+  <div class="row" style="margin-top:12px;">
+    <span class="flag" id="fA">🇺🇸</span>
+    <div class="cinfo"><b id="nA">USD</b><span id="sA">AQSH dollari</span></div>
+    <input class="amt" id="inA" type="number" inputmode="decimal" placeholder="0" value="1">
+  </div>
+</div>
+
+<div class="swap"><button id="btnSwap">⇅</button></div>
+
+<div class="card">
+  <div class="pick" id="pickB"></div>
+  <div class="row" style="margin-top:12px;">
+    <span class="flag" id="fB">🇺🇿</span>
+    <div class="cinfo"><b id="nB">UZS</b><span id="sB">Ozbek somi</span></div>
+    <input class="amt" id="inB" type="number" inputmode="decimal" placeholder="0">
+  </div>
+  <div class="quick">
+    <button data-q="1">1</button>
+    <button data-q="10">10</button>
+    <button data-q="100">100</button>
+    <button data-q="1000">1000</button>
+  </div>
+</div>
+
+<div class="card">
+  <div class="ttl">📊 Bugungi kurslar</div>
+  <div id="rates"><div class="load">Yuklanmoqda...</div></div>
+</div>
+
+<script>
+const TG = (window.Telegram && window.Telegram.WebApp) ? window.Telegram.WebApp : null;
+try { if(TG){ TG.ready(); TG.expand(); } } catch(e){}
+
+const CUR = {
+  UZS: ['🇺🇿', "O'zbek so'mi"],
+  USD: ['🇺🇸', 'AQSH dollari'],
+  KRW: ['🇰🇷', 'Koreya voni'],
+  SAR: ['🇸🇦', 'Saudiya riyoli'],
+  TRY: ['🇹🇷', 'Turk lirasi'],
+  EUR: ['🇪🇺', 'Yevro'],
+  RUB: ['🇷🇺', 'Rossiya rubli']
+};
+
+const ORDER = ['USD', 'UZS', 'KRW', 'SAR', 'TRY', 'EUR', 'RUB'];
+let A = 'USD', B = 'UZS';
+let RATES = {}, DIFF = {}, DATE = '';
+
+const el = function(id){ return document.getElementById(id); };
+
+function fmtNum(n){
+  if(!isFinite(n)) return '0';
+  if(n >= 1000) return n.toFixed(2);
+  if(n >= 1) return n.toFixed(2);
+  return n.toFixed(4);
+}
+
+function loadRates(){
+  el('upd').textContent = 'Yuklanmoqda...';
+  fetch('https://cbu.uz/uz/arkhiv-kursov-valyut/json/')
+    .then(function(r){ return r.json(); })
+    .then(function(list){
+      RATES = { UZS: 1 };
+      DIFF = { UZS: 0 };
+      list.forEach(function(x){
+        if(CUR[x.Ccy]){
+          RATES[x.Ccy] = parseFloat(x.Rate);
+          DIFF[x.Ccy] = parseFloat(x.Diff || 0);
+          if(x.Date) DATE = x.Date;
+        }
+      });
+      el('upd').textContent = 'Markaziy bank kursi · ' + (DATE || '');
+      drawRates();
+      calc('A');
+    })
+    .catch(function(){
+      el('upd').textContent = 'Kurs olinmadi';
+      el('rates').innerHTML = '<div class="load">Internetni tekshiring</div>';
+    });
+}
+
+function drawPickers(){
+  ['A', 'B'].forEach(function(side){
+    const box = el('pick' + side);
+    const cur = (side === 'A' ? A : B);
+    box.innerHTML = ORDER.map(function(c){
+      return '<button class="pk' + (c === cur ? ' on' : '') + '" data-c="' + c + '">' +
+        CUR[c][0] + ' ' + c + '</button>';
+    }).join('');
+
+    box.querySelectorAll('.pk').forEach(function(b){
+      b.addEventListener('click', function(){
+        if(side === 'A') A = b.dataset.c; else B = b.dataset.c;
+        drawPickers();
+        drawLabels();
+        calc('A');
+        try { TG.HapticFeedback.impactOccurred('light'); } catch(e){}
+      });
+    });
+  });
+}
+
+function drawLabels(){
+  el('fA').textContent = CUR[A][0];
+  el('nA').textContent = A;
+  el('sA').textContent = CUR[A][1];
+  el('fB').textContent = CUR[B][0];
+  el('nB').textContent = B;
+  el('sB').textContent = CUR[B][1];
+}
+
+function calc(from){
+  const ra = RATES[A], rb = RATES[B];
+  if(!ra || !rb) return;
+
+  if(from === 'A'){
+    const v = parseFloat(el('inA').value);
+    if(!isFinite(v)){ el('inB').value = ''; return; }
+    el('inB').value = fmtNum(v * ra / rb);
+  } else {
+    const v = parseFloat(el('inB').value);
+    if(!isFinite(v)){ el('inA').value = ''; return; }
+    el('inA').value = fmtNum(v * rb / ra);
+  }
+}
+
+function drawRates(){
+  const box = el('rates');
+  const list = ORDER.filter(function(c){ return c !== 'UZS' && RATES[c]; });
+  box.innerHTML = list.map(function(c){
+    const d = DIFF[c] || 0;
+    const cls = d > 0 ? 'up' : (d < 0 ? 'dn' : '');
+    const ar = d > 0 ? '▲' : (d < 0 ? '▼' : '—');
+    return '<div class="rate"><span class="f">' + CUR[c][0] + '</span>' +
+      '<div class="n"><b>' + c + '</b><span>' + CUR[c][1] + '</span></div>' +
+      '<div class="v">' + Math.round(RATES[c]).toLocaleString('ru-RU') +
+      '<small class="' + cls + '">' + ar + ' ' + Math.abs(d).toFixed(2) + '</small></div></div>';
+  }).join('');
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  drawPickers();
+  drawLabels();
+  loadRates();
+
+  el('inA').addEventListener('input', function(){ calc('A'); });
+  el('inB').addEventListener('input', function(){ calc('B'); });
+
+  el('btnSwap').addEventListener('click', function(){
+    const t = A; A = B; B = t;
+    const va = el('inA').value;
+    el('inA').value = el('inB').value;
+    el('inB').value = va;
+    drawPickers();
+    drawLabels();
+    calc('A');
+    try { TG.HapticFeedback.impactOccurred('medium'); } catch(e){}
+  });
+
+  el('btnRef').addEventListener('click', loadRates);
+
+  document.querySelectorAll('.quick button').forEach(function(b){
+    b.addEventListener('click', function(){
+      el('inA').value = b.dataset.q;
+      calc('A');
+    });
+  });
+});
+</script>
+</body>
+</html>
