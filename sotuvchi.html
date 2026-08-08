@@ -699,10 +699,29 @@ document.addEventListener('DOMContentLoaded', function(){
 });
 
 document.addEventListener('DOMContentLoaded', function(){
+  function closeOverlays(){
+    document.querySelectorAll('.sheet-bg,.chat-full,.dm-full').forEach(function(x){ x.remove(); });
+    try { clearInterval(dmTimer); } catch(e){}
+  }
+
   const nn = el('navNotif');
-  if(nn) nn.addEventListener('click', function(){ if(ME) openNotifs(); });
+  if(nn) nn.addEventListener('click', function(){
+    closeOverlays();
+    document.querySelectorAll('.nav button').forEach(function(x){ x.classList.remove('on'); });
+    nn.classList.add('on');
+    if(ME) openNotifs();
+  });
+
   const nh = el('navHome');
-  if(nh) nh.addEventListener('click', function(){ window.scrollTo(0,0); });
+  if(nh) nh.addEventListener('click', function(){
+    closeOverlays();
+    document.querySelectorAll('.nav button').forEach(function(x){ x.classList.remove('on'); });
+    nh.classList.add('on');
+    window.scrollTo(0, 0);
+  });
+
+  const wb2 = el('wxBtn');
+  if(wb2) wb2.addEventListener('click', closeOverlays);
 });
 
 document.addEventListener('DOMContentLoaded', function(){
