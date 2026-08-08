@@ -55,6 +55,48 @@ function showSplash(done){
       font-weight:600;cursor:pointer;font-family:inherit;}
     @keyframes spIn{from{opacity:0;transform:scale(.5) rotate(-14deg)}to{opacity:1;transform:none}}
     @keyframes spUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+    #splash .ns-photo{
+      width:240px;height:240px;border-radius:28px;overflow:hidden;
+      margin:0 auto 26px;box-shadow:0 18px 50px rgba(0,0,0,.55);
+      border:1px solid rgba(255,255,255,.16);
+      animation:spIn .8s cubic-bezier(.2,.8,.2,1);
+    }
+    #splash .ns-photo img{width:100%;height:100%;object-fit:cover;display:block;}
+    #splash .crown-wrap{position:relative;width:180px;height:180px;margin:0 auto 22px;
+      display:flex;align-items:center;justify-content:center;}
+    #splash .crown{font-size:82px;position:relative;z-index:3;
+      filter:drop-shadow(0 0 22px rgba(255,170,40,.9));
+      animation:spIn .8s cubic-bezier(.2,.8,.2,1);}
+    #splash .fire{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);
+      width:110px;height:120px;z-index:1;}
+    #splash .fire i{
+      position:absolute;bottom:0;left:50%;
+      width:26px;height:26px;border-radius:50% 50% 35% 35%;
+      background:radial-gradient(circle at 50% 75%,#fff6b0,#ffb300 42%,#ff5722 72%,rgba(255,87,34,0));
+      filter:blur(4px);mix-blend-mode:screen;
+      animation:flame 1.5s ease-in-out infinite;
+    }
+    #splash .fire i:nth-child(1){margin-left:-13px;animation-delay:0s;}
+    #splash .fire i:nth-child(2){margin-left:-38px;animation-delay:.22s;}
+    #splash .fire i:nth-child(3){margin-left:12px;animation-delay:.42s;}
+    #splash .fire i:nth-child(4){margin-left:-26px;animation-delay:.62s;}
+    #splash .fire i:nth-child(5){margin-left:2px;animation-delay:.85s;}
+    #splash .fire i:nth-child(6){margin-left:-48px;animation-delay:1.05s;}
+    #splash .fire i:nth-child(7){margin-left:24px;animation-delay:1.25s;}
+    @keyframes flame{
+      0%{opacity:0;transform:translateY(0) scale(.5);}
+      18%{opacity:1;}
+      60%{opacity:.85;}
+      100%{opacity:0;transform:translateY(-88px) scale(1.5) rotate(9deg);}
+    }
+    #splash .crown-wrap::after{
+      content:'';position:absolute;bottom:16px;left:50%;transform:translateX(-50%);
+      width:130px;height:52px;border-radius:50%;
+      background:radial-gradient(ellipse,rgba(255,150,30,.55),transparent 70%);
+      filter:blur(14px);animation:emb 2.2s ease-in-out infinite;
+    }
+    @keyframes emb{0%,100%{opacity:.5;transform:translateX(-50%) scale(1)}
+      50%{opacity:.95;transform:translateX(-50%) scale(1.15)}}
     #splash .fade{animation:spFade .45s ease both;}
     @keyframes spFade{from{opacity:0}to{opacity:1}}
   `;
