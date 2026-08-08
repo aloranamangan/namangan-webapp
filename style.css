@@ -561,3 +561,22 @@ body{
   background:transparent !important;
   padding-bottom:20px;
 }
+
+/* Xabarlar: butun ekran, panel ustidan */
+.dm-full{
+  position:fixed !important;
+  top:0 !important;left:0 !important;right:0 !important;bottom:0 !important;
+  height:100vh !important;height:100dvh !important;
+  z-index:1100 !important;
+  background:#000 !important;
+  overflow-y:auto !important;
+  padding-bottom:90px !important;
+}
+.dm-full #clSheet{
+  background:transparent !important;
+  border-radius:0 !important;
+  max-height:none !important;
+  height:auto !important;
+}
+.dm-full .sheet-bar{display:none;}
+.dm-full .dm-top{padding-top:calc(16px + env(safe-area-inset-top)) !important;}
