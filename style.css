@@ -548,3 +548,16 @@ body{
 }
 .dm-full{height:auto !important;}
 .dm-full #clSheet{min-height:100%;}
+
+/* Xabarlar ro'yxati to'liq ekran */
+.dm-full{
+  top:0 !important;bottom:76px !important;
+  height:auto !important;
+  background:#000 !important;
+  overflow-y:auto !important;
+}
+.dm-full #clSheet{
+  min-height:100%;
+  background:transparent !important;
+  padding-bottom:20px;
+}
