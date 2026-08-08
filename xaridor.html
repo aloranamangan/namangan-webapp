@@ -64,6 +64,10 @@
     <svg class="fillable" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
     Saqlangan
   </button>
+  <button id="cvBtn">
+    <svg viewBox="0 0 24 24"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+    Valyuta
+  </button>
   <button id="wxBtn">
     <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M6.3 17.7l-1.4 1.4M19.1 4.9l-1.4 1.4"/></svg>
     Ob-havo
@@ -866,6 +870,14 @@ document.addEventListener('DOMContentLoaded', function(){
   const wb = el('wxBtn');
   if(wb) wb.addEventListener('click', function(){
     const u = 'https://aloranamangan.github.io/namangan-webapp/obhavo.html';
+    if(TG && TG.openLink) TG.openLink(u); else window.open(u, '_blank');
+  });
+});
+
+document.addEventListener('DOMContentLoaded', function(){
+  const cb = el('cvBtn');
+  if(cb) cb.addEventListener('click', function(){
+    const u = 'https://aloranamangan.github.io/namangan-webapp/valyuta.html';
     if(TG && TG.openLink) TG.openLink(u); else window.open(u, '_blank');
   });
 });
