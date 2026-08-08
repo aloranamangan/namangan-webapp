@@ -31,6 +31,21 @@ self.addEventListener('fetch', function(e){
      u.indexOf('open-meteo') !== -1 || u.indexOf('cbu.uz') !== -1){
     return;
   }
+
+  // HTML/JS/CSS - avval tarmoqdan (yangilanish uchun)
+  if(u.indexOf('.html') !== -1 || u.indexOf('.js') !== -1 || u.indexOf('.css') !== -1){
+    e.respondWith(
+      fetch(e.request).then(function(res){
+        if(res && res.status === 200){
+          const cp = res.clone();
+          caches.open(CACHE).then(function(c){ c.put(e.request, cp).catch(function(){}); });
+        }
+        return res;
+      }).catch(function(){ return caches.match(e.request); })
+    );
+    return;
+  }
+
   e.respondWith(
     caches.match(e.request).then(function(r){
       return r || fetch(e.request).then(function(res){
