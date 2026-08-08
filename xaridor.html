@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>Namangan Ijara</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#000000">
+<link rel="apple-touch-icon" href="icon-192.png">
 <link rel="stylesheet" href="style.css">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
@@ -79,6 +82,7 @@
 </nav>
 
 <script src="core.js"></script>
+<script src="splash.js"></script>
 <script src="reg.js"></script>
 <script src="dm.js"></script>
 <script src="story.js"></script>
@@ -91,7 +95,11 @@ let LIKED = {};
 let SAVED = [];
 
 function boot(){
-  requireAuth(function(){ bootAuthed(); });
+  if(typeof showSplash === 'function' && isApk()){
+    showSplash(function(){ requireAuth(function(){ bootAuthed(); }); });
+  } else {
+    requireAuth(function(){ bootAuthed(); });
+  }
 }
 
 function bootAuthed(){
@@ -885,6 +893,12 @@ document.addEventListener('DOMContentLoaded', function(){
     if(TG && TG.openLink) TG.openLink(u); else window.open(u, '_blank');
   });
 });
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('sw.js').catch(function(){});
+  });
+}
 </script>
 </body>
 </html>
