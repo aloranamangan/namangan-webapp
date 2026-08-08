@@ -54,6 +54,10 @@ let picked = [];
 const MAX_MEDIA = 10;
 
 function boot(){
+  requireAuth(function(){ bootAuthed(); });
+}
+
+function bootAuthed(){
   checkRestriction(function(stop){
     if(stop) return;
     bootReal();

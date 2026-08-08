@@ -5,7 +5,28 @@ function tgReady(){
   if(TG){ try { TG.ready(); TG.expand(); } catch(e){} }
 }
 
+// APK rejimi uchun token
+let APP_TOKEN = null;
+try {
+  const p = new URLSearchParams(location.search);
+  const t = p.get('token');
+  if(t){ APP_TOKEN = t; localStorage.setItem('ni_token', t); }
+  else APP_TOKEN = localStorage.getItem('ni_token');
+} catch(e){}
+
+let APP_ID = null;
+try { APP_ID = parseInt(localStorage.getItem('ni_uid')) || null; } catch(e){}
+
+function isApk(){
+  return !TG || !TG.initData;
+}
+
+function goLogin(){
+  location.href = 'https://namangan-ijara-bot.onrender.com/login';
+}
+
 function myId(){
+  if(APP_ID) return APP_ID;
   try {
     if(TG && TG.initDataUnsafe && TG.initDataUnsafe.user && TG.initDataUnsafe.user.id){
       return TG.initDataUnsafe.user.id;
@@ -77,6 +98,7 @@ function api(path, opts){
 
 function apiPost(path, body){
   const data = { init_data: initData() };
+  if(APP_TOKEN) data.token = APP_TOKEN;
   for(const k in body) data[k] = body[k];
   return api(path, {
     method: 'POST',
@@ -238,5 +260,41 @@ function showBlocked(kind, until){
     const u = 'https://t.me/Ijara_admin_namangan';
     if(TG && TG.openTelegramLink) TG.openTelegramLink(u);
     else window.open(u, '_blank');
+  });
+}
+
+
+// APK: sessiyani tekshirish
+function checkSession(cb){
+  if(!isApk()){ cb(true); return; }
+  if(!APP_TOKEN){ cb(false); return; }
+
+  fetch(API + '/api/me?token=' + encodeURIComponent(APP_TOKEN))
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(d.ok && d.tg_id){
+        APP_ID = d.tg_id;
+        try { localStorage.setItem('ni_uid', String(d.tg_id)); } catch(e){}
+        cb(true);
+      } else cb(false);
+    })
+    .catch(function(){ cb(false); });
+}
+
+function requireAuth(cb){
+  checkSession(function(ok){
+    if(ok){ cb(); return; }
+    document.body.innerHTML =
+      '<div style="min-height:100vh;display:flex;flex-direction:column;' +
+      'align-items:center;justify-content:center;padding:40px 28px;text-align:center;">' +
+      '<div style="font-size:60px;margin-bottom:20px;">&#127968;</div>' +
+      '<h2 style="font-size:24px;font-weight:800;margin-bottom:10px;">Namangan Ijara</h2>' +
+      '<p style="font-size:14px;color:#8E8E8E;line-height:1.6;margin-bottom:32px;">' +
+      'Davom etish uchun Telegram akkauntingiz bilan kiring</p>' +
+      '<button id="loginBtn" style="padding:15px 34px;border:none;border-radius:100px;' +
+      'background:#0095F6;color:#fff;font-size:15px;font-weight:800;cursor:pointer;">' +
+      'Telegram bilan kirish</button></div>';
+    const b = document.getElementById('loginBtn');
+    if(b) b.addEventListener('click', goLogin);
   });
 }

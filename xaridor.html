@@ -91,6 +91,10 @@ let LIKED = {};
 let SAVED = [];
 
 function boot(){
+  requireAuth(function(){ bootAuthed(); });
+}
+
+function bootAuthed(){
   checkRestriction(function(stop){
     if(stop) return;
     bootReal();
