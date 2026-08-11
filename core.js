@@ -303,18 +303,26 @@ function requireAuth(cb){
 function askRole(cb){
   if(!isApk()){ cb(); return; }
 
-  let saved = null;
-  try { saved = localStorage.getItem('ni_role'); } catch(e){}
+  const id = myId();
+  if(!id){ cb(); return; }
 
-  if(saved === 'makler' && location.pathname.indexOf('sotuvchi') === -1){
-    location.href = 'sotuvchi.html';
-    return;
-  }
-  if(saved === 'xaridor' && location.pathname.indexOf('xaridor') === -1){
-    location.href = 'xaridor.html';
-    return;
-  }
-  if(saved){ cb(); return; }
+  // Rolni serverdan olamiz (bot bilan bir xil bo'lishi uchun)
+  api('/api/user?tg_id=' + id).then(function(d){
+    const role = (d && d.ok && d.role) ? d.role : null;
+
+    if(role === 'makler'){
+      if(location.pathname.indexOf('sotuvchi') === -1){ location.href = 'sotuvchi.html'; return; }
+      cb(); return;
+    }
+    if(role === 'xaridor'){
+      if(location.pathname.indexOf('xaridor') === -1){ location.href = 'xaridor.html'; return; }
+      cb(); return;
+    }
+    showRolePick(cb);
+  }).catch(function(){ showRolePick(cb); });
+}
+
+function showRolePick(cb){
 
   const ov = document.createElement('div');
   ov.style.cssText = 'position:fixed;inset:0;z-index:9400;background:#000;color:#fff;' +
@@ -340,13 +348,16 @@ function askRole(cb){
 
   document.body.appendChild(ov);
 
+  function pick(role, go){
+    apiPost('/api/rol-saqlash', { role: role })
+      .then(function(){ go(); })
+      .catch(function(){ go(); });
+  }
+
   document.getElementById('rMak').addEventListener('click', function(){
-    try { localStorage.setItem('ni_role', 'makler'); } catch(e){}
-    location.href = 'sotuvchi.html';
+    pick('makler', function(){ location.href = 'sotuvchi.html'; });
   });
   document.getElementById('rXar').addEventListener('click', function(){
-    try { localStorage.setItem('ni_role', 'xaridor'); } catch(e){}
-    ov.remove();
-    cb();
+    pick('xaridor', function(){ ov.remove(); cb(); });
   });
 }
