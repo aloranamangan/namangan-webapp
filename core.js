@@ -304,7 +304,7 @@ function askRole(cb){
   if(!isApk()){ cb(); return; }
 
   const id = myId();
-  if(!id){ cb(); return; }
+  if(!id){ showRolePick(cb); return; }
 
   // Rolni serverdan olamiz (bot bilan bir xil bo'lishi uchun)
   api('/api/user?tg_id=' + id).then(function(d){
