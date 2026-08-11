@@ -59,7 +59,11 @@ const MAX_MEDIA = 10;
 
 function boot(){
   if(typeof showSplash === 'function' && isApk()){
-    showSplash(function(){ requireAuth(function(){ bootAuthed(); }); });
+    showSplash(function(){
+      requireAuth(function(){
+        askRole(function(){ bootAuthed(); });
+      });
+    });
   } else {
     requireAuth(function(){ bootAuthed(); });
   }

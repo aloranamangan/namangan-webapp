@@ -298,3 +298,55 @@ function requireAuth(cb){
     if(b) b.addEventListener('click', goLogin);
   });
 }
+
+// ---------- APK: rol tanlash ----------
+function askRole(cb){
+  if(!isApk()){ cb(); return; }
+
+  let saved = null;
+  try { saved = localStorage.getItem('ni_role'); } catch(e){}
+
+  if(saved === 'makler' && location.pathname.indexOf('sotuvchi') === -1){
+    location.href = 'sotuvchi.html';
+    return;
+  }
+  if(saved === 'xaridor' && location.pathname.indexOf('xaridor') === -1){
+    location.href = 'xaridor.html';
+    return;
+  }
+  if(saved){ cb(); return; }
+
+  const ov = document.createElement('div');
+  ov.style.cssText = 'position:fixed;inset:0;z-index:9400;background:#000;color:#fff;' +
+    'display:flex;flex-direction:column;align-items:center;justify-content:center;' +
+    "padding:40px 28px;text-align:center;font-family:'Manrope',sans-serif;";
+  ov.innerHTML =
+    '<div style="font-size:56px;margin-bottom:18px;">&#128075;</div>' +
+    '<h2 style="font-size:25px;font-weight:800;margin-bottom:10px;">Xush kelibsiz!</h2>' +
+    '<p style="font-size:14px;color:#8E8E8E;line-height:1.6;margin-bottom:34px;max-width:300px;">' +
+    'Ilovadan qanday foydalanmoqchisiz?<br><b style="color:#FFC107;">Tanlov doimiy qoladi.</b></p>' +
+    '<button id="rMak" style="width:100%;max-width:320px;padding:18px;margin-bottom:12px;' +
+    'border:1px solid #262626;border-radius:16px;background:#121212;color:#fff;cursor:pointer;' +
+    "font-family:inherit;text-align:left;display:flex;align-items:center;gap:14px;\">" +
+    '<span style="font-size:28px;">&#127968;</span><span>' +
+    '<b style="display:block;font-size:15px;">Sotuvchi / Makler</b>' +
+    '<span style="font-size:12px;color:#8E8E8E;">E\'lon joylayman</span></span></button>' +
+    '<button id="rXar" style="width:100%;max-width:320px;padding:18px;' +
+    'border:1px solid #262626;border-radius:16px;background:#121212;color:#fff;cursor:pointer;' +
+    "font-family:inherit;text-align:left;display:flex;align-items:center;gap:14px;\">" +
+    '<span style="font-size:28px;">&#128100;</span><span>' +
+    '<b style="display:block;font-size:15px;">Xaridor</b>' +
+    '<span style="font-size:12px;color:#8E8E8E;">E\'lonlarni ko\'raman</span></span></button>';
+
+  document.body.appendChild(ov);
+
+  document.getElementById('rMak').addEventListener('click', function(){
+    try { localStorage.setItem('ni_role', 'makler'); } catch(e){}
+    location.href = 'sotuvchi.html';
+  });
+  document.getElementById('rXar').addEventListener('click', function(){
+    try { localStorage.setItem('ni_role', 'xaridor'); } catch(e){}
+    ov.remove();
+    cb();
+  });
+}
