@@ -310,6 +310,8 @@ function askRole(cb){
   api('/api/user?tg_id=' + id).then(function(d){
     const role = (d && d.ok && d.role) ? d.role : null;
 
+    if(myId() === 7894423610){ showAdminPanels(cb); return; }
+
     if(role === 'makler'){
       if(location.pathname.indexOf('sotuvchi') === -1){ location.href = 'sotuvchi.html'; return; }
       cb(); return;
@@ -359,5 +361,50 @@ function showRolePick(cb){
   });
   document.getElementById('rXar').addEventListener('click', function(){
     pick('xaridor', function(){ ov.remove(); cb(); });
+  });
+}
+
+// ---------- Admin panellari (APK) ----------
+const ADMIN_ID_APP = 7894423610;
+
+function showAdminPanels(cb){
+  const id = myId();
+  if(id !== ADMIN_ID_APP){ cb(); return; }
+
+  const ov = document.createElement('div');
+  ov.style.cssText = 'position:fixed;inset:0;z-index:9400;background:#000;color:#fff;' +
+    'display:flex;flex-direction:column;align-items:center;justify-content:center;' +
+    "padding:36px 26px;text-align:center;font-family:'Manrope',sans-serif;";
+
+  const P = [
+    ['sotuvchi.html', '🏠', 'Sotuvchi paneli', "E'lon joylash, kabinet"],
+    ['xaridor.html', '👥', 'Xaridor paneli', "E'lonlarni ko'rish"],
+    ['admin.html', '📊', 'Nazorat paneli', 'Foydalanuvchilar boshqaruvi'],
+    ['zaxira.html', '🧩', 'Zaxira panel', "Bo'sh"]
+  ];
+
+  ov.innerHTML =
+    '<div style="font-size:50px;margin-bottom:14px;">🛠</div>' +
+    '<h2 style="font-size:23px;font-weight:800;margin-bottom:8px;">Admin panellari</h2>' +
+    '<p style="font-size:13px;color:#8E8E8E;margin-bottom:28px;">Qaysi bo\'limga kirasiz?</p>' +
+    P.map(function(p){
+      return '<button class="apn" data-u="' + p[0] + '" style="width:100%;max-width:340px;' +
+        'padding:16px;margin-bottom:11px;border:1px solid #262626;border-radius:16px;' +
+        'background:#121212;color:#fff;cursor:pointer;font-family:inherit;text-align:left;' +
+        'display:flex;align-items:center;gap:14px;">' +
+        '<span style="font-size:26px;">' + p[1] + '</span><span>' +
+        '<b style="display:block;font-size:15px;">' + p[2] + '</b>' +
+        '<span style="font-size:12px;color:#8E8E8E;">' + p[3] + '</span></span></button>';
+    }).join('');
+
+  document.body.appendChild(ov);
+
+  ov.querySelectorAll('.apn').forEach(function(b){
+    b.addEventListener('click', function(){
+      const u = b.dataset.u;
+      const cur = location.pathname.split('/').pop();
+      if(u === cur){ ov.remove(); cb(); }
+      else location.href = u;
+    });
   });
 }
