@@ -1,5 +1,10 @@
 // ---------- Kirish slaydlari ----------
 function showSplash(done){
+  // Faqat birinchi marta
+  try {
+    if(localStorage.getItem('ni_splash_seen')){ done(); return; }
+  } catch(e){}
+
   const S = [
     {
       bg: 'linear-gradient(160deg,#0B2545 0%,#134074 55%,#1B4965 100%)',
@@ -129,6 +134,7 @@ function showSplash(done){
   }
 
   function finish(){
+    try { localStorage.setItem('ni_splash_seen', '1'); } catch(e){}
     ov.style.transition = 'opacity .4s';
     ov.style.opacity = '0';
     setTimeout(function(){ ov.remove(); done(); }, 420);
