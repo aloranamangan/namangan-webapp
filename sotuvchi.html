@@ -7,6 +7,8 @@
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#000000">
 <link rel="apple-touch-icon" href="icon-192.png">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <link rel="stylesheet" href="style.css">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
@@ -321,6 +323,9 @@ function showSheet(){
       '<input class="inp" id="uPrice" placeholder="85 000 000 som">' +
       '<label class="label">Malumot</label>' +
       '<textarea class="txt" id="uDesc" placeholder="Manzil, xonalar soni, qavat..."></textarea>' +
+      '<div class="geo-pick" id="geoPick"><span class="ic">&#128205;</span>' +
+      '<span class="tx"><b>Joylashuvni belgilash</b>' +
+      '<span id="geoName">Xaritadan tanlang (ixtiyoriy)</span></span></div>' +
       (myId() === 7894423610
         ? '<div class="pano-pick" id="panoPick"><span class="ic">&#127760;</span>' +
           '<span class="tx"><b>360&deg; rasm qoshish</b>' +
@@ -341,6 +346,16 @@ function showSheet(){
       bg.querySelectorAll('.seg button').forEach(function(x){ x.classList.remove('on'); });
       b.classList.add('on');
       type = b.dataset.t;
+    });
+  });
+
+  let geoLat = null, geoLng = null;
+  const gp = el('geoPick');
+  if(gp) gp.addEventListener('click', function(){
+    openGeoPicker(function(la, ln){
+      geoLat = la; geoLng = ln;
+      gp.classList.add('on');
+      el('geoName').textContent = la.toFixed(5) + ', ' + ln.toFixed(5);
     });
   });
 
@@ -373,7 +388,10 @@ function showSheet(){
     const head = type === 'sotuv' ? 'Sotiladi' : 'Ijaraga beriladi';
     const full = head + '\n' + title + (desc ? '\n' + desc : '');
 
-    apiPost('/api/post-qoshish', { items: picked, price: price, description: full })
+    apiPost('/api/post-qoshish', {
+      items: picked, price: price, description: full,
+      lat: geoLat, lng: geoLng
+    })
       .then(function(d){
         if(d.ok && panoData){
           apiPost('/api/pano-qoshish', {
@@ -707,6 +725,39 @@ function changeAvatar(){
       })
       .catch(function(){ toast('Server xatosi'); });
   });
+}
+
+
+function openGeoPicker(cb){
+  const d = document.createElement('div');
+  d.id = 'geoMap';
+  d.innerHTML = '<div id="geoMapBox"></div>' +
+    '<div class="geo-center">&#128205;</div>' +
+    '<button class="geo-x" id="geoX">&times;</button>' +
+    '<button class="geo-ok" id="geoOk">Shu yerni tanlash</button>';
+  document.body.appendChild(d);
+
+  const m = L.map('geoMapBox', { zoomControl: false, attributionControl: false })
+    .setView([40.9983, 71.6726], 14);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+    { maxZoom: 19 }).addTo(m);
+  L.control.zoom({ position: 'bottomright' }).addTo(m);
+
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(function(p){
+      m.setView([p.coords.latitude, p.coords.longitude], 16);
+    }, function(){}, { timeout: 4000 });
+  }
+
+  el('geoX').addEventListener('click', function(){ d.remove(); });
+  el('geoOk').addEventListener('click', function(){
+    const c = m.getCenter();
+    d.remove();
+    cb(c.lat, c.lng);
+    haptic('medium');
+  });
+
+  setTimeout(function(){ m.invalidateSize(); }, 200);
 }
 
 document.addEventListener('DOMContentLoaded', boot);
