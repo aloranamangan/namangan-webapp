@@ -255,7 +255,7 @@ function drawGrid(){
       '<span>&#65291; tugmasi bilan birinchi eloningizni joylang</span></div>';
     return;
   }
-  g.innerHTML = POSTS.map(function(p){
+  g.innerHTML = POSTS.map(function(p, i){
     const m = (p.media && p.media.length) ? p.media : [{ file_id: p.file_id, is_video: p.is_video }];
     const f = m[0] || {};
     const url = f.file_id ? mediaUrl(f.file_id) : '';
@@ -266,7 +266,9 @@ function drawGrid(){
       ? '<svg class="multi" viewBox="0 0 24 24" fill="#fff"><rect x="7" y="3" width="14" height="14" rx="2"/><rect x="3" y="7" width="14" height="14" rx="2" opacity=".85"/></svg>'
       : '';
     return '<div class="cell" data-full="' + url + '" data-v="' + (f.is_video ? '1' : '0') + '">' +
-      inner + multi + '</div>';
+      inner + multi +
+      (p.pinned ? '<span class="cell-pin">&#128204;</span>' : '') +
+      '<button class="cell-menu" data-mi="' + i + '">&#8942;</button></div>';
   }).join('');
 
   const gal = POSTS.map(function(p){
@@ -281,6 +283,12 @@ function drawGrid(){
 
     c.addEventListener('click', function(){
       openGallery(gal[i].media, 0, true, gal, i);
+    });
+
+    const mb = c.querySelector('.cell-menu');
+    if(mb) mb.addEventListener('click', function(e){
+      e.stopPropagation();
+      postMenu(POSTS[i]);
     });
 
     c.addEventListener('touchstart', function(){
@@ -786,6 +794,8 @@ function postMenu(p){
   bg.innerHTML = '<div class="sheet" id="pmS"><div class="sheet-bar"></div>' +
     '<div class="sheet-title">Elon boshqaruvi</div>' +
     '<button class="sheet-item" data-a="edit">&#9999;&#65039; Tahrirlash</button>' +
+    '<button class="sheet-item" data-a="pin">&#128204; ' +
+      (p.pinned ? 'Qadashni bekor qilish' : 'Tepaga qadash') + '</button>' +
     '<button class="sheet-item" data-a="geo">&#128205; Joylashuvni ozgartirish</button>' +
     '<button class="sheet-item danger" data-a="del">&#128465;&#65039; Ochirish</button>' +
     '</div>';
@@ -808,6 +818,16 @@ function postMenu(p){
       }
 
       if(a === 'edit') editPost(p);
+
+      if(a === 'pin'){
+        apiPost('/api/post-pin', { post_id: p.id, on: !p.pinned }).then(function(d){
+          if(d.ok){
+            haptic('medium');
+            toast(p.pinned ? 'Qadash bekor qilindi' : 'Tepaga qadaldi');
+            loadProfile();
+          } else toast('Xato');
+        }).catch(function(){ toast('Server xatosi'); });
+      }
 
       if(a === 'geo'){
         openGeoPicker(function(la, ln){

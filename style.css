@@ -636,3 +636,18 @@ body{
   background:#0095F6;color:#fff;font-size:14px;font-weight:800;
   cursor:pointer;font-family:inherit;
 }
+
+/* Grid: uch nuqta va pin */
+.cell{position:relative;}
+.cell-menu{
+  position:absolute;top:5px;right:5px;z-index:6;
+  width:28px;height:28px;border-radius:50%;border:none;
+  background:rgba(0,0,0,.55);color:#fff;font-size:16px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  backdrop-filter:blur(6px);pointer-events:auto !important;
+}
+.cell-pin{
+  position:absolute;top:6px;left:6px;z-index:6;
+  font-size:14px;filter:drop-shadow(0 1px 3px rgba(0,0,0,.7));
+  pointer-events:none;
+}
