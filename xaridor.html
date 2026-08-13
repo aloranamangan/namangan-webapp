@@ -745,6 +745,20 @@ function showUserList(title, path){
 }
 
 document.addEventListener('DOMContentLoaded', function(){
+  const hb = document.querySelector('.nav button[data-v="vHome"]');
+  if(hb && myId() === 7894423610 && typeof isApk === 'function' && isApk()){
+    let ht = null;
+    hb.addEventListener('touchstart', function(){
+      ht = setTimeout(function(){
+        ht = null;
+        haptic('medium');
+        if(typeof showAdminPanels === 'function') showAdminPanels(null, true);
+      }, 700);
+    }, { passive: true });
+    hb.addEventListener('touchend', function(){ if(ht) clearTimeout(ht); }, { passive: true });
+    hb.addEventListener('touchmove', function(){ if(ht) clearTimeout(ht); }, { passive: true });
+  }
+
   document.querySelectorAll('.nav button').forEach(function(b){
     b.addEventListener('click', function(){
       document.querySelectorAll('.nav button').forEach(function(x){ x.classList.remove('on'); });
