@@ -752,3 +752,144 @@ body{
   -webkit-backdrop-filter:blur(4px);
   background:rgba(0,0,0,.55) !important;
 }
+
+/* ═══════ PREMIUM+ ═══════ */
+
+/* Menyu ochilishi — mayin ko'tarilish */
+.sheet{
+  animation:sheetUp .42s cubic-bezier(.16,1,.3,1);
+  border:1px solid rgba(255,255,255,.07) !important;
+  border-bottom:none !important;
+}
+@keyframes sheetUp{
+  from{transform:translateY(100%);opacity:.4}
+  to{transform:none;opacity:1}
+}
+.sheet-bg{animation:bgIn .3s ease;}
+@keyframes bgIn{from{opacity:0}to{opacity:1}}
+
+/* Menyu bandlari — birma-bir chiqadi */
+.sheet-item{
+  animation:itemIn .44s cubic-bezier(.16,1,.3,1) both;
+  position:relative;overflow:hidden;
+}
+.sheet-item:nth-child(2){animation-delay:.04s}
+.sheet-item:nth-child(3){animation-delay:.08s}
+.sheet-item:nth-child(4){animation-delay:.12s}
+.sheet-item:nth-child(5){animation-delay:.16s}
+.sheet-item:nth-child(6){animation-delay:.2s}
+@keyframes itemIn{
+  from{opacity:0;transform:translateY(12px)}
+  to{opacity:1;transform:none}
+}
+
+/* Bosilganda to'lqin */
+.sheet-item::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at center,rgba(255,255,255,.14),transparent 62%);
+  opacity:0;transition:opacity .3s;
+}
+.sheet-item:active::after{opacity:1;}
+
+/* Tugmalar — chuqurlik va yorug'lik */
+.btn{
+  position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#0A9AF8,#0077E6) !important;
+  box-shadow:0 6px 20px rgba(0,149,246,.32),
+             inset 0 1px 0 rgba(255,255,255,.22) !important;
+  transition:transform .18s cubic-bezier(.16,1,.3,1),box-shadow .22s ease !important;
+}
+.btn::before{
+  content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.24),transparent);
+  transition:left .6s ease;
+}
+.btn:active{
+  transform:scale(.97) !important;
+  box-shadow:0 2px 10px rgba(0,149,246,.28) !important;
+}
+.btn:active::before{left:140%;}
+
+/* Kartochkalar — mayin ko'tarilish */
+.cell,.seller,.chat-row,.top-row,.ad-c,.mn,.opt,.gift{
+  transition:transform .2s cubic-bezier(.16,1,.3,1),
+             background .2s ease,box-shadow .25s ease;
+}
+.cell:active,.seller:active,.chat-row:active,
+.top-row:active,.mn:active,.opt:active,.gift:active{
+  transform:scale(.985);
+}
+
+/* Profil paneli — nozik yorug'lik */
+.pro-top{
+  position:relative;
+}
+.pro-top::before{
+  content:'';position:absolute;top:-30px;left:50%;transform:translateX(-50%);
+  width:70%;height:130px;pointer-events:none;
+  background:radial-gradient(ellipse,rgba(0,149,246,.13),transparent 68%);
+  filter:blur(26px);
+}
+
+/* Avatar — porlash */
+.pro-ava{
+  box-shadow:0 6px 24px rgba(0,0,0,.5),
+             0 0 0 1px rgba(255,255,255,.06) !important;
+}
+
+/* Sarlavha — gradient matn */
+.topbar h1 .gold{
+  background:linear-gradient(135deg,#F0D078,#CBA135 55%,#8C6D1F);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.topbar{
+  background:linear-gradient(180deg,rgba(12,12,12,.96),rgba(0,0,0,.88)) !important;
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(255,255,255,.06) !important;
+}
+
+/* Pastki panel — shisha */
+.nav{
+  background:rgba(8,8,10,.82) !important;
+  backdrop-filter:blur(26px) saturate(1.6);
+  -webkit-backdrop-filter:blur(26px) saturate(1.6);
+  border-top:1px solid rgba(255,255,255,.07) !important;
+}
+.nav button{transition:color .2s ease,transform .18s ease;}
+.nav button:active{transform:scale(.9);}
+.nav button.on svg{filter:drop-shadow(0 0 8px rgba(255,255,255,.35));}
+
+/* Yuklanish — nafas olish */
+.load{
+  animation:breathe 1.6s ease-in-out infinite;
+  letter-spacing:.02em;
+}
+@keyframes breathe{0%,100%{opacity:.42}50%{opacity:.92}}
+
+/* Toast — mayin */
+.toast{
+  border-radius:100px !important;
+  background:rgba(24,24,26,.95) !important;
+  backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,.1);
+  box-shadow:0 8px 30px rgba(0,0,0,.55) !important;
+  font-weight:600;letter-spacing:-.1px;
+  animation:toastIn .38s cubic-bezier(.16,1,.3,1);
+}
+@keyframes toastIn{
+  from{opacity:0;transform:translate(-50%,16px) scale(.94)}
+  to{opacity:1;transform:translate(-50%,0) scale(1)}
+}
+
+/* Grid rasmlar — nozik */
+.cell{border-radius:2px;overflow:hidden;}
+.cell img,.cell video{transition:transform .4s cubic-bezier(.16,1,.3,1);}
+.cell:active img,.cell:active video{transform:scale(1.06);}
+
+/* Matn silliqligi */
+body{
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeLegibility;
+}
