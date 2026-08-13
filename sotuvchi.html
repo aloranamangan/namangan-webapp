@@ -277,9 +277,21 @@ function drawGrid(){
   });
 
   g.querySelectorAll('.cell').forEach(function(c, i){
+    let lt = null;
+
     c.addEventListener('click', function(){
       openGallery(gal[i].media, 0, true, gal, i);
     });
+
+    c.addEventListener('touchstart', function(){
+      lt = setTimeout(function(){
+        lt = null;
+        postMenu(POSTS[i]);
+      }, 600);
+    }, { passive: true });
+
+    c.addEventListener('touchend', function(){ if(lt) clearTimeout(lt); }, { passive: true });
+    c.addEventListener('touchmove', function(){ if(lt) clearTimeout(lt); }, { passive: true });
   });
 }
 
@@ -762,6 +774,97 @@ function openGeoPicker(cb){
   });
 
   setTimeout(function(){ m.invalidateSize(); }, 200);
+}
+
+
+function postMenu(p){
+  if(!p) return;
+  haptic('medium');
+
+  const bg = document.createElement('div');
+  bg.className = 'sheet-bg';
+  bg.innerHTML = '<div class="sheet" id="pmS"><div class="sheet-bar"></div>' +
+    '<div class="sheet-title">Elon boshqaruvi</div>' +
+    '<button class="sheet-item" data-a="edit">&#9999;&#65039; Tahrirlash</button>' +
+    '<button class="sheet-item" data-a="geo">&#128205; Joylashuvni ozgartirish</button>' +
+    '<button class="sheet-item danger" data-a="del">&#128465;&#65039; Ochirish</button>' +
+    '</div>';
+
+  document.body.appendChild(bg);
+  bg.addEventListener('click', function(e){ if(e.target === bg) bg.remove(); });
+  el('pmS').addEventListener('click', function(e){ e.stopPropagation(); });
+
+  bg.querySelectorAll('.sheet-item').forEach(function(b){
+    b.addEventListener('click', function(){
+      const a = b.dataset.a;
+      bg.remove();
+
+      if(a === 'del'){
+        if(!confirm('Elonni ochirasizmi?\n\nLayk, komentariya, korishlar ham ochadi.')) return;
+        apiPost('/api/post-ochirish', { post_id: p.id }).then(function(d){
+          if(d.ok){ haptic('medium'); toast('Ochirildi'); loadProfile(); }
+          else toast(d.error || 'Xato');
+        }).catch(function(){ toast('Server xatosi'); });
+      }
+
+      if(a === 'edit') editPost(p);
+
+      if(a === 'geo'){
+        openGeoPicker(function(la, ln){
+          apiPost('/api/post-tahrirlash', {
+            post_id: p.id, price: p.price || '',
+            description: p.description || '', lat: la, lng: ln
+          }).then(function(d){
+            if(d.ok){ haptic('medium'); toast('Joylashuv saqlandi'); }
+            else toast('Xato');
+          });
+        });
+      }
+    });
+  });
+}
+
+function editPost(p){
+  const lines = String(p.description || '').split('\n');
+  const head = lines[0] || '';
+  const title = lines[1] || '';
+  const body = lines.slice(2).join('\n');
+
+  const bg = document.createElement('div');
+  bg.className = 'sheet-bg';
+  bg.innerHTML = '<div class="sheet" id="epS" style="max-height:88vh;">' +
+    '<div class="sheet-bar"></div><div class="sheet-title">Elonni tahrirlash</div>' +
+    '<div class="wrap">' +
+    '<label class="label">Sarlavha</label>' +
+    '<input class="inp" id="eT" value="' + esc(title) + '">' +
+    '<label class="label">Narx</label>' +
+    '<input class="inp" id="eP" value="' + esc(p.price || '') + '">' +
+    '<label class="label">Malumot</label>' +
+    '<textarea class="txt" id="eD">' + esc(body) + '</textarea>' +
+    '<button class="btn" id="eGo">Saqlash</button></div></div>';
+
+  document.body.appendChild(bg);
+  bg.addEventListener('click', function(e){ if(e.target === bg) bg.remove(); });
+  el('epS').addEventListener('click', function(e){ e.stopPropagation(); });
+
+  el('eGo').addEventListener('click', function(){
+    const t = el('eT').value.trim();
+    if(!t){ toast('Sarlavhani kiriting'); return; }
+
+    const full = head + '\n' + t + (el('eD').value.trim() ? '\n' + el('eD').value.trim() : '');
+    const b = el('eGo');
+    b.disabled = true;
+    b.textContent = 'Saqlanmoqda...';
+
+    apiPost('/api/post-tahrirlash', {
+      post_id: p.id, price: el('eP').value.trim(), description: full
+    }).then(function(d){
+      if(d.ok){ haptic('medium'); toast('Saqlandi'); bg.remove(); loadProfile(); }
+      else { toast('Xato'); b.disabled = false; b.textContent = 'Saqlash'; }
+    }).catch(function(){
+      toast('Server xatosi'); b.disabled = false; b.textContent = 'Saqlash';
+    });
+  });
 }
 
 document.addEventListener('DOMContentLoaded', boot);
