@@ -56,7 +56,9 @@ body{background:#0a0a0a;}
 let USERS = [];
 
 function boot(){
-  api('/api/admin-users?init_data=' + encodeURIComponent(initData()))
+  const q = '/api/admin-users?init_data=' + encodeURIComponent(initData()) +
+    (APP_TOKEN ? '&token=' + encodeURIComponent(APP_TOKEN) : '');
+  api(q)
     .then(function(d){
       if(!d.ok){
         el('list').innerHTML = '<div class="empty"><div class="ic">&#128274;</div>' +
@@ -232,7 +234,11 @@ document.addEventListener('DOMContentLoaded', function(){
              String(u.tg_id).indexOf(q) !== -1;
     }));
   });
-  setTimeout(boot, 400);
+  setTimeout(function(){
+    if(typeof checkSession === 'function'){
+      checkSession(function(){ boot(); });
+    } else boot();
+  }, 400);
 });
 </script>
 </body>
