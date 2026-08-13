@@ -307,7 +307,8 @@ function postHTML(p){
     '<div class="post-head" data-u="' + esc(p.username) + '">' +
       '<img src="' + avaOf(p.username) + '">' +
       '<b>' + esc(s ? s.name : p.username) + vBadge(s) + '</b>' +
-      '<span class="badge">' + fmt(p.views) + ' korish</span>' +
+      ((p.media && p.media[0] && p.media[0].video)
+        ? '<span class="badge">' + fmt(p.views) + ' korish</span>' : '') +
     '</div>' +
     '<div class="slider"><div class="slides">' + slides + '</div>' + dots +
       (p.pano ? '<div class="pano-badge">&#127760; 360&deg;</div>' : '') +
