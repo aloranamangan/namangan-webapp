@@ -42,7 +42,11 @@
 </head>
 <body>
 
-<header class="topbar"><h1>📢 Reklama</h1></header>
+<header class="topbar" style="display:flex;align-items:center;gap:12px;">
+  <h1 style="flex:1;">📢 Reklama</h1>
+  <button id="rx" style="width:36px;height:36px;border-radius:50%;border:none;
+    background:#1a1a1a;color:#fff;font-size:20px;cursor:pointer;">&times;</button>
+</header>
 <button class="bk" id="bk">← Boshqaruv paneli</button>
 <div id="root"><div class="load">Yuklanmoqda...</div></div>
 <button class="fab" id="fab">+</button>
@@ -210,6 +214,12 @@ function newAd(){
 document.addEventListener('DOMContentLoaded', function(){
   el('fab').addEventListener('click', newAd);
   el('bk').addEventListener('click', function(){ location.href = 'zaxira.html'; });
+  const rb = el('rx');
+  if(rb) rb.addEventListener('click', function(){
+    let last = null;
+    try { last = localStorage.getItem('ni_admin_panel'); } catch(e){}
+    location.href = (last && last !== 'zaxira.html') ? last : 'sotuvchi.html';
+  });
   setTimeout(function(){
     if(typeof checkSession === 'function') checkSession(function(){ boot(); });
     else boot();

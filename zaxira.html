@@ -26,7 +26,11 @@
 </head>
 <body>
 
-<header class="topbar"><h1>⚙️ Boshqaruv <span class="gold">paneli</span></h1></header>
+<header class="topbar" style="display:flex;align-items:center;gap:12px;">
+  <h1 style="flex:1;">⚙️ Boshqaruv <span class="gold">paneli</span></h1>
+  <button id="zx" style="width:36px;height:36px;border-radius:50%;border:none;
+    background:#1a1a1a;color:#fff;font-size:20px;cursor:pointer;">&times;</button>
+</header>
 
 <div style="padding:8px 0 20px;">
 
@@ -65,6 +69,14 @@
 <script src="core.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function(){
+  const zb = document.getElementById('zx');
+  if(zb) zb.addEventListener('click', function(){
+    let last = null;
+    try { last = localStorage.getItem('ni_admin_panel'); } catch(e){}
+    if(last && last !== 'zaxira.html') location.href = last;
+    else location.href = 'sotuvchi.html';
+  });
+
   document.querySelectorAll('.mn').forEach(function(m){
     m.addEventListener('click', function(){
       if(m.dataset.soon){ toast('Bu bolim tayyorlanmoqda'); return; }
