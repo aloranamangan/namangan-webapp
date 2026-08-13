@@ -95,6 +95,7 @@
 <script src="dm.js"></script>
 <script src="story.js"></script>
 <script src="pano.js"></script>
+<script src="ads.js"></script>
 <script>
 let POSTS = [];
 let SELLERS = [];
@@ -259,6 +260,11 @@ function drawStories(){
 }
 
 function drawFeed(){
+  setTimeout(function(){
+    const f = el('feed');
+    if(f && typeof injectAds === 'function') injectAds(f, 'feed', 5);
+  }, 800);
+
   const box = el('feed');
   const sub = SELLERS.filter(function(s){ return SUBS[s.username]; })
                      .map(function(s){ return s.username; });
