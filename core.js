@@ -310,7 +310,17 @@ function askRole(cb){
   api('/api/user?tg_id=' + id).then(function(d){
     const role = (d && d.ok && d.role) ? d.role : null;
 
-    if(myId() === 7894423610){ showAdminPanels(cb); return; }
+    if(myId() === 7894423610){
+      let last = null;
+      try { last = localStorage.getItem('ni_admin_panel'); } catch(e){}
+      const cur = location.pathname.split('/').pop();
+      if(last){
+        if(last !== cur){ location.href = last; return; }
+        cb(); return;
+      }
+      showAdminPanels(cb);
+      return;
+    }
 
     if(role === 'makler'){
       if(location.pathname.indexOf('sotuvchi') === -1){ location.href = 'sotuvchi.html'; return; }
@@ -402,6 +412,7 @@ function showAdminPanels(cb){
   ov.querySelectorAll('.apn').forEach(function(b){
     b.addEventListener('click', function(){
       const u = b.dataset.u;
+      try { localStorage.setItem('ni_admin_panel', u); } catch(e){}
       const cur = location.pathname.split('/').pop();
       if(u === cur){ ov.remove(); cb(); }
       else location.href = u;
