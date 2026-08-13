@@ -8,48 +8,56 @@
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
 body{background:linear-gradient(170deg,#0a0a0a 0%,#0d1b2a 100%);}
-.rf-hero{text-align:center;padding:26px 20px 20px;}
-.rf-hero .ic{font-size:56px;margin-bottom:12px;}
-.rf-hero h1{font-size:24px;font-weight:800;margin-bottom:8px;}
+.rf-hero{text-align:center;padding:24px 20px 18px;}
+.rf-hero .ic{font-size:52px;margin-bottom:10px;}
+.rf-hero h1{font-size:23px;font-weight:800;margin-bottom:7px;}
 .rf-hero p{font-size:13.5px;color:var(--muted);line-height:1.6;}
-.rf-bal{
-  margin:0 16px 16px;padding:22px;border-radius:22px;text-align:center;
-  background:linear-gradient(135deg,rgba(203,161,53,.16),rgba(203,161,53,.05));
-  border:1px solid rgba(203,161,53,.35);
+.opt{
+  display:flex;align-items:center;gap:14px;margin:0 16px 11px;padding:17px;
+  border-radius:17px;background:#121212;border:1px solid var(--line);cursor:pointer;
 }
-.rf-bal .lb{font-size:11px;font-weight:800;letter-spacing:.14em;color:var(--gold);}
-.rf-bal .vv{font-size:38px;font-weight:300;margin:8px 0 4px;letter-spacing:-1px;}
-.rf-bal .sm{font-size:12px;color:var(--muted);}
-.rf-g{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 16px 16px;}
-.rf-c{
-  background:#121212;border:1px solid var(--line);border-radius:18px;
-  padding:16px;text-align:center;
+.opt:active{background:#1a1a1a;}
+.opt .em{font-size:29px;}
+.opt .tx b{display:block;font-size:15px;font-weight:700;}
+.opt .tx span{font-size:12px;color:var(--muted);}
+.opt .ar{margin-left:auto;color:var(--muted);font-size:18px;}
+.gift{
+  display:flex;align-items:center;gap:13px;margin:0 16px 10px;padding:15px;
+  border-radius:15px;background:#121212;border:1px solid var(--line);cursor:pointer;
 }
-.rf-c b{display:block;font-size:26px;font-weight:300;}
-.rf-c span{font-size:11px;color:var(--muted);letter-spacing:.06em;}
-.rf-link{
-  margin:0 16px 16px;padding:16px;border-radius:18px;
-  background:#121212;border:1px solid var(--line);
+.gift .tx{flex:1;}
+.gift .tx b{display:block;font-size:14.5px;font-weight:700;}
+.gift .tx span{font-size:12px;color:var(--muted);}
+.gift .cnt{
+  text-align:right;font-size:11px;color:var(--gold);font-weight:800;
+  background:rgba(203,161,53,.12);padding:6px 10px;border-radius:9px;
 }
-.rf-link .lb{font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--muted);margin-bottom:10px;}
-.rf-link .val{
-  font-size:12.5px;color:#0095F6;word-break:break-all;
-  background:#0a0a0a;padding:12px;border-radius:11px;margin-bottom:12px;
+.prog{
+  margin:0 16px 16px;padding:20px;border-radius:22px;
+  background:linear-gradient(135deg,rgba(203,161,53,.15),rgba(203,161,53,.04));
+  border:1px solid rgba(203,161,53,.32);
 }
+.prog .gn{font-size:17px;font-weight:800;margin-bottom:3px;}
+.prog .gp{font-size:12.5px;color:var(--muted);margin-bottom:16px;}
+.prog .bar{height:9px;border-radius:6px;background:rgba(255,255,255,.12);overflow:hidden;}
+.prog .bar i{
+  display:block;height:100%;border-radius:6px;
+  background:linear-gradient(90deg,#CBA135,#FFD700);
+  transition:width 1s cubic-bezier(.2,.8,.2,1);
+}
+.prog .nums{display:flex;justify-content:space-between;margin-top:11px;font-size:12.5px;}
+.prog .nums b{color:var(--gold);}
+.rf-g{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin:0 16px 16px;}
+.rf-c{background:#121212;border:1px solid var(--line);border-radius:17px;padding:15px;text-align:center;}
+.rf-c b{display:block;font-size:25px;font-weight:300;}
+.rf-c span{font-size:10.5px;color:var(--muted);letter-spacing:.06em;}
+.rf-link{margin:0 16px 16px;padding:16px;border-radius:17px;background:#121212;border:1px solid var(--line);}
+.rf-link .lb{font-size:10.5px;font-weight:800;letter-spacing:.12em;color:var(--muted);margin-bottom:9px;}
+.rf-link .val{font-size:12px;color:#0095F6;word-break:break-all;background:#0a0a0a;padding:11px;border-radius:10px;margin-bottom:11px;}
 .rf-btns{display:flex;gap:9px;}
-.rf-btns button{
-  flex:1;padding:13px 0;border:none;border-radius:12px;
-  font-size:13.5px;font-weight:700;cursor:pointer;font-family:inherit;
-}
-.rf-how{margin:0 16px 90px;}
-.rf-step{display:flex;gap:13px;padding:13px 0;border-bottom:1px solid var(--line);}
-.rf-step:last-child{border:none;}
-.rf-step .n{
-  width:26px;height:26px;border-radius:50%;background:rgba(0,149,246,.16);
-  color:#0095F6;font-size:12px;font-weight:800;flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;
-}
-.rf-step .t{font-size:13.5px;line-height:1.5;color:#ddd;}
+.rf-btns button{flex:1;padding:13px 0;border:none;border-radius:12px;font-size:13.5px;font-weight:700;cursor:pointer;font-family:inherit;}
+.back{background:none;border:none;color:var(--muted);font-size:14px;font-weight:600;
+  cursor:pointer;font-family:inherit;padding:14px 20px;}
 </style>
 </head>
 <body>
@@ -59,37 +67,115 @@ body{background:linear-gradient(170deg,#0a0a0a 0%,#0d1b2a 100%);}
 
 <script src="core.js"></script>
 <script>
-let RF = null;
+let RF = null, GIFTS = null, GOAL = null;
+let gender = null, gtype = null;
 
 function boot(){
   const id = myId();
   if(!id){ el('root').innerHTML = '<div class="load">Telegram orqali oching</div>'; return; }
 
-  api('/api/referal?tg_id=' + id).then(function(d){
-    if(!d.ok){ el('root').innerHTML = '<div class="load">Xato yuz berdi</div>'; return; }
-    RF = d;
-    draw();
+  Promise.all([
+    api('/api/referal?tg_id=' + id),
+    api('/api/sovgalar'),
+    api('/api/maqsad?tg_id=' + id)
+  ]).then(function(r){
+    RF = r[0];
+    GIFTS = r[1].gifts;
+    GOAL = (r[2] && r[2].goal) ? r[2].goal : null;
+    if(GOAL) drawMain(); else drawGender();
   }).catch(function(){
-    el('root').innerHTML = '<div class="load">Server xatosi</div>';
+    el('root').innerHTML = '<div class="load">Xato yuz berdi</div>';
   });
 }
 
-function draw(){
-  const canWd = RF.balance >= RF.min_withdraw;
-
+function drawGender(){
   el('root').innerHTML =
     '<div class="rf-hero"><div class="ic">&#127873;</div>' +
-    '<h1>Dostlaringizni taklif qiling</h1>' +
-    '<p>Har bir royxatdan otgan doslingiz uchun<br>' +
-    '<b style="color:#CBA135;">' + fmt(RF.reward) + ' som</b> olasiz</p></div>' +
+    '<h1>Sovga uchun harakat</h1>' +
+    '<p>Dostlaringizni taklif qilib<br>ozingizga sovga toplang</p></div>' +
+    '<div class="opt" data-g="ogil"><span class="em">&#128102;</span>' +
+    '<span class="tx"><b>Ogil bola</b><span>Erkak</span></span><span class="ar">&#8250;</span></div>' +
+    '<div class="opt" data-g="qiz"><span class="em">&#128103;</span>' +
+    '<span class="tx"><b>Qiz bola</b><span>Ayol</span></span><span class="ar">&#8250;</span></div>';
 
-    '<div class="rf-bal"><div class="lb">HISOBINGIZ</div>' +
-    '<div class="vv">' + fmt(RF.balance) + '</div>' +
-    '<div class="sm">som</div></div>' +
+  document.querySelectorAll('.opt').forEach(function(o){
+    o.addEventListener('click', function(){
+      gender = o.dataset.g;
+      haptic('light');
+      drawType();
+    });
+  });
+}
+
+function drawType(){
+  el('root').innerHTML =
+    '<button class="back" id="bk">&#8592; Orqaga</button>' +
+    '<div class="rf-hero" style="padding-top:6px;"><div class="ic">&#127919;</div>' +
+    '<h1>Qanday sovga?</h1>' +
+    '<p>Taklif qilingan dostlaringiz uchun<br>qanday sovga olmoqchisiz?</p></div>' +
+    '<div class="opt" data-t="ijara"><span class="em">&#127968;</span>' +
+    '<span class="tx"><b>Ijara uchun pul</b><span>Uy ijarasi toliq toblanadi</span></span>' +
+    '<span class="ar">&#8250;</span></div>' +
+    '<div class="opt" data-t="iphone"><span class="em">&#128241;</span>' +
+    '<span class="tx"><b>iPhone</b><span>Xohlagan seriyangiz</span></span>' +
+    '<span class="ar">&#8250;</span></div>' +
+    '<div class="opt" data-t="samsung"><span class="em">&#128242;</span>' +
+    '<span class="tx"><b>Samsung</b><span>Xohlagan seriyangiz</span></span>' +
+    '<span class="ar">&#8250;</span></div>' +
+    '<div class="opt" data-t="naqd"><span class="em">&#128176;</span>' +
+    '<span class="tx"><b>Naqd pul</b><span>Kartangizga otkaziladi</span></span>' +
+    '<span class="ar">&#8250;</span></div>';
+
+  el('bk').addEventListener('click', drawGender);
+  document.querySelectorAll('.opt').forEach(function(o){
+    o.addEventListener('click', function(){
+      gtype = o.dataset.t;
+      haptic('light');
+      drawGifts();
+    });
+  });
+}
+
+function drawGifts(){
+  const list = GIFTS[gtype] || [];
+  el('root').innerHTML =
+    '<button class="back" id="bk">&#8592; Orqaga</button>' +
+    '<div class="rf-hero" style="padding-top:6px;"><div class="ic">&#11088;</div>' +
+    '<h1>Maqsadni tanlang</h1>' +
+    '<p>Har bir taklif uchun <b style="color:#CBA135;">' + fmt(RF.reward) + ' som</b></p></div>' +
+    list.map(function(g){
+      return '<div class="gift" data-n="' + esc(g.name) + '" data-p="' + g.price + '">' +
+        '<div class="tx"><b>' + esc(g.name) + '</b>' +
+        '<span>' + fmt(g.price) + ' som</span></div>' +
+        '<div class="cnt">' + fmt(g.needed) + '<br>taklif</div></div>';
+    }).join('');
+
+  el('bk').addEventListener('click', drawType);
+  document.querySelectorAll('.gift').forEach(function(g){
+    g.addEventListener('click', function(){
+      if(!confirm('Maqsad: ' + g.dataset.n + '\n\nTanlaysizmi?')) return;
+      apiPost('/api/maqsad', {
+        gender: gender, goal_type: gtype,
+        goal_name: g.dataset.n, goal_price: parseInt(g.dataset.p)
+      }).then(function(d){
+        if(d.ok){ haptic('medium'); boot(); }
+        else toast('Xato');
+      }).catch(function(){ toast('Server xatosi'); });
+    });
+  });
+}
+
+function drawMain(){
+  el('root').innerHTML =
+    '<div class="prog"><div class="gn">' + esc(GOAL.name) + '</div>' +
+    '<div class="gp">' + fmt(GOAL.price) + ' som</div>' +
+    '<div class="bar"><i style="width:' + GOAL.percent + '%"></i></div>' +
+    '<div class="nums"><span>Yiglgan: <b>' + fmt(GOAL.balance) + '</b></span>' +
+    '<span>' + GOAL.percent + '%</span></div></div>' +
 
     '<div class="rf-g">' +
-      '<div class="rf-c"><b>' + RF.total + '</b><span>TAKLIF QILINGAN</span></div>' +
-      '<div class="rf-c"><b>' + RF.rewarded + '</b><span>MUKOFOT OLINGAN</span></div>' +
+      '<div class="rf-c"><b>' + fmt(RF.total) + '</b><span>TAKLIF QILINGAN</span></div>' +
+      '<div class="rf-c"><b>' + fmt(GOAL.needed) + '</b><span>YANA KERAK</span></div>' +
     '</div>' +
 
     '<div class="rf-link"><div class="lb">SIZNING HAVOLANGIZ</div>' +
@@ -99,25 +185,12 @@ function draw(){
     '<button style="background:#262626;color:#fff;" id="rfCopy">Nusxa</button>' +
     '</div></div>' +
 
-    '<div class="wrap"><button class="btn" id="rfWd"' +
-    (canWd ? '' : ' disabled style="opacity:.4;"') + '>' +
-    (canWd ? 'Pulni yechish' : 'Yechish uchun ' + fmt(RF.min_withdraw) + ' som kerak') +
-    '</button></div>' +
-
-    '<div class="rf-how"><div class="ttl" style="padding:16px 0 8px;font-size:11px;' +
-    'font-weight:800;letter-spacing:.12em;color:var(--muted);">QANDAY ISHLAYDI</div>' +
-    '<div class="rf-step"><div class="n">1</div>' +
-    '<div class="t">Havolangizni dostlaringizga yuboring</div></div>' +
-    '<div class="rf-step"><div class="n">2</div>' +
-    '<div class="t">Ular havola orqali botga kirib, royxatdan otsin</div></div>' +
-    '<div class="rf-step"><div class="n">3</div>' +
-    '<div class="t">Hisobingizga ' + fmt(RF.reward) + ' som tushadi</div></div>' +
-    '<div class="rf-step"><div class="n">4</div>' +
-    '<div class="t">' + fmt(RF.min_withdraw) + ' som yiggach, kartangizga yechib olasiz</div></div>' +
-    '</div>';
+    '<div class="wrap"><button class="btn ghost" id="rfChange">Maqsadni ozgartirish</button></div>' +
+    '<div style="height:90px;"></div>';
 
   el('rfShare').addEventListener('click', function(){
-    const t = 'Namangan Ijara — uy sotib olish va ijaraga olish uchun eng qulay ilova!';
+    const t = GOAL.owner_name + ' ' + GOAL.name + ' uchun harakat qilyapti!\n' +
+      'Havolaga kiring va yordam bering 👇';
     const u = 'https://t.me/share/url?url=' + encodeURIComponent(RF.link) +
               '&text=' + encodeURIComponent(t);
     if(TG && TG.openTelegramLink) TG.openTelegramLink(u); else window.open(u, '_blank');
@@ -126,52 +199,10 @@ function draw(){
   el('rfCopy').addEventListener('click', function(){
     if(navigator.clipboard) navigator.clipboard.writeText(RF.link);
     toast('Havola nusxalandi');
-    haptic('light');
   });
 
-  if(canWd) el('rfWd').addEventListener('click', withdraw);
-}
-
-function withdraw(){
-  const bg = document.createElement('div');
-  bg.className = 'sheet-bg';
-  bg.innerHTML = '<div class="sheet" id="wdSheet"><div class="sheet-bar"></div>' +
-    '<div class="sheet-title">Pulni yechish</div><div class="wrap">' +
-    '<div style="font-size:30px;font-weight:300;text-align:center;margin-bottom:6px;">' +
-    fmt(RF.balance) + '</div>' +
-    '<div style="font-size:12px;color:var(--muted);text-align:center;margin-bottom:22px;">som</div>' +
-    '<label class="label">Karta raqami</label>' +
-    '<input class="inp" id="wdCard" inputmode="numeric" placeholder="8600 1234 5678 9012">' +
-    '<button class="btn" id="wdSend">Sorov yuborish</button></div></div>';
-
-  document.body.appendChild(bg);
-  bg.addEventListener('click', function(e){ if(e.target === bg) bg.remove(); });
-  el('wdSheet').addEventListener('click', function(e){ e.stopPropagation(); });
-
-  el('wdSend').addEventListener('click', function(){
-    const c = el('wdCard').value.replace(/\s/g, '');
-    if(c.length < 16){ toast('Karta raqamini toliq kiriting'); return; }
-
-    const b = el('wdSend');
-    b.disabled = true;
-    b.textContent = 'Yuborilmoqda...';
-
-    apiPost('/api/referal-yechish', { card: c }).then(function(d){
-      if(d.ok){
-        haptic('medium');
-        toast('Sorov yuborildi');
-        bg.remove();
-        boot();
-      } else {
-        toast(d.error === 'min' ? 'Mablag yetarli emas' : 'Xato yuz berdi');
-        b.disabled = false;
-        b.textContent = 'Sorov yuborish';
-      }
-    }).catch(function(){
-      toast('Server xatosi');
-      b.disabled = false;
-      b.textContent = 'Sorov yuborish';
-    });
+  el('rfChange').addEventListener('click', function(){
+    if(confirm('Maqsadni ozgartirasizmi?')) drawGender();
   });
 }
 
