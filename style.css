@@ -651,3 +651,27 @@ body{
   font-size:14px;filter:drop-shadow(0 1px 3px rgba(0,0,0,.7));
   pointer-events:none;
 }
+
+/* Avatar atrofida storiy halqasi */
+.pro-ava-wrap{position:relative;}
+.pro-ava-wrap.has-story::before{
+  content:'';position:absolute;inset:-5px;border-radius:50%;
+  background:linear-gradient(45deg,#F58529,#FEDA77,#DD2A7B,#8134AF,#515BD4);
+  z-index:0;
+}
+.pro-ava-wrap.has-story.seen::before{
+  background:#3a3a3a;
+}
+.pro-ava-wrap.has-story::after{
+  content:'';position:absolute;inset:-2px;border-radius:50%;
+  background:#000;z-index:1;
+}
+.pro-ava-wrap.has-story .pro-ava{position:relative;z-index:2;}
+.pro-ava-wrap .pro-add{z-index:3;}
+
+/* Sotuvchilar ro'yxatida ham */
+.seller-ava.has-story{
+  padding:2.5px;border-radius:50%;
+  background:linear-gradient(45deg,#F58529,#FEDA77,#DD2A7B,#8134AF,#515BD4);
+}
+.seller-ava.has-story img{border:2px solid #000;}

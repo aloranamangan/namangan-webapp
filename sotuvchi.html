@@ -200,7 +200,7 @@ function renderCabinet(){
   const views = POSTS.reduce(function(a, p){ return a + (p.views || 0); }, 0);
 
   el('root').innerHTML =
-    '<div class="stories" id="myStories"></div>' +
+
     '<div class="pro-top">' +
       '<div class="pro-ava-wrap"><img class="pro-ava" src="' + ava + '">' +
       '<button class="pro-add" id="addBtn">+</button></div>' +
@@ -242,7 +242,7 @@ function renderCabinet(){
     av.style.cursor = 'pointer';
     av.addEventListener('click', changeAvatar);
   }
-  drawMyStories();
+  markAvatarStory();
   drawHighlights();
   el('delBtn').addEventListener('click', deleteMe);
 }
@@ -883,6 +883,28 @@ function editPost(p){
       else { toast('Xato'); b.disabled = false; b.textContent = 'Saqlash'; }
     }).catch(function(){
       toast('Server xatosi'); b.disabled = false; b.textContent = 'Saqlash';
+    });
+  });
+}
+
+
+function markAvatarStory(){
+  if(!ME) return;
+  loadStories(function(){
+    const mine = STORIES.filter(function(s){ return s.owner_id === myId(); });
+    const w = document.querySelector('.pro-ava-wrap');
+    if(!w) return;
+
+    if(!mine.length){ w.classList.remove('has-story', 'seen'); return; }
+
+    w.classList.add('has-story');
+    const allSeen = mine.every(function(s){ return isStorySeen(s.id); });
+    w.classList.toggle('seen', allSeen);
+
+    const av = w.querySelector('.pro-ava');
+    if(av) av.addEventListener('click', function(e){
+      e.stopPropagation();
+      openStory({ id: myId(), name: ME.name, items: mine }, 0);
     });
   });
 }
