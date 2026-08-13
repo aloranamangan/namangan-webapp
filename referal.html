@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Referal</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+body{background:linear-gradient(170deg,#0a0a0a 0%,#0d1b2a 100%);}
+.rf-hero{text-align:center;padding:26px 20px 20px;}
+.rf-hero .ic{font-size:56px;margin-bottom:12px;}
+.rf-hero h1{font-size:24px;font-weight:800;margin-bottom:8px;}
+.rf-hero p{font-size:13.5px;color:var(--muted);line-height:1.6;}
+.rf-bal{
+  margin:0 16px 16px;padding:22px;border-radius:22px;text-align:center;
+  background:linear-gradient(135deg,rgba(203,161,53,.16),rgba(203,161,53,.05));
+  border:1px solid rgba(203,161,53,.35);
+}
+.rf-bal .lb{font-size:11px;font-weight:800;letter-spacing:.14em;color:var(--gold);}
+.rf-bal .vv{font-size:38px;font-weight:300;margin:8px 0 4px;letter-spacing:-1px;}
+.rf-bal .sm{font-size:12px;color:var(--muted);}
+.rf-g{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 16px 16px;}
+.rf-c{
+  background:#121212;border:1px solid var(--line);border-radius:18px;
+  padding:16px;text-align:center;
+}
+.rf-c b{display:block;font-size:26px;font-weight:300;}
+.rf-c span{font-size:11px;color:var(--muted);letter-spacing:.06em;}
+.rf-link{
+  margin:0 16px 16px;padding:16px;border-radius:18px;
+  background:#121212;border:1px solid var(--line);
+}
+.rf-link .lb{font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--muted);margin-bottom:10px;}
+.rf-link .val{
+  font-size:12.5px;color:#0095F6;word-break:break-all;
+  background:#0a0a0a;padding:12px;border-radius:11px;margin-bottom:12px;
+}
+.rf-btns{display:flex;gap:9px;}
+.rf-btns button{
+  flex:1;padding:13px 0;border:none;border-radius:12px;
+  font-size:13.5px;font-weight:700;cursor:pointer;font-family:inherit;
+}
+.rf-how{margin:0 16px 90px;}
+.rf-step{display:flex;gap:13px;padding:13px 0;border-bottom:1px solid var(--line);}
+.rf-step:last-child{border:none;}
+.rf-step .n{
+  width:26px;height:26px;border-radius:50%;background:rgba(0,149,246,.16);
+  color:#0095F6;font-size:12px;font-weight:800;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+}
+.rf-step .t{font-size:13.5px;line-height:1.5;color:#ddd;}
+</style>
+</head>
+<body>
+
+<header class="topbar"><h1>🎁 Referal <span class="gold">dastur</span></h1></header>
+<div id="root"><div class="load">Yuklanmoqda...</div></div>
+
+<script src="core.js"></script>
+<script>
+let RF = null;
+
+function boot(){
+  const id = myId();
+  if(!id){ el('root').innerHTML = '<div class="load">Telegram orqali oching</div>'; return; }
+
+  api('/api/referal?tg_id=' + id).then(function(d){
+    if(!d.ok){ el('root').innerHTML = '<div class="load">Xato yuz berdi</div>'; return; }
+    RF = d;
+    draw();
+  }).catch(function(){
+    el('root').innerHTML = '<div class="load">Server xatosi</div>';
+  });
+}
+
+function draw(){
+  const canWd = RF.balance >= RF.min_withdraw;
+
+  el('root').innerHTML =
+    '<div class="rf-hero"><div class="ic">&#127873;</div>' +
+    '<h1>Dostlaringizni taklif qiling</h1>' +
+    '<p>Har bir royxatdan otgan doslingiz uchun<br>' +
+    '<b style="color:#CBA135;">' + fmt(RF.reward) + ' som</b> olasiz</p></div>' +
+
+    '<div class="rf-bal"><div class="lb">HISOBINGIZ</div>' +
+    '<div class="vv">' + fmt(RF.balance) + '</div>' +
+    '<div class="sm">som</div></div>' +
+
+    '<div class="rf-g">' +
+      '<div class="rf-c"><b>' + RF.total + '</b><span>TAKLIF QILINGAN</span></div>' +
+      '<div class="rf-c"><b>' + RF.rewarded + '</b><span>MUKOFOT OLINGAN</span></div>' +
+    '</div>' +
+
+    '<div class="rf-link"><div class="lb">SIZNING HAVOLANGIZ</div>' +
+    '<div class="val">' + esc(RF.link) + '</div>' +
+    '<div class="rf-btns">' +
+    '<button style="background:#0095F6;color:#fff;" id="rfShare">Ulashish</button>' +
+    '<button style="background:#262626;color:#fff;" id="rfCopy">Nusxa</button>' +
+    '</div></div>' +
+
+    '<div class="wrap"><button class="btn" id="rfWd"' +
+    (canWd ? '' : ' disabled style="opacity:.4;"') + '>' +
+    (canWd ? 'Pulni yechish' : 'Yechish uchun ' + fmt(RF.min_withdraw) + ' som kerak') +
+    '</button></div>' +
+
+    '<div class="rf-how"><div class="ttl" style="padding:16px 0 8px;font-size:11px;' +
+    'font-weight:800;letter-spacing:.12em;color:var(--muted);">QANDAY ISHLAYDI</div>' +
+    '<div class="rf-step"><div class="n">1</div>' +
+    '<div class="t">Havolangizni dostlaringizga yuboring</div></div>' +
+    '<div class="rf-step"><div class="n">2</div>' +
+    '<div class="t">Ular havola orqali botga kirib, royxatdan otsin</div></div>' +
+    '<div class="rf-step"><div class="n">3</div>' +
+    '<div class="t">Hisobingizga ' + fmt(RF.reward) + ' som tushadi</div></div>' +
+    '<div class="rf-step"><div class="n">4</div>' +
+    '<div class="t">' + fmt(RF.min_withdraw) + ' som yiggach, kartangizga yechib olasiz</div></div>' +
+    '</div>';
+
+  el('rfShare').addEventListener('click', function(){
+    const t = 'Namangan Ijara — uy sotib olish va ijaraga olish uchun eng qulay ilova!';
+    const u = 'https://t.me/share/url?url=' + encodeURIComponent(RF.link) +
+              '&text=' + encodeURIComponent(t);
+    if(TG && TG.openTelegramLink) TG.openTelegramLink(u); else window.open(u, '_blank');
+  });
+
+  el('rfCopy').addEventListener('click', function(){
+    if(navigator.clipboard) navigator.clipboard.writeText(RF.link);
+    toast('Havola nusxalandi');
+    haptic('light');
+  });
+
+  if(canWd) el('rfWd').addEventListener('click', withdraw);
+}
+
+function withdraw(){
+  const bg = document.createElement('div');
+  bg.className = 'sheet-bg';
+  bg.innerHTML = '<div class="sheet" id="wdSheet"><div class="sheet-bar"></div>' +
+    '<div class="sheet-title">Pulni yechish</div><div class="wrap">' +
+    '<div style="font-size:30px;font-weight:300;text-align:center;margin-bottom:6px;">' +
+    fmt(RF.balance) + '</div>' +
+    '<div style="font-size:12px;color:var(--muted);text-align:center;margin-bottom:22px;">som</div>' +
+    '<label class="label">Karta raqami</label>' +
+    '<input class="inp" id="wdCard" inputmode="numeric" placeholder="8600 1234 5678 9012">' +
+    '<button class="btn" id="wdSend">Sorov yuborish</button></div></div>';
+
+  document.body.appendChild(bg);
+  bg.addEventListener('click', function(e){ if(e.target === bg) bg.remove(); });
+  el('wdSheet').addEventListener('click', function(e){ e.stopPropagation(); });
+
+  el('wdSend').addEventListener('click', function(){
+    const c = el('wdCard').value.replace(/\s/g, '');
+    if(c.length < 16){ toast('Karta raqamini toliq kiriting'); return; }
+
+    const b = el('wdSend');
+    b.disabled = true;
+    b.textContent = 'Yuborilmoqda...';
+
+    apiPost('/api/referal-yechish', { card: c }).then(function(d){
+      if(d.ok){
+        haptic('medium');
+        toast('Sorov yuborildi');
+        bg.remove();
+        boot();
+      } else {
+        toast(d.error === 'min' ? 'Mablag yetarli emas' : 'Xato yuz berdi');
+        b.disabled = false;
+        b.textContent = 'Sorov yuborish';
+      }
+    }).catch(function(){
+      toast('Server xatosi');
+      b.disabled = false;
+      b.textContent = 'Sorov yuborish';
+    });
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function(){ setTimeout(boot, 400); });
+</script>
+</body>
+</html>
