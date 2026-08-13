@@ -377,9 +377,9 @@ function showRolePick(cb){
 // ---------- Admin panellari (APK) ----------
 const ADMIN_ID_APP = 7894423610;
 
-function showAdminPanels(cb){
+function showAdminPanels(cb, force){
   const id = myId();
-  if(id !== ADMIN_ID_APP){ cb(); return; }
+  if(id !== ADMIN_ID_APP){ if(cb) cb(); return; }
 
   const ov = document.createElement('div');
   ov.style.cssText = 'position:fixed;inset:0;z-index:9400;background:#000;color:#fff;' +
@@ -394,6 +394,9 @@ function showAdminPanels(cb){
   ];
 
   ov.innerHTML =
+    '<button id="apnClose" style="position:absolute;top:calc(16px + env(safe-area-inset-top));' +
+    'right:18px;width:36px;height:36px;border-radius:50%;border:none;background:#1a1a1a;' +
+    'color:#fff;font-size:20px;cursor:pointer;">&times;</button>' +
     '<div style="font-size:50px;margin-bottom:14px;">🛠</div>' +
     '<h2 style="font-size:23px;font-weight:800;margin-bottom:8px;">Admin panellari</h2>' +
     '<p style="font-size:13px;color:#8E8E8E;margin-bottom:28px;">Qaysi bo\'limga kirasiz?</p>' +
@@ -409,12 +412,15 @@ function showAdminPanels(cb){
 
   document.body.appendChild(ov);
 
+  const cx = document.getElementById('apnClose');
+  if(cx) cx.addEventListener('click', function(){ ov.remove(); if(cb) cb(); });
+
   ov.querySelectorAll('.apn').forEach(function(b){
     b.addEventListener('click', function(){
       const u = b.dataset.u;
       try { localStorage.setItem('ni_admin_panel', u); } catch(e){}
       const cur = location.pathname.split('/').pop();
-      if(u === cur){ ov.remove(); cb(); }
+      if(u === cur){ ov.remove(); if(cb) cb(); }
       else location.href = u;
     });
   });

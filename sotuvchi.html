@@ -915,6 +915,19 @@ document.addEventListener('DOMContentLoaded', function(){
   });
 
   const nh = el('navHome');
+  if(nh && myId() === 7894423610 && typeof isApk === 'function' && isApk()){
+    let ht = null;
+    nh.addEventListener('touchstart', function(){
+      ht = setTimeout(function(){
+        ht = null;
+        haptic('medium');
+        if(typeof showAdminPanels === 'function') showAdminPanels(null, true);
+      }, 700);
+    }, { passive: true });
+    nh.addEventListener('touchend', function(){ if(ht) clearTimeout(ht); }, { passive: true });
+    nh.addEventListener('touchmove', function(){ if(ht) clearTimeout(ht); }, { passive: true });
+  }
+
   if(nh) nh.addEventListener('click', function(){
     closeOverlays();
     document.querySelectorAll('.nav button').forEach(function(x){ x.classList.remove('on'); });
