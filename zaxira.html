@@ -3,20 +3,75 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Zaxira panel</title>
+<title>Boshqaruv</title>
 <link rel="stylesheet" href="style.css">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+.mn{
+  display:flex;align-items:center;gap:14px;margin:0 16px 11px;padding:17px;
+  border-radius:17px;background:#121212;border:1px solid var(--line);cursor:pointer;
+}
+.mn:active{background:#1a1a1a;}
+.mn.soon{opacity:.45;}
+.mn .em{font-size:26px;width:34px;text-align:center;}
+.mn .tx{flex:1;}
+.mn .tx b{display:block;font-size:15px;font-weight:700;}
+.mn .tx span{font-size:12px;color:var(--muted);}
+.mn .ar{color:var(--muted);font-size:18px;}
+.mn .badge{
+  font-size:9.5px;font-weight:800;padding:3px 8px;border-radius:5px;
+  background:rgba(255,193,7,.16);color:#FFC107;
+}
+</style>
 </head>
 <body>
 
-<header class="topbar"><h1>Zaxira <span class="gold">panel</span></h1></header>
+<header class="topbar"><h1>⚙️ Boshqaruv <span class="gold">paneli</span></h1></header>
 
-<div class="empty" style="padding:100px 24px;">
-  <div class="ic">&#129513;</div>
-  <p>Bo'sh panel</p>
-  <span>Bu bo'lim kelajakda to'ldiriladi</span>
+<div style="padding:8px 0 20px;">
+
+<div class="mn" data-go="reklama.html">
+  <span class="em">📢</span>
+  <span class="tx"><b>Reklama</b><span>Banner joylash va boshqarish</span></span>
+  <span class="ar">›</span>
+</div>
+
+<div class="mn soon" data-soon="1">
+  <span class="em">📨</span>
+  <span class="tx"><b>Xabar yuborish</b><span>Barcha foydalanuvchilarga</span></span>
+  <span class="badge">TEZ ORADA</span>
+</div>
+
+<div class="mn soon" data-soon="1">
+  <span class="em">👨‍💼</span>
+  <span class="tx"><b>Adminlar</b><span>Qo'shish va chiqarish</span></span>
+  <span class="badge">TEZ ORADA</span>
+</div>
+
+<div class="mn soon" data-soon="1">
+  <span class="em">📣</span>
+  <span class="tx"><b>Kanallar</b><span>Majburiy obuna</span></span>
+  <span class="badge">TEZ ORADA</span>
+</div>
+
+<div class="mn soon" data-soon="1">
+  <span class="em">💳</span>
+  <span class="tx"><b>To'lovlar</b><span>Tariflar va tekshiruv</span></span>
+  <span class="badge">TEZ ORADA</span>
+</div>
+
 </div>
 
 <script src="core.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  document.querySelectorAll('.mn').forEach(function(m){
+    m.addEventListener('click', function(){
+      if(m.dataset.soon){ toast('Bu bolim tayyorlanmoqda'); return; }
+      location.href = m.dataset.go;
+    });
+  });
+});
+</script>
 </body>
 </html>

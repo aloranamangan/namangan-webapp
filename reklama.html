@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Reklama</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+.ad-c{margin:0 16px 12px;padding:14px;border-radius:18px;
+  background:#121212;border:1px solid var(--line);}
+.ad-c.off{opacity:.45;}
+.ad-top{display:flex;gap:12px;}
+.ad-th{width:74px;height:74px;border-radius:12px;object-fit:cover;background:#222;flex-shrink:0;}
+.ad-in{flex:1;min-width:0;}
+.ad-in b{display:block;font-size:14.5px;font-weight:700;margin-bottom:3px;}
+.ad-in p{font-size:12px;color:var(--muted);line-height:1.4;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.ad-st{display:flex;gap:14px;font-size:11.5px;color:var(--muted);margin-top:7px;}
+.ad-st b{color:#fff;}
+.ad-bt{display:flex;gap:7px;margin-top:11px;}
+.ad-bt button{flex:1;padding:9px 0;border:none;border-radius:10px;
+  font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;}
+.ad-tag{display:inline-block;font-size:9.5px;font-weight:800;padding:2px 7px;
+  border-radius:5px;margin-bottom:5px;}
+.ad-tag.on{background:rgba(46,204,113,.18);color:#2ECC71;}
+.ad-tag.off{background:rgba(237,73,86,.16);color:#ED4956;}
+.fab{position:fixed;bottom:calc(22px + env(safe-area-inset-bottom));right:20px;z-index:100;
+  width:56px;height:56px;border-radius:50%;border:none;background:#0095F6;
+  color:#fff;font-size:26px;cursor:pointer;box-shadow:0 6px 20px rgba(0,149,246,.45);}
+.bk{background:none;border:none;color:var(--muted);font-size:14px;font-weight:600;
+  cursor:pointer;font-family:inherit;padding:12px 20px;}
+</style>
+</head>
+<body>
+
+<header class="topbar"><h1>📢 Reklama</h1></header>
+<button class="bk" id="bk">← Boshqaruv paneli</button>
+<div id="root"><div class="load">Yuklanmoqda...</div></div>
+<button class="fab" id="fab">+</button>
+
+<script src="core.js"></script>
+<script>
+let ADS = [];
+
+function boot(){
+  const q = '/api/reklama-royxat?init_data=' + encodeURIComponent(initData()) +
+    ((typeof APP_TOKEN !== 'undefined' && APP_TOKEN) ? '&token=' + encodeURIComponent(APP_TOKEN) : '');
+
+  api(q).then(function(d){
+    if(!d.ok){
+      el('root').innerHTML = '<div class="empty"><div class="ic">&#128274;</div><p>Ruxsat yoq</p></div>';
+      el('fab').style.display = 'none';
+      return;
+    }
+    ADS = d.ads || [];
+    draw();
+  }).catch(function(){ el('root').innerHTML = '<div class="load">Xato yuz berdi</div>'; });
+}
+
+function draw(){
+  if(!ADS.length){
+    el('root').innerHTML = '<div class="empty" style="padding:70px 20px;">' +
+      '<div class="ic">&#128226;</div><p>Reklama yoq</p>' +
+      '<span>Pastdagi + tugmasi bilan qoshing</span></div>';
+    return;
+  }
+
+  el('root').innerHTML = ADS.map(function(a){
+    const img = a.file_id ? mediaUrl(a.file_id) : '';
+    const ctr = a.views ? ((a.clicks / a.views * 100).toFixed(1) + '%') : '0%';
+    return '<div class="ad-c' + (a.active ? '' : ' off') + '">' +
+      '<div class="ad-top">' +
+      (img ? '<img class="ad-th" src="' + img + '">' : '<div class="ad-th"></div>') +
+      '<div class="ad-in">' +
+      '<span class="ad-tag ' + (a.active ? 'on' : 'off') + '">' +
+        (a.active ? 'FAOL' : 'TOXTATILGAN') + '</span>' +
+      '<b>' + esc(a.title) + '</b><p>' + esc(a.text) + '</p>' +
+      '<div class="ad-st"><span>&#128065; <b>' + fmt(a.views) + '</b></span>' +
+      '<span>&#128073; <b>' + fmt(a.clicks) + '</b></span>' +
+      '<span>CTR <b>' + ctr + '</b></span></div></div></div>' +
+      '<div class="ad-bt">' +
+      '<button style="background:#262626;color:#fff;" data-a="' +
+        (a.active ? 'off' : 'on') + '" data-id="' + a.id + '">' +
+        (a.active ? 'Toxtatish' : 'Yoqish') + '</button>' +
+      '<button style="background:#262626;color:#fff;" data-a="period" data-id="' + a.id + '">Muddat</button>' +
+      '<button style="background:rgba(237,73,86,.16);color:#ED4956;" data-a="delete" data-id="' + a.id + '">Ochirish</button>' +
+      '</div></div>';
+  }).join('') + '<div style="height:90px;"></div>';
+
+  document.querySelectorAll('.ad-bt button').forEach(function(b){
+    b.addEventListener('click', function(){
+      const a = b.dataset.a, id = b.dataset.id;
+      if(a === 'delete' && !confirm('Ochirasizmi?')) return;
+      if(a === 'period'){ pickDays(id); return; }
+      apiPost('/api/reklama-amal', { action: a, id: parseInt(id) })
+        .then(function(d){ if(d.ok){ toast('Bajarildi'); boot(); } });
+    });
+  });
+}
+
+function pickDays(id){
+  const bg = document.createElement('div');
+  bg.className = 'sheet-bg';
+  bg.innerHTML = '<div class="sheet" id="pdS"><div class="sheet-bar"></div>' +
+    '<div class="sheet-title">Necha kun korinsin?</div>' +
+    [1,3,7,14,30].map(function(d){
+      return '<button class="sheet-item" data-d="' + d + '">' + d + ' kun</button>';
+    }).join('') + '</div>';
+  document.body.appendChild(bg);
+  bg.addEventListener('click', function(e){ if(e.target === bg) bg.remove(); });
+  el('pdS').addEventListener('click', function(e){ e.stopPropagation(); });
+
+  bg.querySelectorAll('.sheet-item').forEach(function(b){
+    b.addEventListener('click', function(){
+      apiPost('/api/reklama-amal', {
+        action: 'period', id: parseInt(id), days: parseInt(b.dataset.d)
+      }).then(function(d){ if(d.ok){ toast('Muddat belgilandi'); bg.remove(); boot(); } });
+    });
+  });
+}
+
+function newAd(){
+  pickFiles(false, function(items){
+    if(!items.length) return;
+    const it = items[0];
+
+    const bg = document.createElement('div');
+    bg.className = 'sheet-bg';
+    bg.innerHTML = '<div class="sheet" id="naS" style="max-height:90vh;">' +
+      '<div class="sheet-bar"></div><div class="sheet-title">Yangi reklama</div>' +
+      '<div class="wrap">' +
+      (it.is_video
+        ? '<video src="' + it.media + '" controls style="width:100%;border-radius:12px;margin-bottom:14px;"></video>'
+        : '<img src="' + it.media + '" style="width:100%;border-radius:12px;margin-bottom:14px;">') +
+      '<label class="label">Sarlavha</label>' +
+      '<input class="inp" id="naT" placeholder="Yangi kvartiralar">' +
+      '<label class="label">Matn</label>' +
+      '<textarea class="txt" id="naX" placeholder="Qisqacha malumot"></textarea>' +
+      '<label class="label">Tugma yozuvi</label>' +
+      '<input class="inp" id="naB" value="Batafsil">' +
+      '<label class="label">Havola (sayt, Instagram, Telegram)</label>' +
+      '<input class="inp" id="naU" placeholder="https://instagram.com/...">' +
+      '<label class="label">Necha kun</label>' +
+      '<input class="inp" id="naD" type="number" value="7">' +
+      '<button class="btn" id="naGo">Joylash</button></div></div>';
+
+    document.body.appendChild(bg);
+    bg.addEventListener('click', function(e){ if(e.target === bg) bg.remove(); });
+    el('naS').addEventListener('click', function(e){ e.stopPropagation(); });
+
+    el('naGo').addEventListener('click', function(){
+      const t = el('naT').value.trim();
+      if(!t){ toast('Sarlavhani kiriting'); return; }
+
+      const b = el('naGo');
+      b.disabled = true;
+      b.textContent = 'Yuklanmoqda...';
+
+      apiPost('/api/reklama-qoshish', {
+        media: it.media, is_video: it.is_video,
+        title: t, text: el('naX').value.trim(),
+        btn_text: el('naB').value.trim() || 'Batafsil',
+        btn_url: el('naU').value.trim(),
+        place: 'feed',
+        days: parseInt(el('naD').value) || 7
+      }).then(function(d){
+        if(d.ok){ haptic('medium'); toast('Reklama joylandi'); bg.remove(); setTimeout(boot, 1500); }
+        else { toast(d.error || 'Xato'); b.disabled = false; b.textContent = 'Joylash'; }
+      }).catch(function(){
+        toast('Server xatosi'); b.disabled = false; b.textContent = 'Joylash';
+      });
+    });
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  el('fab').addEventListener('click', newAd);
+  el('bk').addEventListener('click', function(){ location.href = 'zaxira.html'; });
+  setTimeout(function(){
+    if(typeof checkSession === 'function') checkSession(function(){ boot(); });
+    else boot();
+  }, 400);
+});
+</script>
+</body>
+</html>
