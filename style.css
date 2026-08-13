@@ -675,3 +675,80 @@ body{
   background:linear-gradient(45deg,#F58529,#FEDA77,#DD2A7B,#8134AF,#515BD4);
 }
 .seller-ava.has-story img{border:2px solid #000;}
+
+/* ═══ Premium sheet dizayni ═══ */
+.sheet{
+  background:linear-gradient(180deg,#181818 0%,#0f0f0f 100%) !important;
+  border-radius:26px 26px 0 0 !important;
+  border-top:1px solid rgba(255,255,255,.08);
+  box-shadow:0 -12px 44px rgba(0,0,0,.7) !important;
+  padding-bottom:14px;
+}
+.sheet-bar{
+  width:38px !important;height:4px !important;
+  background:rgba(255,255,255,.22) !important;
+  border-radius:4px !important;margin:11px auto 4px !important;
+}
+.sheet-title{
+  font-size:13px !important;font-weight:800 !important;
+  letter-spacing:.09em !important;text-transform:uppercase;
+  color:rgba(255,255,255,.45) !important;
+  padding:12px 24px 14px !important;text-align:center;
+}
+.sheet-item{
+  display:flex !important;align-items:center;gap:15px;
+  width:100%;padding:17px 24px !important;
+  font-size:15.5px !important;font-weight:600 !important;
+  letter-spacing:-.15px;color:#fff !important;
+  background:none !important;border:none !important;
+  border-bottom:1px solid rgba(255,255,255,.05) !important;
+  font-family:inherit;cursor:pointer;text-align:left;
+  transition:background .16s ease;
+}
+.sheet-item:last-child{border-bottom:none !important;}
+.sheet-item:active{background:rgba(255,255,255,.06) !important;}
+.sheet-item.danger{color:#FF453A !important;}
+
+/* Premium tugmalar */
+.btn{
+  border-radius:15px !important;
+  font-weight:800 !important;letter-spacing:-.1px;
+  box-shadow:0 4px 16px rgba(0,149,246,.28);
+  transition:transform .15s ease;
+}
+.btn:active{transform:scale(.98);}
+.btn.ghost{
+  background:rgba(255,255,255,.06) !important;
+  border:1px solid rgba(255,255,255,.12) !important;
+  box-shadow:none;
+}
+
+/* Premium input */
+.inp,.txt{
+  border-radius:14px !important;
+  background:rgba(255,255,255,.045) !important;
+  border:1px solid rgba(255,255,255,.09) !important;
+  font-size:15px !important;letter-spacing:-.1px;
+  transition:border-color .2s ease;
+}
+.inp:focus,.txt:focus{
+  border-color:rgba(0,149,246,.55) !important;
+  background:rgba(255,255,255,.06) !important;
+}
+.label{
+  font-size:11px !important;font-weight:800 !important;
+  letter-spacing:.1em !important;text-transform:uppercase;
+  color:rgba(255,255,255,.4) !important;
+  margin-bottom:8px !important;
+}
+
+/* Sarlavhalar */
+.topbar h1{
+  font-size:21px !important;font-weight:800 !important;
+  letter-spacing:-.5px !important;
+}
+.sheet-bg{
+  backdrop-filter:blur(4px);
+  -webkit-backdrop-filter:blur(4px);
+  background:rgba(0,0,0,.55) !important;
+}
