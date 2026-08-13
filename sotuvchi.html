@@ -240,7 +240,7 @@ function renderCabinet(){
   const av = document.querySelector('.pro-ava');
   if(av){
     av.style.cursor = 'pointer';
-    av.addEventListener('click', changeAvatar);
+    av.addEventListener('click', avatarMenu);
   }
   markAvatarStory();
   drawHighlights();
@@ -901,10 +901,40 @@ function markAvatarStory(){
     const allSeen = mine.every(function(s){ return isStorySeen(s.id); });
     w.classList.toggle('seen', allSeen);
 
-    const av = w.querySelector('.pro-ava');
-    if(av) av.addEventListener('click', function(e){
-      e.stopPropagation();
-      openStory({ id: myId(), name: ME.name, items: mine }, 0);
+
+  });
+}
+
+
+function avatarMenu(){
+  haptic('light');
+
+  loadStories(function(){
+    const mine = STORIES.filter(function(s){ return s.owner_id === myId(); });
+
+    const bg = document.createElement('div');
+    bg.className = 'sheet-bg';
+    bg.innerHTML = '<div class="sheet" id="avS"><div class="sheet-bar"></div>' +
+      '<div class="sheet-title">Profil rasmi</div>' +
+      (mine.length
+        ? '<button class="sheet-item" data-a="view">&#128065;&#65039; Storiyni korish</button>'
+        : '') +
+      '<button class="sheet-item" data-a="story">&#128248; Storiy qoshish</button>' +
+      '<button class="sheet-item" data-a="ava">&#128100; Profil rasmini ozgartirish</button>' +
+      '</div>';
+
+    document.body.appendChild(bg);
+    bg.addEventListener('click', function(e){ if(e.target === bg) bg.remove(); });
+    el('avS').addEventListener('click', function(e){ e.stopPropagation(); });
+
+    bg.querySelectorAll('.sheet-item').forEach(function(b){
+      b.addEventListener('click', function(){
+        const a = b.dataset.a;
+        bg.remove();
+        if(a === 'view') openStory({ id: myId(), name: ME.name, items: mine }, 0);
+        if(a === 'story') addStory();
+        if(a === 'ava') changeAvatar();
+      });
     });
   });
 }
