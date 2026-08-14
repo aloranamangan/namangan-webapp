@@ -7,59 +7,42 @@
 <link rel="stylesheet" href="style.css">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
-.ch{margin:0 16px 12px;padding:16px;border-radius:18px;
-  background:#121212;border:1px solid var(--line);}
-.ch.off{opacity:.45;}
-.ch-top{display:flex;align-items:center;gap:12px;}
-.ch-ic{width:46px;height:46px;border-radius:50%;background:rgba(0,149,246,.14);
-  display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
-.ch-in{flex:1;min-width:0;}
-.ch-in b{display:block;font-size:15px;font-weight:700;}
-.ch-in span{font-size:12px;color:var(--muted);word-break:break-all;}
-.ch-bt{display:flex;gap:8px;margin-top:13px;}
-.ch-bt button{flex:1;padding:10px 0;border:none;border-radius:11px;
-  font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;}
-.fab{position:fixed;bottom:calc(22px + env(safe-area-inset-bottom));right:20px;z-index:100;
-  width:56px;height:56px;border-radius:50%;border:none;background:#0095F6;
-  color:#fff;font-size:26px;cursor:pointer;box-shadow:0 6px 20px rgba(0,149,246,.45);}
-.hint{margin:0 16px 16px;padding:15px;border-radius:15px;
+#root{padding:0 16px 110px;}
+.slot{
+  margin-bottom:12px;padding:14px;border-radius:16px;
+  background:#121212;border:1px solid var(--line);
+}
+.slot.filled{border-color:rgba(46,204,113,.35);background:rgba(46,204,113,.04);}
+.slot-hd{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.slot-n{
+  width:26px;height:26px;border-radius:8px;background:#1e1e1e;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:800;color:var(--muted);flex-shrink:0;
+}
+.slot.filled .slot-n{background:rgba(46,204,113,.16);color:#2ECC71;}
+.slot-kd{display:flex;gap:6px;flex:1;}
+.skd{
+  flex:1;padding:7px 0;border-radius:9px;background:#1a1a1a;
+  border:1px solid var(--line);color:#8E8E8E;cursor:pointer;
+  font-family:inherit;font-size:11px;font-weight:700;
+}
+.skd.on{background:#0095F6;border-color:#0095F6;color:#fff;}
+.slot-del{
+  width:28px;height:28px;border-radius:8px;border:none;
+  background:rgba(237,73,86,.14);color:#ED4956;font-size:15px;cursor:pointer;
+  flex-shrink:0;
+}
+.slot .inp{margin-bottom:9px !important;padding:12px 14px !important;font-size:14px !important;}
+.slot .inp:last-of-type{margin-bottom:0 !important;}
+.save-all{
+  position:fixed;bottom:calc(20px + env(safe-area-inset-bottom));left:16px;right:16px;
+  z-index:200;padding:16px 0;border:none;border-radius:15px;
+  background:#0095F6;color:#fff;font-size:15px;font-weight:800;
+  cursor:pointer;font-family:inherit;box-shadow:0 6px 22px rgba(0,149,246,.4);
+}
+.hint{margin:0 16px 16px;padding:14px;border-radius:14px;
   background:rgba(255,193,7,.08);border:1px solid rgba(255,193,7,.28);
   font-size:12.5px;color:#FFC107;line-height:1.55;}
-#root{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:0 16px 90px;}
-.ch{
-  margin:0 !important;padding:13px 9px !important;text-align:center;
-  border-radius:15px;background:#121212;border:1px solid var(--line);
-  display:flex;flex-direction:column;align-items:center;gap:6px;
-}
-.ch.off{opacity:.4;}
-.ch-ic{width:40px !important;height:40px !important;font-size:19px !important;margin:0 auto;}
-.ch-top{display:block !important;}
-.ch-in b{
-  font-size:12.5px !important;font-weight:700;line-height:1.25;
-  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
-  overflow:hidden;word-break:break-word;
-}
-.ch-in span{
-  font-size:10px !important;color:#0095F6 !important;
-  display:block;margin-top:3px;word-break:break-all;
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-}
-.ch-kind{
-  display:block !important;margin:0 0 5px !important;
-  font-size:8.5px !important;letter-spacing:.06em;
-}
-.ch-bt{flex-direction:column !important;gap:5px !important;
-  margin-top:8px !important;width:100%;}
-.ch-bt button{padding:7px 0 !important;font-size:10.5px !important;}
-#root .empty,#root .load{grid-column:1/-1;}
-.kd-row{display:flex;gap:8px;margin-bottom:18px;}
-.kd{flex:1;padding:13px 6px;border-radius:12px;background:#141414;
-  border:1px solid var(--line);color:#fff;cursor:pointer;
-  font-family:inherit;font-size:12px;font-weight:700;text-align:center;}
-.kd.on{background:#0095F6;border-color:#0095F6;}
-.kd .e{display:block;font-size:20px;margin-bottom:4px;}
-.ch-kind{display:inline-block;font-size:9px;font-weight:800;padding:2px 7px;
-  border-radius:5px;margin-left:6px;background:rgba(255,255,255,.1);color:#aaa;}
 .bk{background:none;border:none;color:var(--muted);font-size:14px;font-weight:600;
   cursor:pointer;font-family:inherit;padding:12px 20px;}
 </style>
@@ -75,28 +58,17 @@
 <button class="bk" id="bk">← Boshqaruv markazi</button>
 
 <div class="hint">
-  ⚠️ Kanal qo'shishdan oldin botni o'sha kanalga <b>administrator</b> qilib qo'shing.
-  Aks holda obunani tekshirib bo'lmaydi.
+  ⚠️ Kanal va guruh uchun bot u yerda <b>administrator</b> bo'lishi shart.
+  Bot uchun obuna tekshirilmaydi — faqat havola ko'rsatiladi.
 </div>
 
 <div id="root"><div class="load">Yuklanmoqda...</div></div>
-<button class="fab" id="fab">+</button>
+<button class="save-all" id="saveAll">Saqlash</button>
 
-<script src="core.js?v=1786700779"></script>
+<script src="core.js"></script>
 <script>
-let CH = [];
-
-function kindName(k){
-  if(k === 'bot') return 'BOT';
-  if(k === 'group') return 'GURUH';
-  return 'KANAL';
-}
-
-function kindIcon(k){
-  if(k === 'bot') return '\u{1F916}';
-  if(k === 'group') return '\u{1F465}';
-  return '\u{1F4E2}';
-}
+const SLOTS = 10;
+let DATA = [];
 
 function boot(){
   const q = '/api/kanallar?admin=1&init_data=' + encodeURIComponent(initData()) +
@@ -105,112 +77,108 @@ function boot(){
   api(q).then(function(d){
     if(!d.ok){
       el('root').innerHTML = '<div class="empty"><div class="ic">&#128274;</div><p>Kirish cheklangan</p></div>';
-      el('fab').style.display = 'none';
+      el('saveAll').style.display = 'none';
       return;
     }
-    CH = d.channels || [];
+    DATA = d.channels || [];
     draw();
   }).catch(function(){ el('root').innerHTML = '<div class="load">Xato yuz berdi</div>'; });
 }
 
 function draw(){
-  const cc = el('chCnt');
-  if(cc) cc.textContent = CH.length + '/10';
+  let html = '';
+  for(let i = 0; i < SLOTS; i++){
+    const c = DATA[i] || null;
+    const k = c ? (c.kind || 'channel') : 'channel';
 
-  if(!CH.length){
-    el('root').innerHTML = '<div class="empty" style="padding:60px 20px;">' +
-      '<div class="ic">&#128227;</div><p>Kanal qoshilmagan</p>' +
-      '<span>Majburiy obuna uchun kanal qoshing</span></div>';
-    return;
+    html += '<div class="slot' + (c ? ' filled' : '') + '" data-i="' + i + '"' +
+      (c ? ' data-id="' + c.id + '"' : '') + '>' +
+      '<div class="slot-hd">' +
+        '<div class="slot-n">' + (i + 1) + '</div>' +
+        '<div class="slot-kd">' +
+          '<button class="skd' + (k === 'channel' ? ' on' : '') + '" data-k="channel">Kanal</button>' +
+          '<button class="skd' + (k === 'group' ? ' on' : '') + '" data-k="group">Guruh</button>' +
+          '<button class="skd' + (k === 'bot' ? ' on' : '') + '" data-k="bot">Bot</button>' +
+        '</div>' +
+        (c ? '<button class="slot-del">&times;</button>' : '') +
+      '</div>' +
+      '<input class="inp s-name" placeholder="Nomi (masalan: Namangan uylar)" value="' +
+        (c ? esc(c.title) : '') + '">' +
+      '<input class="inp s-link" placeholder="@manzil yoki https://t.me/..." value="' +
+        (c ? esc(c.chat_id) : '') + '">' +
+      '</div>';
   }
 
-  el('root').innerHTML = CH.map(function(c){
-    return '<div class="ch' + (c.active ? '' : ' off') + '">' +
-      '<div class="ch-ic">' + kindIcon(c.kind) + '</div>' +
-      '<span class="ch-kind">' + kindName(c.kind) + '</span>' +
-      '<div class="ch-in"><b>' + esc(c.title) + '</b>' +
-      '<span>' + esc(c.chat_id) + '</span></div>' +
-      '<div class="ch-bt">' +
-      '<button style="background:#262626;color:#fff;" data-a="' +
-        (c.active ? 'off' : 'on') + '" data-id="' + c.id + '">' +
-        (c.active ? 'Toxtatish' : 'Yoqish') + '</button>' +
-      '<button style="background:rgba(237,73,86,.16);color:#ED4956;" data-a="delete" data-id="' +
-        c.id + '">Ochirish</button>' +
-      '</div></div>';
-  }).join('');
+  el('root').innerHTML = html;
 
-  document.querySelectorAll('.ch-bt button').forEach(function(b){
+  document.querySelectorAll('.skd').forEach(function(b){
     b.addEventListener('click', function(){
-      const a = b.dataset.a;
-      if(a === 'delete' && !confirm('Kanalni ochirasizmi?')) return;
-      apiPost('/api/kanal-amal', { action: a, id: parseInt(b.dataset.id) })
-        .then(function(d){ if(d.ok){ toast('Bajarildi'); boot(); } });
+      const p = b.closest('.slot-kd');
+      p.querySelectorAll('.skd').forEach(function(x){ x.classList.remove('on'); });
+      b.classList.add('on');
+      haptic('light');
+    });
+  });
+
+  document.querySelectorAll('.slot-del').forEach(function(b){
+    b.addEventListener('click', function(){
+      const s = b.closest('.slot');
+      const id = s.dataset.id;
+      if(!id) return;
+      if(!confirm('Ochirasizmi?')) return;
+      apiPost('/api/kanal-amal', { action: 'delete', id: parseInt(id) })
+        .then(function(d){ if(d.ok){ toast('Ochirildi'); boot(); } });
     });
   });
 }
 
-function newCh(){
-  if(CH.length >= 10){ toast('Maksimum 10 ta qoshish mumkin'); return; }
+function saveAll(){
+  const slots = document.querySelectorAll('.slot');
+  const jobs = [];
 
-  const bg = document.createElement('div');
-  bg.className = 'sheet-bg';
-  bg.innerHTML = '<div class="sheet" id="ncS"><div class="sheet-bar"></div>' +
-    '<div class="sheet-title">Kanal yoki guruh qoshish</div><div class="wrap">' +
-    '<label class="label">Turi</label>' +
-    '<div class="kd-row">' +
-      '<button class="kd on" data-k="channel"><span class="e">&#128227;</span>Kanal</button>' +
-      '<button class="kd" data-k="group"><span class="e">&#128101;</span>Guruh</button>' +
-      '<button class="kd" data-k="bot"><span class="e">&#129302;</span>Bot</button>' +
-    '</div>' +
-    '<label class="label">Manzil</label>' +
-    '<input class="inp" id="ncU" placeholder="@kanal_nomi yoki @guruh_nomi">' +
-    '<label class="label">Korinadigan nom (ixtiyoriy)</label>' +
-    '<input class="inp" id="ncN" placeholder="Namangan Ijara rasmiy">' +
-    '<div style="font-size:12px;color:var(--muted);margin-bottom:18px;line-height:1.5;">' +
-    'Nom kiritilmasa — kanalning oz nomi olinadi.<br>' +
-    'Bot u yerda <b>admin</b> bolishi shart.<br>' +
-    'Jami <b>' + CH.length + '/10</b> ta qoshilgan.</div>' +
-    '<button class="btn" id="ncGo">Tekshirish va qoshish</button></div></div>';
+  slots.forEach(function(s){
+    const nm = s.querySelector('.s-name').value.trim();
+    const lk = s.querySelector('.s-link').value.trim();
+    const kd = s.querySelector('.skd.on').dataset.k;
+    const id = s.dataset.id;
 
-  document.body.appendChild(bg);
-  bg.addEventListener('click', function(e){ if(e.target === bg) bg.remove(); });
-  el('ncS').addEventListener('click', function(e){ e.stopPropagation(); });
+    if(!lk) return;
+    if(id) return;
 
-  let kind = 'channel';
-  bg.querySelectorAll('.kd').forEach(function(k){
-    k.addEventListener('click', function(){
-      bg.querySelectorAll('.kd').forEach(function(x){ x.classList.remove('on'); });
-      k.classList.add('on');
-      kind = k.dataset.k;
-      haptic('light');
-      const hint = bg.querySelector('#ncHint');
-      if(hint) hint.innerHTML = kind === 'bot'
-        ? 'Bot uchun obuna tekshirilmaydi — faqat havola korsatiladi.'
-        : 'Bot u yerda <b>admin</b> bolishi shart.';
-    });
+    jobs.push({ chat_id: lk, title: nm, kind: kd });
   });
 
-  el('ncGo').addEventListener('click', function(){
-    const u = el('ncU').value.trim();
-    if(!u){ toast('Kanal manzilini kiriting'); return; }
+  if(!jobs.length){ toast('Yangi malumot yoq'); return; }
 
-    const b = el('ncGo');
-    b.disabled = true;
-    b.textContent = 'Tekshirilmoqda...';
+  const b = el('saveAll');
+  b.disabled = true;
+  b.textContent = 'Saqlanmoqda...';
 
+  let done = 0, errs = [];
+
+  function next(){
+    if(done >= jobs.length){
+      b.disabled = false;
+      b.textContent = 'Saqlash';
+      if(errs.length) toast('Xato: ' + errs[0]);
+      else { haptic('medium'); toast('Saqlandi'); }
+      boot();
+      return;
+    }
+    const j = jobs[done++];
     apiPost('/api/kanal-amal', {
-      action: 'add', chat_id: u, title: el('ncN').value.trim(), kind: kind
+      action: 'add', chat_id: j.chat_id, title: j.title, kind: j.kind
     }).then(function(d){
-      if(d.ok){ haptic('medium'); toast('Qoshildi: ' + (d.title || '')); bg.remove(); boot(); }
-      else { toast(d.error || 'Xato'); b.disabled = false; b.textContent = 'Tekshirish va qoshish'; }
-    }).catch(function(){
-      toast('Server xatosi'); b.disabled = false; b.textContent = 'Tekshirish va qoshish';
-    });
-  });
+      if(!d.ok) errs.push(d.error || j.chat_id);
+      next();
+    }).catch(function(){ errs.push(j.chat_id); next(); });
+  }
+
+  next();
 }
 
 document.addEventListener('DOMContentLoaded', function(){
-  el('fab').addEventListener('click', newCh);
+  el('saveAll').addEventListener('click', saveAll);
   el('bk').addEventListener('click', function(){ location.href = 'zaxira.html'; });
   el('kx').addEventListener('click', function(){
     let last = null;
