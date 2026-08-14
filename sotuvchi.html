@@ -1066,6 +1066,24 @@ document.addEventListener('DOMContentLoaded', function(){
     if(typeof loadAdminState === 'function') loadAdminState();
   }, 500);
 });
+
+document.addEventListener('DOMContentLoaded', function(){
+  setTimeout(function(){
+    const nn = el('navNotif');
+    if(!nn || document.getElementById('langBtn')) return;
+
+    const b = document.createElement('button');
+    b.id = 'langBtn';
+    b.innerHTML = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/>' +
+      '<path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20"/></svg>' +
+      '<span>' + (typeof t === 'function' ? t('language') : 'Til') + '</span>';
+    nn.parentNode.appendChild(b);
+
+    b.addEventListener('click', function(){
+      if(typeof openLangPicker === 'function') openLangPicker();
+    });
+  }, 700);
+});
 </script>
 </body>
 </html>

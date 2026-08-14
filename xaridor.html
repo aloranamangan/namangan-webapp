@@ -825,9 +825,18 @@ function drawProfile(){
       '<div class="inp">' + esc(u.instagram || '-') + '</div>' +
       '<label class="label">WhatsApp</label>' +
       '<div class="inp">' + esc(u.whatsapp || '-') + '</div>' +
+      '<label class="label">' + (typeof t === 'function' ? t('language') : 'Til') + '</label>' +
+      '<div class="inp" id="pfLang" style="cursor:pointer;display:flex;' +
+      'align-items:center;justify-content:space-between;">' +
+      '<span>' + (typeof langFlag === 'function' ? langFlag(LANG) + ' ' + langName(LANG) : 'Ozbekcha') + '</span>' +
+      '<span style="opacity:.5;">&rsaquo;</span></div>' +
     '</div>';
 
   el('pfAvaBtn').addEventListener('click', pickProfAva);
+  const lg = el('pfLang');
+  if(lg) lg.addEventListener('click', function(){
+    if(typeof openLangPicker === 'function') openLangPicker();
+  });
   el('pfEdit').addEventListener('click', openEditProfile);
 }
 
