@@ -38,6 +38,14 @@
   <div id="sellers"><div class="load">Yuklanmoqda...</div></div>
 </div>
 
+<div class="view" id="vSpecial">
+  <div class="sp-tabs">
+    <button class="sp-tab on" data-s="kunlik">🗓 Kunlik ijara</button>
+    <button class="sp-tab" data-s="student">🎓 Studentlar</button>
+  </div>
+  <div id="spBody"><div class="load">Yuklanmoqda...</div></div>
+</div>
+
 <div class="view" id="vProfile">
   <div id="profBody"><div class="load">Yuklanmoqda...</div></div>
 </div>
@@ -66,6 +74,10 @@
   <button data-v="vSaved">
     <svg class="fillable" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
     Saqlangan
+  </button>
+  <button data-v="vSpecial">
+    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+    Maxsus
   </button>
   <button id="refBtn">
     <svg viewBox="0 0 24 24"><path d="M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
@@ -768,6 +780,7 @@ document.addEventListener('DOMContentLoaded', function(){
       if(v) v.classList.add('on');
       if(b.dataset.v === 'vSaved') drawSaved();
       if(b.dataset.v === 'vProfile') drawProfile();
+      if(b.dataset.v === 'vSpecial') drawSpecial('kunlik');
       if(b.dataset.v === 'vSearch') drawSearch(el('q').value);
       window.scrollTo(0, 0);
     });
@@ -965,6 +978,60 @@ document.addEventListener('DOMContentLoaded', function(){
     });
   }, 1000);
 });
+
+
+let spMode = 'kunlik';
+
+function drawSpecial(mode){
+  spMode = mode || spMode;
+  const box = el('spBody');
+  if(!box) return;
+
+  document.querySelectorAll('.sp-tab').forEach(function(t){
+    t.classList.toggle('on', t.dataset.s === spMode);
+  });
+
+  const key = spMode === 'kunlik' ? 'Kunlik ijara' : 'Studentlar uchun';
+  const list = POSTS.filter(function(p){
+    return String(p.desc || '').indexOf(key) === 0 ||
+           String(p.head || '') === key;
+  });
+
+  if(!list.length){
+    box.innerHTML = '<div class="empty" style="padding:60px 20px;">' +
+      '<div class="ic">' + (spMode === 'kunlik' ? '&#128197;' : '&#127891;') + '</div>' +
+      '<p>Hozircha elon yoq</p>' +
+      '<span>' + (spMode === 'kunlik'
+        ? 'Kunlik ijara elonlari shu yerda chiqadi'
+        : 'Studentlar uchun elonlar shu yerda chiqadi') + '</span></div>';
+    return;
+  }
+
+  box.innerHTML = '<div class="grid">' + list.map(function(p){
+    const f = (p.media && p.media[0]) ? p.media[0] : null;
+    if(!f) return '';
+    const inner = f.video
+      ? '<video src="' + f.url + '" muted></video>'
+      : '<img src="' + f.url + '">';
+    return '<div class="cell" data-id="' + p.id + '">' + inner +
+      (p.media.length > 1 ? '<span class="multi">&#9673;</span>' : '') + '</div>';
+  }).join('') + '</div>';
+
+  box.querySelectorAll('.cell').forEach(function(c){
+    c.addEventListener('click', function(){
+      const p = POSTS.filter(function(x){ return String(x.id) === c.dataset.id; })[0];
+      if(p) openPostFull(p);
+    });
+  });
+}
+
+function openPostFull(p){
+  go('vHome');
+  setTimeout(function(){
+    const a = document.querySelector('.post[data-id="' + p.id + '"]');
+    if(a) a.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 300);
+}
 
 document.addEventListener('DOMContentLoaded', function(){
   setTimeout(function(){

@@ -339,6 +339,8 @@ function showSheet(){
       '<div class="strip" id="strip"></div>' +
       '<div class="seg" style="margin-top:16px;">' +
         '<button class="on" data-t="sotuv">Sotiladi</button>' +
+        '<button data-t="kunlik">Kunlik</button>' +
+        '<button data-t="student">Student</button>' +
         '<button data-t="ijara">Ijaraga beriladi</button>' +
       '</div>' +
       '<label class="label">Sarlavha</label>' +
@@ -409,7 +411,13 @@ function showSheet(){
     b.disabled = true;
     b.textContent = 'Yuklanmoqda...';
 
-    const head = type === 'sotuv' ? 'Sotiladi' : 'Ijaraga beriladi';
+    const HEADS = {
+      sotuv: 'Sotiladi',
+      ijara: 'Ijaraga beriladi',
+      kunlik: 'Kunlik ijara',
+      student: 'Studentlar uchun'
+    };
+    const head = HEADS[type] || 'Sotiladi';
     const full = head + '\n' + title + (desc ? '\n' + desc : '');
 
     apiPost('/api/post-qoshish', {

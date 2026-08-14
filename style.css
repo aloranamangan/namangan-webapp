@@ -1233,3 +1233,19 @@ body{
   font-family:'Manrope',sans-serif;z-index:9210;
   box-shadow:0 6px 22px rgba(0,149,246,.4);
 }
+
+/* E'lon turi tugmalari - 2 qatorda */
+.type-row{flex-wrap:wrap !important;gap:8px !important;}
+.type-row button{
+  flex:1 1 calc(50% - 4px) !important;min-width:0 !important;
+  padding:12px 6px !important;font-size:13px !important;
+}
+
+/* Maxsus bo'lim tablari */
+.sp-tabs{display:flex;gap:9px;padding:14px 16px;}
+.sp-tab{
+  flex:1;padding:12px 0;border-radius:13px;background:#141414;
+  border:1px solid var(--line);color:var(--muted);cursor:pointer;
+  font-family:inherit;font-size:13px;font-weight:700;
+}
+.sp-tab.on{background:#fff;color:#000;border-color:#fff;}
