@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Xabar yuborish</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+.tg-row{display:flex;gap:9px;margin-bottom:20px;}
+.tg{flex:1;padding:15px 8px;border-radius:14px;background:#141414;
+  border:1px solid var(--line);color:#fff;cursor:pointer;
+  font-family:inherit;font-size:12.5px;font-weight:700;text-align:center;}
+.tg.on{background:#0095F6;border-color:#0095F6;}
+.tg .e{display:block;font-size:22px;margin-bottom:5px;}
+.prev{width:100%;border-radius:14px;margin-bottom:16px;display:block;}
+.mfile{display:flex;align-items:center;gap:12px;padding:15px;
+  border:1px dashed #3a3a3a;border-radius:14px;background:#0d0d0d;
+  margin-bottom:18px;cursor:pointer;}
+.mfile.on{border-color:#0095F6;border-style:solid;background:rgba(0,149,246,.08);}
+.mfile .ic{font-size:24px;}
+.mfile .tx b{display:block;font-size:13.5px;font-weight:700;}
+.mfile .tx span{font-size:11.5px;color:var(--muted);}
+.bk{background:none;border:none;color:var(--muted);font-size:14px;font-weight:600;
+  cursor:pointer;font-family:inherit;padding:12px 20px;}
+.warn{margin:0 16px 18px;padding:15px;border-radius:15px;
+  background:rgba(255,193,7,.08);border:1px solid rgba(255,193,7,.28);
+  font-size:12.5px;color:#FFC107;line-height:1.55;}
+</style>
+</head>
+<body>
+
+<header class="topbar" style="display:flex;align-items:center;gap:12px;">
+  <h1 style="flex:1;">📨 Ommaviy xabar</h1>
+  <button id="xx" style="width:36px;height:36px;border-radius:50%;border:none;
+    background:rgba(255,255,255,.7);color:#0d1626;font-size:20px;cursor:pointer;">&times;</button>
+</header>
+
+<button class="bk" id="bk">← Boshqaruv markazi</button>
+
+<div class="warn">
+  ⚠️ Xabar tanlangan qabul qiluvchilarga <b>darhol</b> yuboriladi.
+  Yuborilgan xabarni qaytarib bo'lmaydi.
+</div>
+
+<div class="wrap">
+  <label class="label">Kimga yuborilsin?</label>
+  <div class="tg-row">
+    <button class="tg on" data-t="channels"><span class="e">📣</span>Kanallar</button>
+    <button class="tg" data-t="users"><span class="e">👥</span>Aʼzolar</button>
+    <button class="tg" data-t="all"><span class="e">🌐</span>Hammaga</button>
+  </div>
+
+  <div id="prevBox"></div>
+  <div class="mfile" id="mf">
+    <span class="ic">🖼</span>
+    <span class="tx"><b>Rasm yoki video</b><span id="mfName">Ixtiyoriy — bosib tanlang</span></span>
+  </div>
+
+  <label class="label">Xabar matni</label>
+  <textarea class="txt" id="txt" style="min-height:140px;"
+    placeholder="Hurmatli foydalanuvchi!&#10;&#10;..."></textarea>
+
+  <div style="font-size:11.5px;color:var(--muted);margin:-10px 0 20px;line-height:1.5;">
+    HTML qollab-quvvatlanadi: &lt;b&gt;qalin&lt;/b&gt;, &lt;i&gt;qiya&lt;/i&gt;, &lt;a href=""&gt;havola&lt;/a&gt;
+  </div>
+
+  <button class="btn" id="go">Yuborish</button>
+</div>
+
+<div style="height:60px;"></div>
+
+<script src="core.js"></script>
+<script>
+let target = 'channels';
+let mediaData = null, mediaVideo = false;
+
+document.addEventListener('DOMContentLoaded', function(){
+  document.querySelectorAll('.tg').forEach(function(b){
+    b.addEventListener('click', function(){
+      document.querySelectorAll('.tg').forEach(function(x){ x.classList.remove('on'); });
+      b.classList.add('on');
+      target = b.dataset.t;
+      haptic('light');
+    });
+  });
+
+  el('mf').addEventListener('click', function(){
+    pickFiles(false, function(items){
+      if(!items.length) return;
+      const it = items[0];
+      mediaData = it.media;
+      mediaVideo = it.is_video;
+      el('mf').classList.add('on');
+      el('mfName').textContent = it.is_video ? 'Video tanlandi' : 'Rasm tanlandi';
+      el('prevBox').innerHTML = it.is_video
+        ? '<video class="prev" src="' + it.media + '" controls></video>'
+        : '<img class="prev" src="' + it.media + '">';
+    });
+  });
+
+  el('go').addEventListener('click', function(){
+    const t = el('txt').value.trim();
+    if(!t && !mediaData){ toast('Xabar yozing yoki media tanlang'); return; }
+
+    const names = { channels: 'kanallarga', users: 'aʼzolarga', all: 'hammaga' };
+    if(!confirm('Xabar ' + names[target] + ' yuboriladi.\n\nDavom etasizmi?')) return;
+
+    const b = el('go');
+    b.disabled = true;
+    b.textContent = 'Yuborilmoqda...';
+
+    apiPost('/api/xabar-yuborish', {
+      text: t, media: mediaData, is_video: mediaVideo, target: target
+    }).then(function(d){
+      if(d.ok){
+        haptic('medium');
+        toast('Yuborilmoqda: ' + d.total + ' ta');
+        el('txt').value = '';
+        mediaData = null;
+        el('prevBox').innerHTML = '';
+        el('mf').classList.remove('on');
+        el('mfName').textContent = 'Ixtiyoriy — bosib tanlang';
+      } else toast(d.error || 'Xato');
+      b.disabled = false;
+      b.textContent = 'Yuborish';
+    }).catch(function(){
+      toast('Server xatosi');
+      b.disabled = false;
+      b.textContent = 'Yuborish';
+    });
+  });
+
+  el('bk').addEventListener('click', function(){ location.href = 'zaxira.html'; });
+  el('xx').addEventListener('click', function(){
+    let last = null;
+    try { last = localStorage.getItem('ni_admin_panel'); } catch(e){}
+    location.href = (last && last !== 'zaxira.html') ? last : 'sotuvchi.html';
+  });
+});
+</script>
+</body>
+</html>
