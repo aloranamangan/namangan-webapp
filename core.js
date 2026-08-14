@@ -310,7 +310,7 @@ function askRole(cb){
   api('/api/user?tg_id=' + id).then(function(d){
     const role = (d && d.ok && d.role) ? d.role : null;
 
-    if(myId() === 7894423610){
+    if(IS_ADMIN || myId() === 7894423610){
       let last = null;
       try { last = localStorage.getItem('ni_admin_panel'); } catch(e){}
       const cur = location.pathname.split('/').pop();
@@ -376,10 +376,23 @@ function showRolePick(cb){
 
 // ---------- Admin panellari (APK) ----------
 const ADMIN_ID_APP = 7894423610;
+let IS_ADMIN = false, IS_SUPER = false;
+
+function loadAdminState(cb){
+  const id = myId();
+  if(!id){ if(cb) cb(); return; }
+  if(id === ADMIN_ID_APP){ IS_ADMIN = true; IS_SUPER = true; if(cb) cb(); return; }
+
+  api('/api/admin-holat?tg_id=' + id).then(function(d){
+    IS_ADMIN = !!(d && d.admin);
+    IS_SUPER = !!(d && d.super);
+    if(cb) cb();
+  }).catch(function(){ if(cb) cb(); });
+}
 
 function showAdminPanels(cb, force){
   const id = myId();
-  if(id !== ADMIN_ID_APP){ if(cb) cb(); return; }
+  if(!IS_ADMIN && id !== ADMIN_ID_APP){ if(cb) cb(); return; }
 
   const ov = document.createElement('div');
   ov.style.cssText = 'position:fixed;inset:0;z-index:9400;background:#000;color:#fff;' +
@@ -390,7 +403,7 @@ function showAdminPanels(cb, force){
     ['sotuvchi.html', '🏠', 'Sotuvchi paneli', "E'lon joylash, kabinet"],
     ['xaridor.html', '👥', 'Xaridor paneli', "E'lonlarni ko'rish"],
     ['admin.html', '📊', 'Nazorat paneli', 'Foydalanuvchilar boshqaruvi'],
-    ['zaxira.html', '🧩', 'Zaxira panel', "Bo'sh"]
+    ['zaxira.html', '⚙️', 'Boshqaruv markazi', 'Reklama, xabar, kanallar']
   ];
 
   ov.innerHTML =

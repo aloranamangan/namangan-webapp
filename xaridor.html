@@ -89,7 +89,7 @@
   </button>
 </nav>
 
-<script src="core.js?v=1786700779"></script>
+<script src="core.js?v=1786712286"></script>
 <script src="splash.js"></script>
 <script src="reg.js"></script>
 <script src="dm.js"></script>
@@ -746,7 +746,7 @@ function showUserList(title, path){
 
 document.addEventListener('DOMContentLoaded', function(){
   const hb = document.querySelector('.nav button[data-v="vHome"]');
-  if(hb && myId() === 7894423610 && typeof isApk === 'function' && isApk()){
+  if(hb && IS_ADMIN && typeof isApk === 'function' && isApk()){
     let ht = null;
     hb.addEventListener('touchstart', function(){
       ht = setTimeout(function(){
@@ -947,7 +947,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
 document.addEventListener('DOMContentLoaded', function(){
   setTimeout(function(){
-    if(typeof myId !== 'function' || myId() !== 7894423610) return;
+    if(typeof myId !== 'function' || !IS_ADMIN) return;
 
     const hh = document.querySelector('.topbar h1');
     if(!hh || hh.querySelector('.pro-switch')) return;
@@ -964,6 +964,12 @@ document.addEventListener('DOMContentLoaded', function(){
       if(typeof showAdminPanels === 'function') showAdminPanels(null, true);
     });
   }, 1000);
+});
+
+document.addEventListener('DOMContentLoaded', function(){
+  setTimeout(function(){
+    if(typeof loadAdminState === 'function') loadAdminState();
+  }, 500);
 });
 </script>
 </body>

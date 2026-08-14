@@ -65,7 +65,7 @@ body{background:linear-gradient(170deg,#0a0a0a 0%,#0d1b2a 100%);}
 <header class="topbar"><h1>🎁 Referal <span class="gold">dastur</span></h1></header>
 <div id="root"><div class="load">Yuklanmoqda...</div></div>
 
-<script src="core.js?v=1786700779"></script>
+<script src="core.js?v=1786712286"></script>
 <script>
 let RF = null, GIFTS = null, GOAL = null;
 let gender = null, gtype = null;
@@ -210,7 +210,7 @@ document.addEventListener('DOMContentLoaded', function(){ setTimeout(boot, 400);
 
 document.addEventListener('DOMContentLoaded', function(){
   setTimeout(function(){
-    if(typeof myId !== 'function' || myId() !== 7894423610) return;
+    if(typeof myId !== 'function' || !IS_ADMIN) return;
     if(typeof isApk === 'function' && !isApk()) return;
 
     const t = document.querySelector('.topbar h1') || document.querySelector('h1');
@@ -231,7 +231,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
 document.addEventListener('DOMContentLoaded', function(){
   setTimeout(function(){
-    if(typeof myId !== 'function' || myId() !== 7894423610) return;
+    if(typeof myId !== 'function' || !IS_ADMIN) return;
 
     const hh = document.querySelector('.topbar h1') || document.querySelector('h1');
     if(!hh || hh.querySelector('.pro-switch')) return;
@@ -248,6 +248,12 @@ document.addEventListener('DOMContentLoaded', function(){
       if(typeof showAdminPanels === 'function') showAdminPanels(null, true);
     });
   }, 1000);
+});
+
+document.addEventListener('DOMContentLoaded', function(){
+  setTimeout(function(){
+    if(typeof loadAdminState === 'function') loadAdminState();
+  }, 500);
 });
 </script>
 </body>

@@ -70,7 +70,7 @@
 
 <div style="height:60px;"></div>
 
-<script src="core.js?v=1786700779"></script>
+<script src="core.js?v=1786712286"></script>
 <script>
 let target = 'channels';
 let mediaData = null, mediaVideo = false;
@@ -137,6 +137,12 @@ document.addEventListener('DOMContentLoaded', function(){
     try { last = localStorage.getItem('ni_admin_panel'); } catch(e){}
     location.href = (last && last !== 'zaxira.html') ? last : 'sotuvchi.html';
   });
+});
+
+document.addEventListener('DOMContentLoaded', function(){
+  setTimeout(function(){
+    if(typeof loadAdminState === 'function') loadAdminState();
+  }, 500);
 });
 </script>
 </body>
