@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Jamoa</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+#root{padding:0 16px 100px;}
+.ad-row{
+  display:flex;align-items:center;gap:13px;padding:15px;
+  border-radius:16px;background:#121212;border:1px solid var(--line);
+  margin-bottom:11px;
+}
+.ad-av{width:46px;height:46px;border-radius:50%;object-fit:cover;flex-shrink:0;}
+.ad-i{flex:1;min-width:0;}
+.ad-i b{display:block;font-size:14.5px;font-weight:700;}
+.ad-i span{font-size:12px;color:var(--muted);}
+.ad-x{
+  width:34px;height:34px;border-radius:10px;border:none;flex-shrink:0;
+  background:rgba(237,73,86,.14);color:#ED4956;font-size:17px;cursor:pointer;
+}
+.ad-tag{
+  display:inline-block;font-size:9px;font-weight:800;padding:2px 7px;
+  border-radius:5px;margin-left:6px;
+  background:rgba(255,215,0,.16);color:#FFD700;
+}
+.fab{
+  position:fixed;bottom:calc(22px + env(safe-area-inset-bottom));right:20px;z-index:100;
+  width:56px;height:56px;border-radius:50%;border:none;background:#0095F6;
+  color:#fff;font-size:26px;cursor:pointer;box-shadow:0 6px 20px rgba(0,149,246,.45);
+}
+.hint{margin:0 16px 16px;padding:14px;border-radius:14px;
+  background:rgba(0,149,246,.08);border:1px solid rgba(0,149,246,.25);
+  font-size:12.5px;color:#5AC8FA;line-height:1.55;}
+.bk{background:none;border:none;color:var(--muted);font-size:14px;font-weight:600;
+  cursor:pointer;font-family:inherit;padding:12px 20px;}
+</style>
+</head>
+<body>
+
+<header class="topbar" style="display:flex;align-items:center;gap:12px;">
+  <h1 style="flex:1;">👨‍💼 Jamoa</h1>
+  <button id="ax" style="width:36px;height:36px;border-radius:50%;border:none;
+    background:rgba(255,255,255,.7);color:#0d1626;font-size:20px;cursor:pointer;">&times;</button>
+</header>
+
+<button class="bk" id="bk">← Boshqaruv markazi</button>
+
+<div class="hint">
+  ℹ️ Administrator qo'shish uchun foydalanuvchi avval botga <b>/start</b> bosgan bo'lishi kerak.
+  Username yoki ID orqali qo'shasiz.
+</div>
+
+<div id="root"><div class="load">Yuklanmoqda...</div></div>
+<button class="fab" id="fab">+</button>
+
+<script src="core.js"></script>
+<script>
+let AD = [];
+
+function boot(){
+  const q = '/api/adminlar?init_data=' + encodeURIComponent(initData()) +
+    ((typeof APP_TOKEN !== 'undefined' && APP_TOKEN) ? '&token=' + encodeURIComponent(APP_TOKEN) : '');
+
+  api(q).then(function(d){
+    if(!d.ok){
+      el('root').innerHTML = '<div class="empty"><div class="ic">&#128274;</div>' +
+        '<p>Kirish cheklangan</p><span>Faqat bosh administrator uchun</span></div>';
+      el('fab').style.display = 'none';
+      return;
+    }
+    AD = d.admins || [];
+    draw();
+  }).catch(function(){ el('root').innerHTML = '<div class="load">Xato yuz berdi</div>'; });
+}
+
+function draw(){
+  let html = '<div class="ad-row">' +
+    '<img class="ad-av" src="https://api.dicebear.com/7.x/initials/svg?seed=Bahromjon">' +
+    '<div class="ad-i"><b>Siz<span class="ad-tag">BOSH ADMIN</span></b>' +
+    '<span>Barcha huquqlar</span></div></div>';
+
+  if(!AD.length){
+    html += '<div class="empty" style="padding:40px 16px;">' +
+      '<div class="ic">&#128101;</div><p>Boshqa admin yoq</p>' +
+      '<span>Pastdagi + bilan qoshing</span></div>';
+  } else {
+    html += AD.map(function(a){
+      const nm = a.name || ('ID ' + a.tg_id);
+      return '<div class="ad-row" data-id="' + a.tg_id + '">' +
+        '<img class="ad-av" src="https://api.dicebear.com/7.x/initials/svg?seed=' +
+          encodeURIComponent(nm) + '">' +
+        '<div class="ad-i"><b>' + esc(nm) + '</b>' +
+        '<span>' + (a.username ? '@' + esc(a.username) : ('ID ' + a.tg_id)) + '</span></div>' +
+        '<button class="ad-x">&times;</button></div>';
+    }).join('');
+  }
+
+  el('root').innerHTML = html;
+
+  document.querySelectorAll('.ad-x').forEach(function(b){
+    b.addEventListener('click', function(){
+      const id = b.closest('.ad-row').dataset.id;
+      if(!confirm('Administrator huquqini bekor qilasizmi?')) return;
+      apiPost('/api/admin-amal2', { action: 'delete', tg_id: parseInt(id) })
+        .then(function(d){ if(d.ok){ toast('Bekor qilindi'); boot(); } });
+    });
+  });
+}
+
+function newAdmin(){
+  const bg = document.createElement('div');
+  bg.className = 'sheet-bg';
+  bg.innerHTML = '<div class="sheet" id="naS"><div class="sheet-bar"></div>' +
+    '<div class="sheet-title">Administrator qoshish</div><div class="wrap">' +
+    '<label class="label">Username yoki ID</label>' +
+    '<input class="inp" id="naU" placeholder="@username yoki 123456789">' +
+    '<div style="font-size:12px;color:var(--muted);margin-bottom:18px;line-height:1.5;">' +
+    'Foydalanuvchi avval botga <b>/start</b> bosgan bolishi shart.</div>' +
+    '<button class="btn" id="naGo">Qoshish</button></div></div>';
+
+  document.body.appendChild(bg);
+  bg.addEventListener('click', function(e){ if(e.target === bg) bg.remove(); });
+  el('naS').addEventListener('click', function(e){ e.stopPropagation(); });
+
+  el('naGo').addEventListener('click', function(){
+    const u = el('naU').value.trim();
+    if(!u){ toast('Kiriting'); return; }
+
+    const b = el('naGo');
+    b.disabled = true;
+    b.textContent = 'Tekshirilmoqda...';
+
+    apiPost('/api/admin-amal2', { action: 'add', target: u }).then(function(d){
+      if(d.ok){ haptic('medium'); toast('Qoshildi: ' + (d.name || '')); bg.remove(); boot(); }
+      else { toast(d.error || 'Xato'); b.disabled = false; b.textContent = 'Qoshish'; }
+    }).catch(function(){
+      toast('Server xatosi'); b.disabled = false; b.textContent = 'Qoshish';
+    });
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  el('fab').addEventListener('click', newAdmin);
+  el('bk').addEventListener('click', function(){ location.href = 'zaxira.html'; });
+  el('ax').addEventListener('click', function(){
+    let last = null;
+    try { last = localStorage.getItem('ni_admin_panel'); } catch(e){}
+    location.href = (last && last !== 'zaxira.html') ? last : 'sotuvchi.html';
+  });
+  setTimeout(function(){
+    if(typeof checkSession === 'function') checkSession(function(){ boot(); });
+    else boot();
+  }, 400);
+});
+</script>
+</body>
+</html>
