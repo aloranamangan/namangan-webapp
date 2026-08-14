@@ -524,3 +524,80 @@ function showSubScreen(list, cb){
     });
   });
 }
+
+// ---------- Ommaviy profil ----------
+function openUserProfile(tgId, username){
+  const bg = document.createElement('div');
+  bg.className = 'sheet-bg';
+  bg.style.zIndex = '7500';
+  bg.innerHTML = '<div class="sheet" id="upS" style="max-height:88vh;overflow-y:auto;">' +
+    '<div class="sheet-bar"></div>' +
+    '<div id="upBody"><div class="load">Yuklanmoqda...</div></div></div>';
+
+  document.body.appendChild(bg);
+  bg.addEventListener('click', function(e){ if(e.target === bg) bg.remove(); });
+  document.getElementById('upS').addEventListener('click', function(e){ e.stopPropagation(); });
+
+  const q = username
+    ? '/api/profil?username=' + encodeURIComponent(username)
+    : '/api/profil?tg_id=' + tgId;
+
+  api(q).then(function(d){
+    const box = document.getElementById('upBody');
+    if(!box) return;
+
+    if(!d.ok){
+      box.innerHTML = '<div class="empty" style="padding:44px 16px;">' +
+        '<span>Profil topilmadi</span></div>';
+      return;
+    }
+
+    const ava = d.avatar
+      ? mediaUrl(d.avatar)
+      : 'https://api.dicebear.com/7.x/initials/svg?seed=' + encodeURIComponent(d.name || 'U');
+
+    const vb = d.verified
+      ? '<svg style="width:16px;height:16px;" viewBox="0 0 24 24" fill="#0095F6">' +
+        '<path d="M12 1l2.5 2.2 3.3-.4 1 3.2 3 1.5-1.2 3.1 1.2 3.1-3 1.5-1 3.2-3.3-.4L12 23l-2.5-2.2-3.3.4-1-3.2-3-1.5 1.2-3.1L2.2 10l3-1.5 1-3.2 3.3.4z"/>' +
+        '<path d="M10.5 15.2l-3-3 1.2-1.2 1.8 1.8 4.3-4.3 1.2 1.2z" fill="#000"/></svg>'
+      : '';
+
+    let h = '<div class="up-head">' +
+      '<img class="up-ava" src="' + ava + '">' +
+      '<b>' + esc(d.name || 'Foydalanuvchi') + vb + '</b>';
+
+    if(d.type === 'makler'){
+      h += '<div class="nk">@' + esc(d.username || '') + '</div>' +
+        '<div class="up-stats">' +
+        '<div><b>' + fmt(d.posts || 0) + '</b><span>elon</span></div>' +
+        '<div><b>' + fmt(d.followers || 0) + '</b><span>obunachi</span></div>' +
+        '</div></div>' +
+        '<div class="up-btns">' +
+        '<button style="background:#0095F6;color:#fff;" id="upMsg">Yozish</button>' +
+        (d.phone ? '<button style="background:#262626;color:#fff;" id="upCall">Qongiroq</button>' : '') +
+        '</div>';
+    } else {
+      h += (d.nickname ? '<div class="nk">@' + esc(d.nickname) + '</div>' : '') +
+        '</div>' +
+        '<div class="up-btns">' +
+        '<button style="background:#0095F6;color:#fff;" id="upMsg">Yozish</button>' +
+        '</div>';
+    }
+
+    box.innerHTML = h;
+
+    const mb = document.getElementById('upMsg');
+    if(mb) mb.addEventListener('click', function(){
+      bg.remove();
+      if(typeof openChat === 'function') openChat(d.tg_id, d.name);
+    });
+
+    const cb = document.getElementById('upCall');
+    if(cb && d.phone) cb.addEventListener('click', function(){
+      location.href = 'tel:' + d.phone;
+    });
+  }).catch(function(){
+    const box = document.getElementById('upBody');
+    if(box) box.innerHTML = '<div class="load">Xato yuz berdi</div>';
+  });
+}

@@ -1341,3 +1341,25 @@ body{padding-bottom:112px !important;}
   background:rgba(237,73,86,.1);border:1px solid rgba(237,73,86,.35);
   font-size:13px;color:#FF6B6B;line-height:1.6;font-weight:600;
 }
+
+/* Ommaviy profil oynasi */
+.up-head{
+  display:flex;flex-direction:column;align-items:center;
+  padding:26px 20px 20px;text-align:center;
+}
+.up-ava{
+  width:88px;height:88px;border-radius:50%;object-fit:cover;
+  border:2px solid rgba(255,255,255,.12);margin-bottom:14px;
+  box-shadow:0 6px 22px rgba(0,0,0,.5);
+}
+.up-head b{font-size:19px;font-weight:800;display:flex;align-items:center;gap:5px;}
+.up-head .nk{font-size:13px;color:var(--muted);margin-top:3px;}
+.up-stats{display:flex;gap:32px;margin-top:18px;}
+.up-stats div{text-align:center;}
+.up-stats b{display:block;font-size:19px;font-weight:700;}
+.up-stats span{font-size:11.5px;color:var(--muted);}
+.up-btns{display:flex;gap:9px;padding:0 20px 20px;}
+.up-btns button{
+  flex:1;padding:12px 0;border:none;border-radius:12px;
+  font-size:13.5px;font-weight:700;cursor:pointer;font-family:inherit;
+}

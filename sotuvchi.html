@@ -998,12 +998,22 @@ function showFollowers(){
 
     box.innerHTML = list.map(function(u){
       const nm = u.name || u.first_name || ('ID ' + (u.id || u.tg_id || ''));
-      return '<div class="chat-row">' +
+      const tid = u.tg_id || u.id || '';
+      return '<div class="chat-row" data-tg="' + tid + '" style="cursor:pointer;">' +
         '<div class="chat-ava"><img src="https://api.dicebear.com/7.x/initials/svg?seed=' +
           encodeURIComponent(nm) + '"></div>' +
-        '<div class="ci"><b>' + esc(nm) + '</b>' +
-        (u.phone ? '<span>' + esc(u.phone) + '</span>' : '') + '</div></div>';
+        '<div class="ci"><b>' + esc(nm) + '</b></div>' +
+        '<span style="color:#555;font-size:17px;">&rsaquo;</span></div>';
     }).join('') + '<div style="height:16px;"></div>';
+
+    box.querySelectorAll('.chat-row[data-tg]').forEach(function(r){
+      r.addEventListener('click', function(){
+        const t = r.dataset.tg;
+        if(!t) return;
+        bg.remove();
+        if(typeof openUserProfile === 'function') openUserProfile(parseInt(t), null);
+      });
+    });
   }).catch(function(){
     el('fwBody').innerHTML = '<div class="load">Xato yuz berdi</div>';
   });
