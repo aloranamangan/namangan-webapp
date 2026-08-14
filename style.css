@@ -1086,3 +1086,121 @@ body{
   box-shadow:0 6px 28px rgba(0,0,0,.32),
              inset 0 1px 0 rgba(255,255,255,.4) !important;
 }
+
+/* ═══════ OQ KRISTALL MARMAR ═══════ */
+
+.topbar{
+  background:
+    linear-gradient(135deg,
+      rgba(255,255,255,.97) 0%,
+      rgba(248,250,253,.94) 26%,
+      rgba(255,255,255,.98) 48%,
+      rgba(242,246,252,.94) 72%,
+      rgba(255,255,255,.97) 100%) !important;
+  backdrop-filter:blur(30px) saturate(1.2) !important;
+  -webkit-backdrop-filter:blur(30px) saturate(1.2) !important;
+  border-bottom:1px solid rgba(255,255,255,1) !important;
+  box-shadow:
+    0 8px 32px rgba(120,140,180,.28),
+    inset 0 -1px 0 rgba(190,205,225,.4),
+    inset 0 1px 0 rgba(255,255,255,1) !important;
+  position:sticky !important;top:0;z-index:900;overflow:hidden;
+}
+
+/* Marmar tomirlari */
+.topbar::after{
+  content:'' !important;position:absolute !important;inset:0 !important;
+  pointer-events:none !important;z-index:0 !important;opacity:.5 !important;
+  background:
+    linear-gradient(118deg,transparent 30%,rgba(178,196,220,.5) 31%,transparent 32.4%),
+    linear-gradient(102deg,transparent 54%,rgba(196,210,230,.42) 55%,transparent 56.2%),
+    linear-gradient(133deg,transparent 68%,rgba(170,190,218,.36) 69%,transparent 70.5%),
+    linear-gradient(96deg,transparent 14%,rgba(205,218,236,.4) 15%,transparent 16.3%) !important;
+  animation:none !important;
+}
+
+/* Kristall yaltirash */
+.topbar::before{
+  content:'' !important;position:absolute !important;
+  top:0 !important;left:0 !important;right:0 !important;bottom:0 !important;
+  height:auto !important;z-index:1 !important;pointer-events:none !important;
+  background:linear-gradient(105deg,
+    transparent 32%,
+    rgba(255,255,255,.85) 46%,
+    rgba(210,235,255,.6) 50%,
+    rgba(255,255,255,.85) 54%,
+    transparent 68%) !important;
+  background-size:280% 100% !important;
+  animation:crystal 6.5s ease-in-out infinite !important;
+}
+@keyframes crystal{
+  0%{background-position:230% 0}
+  55%,100%{background-position:-130% 0}
+}
+
+.topbar h1{color:#0d1626 !important;position:relative;z-index:3;}
+.topbar h1 .gold{
+  background:linear-gradient(110deg,#8C6D1F,#C9A227 30%,#F2DC91 48%,#C9A227 70%,#8C6D1F) !important;
+  background-size:250% auto !important;
+  -webkit-background-clip:text !important;-webkit-text-fill-color:transparent !important;
+  background-clip:text !important;
+}
+.topbar button,.topbar .pro-switch{color:#0d1626 !important;}
+.topbar .ico-btn{background:rgba(255,255,255,.7) !important;
+  border:1px solid rgba(180,198,222,.5) !important;color:#0d1626 !important;}
+
+/* ── PASTKI PANEL ── */
+.nav{
+  background:
+    linear-gradient(160deg,
+      rgba(255,255,255,.97) 0%,
+      rgba(246,249,253,.94) 30%,
+      rgba(255,255,255,.98) 55%,
+      rgba(240,245,251,.94) 78%,
+      rgba(255,255,255,.97) 100%) !important;
+  backdrop-filter:blur(30px) saturate(1.2) !important;
+  -webkit-backdrop-filter:blur(30px) saturate(1.2) !important;
+  border-top:1px solid rgba(255,255,255,1) !important;
+  box-shadow:
+    0 -8px 32px rgba(120,140,180,.3),
+    inset 0 1px 0 rgba(255,255,255,1),
+    inset 0 -1px 0 rgba(190,205,225,.35) !important;
+  position:fixed !important;overflow:hidden !important;
+}
+
+.nav::after{
+  content:'' !important;position:absolute !important;inset:0 !important;
+  pointer-events:none !important;z-index:0 !important;opacity:.5 !important;
+  background:
+    linear-gradient(74deg,transparent 22%,rgba(178,196,220,.48) 23%,transparent 24.4%),
+    linear-gradient(96deg,transparent 47%,rgba(196,210,230,.4) 48%,transparent 49.3%),
+    linear-gradient(62deg,transparent 71%,rgba(170,190,218,.34) 72%,transparent 73.4%) !important;
+  animation:none !important;
+}
+
+.nav::before{
+  content:'' !important;position:absolute !important;
+  top:0 !important;left:0 !important;right:0 !important;bottom:0 !important;
+  height:auto !important;z-index:1 !important;pointer-events:none !important;
+  background:linear-gradient(255deg,
+    transparent 32%,
+    rgba(255,255,255,.8) 46%,
+    rgba(210,235,255,.55) 50%,
+    rgba(255,255,255,.8) 54%,
+    transparent 68%) !important;
+  background-size:280% 100% !important;
+  animation:crystal 7.5s ease-in-out infinite !important;
+}
+
+.nav button{
+  color:rgba(60,78,102,.62) !important;
+  position:relative !important;z-index:3 !important;
+}
+.nav button.on{color:#0a1220 !important;}
+.nav button.on::before{
+  background:linear-gradient(90deg,transparent,#0a1220,transparent) !important;
+  box-shadow:0 0 10px rgba(10,18,32,.35) !important;
+}
+.nav button::after{
+  background:radial-gradient(circle,rgba(90,130,190,.22),transparent 70%) !important;
+}
