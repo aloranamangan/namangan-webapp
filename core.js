@@ -196,7 +196,7 @@ function showBlocked(kind, until){
 
   d.innerHTML =
     '<div class="bl-circle"><span>' + (isBlock ? '&#128683;' : '&#9208;&#65039;') + '</span></div>' +
-    '<h2>' + (isBlock ? 'Vaqtincha bloklandingiz' : 'Vaqtincha toxtatildingiz') + '</h2>' +
+    '<h2>' + (isBlock ? t('blocked') : t('paused')) + '</h2>' +
     '<p>' + (isBlock
       ? 'Qoidalarni buzganingiz uchun hisobingiz cheklandi.<br>Savol boisa admin bilan boglaning.'
       : 'Hisobingiz vaqtincha toxtatib qoyildi.<br>Muddat tugagach avtomatik ochiladi.') + '</p>' +
@@ -243,7 +243,7 @@ function showBlocked(kind, until){
 
   d.innerHTML =
     '<div class="bl-circle"><span>' + (isBlock ? '&#128683;' : '&#9208;&#65039;') + '</span></div>' +
-    '<h2>' + (isBlock ? 'Vaqtincha bloklandingiz' : 'Vaqtincha toxtatildingiz') + '</h2>' +
+    '<h2>' + (isBlock ? t('blocked') : t('paused')) + '</h2>' +
     '<p>' + (isBlock
       ? 'Qoidalarni buzganingiz uchun hisobingiz cheklandi.<br>Savol boisa admin bilan boglaning.'
       : 'Hisobingiz vaqtincha toxtatib qoyildi.<br>Muddat tugagach avtomatik ochiladi.') + '</p>' +
@@ -497,7 +497,7 @@ function showSubScreen(list, cb){
         btn.remove();
         cb(true);
       } else {
-        toast('Hali aʼzo bolmadingiz');
+        toast(t('notSubbed'));
         btn.disabled = false;
         btn.textContent = '\u2705  Tekshirish';
         const box = s.querySelector('.sub-list');

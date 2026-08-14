@@ -25,7 +25,7 @@ function dmUnreadCheck(btnId){
 
 function openChats(){
   const id = myId();
-  if(!id){ toast('Telegram ilovasida oching'); return; }
+  if(!id){ toast(t('openInTelegram')); return; }
 
   const bg = document.createElement('div');
   bg.className = 'dm-full';
@@ -126,7 +126,7 @@ function openChats(){
 
     box.innerHTML = list.map(function(c){
       const onl = c.online ? '<span class="onl"></span>' : '';
-      const sub = c.online ? 'Hozir onlayn' : esc(c.last);
+      const sub = c.online ? t('online') : esc(c.last);
       return '<div class="chat-row' + (c.seen ? '' : ' unread') + '" data-u="' + c.user_id + '" data-n="' + esc(c.name) + '">' +
         '<div class="chat-ava"><img src="' + (c.avatar ? mediaUrl(c.avatar) : 'https://api.dicebear.com/7.x/initials/svg?seed=' +
           encodeURIComponent(c.name)) + '">' + onl + '</div>' +
@@ -230,7 +230,7 @@ function openChat(otherId, otherName){
     pickFiles(false, function(items){
       if(!items.length) return;
       pending = items[0];
-      toast('Fayl tanlandi, endi yuboring');
+      toast(t('fileSelected'));
     });
   });
 
@@ -247,8 +247,8 @@ function openChat(otherId, otherName){
 
     apiPost('/api/xabar', body).then(function(d){
       if(d.ok){ load(); haptic('light'); }
-      else toast('Yuborilmadi');
-    }).catch(function(){ toast('Server xatosi'); });
+      else toast(t('notSent'));
+    }).catch(function(){ toast(t('serverError')); });
   }
 
   let recording = false;
@@ -258,7 +258,7 @@ function openChat(otherId, otherName){
       recording = true;
       mic.classList.add('rec');
       mic.innerHTML = '&#9209;&#65039;';
-      toast('Yozilmoqda... toxtatish uchun qayta bosing');
+      toast(t('recording'));
       startRec(function(dataUrl){
         recording = false;
         mic.classList.remove('rec');
@@ -267,8 +267,8 @@ function openChat(otherId, otherName){
           to_id: otherId, text: '', media: dataUrl, is_voice: true
         }).then(function(d){
           if(d.ok){ load(); haptic('medium'); }
-          else toast('Yuborilmadi');
-        }).catch(function(){ toast('Server xatosi'); });
+          else toast(t('notSent'));
+        }).catch(function(){ toast(t('serverError')); });
       });
     } else {
       recording = false;
@@ -295,7 +295,7 @@ document.addEventListener('DOMContentLoaded', function(){
 // ---------- Yuborish oynasi (Instagram uslubi) ----------
 function openShare(post){
   const id = myId();
-  if(!id){ toast('Telegram ilovasida oching'); return; }
+  if(!id){ toast(t('openInTelegram')); return; }
 
   const first = (post.media && post.media[0]) ? post.media[0] : null;
   const fileId = first ? first.url.split('/media/')[1] : null;
@@ -324,17 +324,17 @@ function openShare(post){
 
   // Storiyga qo'yish
   el('shStory').addEventListener('click', function(){
-    if(!fileId){ toast('Media topilmadi'); return; }
+    if(!fileId){ toast(t('noMedia')); return; }
     apiPost('/api/story-qoshish', { file_id: fileId, is_video: isVid })
       .then(function(d){
-        if(d.ok){ haptic('medium'); toast('Storiyga qoshildi'); bg.remove(); }
+        if(d.ok){ haptic('medium'); toast(t('addedToStory')); bg.remove(); }
         else toast('Xato yuz berdi');
-      }).catch(function(){ toast('Server xatosi'); });
+      }).catch(function(){ toast(t('serverError')); });
   });
 
   // Yuklab olish
   el('shDl').addEventListener('click', function(){
-    if(!first){ toast('Media topilmadi'); return; }
+    if(!first){ toast(t('noMedia')); return; }
     const a = document.createElement('a');
     a.href = first.url;
     a.download = isVid ? 'namangan-ijara.mp4' : 'namangan-ijara.jpg';
@@ -342,7 +342,7 @@ function openShare(post){
     document.body.appendChild(a);
     a.click();
     a.remove();
-    toast('Yuklanmoqda...');
+    toast(t('loading'));
   });
 
   // Telegramga ulashish
@@ -358,7 +358,7 @@ function openShare(post){
   el('shCopy').addEventListener('click', function(){
     const link = 'https://t.me/Ijaraga_uybot';
     if(navigator.clipboard) navigator.clipboard.writeText(link);
-    toast('Havola nusxalandi');
+    toast(t('copied'));
   });
 
   // Foydalanuvchilar ro'yxati
@@ -411,7 +411,7 @@ function openShare(post){
         }
         const n = Object.keys(chosen).length;
         el('shBar').style.display = n ? 'block' : 'none';
-        el('shSend').textContent = n > 1 ? ('Yuborish (' + n + ')') : 'Yuborish';
+        el('shSend').textContent = n > 1 ? ('Yuborish (' + n + ')') : t('send');
       });
     });
   });
@@ -430,9 +430,9 @@ function openShare(post){
       to_ids: ids, file_id: fileId, is_video: isVid, text: txt
     }).then(function(d){
       if(d.ok){ haptic('medium'); toast('Yuborildi'); bg.remove(); }
-      else { toast('Xato yuz berdi'); b.disabled = false; b.textContent = 'Yuborish'; }
+      else { toast('Xato yuz berdi'); b.disabled = false; b.textContent = t('send'); }
     }).catch(function(){
-      toast('Server xatosi'); b.disabled = false; b.textContent = 'Yuborish';
+      toast(t('serverError')); b.disabled = false; b.textContent = t('send');
     });
   });
 }
@@ -479,12 +479,12 @@ function openGallery(items, startIdx, showStory, posts, postIdx){
     if(st) st.addEventListener('click', function(e){
       e.stopPropagation();
       const fid = it.url.split('/media/')[1];
-      if(!fid){ toast('Media topilmadi'); return; }
+      if(!fid){ toast(t('noMedia')); return; }
       apiPost('/api/story-qoshish', { file_id: fid, is_video: it.video })
         .then(function(d){
-          if(d.ok){ haptic('medium'); toast('Storiyga qoshildi'); v.remove(); }
+          if(d.ok){ haptic('medium'); toast(t('addedToStory')); v.remove(); }
           else toast('Xato');
-        }).catch(function(){ toast('Server xatosi'); });
+        }).catch(function(){ toast(t('serverError')); });
     });
 
     v.querySelector('#vwDl').addEventListener('click', function(e){
@@ -496,7 +496,7 @@ function openGallery(items, startIdx, showStory, posts, postIdx){
       document.body.appendChild(a);
       a.click();
       a.remove();
-      toast('Yuklanmoqda...');
+      toast(t('loading'));
     });
   }
 
@@ -567,7 +567,7 @@ function startRec(onDone){
       mediaRec.start();
       haptic('light');
     })
-    .catch(function(){ toast('Mikrofonga ruxsat berilmadi'); });
+    .catch(function(){ toast(t('micDenied')); });
 }
 
 function stopRec(){
