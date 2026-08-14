@@ -1267,3 +1267,26 @@ body{
 /* Kontent uchun joy */
 body{padding-bottom:132px !important;}
 .dm-full,.chat-full{bottom:132px !important;}
+
+/* Pastki panel — ixcham 2 qator */
+.nav{
+  flex-wrap:wrap !important;
+  padding:7px 0 calc(7px + env(safe-area-inset-bottom)) !important;
+  row-gap:6px !important;
+}
+.nav button{
+  flex:0 0 16.66% !important;
+  font-size:8px !important;
+  gap:2px !important;
+  letter-spacing:-.2px;
+}
+.nav button svg{width:17px !important;height:17px !important;}
+.nav button.on::before{width:18px !important;top:-7px !important;}
+.nav .dot-n{
+  right:calc(50% - 13px) !important;
+  min-width:13px !important;height:13px !important;
+  font-size:8px !important;
+}
+
+body{padding-bottom:112px !important;}
+.dm-full,.chat-full{bottom:112px !important;}
