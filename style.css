@@ -1249,3 +1249,21 @@ body{
   font-family:inherit;font-size:13px;font-weight:700;
 }
 .sp-tab.on{background:#fff;color:#000;border-color:#fff;}
+
+/* Pastki panel — 2 qatorli */
+.nav{
+  flex-wrap:wrap !important;
+  padding:9px 0 calc(9px + env(safe-area-inset-bottom)) !important;
+  row-gap:10px;
+}
+.nav button{
+  flex:0 0 20% !important;
+  font-size:9.5px !important;
+  gap:3px !important;
+}
+.nav button svg{width:20px !important;height:20px !important;}
+.nav .dot-n{right:calc(50% - 16px) !important;}
+
+/* Kontent uchun joy */
+body{padding-bottom:132px !important;}
+.dm-full,.chat-full{bottom:132px !important;}
