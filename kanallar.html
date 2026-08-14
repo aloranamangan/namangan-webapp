@@ -34,6 +34,13 @@
 }
 .slot .inp{margin-bottom:9px !important;padding:12px 14px !important;font-size:14px !important;}
 .slot .inp:last-of-type{margin-bottom:0 !important;}
+.slot-st{
+  display:flex;gap:14px;margin-top:11px;padding-top:11px;
+  border-top:1px solid rgba(255,255,255,.06);font-size:11.5px;
+}
+.slot-st span{color:var(--muted);}
+.slot-st b{color:#fff;font-weight:800;}
+.slot-st .pct{margin-left:auto;color:#2ECC71;font-weight:800;}
 .save-all{
   position:fixed;bottom:calc(20px + env(safe-area-inset-bottom));left:16px;right:16px;
   z-index:200;padding:16px 0;border:none;border-radius:15px;
@@ -106,6 +113,14 @@ function draw(){
         (c ? esc(c.title) : '') + '">' +
       '<input class="inp s-link" placeholder="@manzil yoki https://t.me/..." value="' +
         (c ? esc(c.chat_id) : '') + '">' +
+      (c && c.stats
+        ? '<div class="slot-st">' +
+          '<span>&#128065; Kordi: <b>' + fmt(c.stats.seen) + '</b></span>' +
+          '<span>&#9989; Azo: <b>' + fmt(c.stats.joined) + '</b></span>' +
+          '<span class="pct">' +
+            (c.stats.seen ? Math.round(c.stats.joined / c.stats.seen * 100) : 0) + '%</span>' +
+          '</div>'
+        : '') +
       '</div>';
   }
 
