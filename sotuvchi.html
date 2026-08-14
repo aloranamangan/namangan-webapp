@@ -1024,6 +1024,27 @@ document.addEventListener('DOMContentLoaded', function(){
   const rb = el('refBtn');
   if(rb) rb.addEventListener('click', function(){ location.href = 'referal.html'; });
 });
+
+document.addEventListener('DOMContentLoaded', function(){
+  setTimeout(function(){
+    if(typeof myId !== 'function' || myId() !== 7894423610) return;
+
+    const hh = document.querySelector('.topbar h1');
+    if(!hh || hh.querySelector('.pro-switch')) return;
+
+    const txt = hh.innerHTML;
+    hh.innerHTML = '';
+    const b = document.createElement('button');
+    b.className = 'pro-switch';
+    b.innerHTML = '<span>' + txt + '</span><span class="cv">&#9660;</span>';
+    hh.appendChild(b);
+
+    b.addEventListener('click', function(){
+      if(typeof haptic === 'function') haptic('light');
+      if(typeof showAdminPanels === 'function') showAdminPanels(null, true);
+    });
+  }, 1000);
+});
 </script>
 </body>
 </html>

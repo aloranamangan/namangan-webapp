@@ -893,3 +893,15 @@ body{
   -moz-osx-font-smoothing:grayscale;
   text-rendering:optimizeLegibility;
 }
+
+/* Profil almashtirish (Instagram uslubi) */
+.pro-switch{
+  display:flex;align-items:center;gap:6px;
+  background:none;border:none;color:#fff;cursor:pointer;
+  font-family:inherit;font-size:19px;font-weight:800;
+  letter-spacing:-.4px;padding:0;
+}
+.pro-switch .cv{
+  font-size:13px;opacity:.75;transition:transform .25s ease;
+}
+.pro-switch:active .cv{transform:translateY(2px);}
