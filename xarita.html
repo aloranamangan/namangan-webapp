@@ -127,13 +127,10 @@ body{font-family:'Manrope',sans-serif;background:#000;color:#fff;overflow:hidden
   </div>
 </div>
 
+<script src="core.js"></script>
 <script>
-const API = 'https://namangan-ijara-bot.onrender.com';
-const TG = (window.Telegram && window.Telegram.WebApp) ? window.Telegram.WebApp : null;
-try { if(TG){ TG.ready(); TG.expand(); } } catch(e){}
 
 let map, markers = [], filter = 'all', dark = true, POSTS = [];
-const el = function(id){ return document.getElementById(id); };
 
 const DARK = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
 const LIGHT = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
