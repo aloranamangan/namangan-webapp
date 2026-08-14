@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>To'lovlar</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+#root{padding:0 16px 100px;}
+.pr{
+  display:flex;align-items:center;gap:12px;padding:14px;
+  border-radius:16px;background:#121212;border:1px solid var(--line);
+  margin-bottom:11px;
+}
+.pr.blocked{border-color:rgba(237,73,86,.4);background:rgba(237,73,86,.05);}
+.pr.expired{border-color:rgba(255,193,7,.4);background:rgba(255,193,7,.05);}
+.pr-av{width:44px;height:44px;border-radius:50%;object-fit:cover;flex-shrink:0;}
+.pr-i{flex:1;min-width:0;}
+.pr-i b{display:block;font-size:14px;font-weight:700;}
+.pr-i .d{font-size:11.5px;color:var(--muted);margin-top:3px;}
+.pr-i .st{font-size:11px;font-weight:700;margin-top:4px;}
+.pr-i .st.ok{color:#2ECC71;}
+.pr-i .st.warn{color:#FFC107;}
+.pr-i .st.bad{color:#ED4956;}
+.pr-b{display:flex;flex-direction:column;gap:5px;flex-shrink:0;}
+.pr-b button{
+  padding:7px 11px;border:none;border-radius:9px;
+  font-size:10.5px;font-weight:700;cursor:pointer;font-family:inherit;
+  white-space:nowrap;
+}
+.card-info{
+  margin:0 16px 16px;padding:16px;border-radius:16px;
+  background:linear-gradient(135deg,#1a2980,#26d0ce);
+}
+.card-info .lb{font-size:10px;font-weight:800;letter-spacing:.12em;opacity:.75;}
+.card-info .num{font-size:19px;font-weight:700;letter-spacing:1.5px;
+  margin:8px 0 10px;font-family:monospace;}
+.card-info .own{font-size:13px;font-weight:600;opacity:.9;}
+.bk{background:none;border:none;color:var(--muted);font-size:14px;font-weight:600;
+  cursor:pointer;font-family:inherit;padding:12px 20px;}
+</style>
+</head>
+<body>
+
+<header class="topbar" style="display:flex;align-items:center;gap:12px;">
+  <h1 style="flex:1;">💳 To'lovlar</h1>
+  <button id="tx" style="width:36px;height:36px;border-radius:50%;border:none;
+    background:rgba(255,255,255,.7);color:#0d1626;font-size:20px;cursor:pointer;">&times;</button>
+</header>
+
+<button class="bk" id="bk">← Boshqaruv markazi</button>
+
+<div class="card-info" id="cardBox"></div>
+<div id="root"><div class="load">Yuklanmoqda...</div></div>
+
+<script src="i18n.js"></script>
+<script src="core.js"></script>
+<script>
+let LIST = [];
+
+function boot(){
+  const q = '/api/tolovlar?init_data=' + encodeURIComponent(initData()) +
+    ((typeof APP_TOKEN !== 'undefined' && APP_TOKEN) ? '&token=' + encodeURIComponent(APP_TOKEN) : '');
+
+  api(q).then(function(d){
+    if(!d.ok){
+      el('root').innerHTML = '<div class="empty"><div class="ic">&#128274;</div><p>Kirish cheklangan</p></div>';
+      return;
+    }
+    LIST = d.list || [];
+    el('cardBox').innerHTML =
+      '<div class="lb">TOLOV KARTASI</div>' +
+      '<div class="num">' + esc(d.card || '') + '</div>' +
+      '<div class="lb">KARTA EGASI</div>' +
+      '<div class="own">' + esc(d.owner || '') + '</div>' +
+      '<div style="margin-top:12px;font-size:13px;opacity:.9;">' +
+      'Oylik: <b>' + fmt(d.amount || 200000) + ' som</b></div>';
+    draw();
+  }).catch(function(){ el('root').innerHTML = '<div class="load">Xato yuz berdi</div>'; });
+}
+
+function fmtDate(s){
+  if(!s || s.length < 8) return '—';
+  const d = new Date(String(s).replace(' ', 'T'));
+  if(isNaN(d)) return '—';
+  return d.getDate() + '.' + (d.getMonth()+1) + '.' + d.getFullYear();
+}
+
+function daysLeft(s){
+  if(!s || s.length < 8) return null;
+  const d = new Date(String(s).replace(' ', 'T'));
+  if(isNaN(d)) return null;
+  return Math.ceil((d - new Date()) / 86400000);
+}
+
+function draw(){
+  if(!LIST.length){
+    el('root').innerHTML = '<div class="empty" style="padding:60px 20px;">' +
+      '<div class="ic">&#128179;</div><p>Makler yoq</p></div>';
+    return;
+  }
+
+  el('root').innerHTML = LIST.map(function(m){
+    const nm = m.name || m.username;
+    const left = daysLeft(m.paid_until);
+    let cls = '', st = '', stc = 'ok';
+
+    if(m.blocked){
+      cls = ' blocked'; st = '&#128274; Bloklangan'; stc = 'bad';
+    } else if(left === null){
+      st = 'Muddat belgilanmagan'; stc = 'warn';
+    } else if(left < 0){
+      cls = ' expired'; st = '&#9888;&#65039; Muddat tugagan'; stc = 'bad';
+    } else if(left <= 5){
+      cls = ' expired'; st = '&#9203; ' + left + ' kun qoldi'; stc = 'warn';
+    } else {
+      st = '&#9989; ' + left + ' kun qoldi'; stc = 'ok';
+    }
+
+    return '<div class="pr' + cls + '" data-u="' + esc(m.username) + '">' +
+      '<img class="pr-av" src="https://api.dicebear.com/7.x/initials/svg?seed=' +
+        encodeURIComponent(nm) + '">' +
+      '<div class="pr-i"><b>' + esc(nm) + '</b>' +
+      '<div class="d">Royxat: ' + fmtDate(m.approved_at) + '</div>' +
+      '<div class="st ' + stc + '">' + st + '</div></div>' +
+      '<div class="pr-b">' +
+      '<button style="background:#2ECC71;color:#000;" data-a="extend">+30 kun</button>' +
+      '<button style="background:' + (m.blocked ? '#262626' : 'rgba(237,73,86,.16)') +
+        ';color:' + (m.blocked ? '#fff' : '#ED4956') + ';" data-a="' +
+        (m.blocked ? 'unblock' : 'block') + '">' +
+        (m.blocked ? 'Ochish' : 'Bloklash') + '</button>' +
+      '</div></div>';
+  }).join('');
+
+  document.querySelectorAll('.pr-b button').forEach(function(b){
+    b.addEventListener('click', function(){
+      const u = b.closest('.pr').dataset.u;
+      const a = b.dataset.a;
+      if(a === 'block' && !confirm('Bloklaysizmi?')) return;
+      apiPost('/api/tolov-amal', { action: a, username: u, months: 1 })
+        .then(function(d){
+          if(d.ok){ haptic('medium'); toast('Bajarildi'); boot(); }
+          else toast('Xato');
+        });
+    });
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  el('bk').addEventListener('click', function(){ location.href = 'zaxira.html'; });
+  el('tx').addEventListener('click', function(){
+    let last = null;
+    try { last = localStorage.getItem('ni_admin_panel'); } catch(e){}
+    location.href = (last && last !== 'zaxira.html') ? last : 'sotuvchi.html';
+  });
+  setTimeout(function(){
+    if(typeof checkSession === 'function') checkSession(function(){ boot(); });
+    else boot();
+  }, 400);
+});
+</script>
+</body>
+</html>
