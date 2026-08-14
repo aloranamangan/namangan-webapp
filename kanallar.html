@@ -32,7 +32,7 @@
 <body>
 
 <header class="topbar" style="display:flex;align-items:center;gap:12px;">
-  <h1 style="flex:1;">📣 Kanallar</h1>
+  <h1 style="flex:1;">📣 Kanallar <span id="chCnt" style="font-size:13px;opacity:.5;"></span></h1>
   <button id="kx" style="width:36px;height:36px;border-radius:50%;border:none;
     background:rgba(255,255,255,.7);color:#0d1626;font-size:20px;cursor:pointer;">&times;</button>
 </header>
@@ -67,6 +67,9 @@ function boot(){
 }
 
 function draw(){
+  const cc = el('chCnt');
+  if(cc) cc.textContent = CH.length + '/10';
+
   if(!CH.length){
     el('root').innerHTML = '<div class="empty" style="padding:60px 20px;">' +
       '<div class="ic">&#128227;</div><p>Kanal qoshilmagan</p>' +
@@ -99,15 +102,20 @@ function draw(){
 }
 
 function newCh(){
+  if(CH.length >= 10){ toast('Maksimum 10 ta qoshish mumkin'); return; }
+
   const bg = document.createElement('div');
   bg.className = 'sheet-bg';
   bg.innerHTML = '<div class="sheet" id="ncS"><div class="sheet-bar"></div>' +
-    '<div class="sheet-title">Kanal qoshish</div><div class="wrap">' +
-    '<label class="label">Kanal manzili</label>' +
-    '<input class="inp" id="ncU" placeholder="@kanal_nomi">' +
+    '<div class="sheet-title">Kanal yoki guruh qoshish</div><div class="wrap">' +
+    '<label class="label">Manzil</label>' +
+    '<input class="inp" id="ncU" placeholder="@kanal_nomi yoki @guruh_nomi">' +
+    '<label class="label">Korinadigan nom (ixtiyoriy)</label>' +
+    '<input class="inp" id="ncN" placeholder="Namangan Ijara rasmiy">' +
     '<div style="font-size:12px;color:var(--muted);margin-bottom:18px;line-height:1.5;">' +
-    'Masalan: <b>@namangan_ijara</b> yoki toliq havola.<br>' +
-    'Bot kanalda <b>admin</b> bolishi shart.</div>' +
+    'Nom kiritilmasa — kanalning oz nomi olinadi.<br>' +
+    'Bot u yerda <b>admin</b> bolishi shart.<br>' +
+    'Jami <b>' + CH.length + '/10</b> ta qoshilgan.</div>' +
     '<button class="btn" id="ncGo">Tekshirish va qoshish</button></div></div>';
 
   document.body.appendChild(bg);
@@ -122,7 +130,9 @@ function newCh(){
     b.disabled = true;
     b.textContent = 'Tekshirilmoqda...';
 
-    apiPost('/api/kanal-amal', { action: 'add', chat_id: u }).then(function(d){
+    apiPost('/api/kanal-amal', {
+      action: 'add', chat_id: u, title: el('ncN').value.trim()
+    }).then(function(d){
       if(d.ok){ haptic('medium'); toast('Qoshildi: ' + (d.title || '')); bg.remove(); boot(); }
       else { toast(d.error || 'Xato'); b.disabled = false; b.textContent = 'Tekshirish va qoshish'; }
     }).catch(function(){
