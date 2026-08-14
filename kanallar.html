@@ -25,6 +25,14 @@
 .hint{margin:0 16px 16px;padding:15px;border-radius:15px;
   background:rgba(255,193,7,.08);border:1px solid rgba(255,193,7,.28);
   font-size:12.5px;color:#FFC107;line-height:1.55;}
+.kd-row{display:flex;gap:8px;margin-bottom:18px;}
+.kd{flex:1;padding:13px 6px;border-radius:12px;background:#141414;
+  border:1px solid var(--line);color:#fff;cursor:pointer;
+  font-family:inherit;font-size:12px;font-weight:700;text-align:center;}
+.kd.on{background:#0095F6;border-color:#0095F6;}
+.kd .e{display:block;font-size:20px;margin-bottom:4px;}
+.ch-kind{display:inline-block;font-size:9px;font-weight:800;padding:2px 7px;
+  border-radius:5px;margin-left:6px;background:rgba(255,255,255,.1);color:#aaa;}
 .bk{background:none;border:none;color:var(--muted);font-size:14px;font-weight:600;
   cursor:pointer;font-family:inherit;padding:12px 20px;}
 </style>
@@ -50,6 +58,18 @@
 <script src="core.js"></script>
 <script>
 let CH = [];
+
+function kindName(k){
+  if(k === 'bot') return 'BOT';
+  if(k === 'group') return 'GURUH';
+  return 'KANAL';
+}
+
+function kindIcon(k){
+  if(k === 'bot') return '\u{1F916}';
+  if(k === 'group') return '\u{1F465}';
+  return '\u{1F4E2}';
+}
 
 function boot(){
   const q = '/api/kanallar?admin=1&init_data=' + encodeURIComponent(initData()) +
@@ -79,8 +99,9 @@ function draw(){
 
   el('root').innerHTML = CH.map(function(c){
     return '<div class="ch' + (c.active ? '' : ' off') + '">' +
-      '<div class="ch-top"><div class="ch-ic">&#128227;</div>' +
-      '<div class="ch-in"><b>' + esc(c.title) + '</b>' +
+      '<div class="ch-top"><div class="ch-ic">' + kindIcon(c.kind) + '</div>' +
+      '<div class="ch-in"><b>' + esc(c.title) +
+      '<span class="ch-kind">' + kindName(c.kind) + '</span></b>' +
       '<span>' + esc(c.chat_id) + '</span></div></div>' +
       '<div class="ch-bt">' +
       '<button style="background:#262626;color:#fff;" data-a="' +
@@ -108,6 +129,12 @@ function newCh(){
   bg.className = 'sheet-bg';
   bg.innerHTML = '<div class="sheet" id="ncS"><div class="sheet-bar"></div>' +
     '<div class="sheet-title">Kanal yoki guruh qoshish</div><div class="wrap">' +
+    '<label class="label">Turi</label>' +
+    '<div class="kd-row">' +
+      '<button class="kd on" data-k="channel"><span class="e">&#128227;</span>Kanal</button>' +
+      '<button class="kd" data-k="group"><span class="e">&#128101;</span>Guruh</button>' +
+      '<button class="kd" data-k="bot"><span class="e">&#129302;</span>Bot</button>' +
+    '</div>' +
     '<label class="label">Manzil</label>' +
     '<input class="inp" id="ncU" placeholder="@kanal_nomi yoki @guruh_nomi">' +
     '<label class="label">Korinadigan nom (ixtiyoriy)</label>' +
@@ -122,6 +149,20 @@ function newCh(){
   bg.addEventListener('click', function(e){ if(e.target === bg) bg.remove(); });
   el('ncS').addEventListener('click', function(e){ e.stopPropagation(); });
 
+  let kind = 'channel';
+  bg.querySelectorAll('.kd').forEach(function(k){
+    k.addEventListener('click', function(){
+      bg.querySelectorAll('.kd').forEach(function(x){ x.classList.remove('on'); });
+      k.classList.add('on');
+      kind = k.dataset.k;
+      haptic('light');
+      const hint = bg.querySelector('#ncHint');
+      if(hint) hint.innerHTML = kind === 'bot'
+        ? 'Bot uchun obuna tekshirilmaydi — faqat havola korsatiladi.'
+        : 'Bot u yerda <b>admin</b> bolishi shart.';
+    });
+  });
+
   el('ncGo').addEventListener('click', function(){
     const u = el('ncU').value.trim();
     if(!u){ toast('Kanal manzilini kiriting'); return; }
@@ -131,7 +172,7 @@ function newCh(){
     b.textContent = 'Tekshirilmoqda...';
 
     apiPost('/api/kanal-amal', {
-      action: 'add', chat_id: u, title: el('ncN').value.trim()
+      action: 'add', chat_id: u, title: el('ncN').value.trim(), kind: kind
     }).then(function(d){
       if(d.ok){ haptic('medium'); toast('Qoshildi: ' + (d.title || '')); bg.remove(); boot(); }
       else { toast(d.error || 'Xato'); b.disabled = false; b.textContent = 'Tekshirish va qoshish'; }
