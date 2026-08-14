@@ -144,3 +144,48 @@ function openLangPicker(){
 document.addEventListener('DOMContentLoaded', function(){
   setTimeout(applyLang, 100);
 });
+
+// ---------- Birinchi kirishda til tanlash ----------
+function askLangOnce(cb){
+  let done = null;
+  try { done = localStorage.getItem('ni_lang_set'); } catch(e){}
+  if(done){ if(cb) cb(); return; }
+
+  const ov = document.createElement('div');
+  ov.id = 'langPick';
+  ov.style.cssText = 'position:fixed;inset:0;z-index:9600;background:#0a0a0a;' +
+    'display:flex;flex-direction:column;align-items:center;justify-content:center;' +
+    "padding:40px 28px;text-align:center;font-family:'Manrope',sans-serif;color:#fff;";
+
+  ov.innerHTML =
+    '<div style="font-size:60px;margin-bottom:20px;">&#127760;</div>' +
+    '<h2 style="font-size:24px;font-weight:800;margin-bottom:8px;">Tilni tanlang</h2>' +
+    '<p style="font-size:13.5px;color:#8E8E8E;margin-bottom:34px;line-height:1.6;">' +
+    'Выберите язык &middot; Choose language</p>' +
+    ['uz','ru','en'].map(function(c){
+      return '<button class="lgb" data-l="' + c + '" style="width:100%;max-width:320px;' +
+        'padding:17px 20px;margin-bottom:11px;border:1px solid #262626;border-radius:16px;' +
+        'background:#121212;color:#fff;cursor:pointer;font-family:inherit;' +
+        'display:flex;align-items:center;gap:14px;font-size:16px;font-weight:700;">' +
+        '<span style="font-size:26px;">' + langFlag(c) + '</span>' +
+        '<span>' + langName(c) + '</span></button>';
+    }).join('');
+
+  document.body.appendChild(ov);
+
+  ov.querySelectorAll('.lgb').forEach(function(b){
+    b.addEventListener('click', function(){
+      const c = b.dataset.l;
+      LANG = c;
+      try {
+        localStorage.setItem('ni_lang', c);
+        localStorage.setItem('ni_lang_set', '1');
+      } catch(e){}
+      try { if(window.Telegram && window.Telegram.WebApp)
+        window.Telegram.WebApp.HapticFeedback.impactOccurred('medium'); } catch(e){}
+      ov.remove();
+      applyLang();
+      if(cb) cb();
+    });
+  });
+}

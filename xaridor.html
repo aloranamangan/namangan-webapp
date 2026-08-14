@@ -117,6 +117,12 @@ let LIKED = {};
 let SAVED = [];
 
 function boot(){
+  if(typeof askLangOnce === 'function'){
+    askLangOnce(function(){ bootAfterLang(); });
+  } else bootAfterLang();
+}
+
+function bootAfterLang(){
   if(typeof showSplash === 'function' && isApk()){
     showSplash(function(){
       requireAuth(function(){

@@ -69,6 +69,12 @@ let picked = [];
 const MAX_MEDIA = 10;
 
 function boot(){
+  if(typeof askLangOnce === 'function'){
+    askLangOnce(function(){ bootAfterLang(); });
+  } else bootAfterLang();
+}
+
+function bootAfterLang(){
   if(typeof showSplash === 'function' && isApk()){
     showSplash(function(){
       requireAuth(function(){
