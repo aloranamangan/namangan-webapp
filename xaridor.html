@@ -28,12 +28,12 @@
 
 <div class="view" id="vSellers">
   <div class="top-hd">
-    <h2>&#127942; TOP 10 sotuvchi</h2>
-    <span>Obunachi, korish va layk boyicha</span>
+    <h2>&#127942; Eng faol sotuvchilar</h2>
+    <span>Obunachi, koʻrish va layk asosida</span>
   </div>
   <div id="topList"></div>
   <div class="top-hd" style="padding-top:22px;">
-    <h2>Barcha sotuvchilar</h2>
+    <h2>Barcha mutaxassislar</h2>
   </div>
   <div id="sellers"><div class="load">Yuklanmoqda...</div></div>
 </div>
@@ -587,9 +587,9 @@ function drawSellers(){
 const OWNER = 'bahromjon';
 
 function toggleFollow(u){
-  if(!myId()){ toast('Telegram ilovasida oching'); return; }
+  if(!myId()){ toast('Telegram orqali kiring'); return; }
   if(u === OWNER && SUBS[u]){
-    toast('Bu kanaldan chiqib bolmaydi');
+    toast('Asosiy kanalga obuna majburiy');
     return;
   }
   const on = !!SUBS[u];
@@ -790,9 +790,9 @@ function drawProfile(){
       '<div class="pro-ava-wrap"><img class="pro-ava" id="pfAva" src="' + ava + '">' +
       '<button class="pro-add" id="pfAvaBtn">+</button></div>' +
       '<div style="flex:1;">' +
-        '<div style="font-size:17px;font-weight:800;">' + esc(u.name || 'Ismingiz') + '</div>' +
+        '<div style="font-size:17px;font-weight:800;">' + esc(u.name || 'Ismingizni kiriting') + '</div>' +
         '<div style="font-size:13px;color:var(--muted);margin-top:3px;">' +
-          (u.nickname ? '@' + esc(u.nickname) : 'nik nomi kiritilmagan') + '</div>' +
+          (u.nickname ? '@' + esc(u.nickname) : 'nik nomi belgilanmagan') + '</div>' +
       '</div>' +
     '</div>' +
 
@@ -820,8 +820,8 @@ function openEditProfile(){
     bg.innerHTML = '<div class="sheet" id="lkSheet"><div class="sheet-bar"></div>' +
       '<div class="empty" style="padding:44px 26px;">' +
       '<div class="ic">&#128274;</div>' +
-      '<p>Hozircha ozgartirib bolmaydi</p>' +
-      '<span>Profil malumotlarini oyiga bir marta ozgartirish mumkin.<br><br>' +
+      '<p>Tahrirlash vaqtincha yopiq</p>' +
+      '<span>Profil maʼlumotlari oyiga bir marta yangilanadi.<br><br>' +
       '<b style="color:#fff;">' + (u.edit_days || 0) + ' kundan keyin</b> qayta ochiladi.</span>' +
       '</div></div>';
     document.body.appendChild(bg);
@@ -838,9 +838,9 @@ function openEditProfile(){
     '<div class="wrap">' +
       '<div style="background:rgba(255,193,7,.1);border:1px solid rgba(255,193,7,.35);' +
       'border-radius:12px;padding:13px;margin-bottom:20px;font-size:12.5px;color:#FFC107;' +
-      'line-height:1.5;">&#9888;&#65039; Diqqat: profilni <b>oyiga bir marta</b> ozgartirish mumkin.</div>' +
+      'line-height:1.5;">&#9888;&#65039; Eslatma: profil maʼlumotlari <b>oyiga bir marta</b> yangilanadi.</div>' +
       '<label class="label">Ism familiya</label>' +
-      '<input class="inp" id="epName" value="' + esc(u.name || '') + '" placeholder="Bahromjon Karimov">' +
+      '<input class="inp" id="epName" value="' + esc(u.name || '') + '" placeholder="Ism va familiyangiz">' +
       '<label class="label">Nik nomi</label>' +
       '<input class="inp" id="epNick" value="' + esc(u.nickname || '') + '" placeholder="bahromjon">' +
       '<button class="btn" id="epSave">Saqlash</button>' +

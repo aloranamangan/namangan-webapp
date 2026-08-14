@@ -215,8 +215,8 @@ function renderCabinet(){
       '<div class="ph">@' + esc(ME.username) + ' &middot; ' + esc(ME.phone) + '</div></div>' +
 
     '<div class="pro-btns">' +
-      '<button id="newBtn">&#65291; Elon qoshish</button>' +
-      '<button id="storyBtn">&#128248; Storiy</button>' +
+      '<button id="newBtn">&#65291;&nbsp;Yangi eʼlon</button>' +
+      '<button id="storyBtn">&#128248;&nbsp;Storiy</button>' +
 
       '<button id="shareBtn">Ulashish</button>' +
     '</div>' +
@@ -348,12 +348,12 @@ function showSheet(){
       '<label class="label">Malumot</label>' +
       '<textarea class="txt" id="uDesc" placeholder="Manzil, xonalar soni, qavat..."></textarea>' +
       '<div class="geo-pick" id="geoPick"><span class="ic">&#128205;</span>' +
-      '<span class="tx"><b>Joylashuvni belgilash</b>' +
-      '<span id="geoName">Xaritadan tanlang (ixtiyoriy)</span></span></div>' +
+      '<span class="tx"><b>Xaritada belgilash</b>' +
+      '<span id="geoName">Ixtiyoriy — xaritadan tanlang</span></span></div>' +
       (myId() === 7894423610
         ? '<div class="pano-pick" id="panoPick"><span class="ic">&#127760;</span>' +
-          '<span class="tx"><b>360&deg; rasm qoshish</b>' +
-          '<span id="panoName">Tanlanmagan (ixtiyoriy)</span></span></div>'
+          '<span class="tx"><b>360&deg; panorama</b>' +
+          '<span id="panoName">Ixtiyoriy — panorama rasm</span></span></div>'
         : '') +
       '<button class="btn" id="uSend">Joylash</button>' +
       '<button class="btn ghost" id="uCancel" style="margin-top:9px;">Bekor qilish</button>' +
@@ -692,16 +692,16 @@ function drawHighlights(){
 function addHighlight(){
   api('/api/mening-storylarim?tg_id=' + myId()).then(function(d){
     const list = d.stories || [];
-    if(!list.length){ toast('Avval storiy qoying'); return; }
+    if(!list.length){ toast('Avval storiy joylang'); return; }
 
     const bg = document.createElement('div');
     bg.className = 'sheet-bg';
     bg.innerHTML = '<div class="sheet" id="hlSheet" style="max-height:80vh;">' +
       '<div class="sheet-bar"></div>' +
-      '<div class="sheet-title">Aktualga qoshish</div>' +
+      '<div class="sheet-title">Aktualga saqlash</div>' +
       '<div class="wrap"><label class="label">Nomi</label>' +
       '<input class="inp" id="hlTitle" placeholder="Kvartiralar" value="Aktual">' +
-      '<label class="label">Storiy tanlang</label>' +
+      '<label class="label">Saqlanadigan storiyni tanlang</label>' +
       '<div class="grid" id="hlPick" style="border:none;"></div></div></div>';
 
     document.body.appendChild(bg);
@@ -758,7 +758,7 @@ function openGeoPicker(cb){
   d.innerHTML = '<div id="geoMapBox"></div>' +
     '<div class="geo-center">&#128205;</div>' +
     '<button class="geo-x" id="geoX">&times;</button>' +
-    '<button class="geo-ok" id="geoOk">Shu yerni tanlash</button>';
+    '<button class="geo-ok" id="geoOk">Shu joyni tasdiqlash</button>';
   document.body.appendChild(d);
 
   const m = L.map('geoMapBox', { zoomControl: false, attributionControl: false })
@@ -792,12 +792,12 @@ function postMenu(p){
   const bg = document.createElement('div');
   bg.className = 'sheet-bg';
   bg.innerHTML = '<div class="sheet" id="pmS"><div class="sheet-bar"></div>' +
-    '<div class="sheet-title">Elon boshqaruvi</div>' +
-    '<button class="sheet-item" data-a="edit">&#9999;&#65039; Tahrirlash</button>' +
+    '<div class="sheet-title">Eʼlon boshqaruvi</div>' +
+    '<button class="sheet-item" data-a="edit">&#9999;&#65039;&nbsp;&nbsp;Tahrirlash</button>' +
     '<button class="sheet-item" data-a="pin">&#128204; ' +
       (p.pinned ? 'Qadashni bekor qilish' : 'Tepaga qadash') + '</button>' +
-    '<button class="sheet-item" data-a="geo">&#128205; Joylashuvni ozgartirish</button>' +
-    '<button class="sheet-item danger" data-a="del">&#128465;&#65039; Ochirish</button>' +
+    '<button class="sheet-item" data-a="geo">&#128205;&nbsp;&nbsp;Joylashuvni belgilash</button>' +
+    '<button class="sheet-item danger" data-a="del">&#128465;&#65039;&nbsp;&nbsp;Eʼlonni oʻchirish</button>' +
     '</div>';
 
   document.body.appendChild(bg);
@@ -853,7 +853,7 @@ function editPost(p){
   const bg = document.createElement('div');
   bg.className = 'sheet-bg';
   bg.innerHTML = '<div class="sheet" id="epS" style="max-height:88vh;">' +
-    '<div class="sheet-bar"></div><div class="sheet-title">Elonni tahrirlash</div>' +
+    '<div class="sheet-bar"></div><div class="sheet-title">Eʼlonni tahrirlash</div>' +
     '<div class="wrap">' +
     '<label class="label">Sarlavha</label>' +
     '<input class="inp" id="eT" value="' + esc(title) + '">' +
@@ -915,12 +915,12 @@ function avatarMenu(){
     const bg = document.createElement('div');
     bg.className = 'sheet-bg';
     bg.innerHTML = '<div class="sheet" id="avS"><div class="sheet-bar"></div>' +
-      '<div class="sheet-title">Profil rasmi</div>' +
+      '<div class="sheet-title">Profil</div>' +
       (mine.length
-        ? '<button class="sheet-item" data-a="view">&#128065;&#65039; Storiyni korish</button>'
+        ? '<button class="sheet-item" data-a="view">&#128065;&#65039;&nbsp;&nbsp;Storiyni koʻrish</button>'
         : '') +
-      '<button class="sheet-item" data-a="story">&#128248; Storiy qoshish</button>' +
-      '<button class="sheet-item" data-a="ava">&#128100; Profil rasmini ozgartirish</button>' +
+      '<button class="sheet-item" data-a="story">&#128248;&nbsp;&nbsp;Yangi storiy qoʻshish</button>' +
+      '<button class="sheet-item" data-a="ava">&#128100;&nbsp;&nbsp;Rasmni almashtirish</button>' +
       '</div>';
 
     document.body.appendChild(bg);
