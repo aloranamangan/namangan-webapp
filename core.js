@@ -425,3 +425,89 @@ function showAdminPanels(cb, force){
     });
   });
 }
+
+// ---------- Majburiy obuna ----------
+function checkSubs(cb){
+  const id = myId();
+  if(!id){ cb(true); return; }
+
+  api('/api/obuna-tekshir?tg_id=' + id).then(function(d){
+    if(d.subscribed){ cb(true); return; }
+    showSubScreen(d.missing || [], cb);
+  }).catch(function(){ cb(true); });
+}
+
+function showSubScreen(list, cb){
+  const old = document.getElementById('subScr');
+  if(old) old.remove();
+
+  const s = document.createElement('div');
+  s.id = 'subScr';
+  s.className = 'sub-screen';
+  s.innerHTML =
+    '<div class="ic">&#128276;</div>' +
+    '<h2>Ilovadan foydalanish uchun</h2>' +
+    '<p>Quyidagilarga aʼzo boling,<br>song <b style="color:#fff;">Tekshirish</b> tugmasini bosing</p>' +
+    '<div class="sub-list">' +
+    list.map(function(c){
+      const k = c.kind || 'channel';
+      const e = k === 'bot' ? '&#129302;' : (k === 'group' ? '&#128101;' : '&#128227;');
+      return '<div class="sub-c" data-u="' + esc(c.link) + '">' +
+        '<span class="e">' + e + '</span>' +
+        '<b>' + esc(c.title) + '</b>' +
+        '<span>Ochish &rsaquo;</span></div>';
+    }).join('') +
+    '</div>';
+
+  document.body.appendChild(s);
+
+  const btn = document.createElement('button');
+  btn.className = 'sub-go';
+  btn.textContent = '\u2705  Tekshirish';
+  document.body.appendChild(btn);
+
+  s.querySelectorAll('.sub-c').forEach(function(c){
+    c.addEventListener('click', function(){
+      const u = c.dataset.u;
+      if(TG && TG.openTelegramLink) TG.openTelegramLink(u);
+      else window.open(u, '_blank');
+    });
+  });
+
+  btn.addEventListener('click', function(){
+    btn.disabled = true;
+    btn.textContent = 'Tekshirilmoqda...';
+    api('/api/obuna-tekshir?tg_id=' + myId()).then(function(d){
+      if(d.subscribed){
+        haptic('medium');
+        s.remove();
+        btn.remove();
+        cb(true);
+      } else {
+        toast('Hali aʼzo bolmadingiz');
+        btn.disabled = false;
+        btn.textContent = '\u2705  Tekshirish';
+        const box = s.querySelector('.sub-list');
+        if(box && d.missing){
+          box.innerHTML = d.missing.map(function(c){
+            const k = c.kind || 'channel';
+            const e = k === 'bot' ? '&#129302;' : (k === 'group' ? '&#128101;' : '&#128227;');
+            return '<div class="sub-c" data-u="' + esc(c.link) + '">' +
+              '<span class="e">' + e + '</span><b>' + esc(c.title) + '</b>' +
+              '<span>Ochish &rsaquo;</span></div>';
+          }).join('');
+          box.querySelectorAll('.sub-c').forEach(function(c){
+            c.addEventListener('click', function(){
+              const u = c.dataset.u;
+              if(TG && TG.openTelegramLink) TG.openTelegramLink(u);
+              else window.open(u, '_blank');
+            });
+          });
+        }
+      }
+    }).catch(function(){
+      btn.disabled = false;
+      btn.textContent = '\u2705  Tekshirish';
+    });
+  });
+}
