@@ -905,3 +905,119 @@ body{
   font-size:13px;opacity:.75;transition:transform .25s ease;
 }
 .pro-switch:active .cv{transform:translateY(2px);}
+
+/* ═══════ SHISHA-OLMOS ═══════ */
+
+/* TEPA PANEL */
+.topbar{
+  position:sticky;top:0;z-index:900;
+  background:linear-gradient(160deg,
+    rgba(22,26,38,.92) 0%,
+    rgba(12,14,22,.88) 48%,
+    rgba(18,20,30,.92) 100%) !important;
+  backdrop-filter:blur(28px) saturate(1.7);
+  -webkit-backdrop-filter:blur(28px) saturate(1.7);
+  border-bottom:1px solid rgba(255,255,255,.09) !important;
+  overflow:hidden;
+}
+
+/* Olmos qirrasi — tepada yorug'lik chizig'i */
+.topbar::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,
+    transparent 0%,
+    rgba(255,255,255,.06) 12%,
+    rgba(160,210,255,.55) 32%,
+    rgba(255,255,255,.9) 50%,
+    rgba(240,208,120,.55) 68%,
+    rgba(255,255,255,.06) 88%,
+    transparent 100%);
+  background-size:220% 100%;
+  animation:shine 7s ease-in-out infinite;
+}
+@keyframes shine{
+  0%{background-position:200% 0}
+  100%{background-position:-100% 0}
+}
+
+/* Ichkarida suyuq yorug'lik */
+.topbar::after{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 60% 100% at 18% 0%,rgba(90,160,255,.13),transparent 62%),
+    radial-gradient(ellipse 50% 100% at 82% 0%,rgba(240,208,120,.10),transparent 62%);
+  animation:liquid 9s ease-in-out infinite alternate;
+}
+@keyframes liquid{
+  0%{transform:translateX(-6%) scale(1)}
+  100%{transform:translateX(6%) scale(1.06)}
+}
+
+/* PASTKI PANEL */
+.nav{
+  background:linear-gradient(0deg,
+    rgba(16,18,28,.94) 0%,
+    rgba(10,12,20,.86) 60%,
+    rgba(20,22,34,.90) 100%) !important;
+  backdrop-filter:blur(30px) saturate(1.8);
+  -webkit-backdrop-filter:blur(30px) saturate(1.8);
+  border-top:1px solid rgba(255,255,255,.10) !important;
+  overflow:hidden;
+}
+
+.nav::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,
+    transparent 0%,
+    rgba(240,208,120,.4) 22%,
+    rgba(255,255,255,.85) 50%,
+    rgba(120,190,255,.4) 78%,
+    transparent 100%);
+  background-size:220% 100%;
+  animation:shine 8s ease-in-out infinite reverse;
+}
+
+.nav::after{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 55% 130% at 25% 100%,rgba(90,160,255,.11),transparent 60%),
+    radial-gradient(ellipse 55% 130% at 75% 100%,rgba(240,208,120,.09),transparent 60%);
+  animation:liquid 11s ease-in-out infinite alternate-reverse;
+}
+
+/* Faol tugma — olmos yorug'ligi */
+.nav button{position:relative;z-index:2;}
+.nav button.on::before{
+  content:'';position:absolute;top:-11px;left:50%;transform:translateX(-50%);
+  width:26px;height:2.5px;border-radius:3px;
+  background:linear-gradient(90deg,transparent,#fff,transparent);
+  box-shadow:0 0 12px rgba(255,255,255,.75);
+  animation:dotIn .35s cubic-bezier(.16,1,.3,1);
+}
+@keyframes dotIn{
+  from{width:0;opacity:0}
+  to{width:26px;opacity:1}
+}
+
+/* Bosilganda to'lqin */
+.nav button::after{
+  content:'';position:absolute;top:50%;left:50%;
+  width:0;height:0;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.18),transparent 70%);
+  transform:translate(-50%,-50%);transition:width .45s ease,height .45s ease,opacity .45s;
+  opacity:0;pointer-events:none;
+}
+.nav button:active::after{width:78px;height:78px;opacity:1;transition:none;}
+
+/* Sarlavha — olmos yaltirashi */
+.topbar h1,.pro-switch{position:relative;z-index:2;}
+.topbar h1 .gold{
+  background:linear-gradient(110deg,
+    #8C6D1F 0%,#CBA135 22%,#FFF0B8 42%,
+    #F0D078 52%,#CBA135 72%,#8C6D1F 100%);
+  background-size:250% auto;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+  animation:goldFlow 5.5s linear infinite;
+}
+@keyframes goldFlow{to{background-position:250% center}}
