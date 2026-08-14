@@ -1060,3 +1060,29 @@ body{
 }
 
 .nav button{position:relative !important;z-index:5 !important;}
+
+/* ═══ OQ SHISHA (frosted glass) ═══ */
+.nav{
+  background:linear-gradient(0deg,
+    rgba(255,255,255,.16) 0%,
+    rgba(255,255,255,.09) 55%,
+    rgba(255,255,255,.14) 100%) !important;
+  backdrop-filter:blur(34px) saturate(1.7) brightness(1.18) !important;
+  -webkit-backdrop-filter:blur(34px) saturate(1.7) brightness(1.18) !important;
+  border-top:1px solid rgba(255,255,255,.32) !important;
+  box-shadow:0 -8px 34px rgba(0,0,0,.4),
+             inset 0 1px 0 rgba(255,255,255,.35) !important;
+}
+.nav button{color:rgba(255,255,255,.72) !important;}
+.nav button.on{color:#fff !important;}
+
+.topbar{
+  background:linear-gradient(180deg,
+    rgba(255,255,255,.17) 0%,
+    rgba(255,255,255,.09) 100%) !important;
+  backdrop-filter:blur(34px) saturate(1.7) brightness(1.18) !important;
+  -webkit-backdrop-filter:blur(34px) saturate(1.7) brightness(1.18) !important;
+  border-bottom:1px solid rgba(255,255,255,.28) !important;
+  box-shadow:0 6px 28px rgba(0,0,0,.32),
+             inset 0 1px 0 rgba(255,255,255,.4) !important;
+}
