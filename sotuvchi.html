@@ -248,6 +248,15 @@ function renderCabinet(){
   el('shareBtn').addEventListener('click', shareMe);
   el('storyBtn').addEventListener('click', addStory);
 
+  const st = document.querySelectorAll('.pro-stats > div');
+  st.forEach(function(s){
+    const lb = s.querySelector('span');
+    if(lb && lb.textContent.indexOf('obunachi') !== -1){
+      s.style.cursor = 'pointer';
+      s.addEventListener('click', showFollowers);
+    }
+  });
+
 
   const av = document.querySelector('.pro-ava');
   if(av){
@@ -956,6 +965,47 @@ function avatarMenu(){
         if(a === 'ava') changeAvatar();
       });
     });
+  });
+}
+
+
+function showFollowers(){
+  if(!ME) return;
+  haptic('light');
+
+  const bg = document.createElement('div');
+  bg.className = 'sheet-bg';
+  bg.innerHTML = '<div class="sheet" id="fwS" style="max-height:80vh;overflow-y:auto;">' +
+    '<div class="sheet-bar"></div>' +
+    '<div class="sheet-title">Obunachilar</div>' +
+    '<div id="fwBody"><div class="load">Yuklanmoqda...</div></div></div>';
+
+  document.body.appendChild(bg);
+  bg.addEventListener('click', function(e){ if(e.target === bg) bg.remove(); });
+  el('fwS').addEventListener('click', function(e){ e.stopPropagation(); });
+
+  api('/api/obunachilar?username=' + encodeURIComponent(ME.username)).then(function(d){
+    const box = el('fwBody');
+    if(!box) return;
+    const list = d.followers || d.list || [];
+
+    if(!list.length){
+      box.innerHTML = '<div class="empty" style="padding:44px 16px;">' +
+        '<div class="ic">&#128101;</div><p>Obunachi yoq</p>' +
+        '<span>Elonlaringizni ulashing</span></div>';
+      return;
+    }
+
+    box.innerHTML = list.map(function(u){
+      const nm = u.name || u.first_name || ('ID ' + (u.id || u.tg_id || ''));
+      return '<div class="chat-row">' +
+        '<div class="chat-ava"><img src="https://api.dicebear.com/7.x/initials/svg?seed=' +
+          encodeURIComponent(nm) + '"></div>' +
+        '<div class="ci"><b>' + esc(nm) + '</b>' +
+        (u.phone ? '<span>' + esc(u.phone) + '</span>' : '') + '</div></div>';
+    }).join('') + '<div style="height:16px;"></div>';
+  }).catch(function(){
+    el('fwBody').innerHTML = '<div class="load">Xato yuz berdi</div>';
   });
 }
 
