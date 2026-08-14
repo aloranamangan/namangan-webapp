@@ -62,6 +62,7 @@
 <script src="dm.js?v=1786724767"></script>
 <script src="story.js"></script>
 <script src="pano.js"></script>
+<script src="tolov.js"></script>
 <script>
 let ME = null;
 let POSTS = [];
@@ -78,11 +79,11 @@ function bootAfterLang(){
   if(typeof showSplash === 'function' && isApk()){
     showSplash(function(){
       requireAuth(function(){
-        checkSubs(function(){ askRole(function(){ bootAuthed(); }); });
+        checkSubs(function(){ askRole(function(){ checkPayment(function(){ bootAuthed(); }); }); });
       });
     });
   } else {
-    requireAuth(function(){ checkSubs(function(){ bootAuthed(); }); });
+    requireAuth(function(){ checkSubs(function(){ checkPayment(function(){ bootAuthed(); }); }); });
   }
 }
 
@@ -149,6 +150,10 @@ function renderForm(){
         '<div class="ic">&#127968;</div><p>Makler bolib ishlang</p>' +
         '<span>Ariza qoldiring &mdash; admin tasdiqlagach<br>elon joylay boshlaysiz.</span>' +
       '</div>' +
+      '<div class="free-notice">' +
+        '&#128308; <b>Hozircha sizlar uchun 1 OY BEPUL!</b><br><br>' +
+        '1 oydan keyin oyiga <b>200 000 som</b> boladi.<br>' +
+        'Holatga qarab narx oshishi mumkin.</div>' +
       '<label class="label">Ism familiya</label>' +
       '<input class="inp" id="fName" placeholder="Bahromjon Karimov">' +
       '<label class="label">Username</label>' +
