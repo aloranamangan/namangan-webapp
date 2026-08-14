@@ -46,9 +46,9 @@ body{background:#0a0a0a;}
 </head>
 <body>
 
-<header class="topbar"><h1>Admin <span class="gold">panel</span></h1></header>
+<header class="topbar"><h1>Nazorat <span class="gold">markazi</span></h1></header>
 <div class="hdr" id="stats"></div>
-<div class="search-bar"><input id="q" placeholder="Qidirish: ism, telefon, username"></div>
+<div class="search-bar"><input id="q" placeholder="Ism, telefon yoki username boyicha qidiring"></div>
 <div id="list"><div class="load">Yuklanmoqda...</div></div>
 
 <script src="core.js"></script>
@@ -62,7 +62,7 @@ function boot(){
     .then(function(d){
       if(!d.ok){
         el('list').innerHTML = '<div class="empty"><div class="ic">&#128274;</div>' +
-          '<p>Ruxsat yoq</p><span>Bu bolim faqat admin uchun</span></div>';
+          '<p>Kirish cheklangan</p><span>Bu bolim faqat administratorlar uchun</span></div>';
         return;
       }
       USERS = d.users || [];
@@ -78,7 +78,7 @@ function drawStats(){
   const m = USERS.filter(function(u){ return u.role === 'makler'; }).length;
   const x = USERS.filter(function(u){ return u.role === 'xaridor'; }).length;
   el('stats').innerHTML =
-    '<div class="box"><b>' + USERS.length + '</b><span>jami</span></div>' +
+    '<div class="box"><b>' + USERS.length + '</b><span>jami aʼzo</span></div>' +
     '<div class="box"><b>' + m + '</b><span>sotuvchi</span></div>' +
     '<div class="box"><b>' + x + '</b><span>xaridor</span></div>';
 }
@@ -133,14 +133,14 @@ function openUserMenu(u){
   bg.innerHTML = '<div class="sheet" id="umSheet">' +
     '<div class="sheet-bar"></div>' +
     '<div class="sheet-title">' + esc(nm) + '</div>' +
-    '<button class="sheet-item" data-a="edit">&#9999;&#65039; Tahrirlash</button>' +
+    '<button class="sheet-item" data-a="edit">&#9999;&#65039;&nbsp;&nbsp;Maʼlumotlarni tahrirlash</button>' +
     '<button class="sheet-item" data-a="' + (u.verified ? 'unverify' : 'verify') + '">' +
-      (u.verified ? '&#10060; Galichkani olish' : '&#9989; Galichka berish') + '</button>' +
+      (u.verified ? '&#10060;&nbsp;&nbsp;Tasdiqni bekor qilish' : '&#9989;&nbsp;&nbsp;Tasdiqlangan belgisini berish') + '</button>' +
     '<button class="sheet-item" data-a="' + (u.paused ? 'unpause' : 'pause') + '">' +
-      (u.paused ? '&#9654;&#65039; Ishga tushirish' : '&#9208;&#65039; Vaqtincha toxtatish') + '</button>' +
+      (u.paused ? '&#9654;&#65039;&nbsp;&nbsp;Faoliyatni tiklash' : '&#9208;&#65039;&nbsp;&nbsp;Faoliyatni toxtatish') + '</button>' +
     '<button class="sheet-item" data-a="' + (u.blocked ? 'unblock' : 'block') + '">' +
-      (u.blocked ? '&#128275; Blokdan chiqarish' : '&#128683; Bloklash') + '</button>' +
-    '<button class="sheet-item danger" data-a="delete">&#128465;&#65039; Butunlay ochirish</button>' +
+      (u.blocked ? '&#128275;&nbsp;&nbsp;Blokdan chiqarish' : '&#128683;&nbsp;&nbsp;Hisobni bloklash') + '</button>' +
+    '<button class="sheet-item danger" data-a="delete">&#128465;&#65039;&nbsp;&nbsp;Hisobni butunlay ochirish</button>' +
     '</div>';
 
   document.body.appendChild(bg);
@@ -200,7 +200,7 @@ function doAdmin(action, tgId, extra){
 
 
 function pickDays(action, u){
-  const title = action === 'block' ? 'Necha kunga bloklash?' : 'Necha kunga toxtatish?';
+  const title = action === 'block' ? 'Blok muddatini tanlang' : 'Toxtatish muddatini tanlang';
   const bg = document.createElement('div');
   bg.className = 'sheet-bg';
   bg.innerHTML = '<div class="sheet" id="dySheet">' +
