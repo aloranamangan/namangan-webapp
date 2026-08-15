@@ -174,7 +174,19 @@ function renderForm(){
     if(el('cRent').checked) roles.push('ijarachi');
 
     if(name.length < 3){ toast('Ismni toliq kiriting'); return; }
-    if(!/^[a-zA-Z0-9_]{3,32}$/.test(user)){ toast('Username: lotin harflari, raqam, _'); return; }
+    if(!/^[a-zA-Z0-9._]+$/.test(user)){
+      toast('Faqat lotin harflari, raqam, nuqta va chiziq'); return;
+    }
+    if(/^[._]|[._]$/.test(user)){
+      toast('Nuqta yoki chiziq bilan boshlanmasin'); return;
+    }
+    if(/\.\.|__|\._|_\./.test(user)){
+      toast('Ketma-ket belgilar bolmasin'); return;
+    }
+    if(user.length > 32){ toast('Juda uzun'); return; }
+    if(user.length < 5){
+      toast('Kamida 5 ta belgi kerak'); return;
+    }
     if(!roles.length){ toast('Yonalish tanlang'); return; }
 
     const b = el('sendBtn');
