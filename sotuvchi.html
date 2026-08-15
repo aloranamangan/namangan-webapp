@@ -1062,7 +1062,7 @@ function drawExtraNames(){
   }).join('');
 
   box.style.cursor = 'pointer';
-  box.onclick = manageNames;
+  box.onclick = manageNames2;
 
   // Nom qo'shish tugmasi (agar ruxsat bo'lsa)
   if(!XNAMES.length && !document.getElementById('xnAdd')){
@@ -1071,7 +1071,7 @@ function drawExtraNames(){
     b.className = 'xn';
     b.style.opacity = '.6';
     b.textContent = '+ nom qoshish';
-    b.onclick = manageNames;
+    b.onclick = manageNames2;
     box.appendChild(b);
   }
 }
@@ -1150,6 +1150,124 @@ function manageNames(){
       b.disabled = false;
       b.textContent = 'Qoshish';
     });
+  });
+}
+
+
+function manageNames2(){
+  const bg = document.createElement('div');
+  bg.className = 'sheet-bg';
+
+  let slots = '';
+  for(let i = 0; i < 5; i++){
+    const cur = XNAMES[i] ? XNAMES[i].uname : '';
+    const cid = XNAMES[i] ? XNAMES[i].id : '';
+    slots += '<div class="un-slot' + (cur ? ' ok' : '') + '" data-i="' + i + '"' +
+      (cid ? ' data-id="' + cid + '"' : '') + '>' +
+      '<label class="label"><span class="un-num">' + (i + 1) + '</span>Username ' + (i + 1) + '</label>' +
+      '<input class="inp un-inp" placeholder="namangan.uylar" value="' + esc(cur) + '"' +
+      (cur ? ' readonly style="opacity:.7;"' : '') + '>' +
+      '<div class="un-msg' + (cur ? ' free' : '') + '">' +
+      (cur ? '\u2713 Sizniki (bosib ochirish)' : '') + '</div></div>';
+  }
+
+  bg.innerHTML = '<div class="sheet" id="xn2S" style="max-height:88vh;overflow-y:auto;">' +
+    '<div class="sheet-bar"></div>' +
+    '<div class="sheet-title">Qoshimcha usernamelar</div>' +
+    '<div class="wrap">' +
+    '<div style="font-size:12.5px;color:var(--muted);line-height:1.55;margin-bottom:20px;">' +
+    'Qidiruvda topilish uchun <b>5 tagacha</b> username band qilishingiz mumkin.</div>' +
+    slots + '<button class="btn" id="xn2Go">Saqlash</button></div></div>';
+
+  document.body.appendChild(bg);
+  bg.addEventListener('click', function(e){ if(e.target === bg) bg.remove(); });
+  el('xn2S').addEventListener('click', function(e){ e.stopPropagation(); });
+
+  bg.querySelectorAll('.un-slot').forEach(function(s){
+    const inp = s.querySelector('.un-inp');
+    const msg = s.querySelector('.un-msg');
+    const id = s.dataset.id;
+
+    if(id){
+      inp.addEventListener('click', function(){
+        if(!confirm('@' + inp.value + ' ni ochirasizmi?')) return;
+        apiPost('/api/nom-amal', { action: 'delete', id: parseInt(id) })
+          .then(function(d){
+            if(d.ok){
+              toast('Ochirildi');
+              bg.remove();
+              loadExtraNames();
+              setTimeout(manageNames2, 800);
+            }
+          });
+      });
+      return;
+    }
+
+    let tm = null;
+    inp.addEventListener('input', function(){
+      const v = inp.value.trim().replace(/^@/, '').toLowerCase();
+      clearTimeout(tm);
+
+      if(!v){
+        msg.textContent = '';
+        msg.className = 'un-msg';
+        s.classList.remove('ok');
+        return;
+      }
+
+      msg.textContent = 'Tekshirilmoqda...';
+      msg.className = 'un-msg check';
+
+      tm = setTimeout(function(){
+        api('/api/nom-tekshir?uname=' + encodeURIComponent(v) + '&tg_id=' + myId())
+          .then(function(d){
+            if(d.free){
+              msg.textContent = '\u2713 ' + (d.msg || 'Bosh');
+              msg.className = 'un-msg free';
+              s.classList.add('ok');
+            } else {
+              msg.textContent = '\u2717 ' + (d.msg || 'Band');
+              msg.className = 'un-msg busy';
+              s.classList.remove('ok');
+            }
+          }).catch(function(){ msg.textContent = ''; msg.className = 'un-msg'; });
+      }, 500);
+    });
+  });
+
+  el('xn2Go').addEventListener('click', function(){
+    const jobs = [];
+    bg.querySelectorAll('.un-slot').forEach(function(s){
+      if(s.dataset.id) return;
+      if(!s.classList.contains('ok')) return;
+      const v = s.querySelector('.un-inp').value.trim().replace(/^@/, '').toLowerCase();
+      if(v) jobs.push(v);
+    });
+
+    if(!jobs.length){ toast('Yangi username yoq'); return; }
+
+    const b = el('xn2Go');
+    b.disabled = true;
+    b.textContent = 'Saqlanmoqda...';
+
+    let i = 0;
+    const errs = [];
+    function next(){
+      if(i >= jobs.length){
+        b.disabled = false;
+        b.textContent = 'Saqlash';
+        if(errs.length) toast('Xato: ' + errs[0]);
+        else { haptic('medium'); toast('Saqlandi'); }
+        bg.remove();
+        loadExtraNames();
+        return;
+      }
+      apiPost('/api/nom-amal', { action: 'add', uname: jobs[i++] })
+        .then(function(d){ if(!d.ok) errs.push(d.error || ''); next(); })
+        .catch(function(){ next(); });
+    }
+    next();
   });
 }
 
