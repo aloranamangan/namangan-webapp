@@ -1240,8 +1240,9 @@ function manageNames2(){
     const jobs = [];
     bg.querySelectorAll('.un-slot').forEach(function(s){
       if(s.dataset.id) return;
-      if(!s.classList.contains('ok')) return;
-      const v = s.querySelector('.un-inp').value.trim().replace(/^@/, '').toLowerCase();
+      const inp = s.querySelector('.un-inp');
+      if(!inp) return;
+      const v = inp.value.trim().replace(/^@/, '').toLowerCase();
       if(v) jobs.push(v);
     });
 
