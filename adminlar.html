@@ -104,9 +104,14 @@ function draw(){
         '<div class="ad-i"><b>' + esc(nm) + '</b>' +
         '<span>' + (a.username ? '@' + esc(a.username) : ('ID ' + a.tg_id)) + '</span>' +
         pb + '</div>' +
-        '<button class="ad-set" style="width:32px;height:32px;border-radius:9px;border:none;' +
-        'background:#262626;color:#fff;font-size:15px;cursor:pointer;margin-right:5px;">&#9881;</button>' +
-        '<button class="ad-x">&times;</button></div>';
+        '<div style="display:flex;flex-direction:column;gap:5px;flex-shrink:0;">' +
+        '<button class="ad-set" style="padding:7px 12px;border-radius:9px;border:none;' +
+        'background:#262626;color:#fff;font-size:11px;font-weight:700;cursor:pointer;' +
+        'font-family:inherit;white-space:nowrap;">&#9881; Huquq</button>' +
+        '<button class="ad-x" style="padding:7px 12px;border-radius:9px;border:none;' +
+        'background:rgba(237,73,86,.16);color:#ED4956;font-size:11px;font-weight:700;' +
+        'cursor:pointer;font-family:inherit;white-space:nowrap;">Ochirish</button>' +
+        '</div></div>';
     }).join('');
   }
 
