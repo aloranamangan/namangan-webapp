@@ -1413,3 +1413,13 @@ body{padding-bottom:112px !important;}
   text-align:center;line-height:20px;margin-right:7px;
 }
 .un-slot.ok .un-num{background:rgba(0,149,246,.18);color:#0095F6;}
+
+/* Username oynasi - tugma bosilishi */
+#xn2S .btn{
+  position:relative !important;
+  z-index:100 !important;
+  pointer-events:auto !important;
+  margin-top:16px;
+}
+#xn2S .un-slot{position:relative;z-index:1;}
+#xn2S .wrap{padding-bottom:24px !important;}
