@@ -38,6 +38,14 @@
 
 <button class="bk" id="bk">← Boshqaruv markazi</button>
 
+<div class="bc-tabs">
+  <button class="bc-tab on" data-b="new">✏️ Yangi xabar</button>
+  <button class="bc-tab" data-b="hist">📊 Tarix</button>
+</div>
+
+<div id="histBox" style="display:none;padding:0 16px 60px;"></div>
+
+<div id="newBox">
 <div class="warn">
   ⚠️ Xabar tanlangan qabul qiluvchilarga <b>darhol</b> yuboriladi.
   Yuborilgan xabarni qaytarib bo'lmaydi.
@@ -68,6 +76,7 @@
   <button class="btn" id="go">Yuborish</button>
 </div>
 
+</div>
 <div style="height:60px;"></div>
 
 <script src="i18n.js?v=1786724767"></script>
@@ -144,6 +153,62 @@ document.addEventListener('DOMContentLoaded', function(){
   setTimeout(function(){
     if(typeof loadAdminState === 'function') loadAdminState();
   }, 500);
+});
+
+function switchTab(m){
+  document.querySelectorAll('.bc-tab').forEach(function(t){
+    t.classList.toggle('on', t.dataset.b === m);
+  });
+  el('newBox').style.display = m === 'new' ? '' : 'none';
+  el('histBox').style.display = m === 'hist' ? '' : 'none';
+  if(m === 'hist') loadHist();
+}
+
+function loadHist(){
+  const box = el('histBox');
+  box.innerHTML = '<div class="load">Yuklanmoqda...</div>';
+
+  const q = '/api/xabar-tarix?init_data=' + encodeURIComponent(initData()) +
+    ((typeof APP_TOKEN !== 'undefined' && APP_TOKEN) ? '&token=' + encodeURIComponent(APP_TOKEN) : '');
+
+  api(q).then(function(d){
+    const list = d.list || [];
+    if(!list.length){
+      box.innerHTML = '<div class="empty" style="padding:60px 20px;">' +
+        '<div class="ic">&#128233;</div><p>Xabar yuborilmagan</p></div>';
+      return;
+    }
+
+    const TG = { channels: 'Kanallar', users: 'Azolar', all: 'Hammaga' };
+
+    box.innerHTML = list.map(function(b){
+      const pct = b.total ? Math.round(b.sent / b.total * 100) : 0;
+      const dt = b.created_at ? new Date(String(b.created_at).replace(' ', 'T')) : null;
+      const dstr = (dt && !isNaN(dt))
+        ? dt.getDate() + '.' + (dt.getMonth()+1) + ' ' +
+          dt.getHours() + ':' + String(dt.getMinutes()).padStart(2,'0')
+        : '';
+
+      return '<div class="bc"><div class="bc-top">' +
+        (b.file_id ? '<img class="bc-th" src="' + mediaUrl(b.file_id) + '">' : '') +
+        '<div class="bc-i"><p>' + esc(b.text || '(faqat media)') + '</p>' +
+        '<div class="m">' + (TG[b.target] || b.target) + ' &middot; ' + dstr +
+        (b.by_name ? ' &middot; ' + esc(b.by_name) : '') + '</div></div></div>' +
+        '<div class="bc-st">' +
+        '<span>Jami: <b>' + fmt(b.total) + '</b></span>' +
+        '<span class="ok">Yetdi: <b>' + fmt(b.sent) + '</b></span>' +
+        '<span class="bad">Xato: <b>' + fmt(b.failed) + '</b></span>' +
+        '<span class="pct">' + pct + '%</span></div></div>';
+    }).join('');
+  }).catch(function(){
+    box.innerHTML = '<div class="load">Xato yuz berdi</div>';
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  document.querySelectorAll('.bc-tab').forEach(function(t){
+    t.addEventListener('click', function(){ switchTab(t.dataset.b); haptic('light'); });
+  });
 });
 </script>
 </body>
