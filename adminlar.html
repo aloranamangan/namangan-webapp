@@ -127,7 +127,10 @@ function draw(){
       const id = b.closest('.ad-row').dataset.id;
       if(!confirm('Administrator huquqini bekor qilasizmi?')) return;
       apiPost('/api/admin-amal2', { action: 'delete', tg_id: parseInt(id) })
-        .then(function(d){ if(d.ok){ toast('Bekor qilindi'); boot(); } });
+        .then(function(d){
+          if(d.ok){ haptic('medium'); toast('Bekor qilindi'); boot(); }
+          else toast(d.error || 'Xato yuz berdi');
+        }).catch(function(){ toast('Server xatosi'); });
     });
   });
 }
