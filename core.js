@@ -526,7 +526,7 @@ function showSubScreen(list, cb){
 }
 
 // ---------- Ommaviy profil ----------
-function openUserProfile(tgId, username){
+function openUserProfileOld(tgId, username){
   const bg = document.createElement('div');
   bg.className = 'sheet-bg';
   bg.style.zIndex = '7500';
@@ -596,6 +596,108 @@ function openUserProfile(tgId, username){
     if(cb && d.phone) cb.addEventListener('click', function(){
       location.href = 'tel:' + d.phone;
     });
+  }).catch(function(){
+    const box = document.getElementById('upBody');
+    if(box) box.innerHTML = '<div class="load">Xato yuz berdi</div>';
+  });
+}
+
+
+// ---------- Ommaviy profil (to'liq ekran) ----------
+function openUserProfile(tgId, username){
+  const v = document.createElement('div');
+  v.className = 'up-full';
+  v.innerHTML =
+    '<div class="up-bar"><button id="upBack">&#8592;</button><b id="upTitle">Profil</b></div>' +
+    '<div id="upBody"><div class="load">Yuklanmoqda...</div></div>';
+
+  document.body.appendChild(v);
+  document.getElementById('upBack').addEventListener('click', function(){ v.remove(); });
+
+  const q = username
+    ? '/api/profil?username=' + encodeURIComponent(username)
+    : '/api/profil?tg_id=' + tgId;
+
+  api(q).then(function(d){
+    const box = document.getElementById('upBody');
+    if(!box) return;
+
+    if(!d.ok){
+      box.innerHTML = '<div class="empty" style="padding:70px 16px;">' +
+        '<div class="ic">&#128100;</div><p>Profil topilmadi</p></div>';
+      return;
+    }
+
+    const tt = document.getElementById('upTitle');
+    if(tt) tt.textContent = d.name || 'Profil';
+
+    const ava = d.avatar
+      ? mediaUrl(d.avatar)
+      : 'https://api.dicebear.com/7.x/initials/svg?seed=' + encodeURIComponent(d.name || 'U');
+
+    const vb = d.verified
+      ? '<svg style="width:16px;height:16px;" viewBox="0 0 24 24" fill="#0095F6">' +
+        '<path d="M12 1l2.5 2.2 3.3-.4 1 3.2 3 1.5-1.2 3.1 1.2 3.1-3 1.5-1 3.2-3.3-.4L12 23l-2.5-2.2-3.3.4-1-3.2-3-1.5 1.2-3.1L2.2 10l3-1.5 1-3.2 3.3.4z"/>' +
+        '<path d="M10.5 15.2l-3-3 1.2-1.2 1.8 1.8 4.3-4.3 1.2 1.2z" fill="#000"/></svg>'
+      : '';
+
+    let h = '<div class="up-head">' +
+      '<img class="up-ava" src="' + ava + '">' +
+      '<b>' + esc(d.name || 'Foydalanuvchi') + vb + '</b>';
+
+    if(d.type === 'makler'){
+      h += '<div class="nk">@' + esc(d.username || '') + '</div>' +
+        '<div class="up-stats">' +
+        '<div><b>' + fmt(d.posts || 0) + '</b><span>elon</span></div>' +
+        '<div><b>' + fmt(d.followers || 0) + '</b><span>obunachi</span></div>' +
+        '</div></div>' +
+        '<div class="up-btns">' +
+        '<button style="background:#0095F6;color:#fff;" id="upMsg">Yozish</button>' +
+        (d.phone ? '<button style="background:#262626;color:#fff;" id="upCall">Qongiroq</button>' : '') +
+        '</div><div id="upPosts"></div>';
+    } else {
+      h += (d.nickname ? '<div class="nk">@' + esc(d.nickname) + '</div>' : '') +
+        '</div>' +
+        '<div class="up-btns">' +
+        '<button style="background:#0095F6;color:#fff;" id="upMsg">Yozish</button>' +
+        '</div>' +
+        '<div class="empty" style="padding:50px 20px;">' +
+        '<div class="ic">&#128274;</div><p>Maxfiy profil</p>' +
+        '<span>Bu foydalanuvchi elon joylamaydi</span></div>';
+    }
+
+    box.innerHTML = h;
+
+    const mb = document.getElementById('upMsg');
+    if(mb) mb.addEventListener('click', function(){
+      v.remove();
+      if(typeof openChat === 'function') openChat(d.tg_id, d.name);
+    });
+
+    const cb = document.getElementById('upCall');
+    if(cb && d.phone) cb.addEventListener('click', function(){
+      location.href = 'tel:' + d.phone;
+    });
+
+    if(d.type === 'makler' && d.username){
+      api('/api/postlar?username=' + encodeURIComponent(d.username)).then(function(p){
+        const pb = document.getElementById('upPosts');
+        if(!pb) return;
+        const list = p.posts || [];
+        if(!list.length){
+          pb.innerHTML = '<div class="empty" style="padding:44px 16px;"><span>Elon yoq</span></div>';
+          return;
+        }
+        pb.innerHTML = '<div class="up-grid">' + list.map(function(x){
+          const m = (x.media && x.media[0]) ? x.media[0] : { file_id: x.file_id, is_video: x.is_video };
+          if(!m.file_id) return '';
+          const u = mediaUrl(m.file_id);
+          return '<div class="up-cell">' +
+            (m.is_video ? '<video src="' + u + '" muted></video>' : '<img src="' + u + '">') +
+            '</div>';
+        }).join('') + '</div>';
+      }).catch(function(){});
+    }
   }).catch(function(){
     const box = document.getElementById('upBody');
     if(box) box.innerHTML = '<div class="load">Xato yuz berdi</div>';

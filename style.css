@@ -1363,3 +1363,21 @@ body{padding-bottom:112px !important;}
   flex:1;padding:12px 0;border:none;border-radius:12px;
   font-size:13.5px;font-weight:700;cursor:pointer;font-family:inherit;
 }
+
+/* Ommaviy profil — to'liq ekran */
+.up-full{
+  position:fixed;inset:0;z-index:7500;background:#000;
+  overflow-y:auto;padding-bottom:40px;
+}
+.up-bar{
+  display:flex;align-items:center;gap:14px;
+  padding:calc(14px + env(safe-area-inset-top)) 16px 12px;
+  border-bottom:1px solid var(--line);
+  position:sticky;top:0;background:rgba(0,0,0,.92);
+  backdrop-filter:blur(20px);z-index:5;
+}
+.up-bar button{background:none;border:none;color:#fff;font-size:23px;cursor:pointer;padding:0;}
+.up-bar b{font-size:16px;font-weight:700;flex:1;}
+.up-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;padding:2px;}
+.up-cell{aspect-ratio:1;background:#111;overflow:hidden;position:relative;cursor:pointer;}
+.up-cell img,.up-cell video{width:100%;height:100%;object-fit:cover;}
