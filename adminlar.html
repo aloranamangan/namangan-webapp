@@ -90,16 +90,37 @@ function draw(){
   } else {
     html += AD.map(function(a){
       const nm = a.name || ('ID ' + a.tg_id);
-      return '<div class="ad-row" data-id="' + a.tg_id + '">' +
+      const PN = { reklama: 'Reklama', xabar: 'Xabar', kanallar: 'Kanallar', nazorat: 'Nazorat' };
+      const pl = (a.perms || []).filter(function(x){ return x; });
+      const pb = pl.length
+        ? '<div class="ad-perms">' + pl.map(function(p){
+            return '<span>' + (PN[p] || p) + '</span>';
+          }).join('') + '</div>'
+        : '<div class="ad-perms"><span style="background:rgba(255,193,7,.14);color:#FFC107;">Huquq yoq</span></div>';
+
+      return '<div class="ad-row" data-id="' + a.tg_id + '" data-n="' + esc(nm) + '">' +
         '<img class="ad-av" src="https://api.dicebear.com/7.x/initials/svg?seed=' +
           encodeURIComponent(nm) + '">' +
         '<div class="ad-i"><b>' + esc(nm) + '</b>' +
-        '<span>' + (a.username ? '@' + esc(a.username) : ('ID ' + a.tg_id)) + '</span></div>' +
+        '<span>' + (a.username ? '@' + esc(a.username) : ('ID ' + a.tg_id)) + '</span>' +
+        pb + '</div>' +
+        '<button class="ad-set" style="width:32px;height:32px;border-radius:9px;border:none;' +
+        'background:#262626;color:#fff;font-size:15px;cursor:pointer;margin-right:5px;">&#9881;</button>' +
         '<button class="ad-x">&times;</button></div>';
     }).join('');
   }
 
   el('root').innerHTML = html;
+
+  document.querySelectorAll('.ad-set').forEach(function(b){
+    b.addEventListener('click', function(){
+      const row = b.closest('.ad-row');
+      const id = row.dataset.id;
+      const nm = row.dataset.n;
+      const a = AD.filter(function(x){ return String(x.tg_id) === String(id); })[0];
+      openPerms(id, nm, (a && a.perms) || []);
+    });
+  });
 
   document.querySelectorAll('.ad-x').forEach(function(b){
     b.addEventListener('click', function(){
@@ -219,6 +240,76 @@ document.addEventListener('DOMContentLoaded', function(){
     else boot();
   }, 400);
 });
+
+
+function openPerms(tgId, name, current){
+  const PERMS = [
+    ['reklama', '\u{1F4E2}', 'Reklama', 'Banner joylash va boshqarish'],
+    ['xabar', '\u{1F4E8}', 'Ommaviy xabar', 'Foydalanuvchilarga xabar yuborish'],
+    ['kanallar', '\u{1F4E3}', 'Kanallar', 'Majburiy obuna sozlash'],
+    ['nazorat', '\u{1F4CA}', 'Nazorat', 'Foydalanuvchilarni boshqarish']
+  ];
+
+  const sel = {};
+  (current || []).forEach(function(p){ if(p) sel[p] = 1; });
+
+  const bg = document.createElement('div');
+  bg.className = 'sheet-bg';
+  bg.innerHTML = '<div class="sheet" id="pmS" style="max-height:85vh;overflow-y:auto;">' +
+    '<div class="sheet-bar"></div>' +
+    '<div class="sheet-title">' + esc(name) + ' huquqlari</div>' +
+    '<div class="wrap">' +
+    '<div style="font-size:12.5px;color:var(--muted);margin-bottom:18px;line-height:1.5;">' +
+    'Bu administrator qaysi bolimlarga kira olishini belgilang.</div>' +
+    PERMS.map(function(p){
+      return '<div class="perm-row' + (sel[p[0]] ? ' on' : '') + '" data-p="' + p[0] + '">' +
+        '<span class="e">' + p[1] + '</span>' +
+        '<span class="t"><b>' + p[2] + '</b><span>' + p[3] + '</span></span>' +
+        '<span class="perm-chk">' + (sel[p[0]] ? '\u2713' : '') + '</span></div>';
+    }).join('') +
+    '<button class="btn" id="pmGo" style="margin-top:16px;">Saqlash</button>' +
+    '</div></div>';
+
+  document.body.appendChild(bg);
+  bg.addEventListener('click', function(e){ if(e.target === bg) bg.remove(); });
+  bg.querySelector('#pmS').addEventListener('click', function(e){ e.stopPropagation(); });
+
+  bg.querySelectorAll('.perm-row').forEach(function(r){
+    r.addEventListener('click', function(){
+      const p = r.dataset.p;
+      const chk = r.querySelector('.perm-chk');
+      if(sel[p]){
+        delete sel[p];
+        r.classList.remove('on');
+        chk.textContent = '';
+      } else {
+        sel[p] = 1;
+        r.classList.add('on');
+        chk.textContent = '\u2713';
+      }
+      haptic('light');
+    });
+  });
+
+  const gb = bg.querySelector('#pmGo');
+  gb.addEventListener('click', function(){
+    gb.disabled = true;
+    gb.textContent = 'Saqlanmoqda...';
+
+    apiPost('/api/admin-amal2', {
+      action: 'perms',
+      tg_id: parseInt(tgId),
+      perms: Object.keys(sel)
+    }).then(function(d){
+      if(d.ok){ haptic('medium'); toast('Saqlandi'); bg.remove(); boot(); }
+      else { toast(d.error || 'Xato'); gb.disabled = false; gb.textContent = 'Saqlash'; }
+    }).catch(function(){
+      toast('Server xatosi');
+      gb.disabled = false;
+      gb.textContent = 'Saqlash';
+    });
+  });
+}
 
 document.addEventListener('DOMContentLoaded', function(){
   setTimeout(function(){
