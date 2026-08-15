@@ -792,11 +792,11 @@ document.addEventListener('DOMContentLoaded', function(){
       if(b.dataset.v === 'vSaved') drawSaved();
       if(b.dataset.v === 'vProfile') drawProfile();
       if(b.dataset.v === 'vSpecial') drawSpecial('kunlik');
-      if(b.dataset.v === 'vSearch') drawSearch(el('q').value);
+      if(b.dataset.v === 'vSearch') doSearch(el('q').value);
       window.scrollTo(0, 0);
     });
   });
-  el('q').addEventListener('input', function(e){ drawSearch(e.target.value); });
+  el('q').addEventListener('input', function(e){ doSearch(e.target.value); });
   boot();
 });
 
