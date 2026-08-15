@@ -1381,3 +1381,21 @@ body{padding-bottom:112px !important;}
 .up-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;padding:2px;}
 .up-cell{aspect-ratio:1;background:#111;overflow:hidden;position:relative;cursor:pointer;}
 .up-cell img,.up-cell video{width:100%;height:100%;object-fit:cover;}
+
+/* Qo'shimcha usernamelar */
+.xn-main{font-size:13px;color:var(--muted);}
+.xn-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
+.xn{
+  font-size:11px;color:#0095F6;font-weight:600;
+  background:rgba(0,149,246,.1);padding:3px 8px;border-radius:6px;
+}
+.xn-row{
+  display:flex;align-items:center;gap:10px;padding:12px 14px;
+  border-radius:13px;background:#141414;border:1px solid var(--line);
+  margin-bottom:9px;
+}
+.xn-row b{flex:1;font-size:14px;color:#0095F6;font-weight:700;}
+.xn-row button{
+  width:30px;height:30px;border-radius:9px;border:none;
+  background:rgba(237,73,86,.14);color:#ED4956;font-size:15px;cursor:pointer;
+}

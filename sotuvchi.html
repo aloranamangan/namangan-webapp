@@ -259,6 +259,7 @@ function renderCabinet(){
   el('newBtn').addEventListener('click', openUpload);
   el('shareBtn').addEventListener('click', shareMe);
   el('storyBtn').addEventListener('click', addStory);
+  loadExtraNames();
 
   const st = document.querySelectorAll('.pro-stats > div');
   st.forEach(function(s){
@@ -1028,6 +1029,127 @@ function showFollowers(){
     });
   }).catch(function(){
     el('fwBody').innerHTML = '<div class="load">Xato yuz berdi</div>';
+  });
+}
+
+
+let XNAMES = [];
+
+function loadExtraNames(){
+  if(!ME || !ME.username) return;
+
+  api('/api/qoshimcha-nomlar?username=' + encodeURIComponent(ME.username))
+    .then(function(d){
+      XNAMES = d.names || [];
+      drawExtraNames();
+    }).catch(function(){});
+}
+
+function drawExtraNames(){
+  const bio = document.querySelector('.pro-bio .ph');
+  if(!bio) return;
+
+  let box = document.getElementById('xnBox');
+  if(!box){
+    box = document.createElement('div');
+    box.id = 'xnBox';
+    box.className = 'xn-list';
+    bio.parentNode.appendChild(box);
+  }
+
+  box.innerHTML = XNAMES.map(function(n){
+    return '<span class="xn">@' + esc(n.uname) + '</span>';
+  }).join('');
+
+  box.style.cursor = 'pointer';
+  box.onclick = manageNames;
+
+  // Nom qo'shish tugmasi (agar ruxsat bo'lsa)
+  if(!XNAMES.length && !document.getElementById('xnAdd')){
+    const b = document.createElement('span');
+    b.id = 'xnAdd';
+    b.className = 'xn';
+    b.style.opacity = '.6';
+    b.textContent = '+ nom qoshish';
+    b.onclick = manageNames;
+    box.appendChild(b);
+  }
+}
+
+function manageNames(){
+  const bg = document.createElement('div');
+  bg.className = 'sheet-bg';
+  bg.innerHTML = '<div class="sheet" id="xnS" style="max-height:80vh;overflow-y:auto;">' +
+    '<div class="sheet-bar"></div>' +
+    '<div class="sheet-title">Qoshimcha usernamelar</div>' +
+    '<div class="wrap">' +
+      '<div style="font-size:12.5px;color:var(--muted);line-height:1.55;margin-bottom:18px;">' +
+      'Qidiruvda topilish uchun <b>5 tagacha</b> qoshimcha username qoshishingiz mumkin.<br>' +
+      'Bu imkoniyat tasdiqlangan foydalanuvchilar uchun.</div>' +
+      '<div id="xnBody"></div>' +
+      '<label class="label">Yangi username</label>' +
+      '<input class="inp" id="xnNew" placeholder="namangan.uylar">' +
+      '<button class="btn" id="xnGo">Qoshish</button>' +
+    '</div></div>';
+
+  document.body.appendChild(bg);
+  bg.addEventListener('click', function(e){ if(e.target === bg) bg.remove(); });
+  el('xnS').addEventListener('click', function(e){ e.stopPropagation(); });
+
+  function redraw(){
+    const b = el('xnBody');
+    if(!b) return;
+    if(!XNAMES.length){
+      b.innerHTML = '<div style="font-size:13px;color:var(--muted);' +
+        'text-align:center;padding:16px 0 20px;">Hozircha yoq</div>';
+      return;
+    }
+    b.innerHTML = XNAMES.map(function(n){
+      return '<div class="xn-row"><b>@' + esc(n.uname) + '</b>' +
+        '<button data-id="' + n.id + '">&times;</button></div>';
+    }).join('') + '<div style="height:10px;"></div>';
+
+    b.querySelectorAll('button[data-id]').forEach(function(x){
+      x.addEventListener('click', function(){
+        if(!confirm('Ochirasizmi?')) return;
+        apiPost('/api/nom-amal', { action: 'delete', id: parseInt(x.dataset.id) })
+          .then(function(d){
+            if(d.ok){
+              toast('Ochirildi');
+              XNAMES = XNAMES.filter(function(y){ return y.id != x.dataset.id; });
+              redraw();
+              drawExtraNames();
+            }
+          });
+      });
+    });
+  }
+
+  redraw();
+
+  el('xnGo').addEventListener('click', function(){
+    const u = el('xnNew').value.trim().replace(/^@/, '').toLowerCase();
+    if(!u){ toast('Username kiriting'); return; }
+
+    const b = el('xnGo');
+    b.disabled = true;
+    b.textContent = 'Tekshirilmoqda...';
+
+    apiPost('/api/nom-amal', { action: 'add', uname: u }).then(function(d){
+      if(d.ok){
+        haptic('medium');
+        toast('Qoshildi');
+        el('xnNew').value = '';
+        loadExtraNames();
+        setTimeout(function(){ redraw(); }, 800);
+      } else toast(d.error || 'Xato');
+      b.disabled = false;
+      b.textContent = 'Qoshish';
+    }).catch(function(){
+      toast('Server xatosi');
+      b.disabled = false;
+      b.textContent = 'Qoshish';
+    });
   });
 }
 
