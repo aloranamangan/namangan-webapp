@@ -1236,7 +1236,8 @@ function manageNames2(){
     });
   });
 
-  el('xn2Go').addEventListener('click', function(){
+  const goBtn = bg.querySelector('#xn2Go');
+  if(goBtn) goBtn.addEventListener('click', function(){
     const jobs = [];
     bg.querySelectorAll('.un-slot').forEach(function(s){
       if(s.dataset.id) return;
@@ -1248,7 +1249,7 @@ function manageNames2(){
 
     if(!jobs.length){ toast('Yangi username yoq'); return; }
 
-    const b = el('xn2Go');
+    const b = goBtn;
     b.disabled = true;
     b.textContent = 'Saqlanmoqda...';
 
