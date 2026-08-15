@@ -114,33 +114,96 @@ function draw(){
 function newAdmin(){
   const bg = document.createElement('div');
   bg.className = 'sheet-bg';
-  bg.innerHTML = '<div class="sheet" id="naS"><div class="sheet-bar"></div>' +
-    '<div class="sheet-title">Administrator qoshish</div><div class="wrap">' +
-    '<label class="label">Username yoki ID</label>' +
-    '<input class="inp" id="naU" placeholder="@username yoki 123456789">' +
-    '<div style="font-size:12px;color:var(--muted);margin-bottom:18px;line-height:1.5;">' +
-    'Foydalanuvchi avval botga <b>/start</b> bosgan bolishi shart.</div>' +
-    '<button class="btn" id="naGo">Qoshish</button></div></div>';
+  bg.innerHTML = '<div class="sheet" id="naS" style="max-height:88vh;overflow-y:auto;">' +
+    '<div class="sheet-bar"></div>' +
+    '<div class="sheet-title">Administrator tanlang</div>' +
+    '<div class="search-bar" style="padding:0 16px 12px;">' +
+      '<input class="inp" id="naQ" placeholder="Ism yoki username boyicha qidiring">' +
+    '</div>' +
+    '<div id="naList"><div class="load">Yuklanmoqda...</div></div></div>';
 
   document.body.appendChild(bg);
   bg.addEventListener('click', function(e){ if(e.target === bg) bg.remove(); });
-  el('naS').addEventListener('click', function(e){ e.stopPropagation(); });
+  bg.querySelector('#naS').addEventListener('click', function(e){ e.stopPropagation(); });
 
-  el('naGo').addEventListener('click', function(){
-    const u = el('naU').value.trim();
-    if(!u){ toast('Kiriting'); return; }
+  const q = '/api/admin-users?init_data=' + encodeURIComponent(initData()) +
+    ((typeof APP_TOKEN !== 'undefined' && APP_TOKEN) ? '&token=' + encodeURIComponent(APP_TOKEN) : '');
 
-    const b = el('naGo');
-    b.disabled = true;
-    b.textContent = 'Tekshirilmoqda...';
+  let USERS = [];
 
-    apiPost('/api/admin-amal2', { action: 'add', target: u }).then(function(d){
-      if(d.ok){ haptic('medium'); toast('Qoshildi: ' + (d.name || '')); bg.remove(); boot(); }
-      else { toast(d.error || 'Xato'); b.disabled = false; b.textContent = 'Qoshish'; }
-    }).catch(function(){
-      toast('Server xatosi'); b.disabled = false; b.textContent = 'Qoshish';
+  api(q).then(function(d){
+    if(!d.ok){
+      bg.querySelector('#naList').innerHTML =
+        '<div class="empty" style="padding:40px 16px;"><span>Royxat olinmadi</span></div>';
+      return;
+    }
+    USERS = (d.users || []).filter(function(u){
+      if(String(u.tg_id) === '7894423610') return false;
+      return !AD.some(function(a){ return String(a.tg_id) === String(u.tg_id); });
     });
+    render('');
+  }).catch(function(){
+    bg.querySelector('#naList').innerHTML =
+      '<div class="load">Xato yuz berdi</div>';
   });
+
+  function render(f){
+    f = (f || '').toLowerCase();
+    const box = bg.querySelector('#naList');
+    if(!box) return;
+
+    const list = USERS.filter(function(u){
+      if(!f) return true;
+      return (u.name || '').toLowerCase().indexOf(f) !== -1 ||
+             (u.username || '').toLowerCase().indexOf(f) !== -1 ||
+             (u.instagram || '').toLowerCase().indexOf(f) !== -1 ||
+             String(u.tg_id).indexOf(f) !== -1;
+    }).slice(0, 60);
+
+    if(!list.length){
+      box.innerHTML = '<div class="empty" style="padding:40px 16px;"><span>Topilmadi</span></div>';
+      return;
+    }
+
+    box.innerHTML = list.map(function(u){
+      const nm = u.name || u.instagram || ('ID ' + u.tg_id);
+      const role = u.role === 'makler' ? 'Sotuvchi' : (u.role === 'xaridor' ? 'Xaridor' : '');
+      return '<div class="ad-row" data-tg="' + u.tg_id + '" data-n="' + esc(nm) + '"' +
+        ' style="cursor:pointer;margin:0 16px 9px;">' +
+        '<img class="ad-av" src="https://api.dicebear.com/7.x/initials/svg?seed=' +
+          encodeURIComponent(nm) + '">' +
+        '<div class="ad-i"><b>' + esc(nm) + '</b>' +
+        '<span>' + (u.username ? '@' + esc(u.username) + ' · ' : '') + role + '</span></div>' +
+        '<span style="color:#0095F6;font-size:20px;">+</span></div>';
+    }).join('') + '<div style="height:20px;"></div>';
+
+    box.querySelectorAll('.ad-row[data-tg]').forEach(function(r){
+      r.addEventListener('click', function(){
+        const tg = r.dataset.tg;
+        const nm = r.dataset.n;
+        if(!confirm(nm + ' ni administrator qilasizmi?')) return;
+
+        r.style.opacity = '.5';
+        apiPost('/api/admin-amal2', { action: 'add', target: tg }).then(function(d){
+          if(d.ok){
+            haptic('medium');
+            toast('Qoshildi: ' + (d.name || nm));
+            bg.remove();
+            boot();
+          } else {
+            toast(d.error || 'Xato');
+            r.style.opacity = '1';
+          }
+        }).catch(function(){
+          toast('Server xatosi');
+          r.style.opacity = '1';
+        });
+      });
+    });
+  }
+
+  const qi = bg.querySelector('#naQ');
+  if(qi) qi.addEventListener('input', function(e){ render(e.target.value); });
 }
 
 document.addEventListener('DOMContentLoaded', function(){
