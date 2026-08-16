@@ -1471,3 +1471,15 @@ body{padding-bottom:112px !important;}
   font-family:inherit;font-size:13px;font-weight:700;
 }
 .bc-tab.on{background:#fff;color:#000;border-color:#fff;}
+
+/* Admin tugmalari - majburiy ko'rinsin */
+.ad-x{
+  width:auto !important;height:auto !important;
+  padding:7px 12px !important;font-size:11px !important;
+  display:block !important;visibility:visible !important;
+  opacity:1 !important;
+}
+.ad-set{
+  display:block !important;visibility:visible !important;opacity:1 !important;
+}
+.ad-row{align-items:center !important;}
