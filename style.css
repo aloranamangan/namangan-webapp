@@ -1649,3 +1649,51 @@ body{padding-bottom:80px !important;}
     -2px 2px 0 #fff, 2px 2px 0 #fff !important;
 }
 .topbar-ug{padding:calc(16px + env(safe-area-inset-top)) 16px 16px !important;}
+
+/* ═══ PROFIL (Instagram) ═══ */
+.pf-top{display:flex;align-items:center;gap:22px;padding:20px 18px 14px;}
+.pf-ava-w{position:relative;flex-shrink:0;}
+.pf-ava{
+  width:88px;height:88px;border-radius:50%;object-fit:cover;
+  border:2px solid #000;position:relative;z-index:2;
+}
+.pf-ava-w.story::before{
+  content:'';position:absolute;inset:-4px;border-radius:50%;z-index:0;
+  background:linear-gradient(45deg,#F58529,#FEDA77,#DD2A7B,#8134AF,#515BD4);
+}
+.pf-ava-w.story.seen::before{background:#3a3a3a;}
+.pf-add{
+  position:absolute;right:-2px;bottom:-2px;z-index:3;
+  width:26px;height:26px;border-radius:50%;border:2.5px solid #000;
+  background:#0095F6;color:#fff;font-size:16px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;line-height:1;
+}
+.pf-nums{flex:1;display:flex;justify-content:space-around;}
+.pf-nums div{text-align:center;cursor:pointer;}
+.pf-nums b{display:block;font-size:18px;font-weight:700;}
+.pf-nums span{font-size:12.5px;color:var(--muted);}
+
+.pf-bio{padding:0 18px 14px;}
+.pf-bio .nm{font-size:15px;font-weight:700;display:flex;align-items:center;gap:5px;}
+.pf-bio .un{font-size:13px;color:var(--muted);margin-top:2px;}
+.pf-bio .xn{
+  display:inline-block;font-size:11px;color:#0095F6;font-weight:600;
+  background:rgba(0,149,246,.1);padding:2px 7px;border-radius:5px;margin:5px 4px 0 0;
+}
+.pf-bio .tx{font-size:13.5px;line-height:1.5;color:#ddd;margin-top:7px;white-space:pre-line;}
+
+.pf-btns{display:flex;gap:8px;padding:0 18px 16px;}
+.pf-btns button{
+  flex:1;padding:9px 0;border:none;border-radius:9px;
+  background:#262626;color:#fff;font-size:13.5px;font-weight:700;
+  cursor:pointer;font-family:inherit;
+}
+.pf-btns button.blue{background:#0095F6;}
+
+.pf-tabs{display:flex;border-top:1px solid var(--line);}
+.pf-tab{
+  flex:1;padding:12px 0;background:none;border:none;cursor:pointer;
+  color:#555;border-bottom:1.5px solid transparent;
+}
+.pf-tab.on{color:#fff;border-bottom-color:#fff;}
+.pf-tab svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;}
