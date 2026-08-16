@@ -1513,3 +1513,31 @@ body.dark-logo .logo-ug .gram{color:#fff;}
   padding:0;display:flex;align-items:center;position:relative;
 }
 .topbar-ug .side svg{width:25px;height:25px;stroke:currentColor;fill:none;stroke-width:1.9;}
+
+/* Navigatsiya - 6 ta, bitta qator */
+.nav{
+  flex-wrap:nowrap !important;
+  padding:9px 0 calc(9px + env(safe-area-inset-bottom)) !important;
+  row-gap:0 !important;
+}
+.nav button{
+  flex:1 !important;font-size:8.5px !important;gap:3px !important;
+  padding:0 2px !important;
+}
+.nav button svg{width:20px !important;height:20px !important;}
+.nav .dot-n{right:calc(50% - 13px) !important;}
+body{padding-bottom:80px !important;}
+.dm-full,.chat-full{bottom:80px !important;}
+
+/* Profil menyusi */
+.pm-list{padding:6px 16px 40px;}
+.pm{
+  display:flex;align-items:center;gap:14px;padding:15px 16px;
+  border-radius:15px;background:#121212;border:1px solid var(--line);
+  margin-bottom:9px;cursor:pointer;
+}
+.pm:active{background:#1a1a1a;}
+.pm .e{font-size:22px;width:28px;text-align:center;}
+.pm .t{flex:1;font-size:14.5px;font-weight:600;}
+.pm .v{font-size:12.5px;color:var(--muted);}
+.pm .ar{color:var(--muted);font-size:17px;}
