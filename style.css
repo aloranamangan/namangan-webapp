@@ -1587,3 +1587,16 @@ body{padding-bottom:80px !important;}
   paint-order:stroke fill;
   text-shadow:0 0 3px rgba(255,255,255,.9) !important;
 }
+
+/* UYgram - kattaroq */
+.logo-ug{
+  font-size:44px !important;
+  letter-spacing:-1.8px !important;
+  line-height:1 !important;
+}
+.logo-ug .uy,.logo-ug .gram{
+  -webkit-text-stroke:2px #fff !important;
+}
+.topbar-ug{
+  padding:calc(14px + env(safe-area-inset-top)) 16px 14px !important;
+}
