@@ -1631,3 +1631,21 @@ body{padding-bottom:80px !important;}
     -1.5px  1.5px 0 #fff,
      1.5px  1.5px 0 #fff !important;
 }
+
+/* UYgram - yanada kattaroq */
+.logo-ug{
+  font-size:60px !important;
+  letter-spacing:-2.5px !important;
+}
+.logo-ug .uy{
+  text-shadow:
+    -2px -2px 0 #fff, 2px -2px 0 #fff,
+    -2px 2px 0 #fff, 2px 2px 0 #fff,
+    0 4px 18px rgba(237,73,86,.3) !important;
+}
+.logo-ug .gram{
+  text-shadow:
+    -2px -2px 0 #fff, 2px -2px 0 #fff,
+    -2px 2px 0 #fff, 2px 2px 0 #fff !important;
+}
+.topbar-ug{padding:calc(16px + env(safe-area-inset-top)) 16px 16px !important;}
