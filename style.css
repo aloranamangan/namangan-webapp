@@ -1600,3 +1600,34 @@ body{padding-bottom:80px !important;}
 .topbar-ug{
   padding:calc(14px + env(safe-area-inset-top)) 16px 14px !important;
 }
+
+/* UYgram - yakuniy */
+.logo-ug{
+  font-size:44px !important;
+  font-weight:800 !important;
+  letter-spacing:-1.8px !important;
+  line-height:1 !important;
+  background:none !important;
+  animation:none !important;
+}
+.logo-ug .uy{
+  color:#ED4956 !important;
+  -webkit-text-fill-color:#ED4956 !important;
+  -webkit-text-stroke:0 !important;
+  text-shadow:
+    -1.5px -1.5px 0 #fff,
+     1.5px -1.5px 0 #fff,
+    -1.5px  1.5px 0 #fff,
+     1.5px  1.5px 0 #fff,
+     0 3px 14px rgba(237,73,86,.3) !important;
+}
+.logo-ug .gram{
+  color:#0d1626 !important;
+  -webkit-text-fill-color:#0d1626 !important;
+  -webkit-text-stroke:0 !important;
+  text-shadow:
+    -1.5px -1.5px 0 #fff,
+     1.5px -1.5px 0 #fff,
+    -1.5px  1.5px 0 #fff,
+     1.5px  1.5px 0 #fff !important;
+}
