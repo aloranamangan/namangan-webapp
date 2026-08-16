@@ -7,13 +7,28 @@
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#000000">
 <link rel="apple-touch-icon" href="icon-192.png">
-<link rel="stylesheet" href="style.css?v=1786792825">
+<link rel="stylesheet" href="style.css?v=1786866601">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
 
-<header class="topbar">
-  <h1>Namangan <span class="gold">Ijara</span></h1>
+<header class="topbar topbar-ug">
+  <div class="side left">
+    <button id="tbCam" title="Storiy">
+      <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+    </button>
+  </div>
+
+  <h1 class="logo-ug"><span class="uy">UY</span><span class="gram">gram</span></h1>
+
+  <div class="side right">
+    <button id="tbHeart" title="Bildirishnoma">
+      <svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1L12 21l7.7-7.6 1.1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+    </button>
+    <button id="tbDm" title="Xabarlar">
+      <svg viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+    </button>
+  </div>
 </header>
 
 <div class="view on" id="vFeed">
@@ -1146,6 +1161,30 @@ document.addEventListener('DOMContentLoaded', function(){
   setTimeout(function(){
     if(typeof loadAdminState === 'function') loadAdminState();
   }, 500);
+});
+
+document.addEventListener('DOMContentLoaded', function(){
+  setTimeout(function(){
+    const cam = el('tbCam');
+    if(cam) cam.addEventListener('click', function(){
+      haptic('light');
+      if(typeof addStoryQuick === 'function') addStoryQuick();
+      else toast('Storiy qoshish tez orada');
+    });
+
+    const hb = el('tbHeart');
+    if(hb) hb.addEventListener('click', function(){
+      haptic('light');
+      if(typeof openNotifs === 'function') openNotifs();
+      else toast('Bildirishnomalar');
+    });
+
+    const db_ = el('tbDm');
+    if(db_) db_.addEventListener('click', function(){
+      haptic('light');
+      if(typeof openChats === 'function') openChats();
+    });
+  }, 600);
 });
 </script>
 </body>

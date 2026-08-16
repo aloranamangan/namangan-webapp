@@ -1483,3 +1483,33 @@ body{padding-bottom:112px !important;}
   display:block !important;visibility:visible !important;opacity:1 !important;
 }
 .ad-row{align-items:center !important;}
+
+/* ═══ UYGRAM logotip ═══ */
+.logo-ug{
+  font-size:26px;font-weight:800;letter-spacing:-1px;
+  font-family:'Manrope',sans-serif;
+}
+.logo-ug .uy{
+  color:#ED4956;
+  text-shadow:0 2px 12px rgba(237,73,86,.35);
+}
+.logo-ug .gram{
+  color:#0d1626;
+}
+body.dark-logo .logo-ug .gram{color:#fff;}
+
+.topbar-ug{
+  display:flex;align-items:center;justify-content:center;
+  padding:calc(12px + env(safe-area-inset-top)) 16px 12px;
+  position:sticky;top:0;z-index:900;
+}
+.topbar-ug .side{
+  position:absolute;display:flex;gap:14px;align-items:center;
+}
+.topbar-ug .side.left{left:16px;}
+.topbar-ug .side.right{right:16px;}
+.topbar-ug .side button{
+  background:none;border:none;color:#0d1626;cursor:pointer;
+  padding:0;display:flex;align-items:center;position:relative;
+}
+.topbar-ug .side svg{width:25px;height:25px;stroke:currentColor;fill:none;stroke-width:1.9;}
