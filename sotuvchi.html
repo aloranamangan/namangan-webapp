@@ -70,6 +70,13 @@ let picked = [];
 const MAX_MEDIA = 10;
 
 function boot(){
+  // Faqat admin uchun
+  const _id = myId();
+  if(_id && _id !== 7894423610){
+    location.replace('xaridor.html');
+    return;
+  }
+
   if(typeof askLangOnce === 'function'){
     askLangOnce(function(){ bootAfterLang(); });
   } else bootAfterLang();

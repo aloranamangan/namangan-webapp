@@ -322,15 +322,13 @@ function askRole(cb){
       return;
     }
 
-    if(role === 'makler'){
-      if(location.pathname.indexOf('sotuvchi') === -1){ location.href = 'sotuvchi.html'; return; }
+    // Bitta ilova - rol yoq
+    if(location.pathname.indexOf('xaridor') === -1 &&
+       location.pathname.indexOf('sotuvchi') === -1 &&
+       location.pathname.indexOf('.html') !== -1){
       cb(); return;
     }
-    if(role === 'xaridor'){
-      if(location.pathname.indexOf('xaridor') === -1){ location.href = 'xaridor.html'; return; }
-      cb(); return;
-    }
-    showRolePick(cb);
+    cb();
   }).catch(function(){ showRolePick(cb); });
 }
 
