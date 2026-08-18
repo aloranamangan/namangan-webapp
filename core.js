@@ -288,7 +288,7 @@ function requireAuth(cb){
       '<div style="min-height:100vh;display:flex;flex-direction:column;' +
       'align-items:center;justify-content:center;padding:40px 28px;text-align:center;">' +
       '<div style="font-size:60px;margin-bottom:20px;">&#127968;</div>' +
-      '<h2 style="font-size:24px;font-weight:800;margin-bottom:10px;">Namangan Ijara</h2>' +
+      '<h2 style="font-size:24px;font-weight:800;margin-bottom:10px;">UYgram</h2>' +
       '<p style="font-size:14px;color:#8E8E8E;line-height:1.6;margin-bottom:32px;">' +
       'Davom etish uchun Telegram akkauntingiz bilan kiring</p>' +
       '<button id="loginBtn" style="padding:15px 34px;border:none;border-radius:100px;' +

@@ -1,4 +1,4 @@
-const CACHE = 'ni-v20';
+const CACHE = 'ni-v21';
 const FILES = [
   'xaridor.html', 'sotuvchi.html', 'obhavo.html', 'valyuta.html',
   'style.css', 'weather.css', 'core.js', 'reg.js', 'dm.js', 'story.js', 'profil.js', 'pano.js',
