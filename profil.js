@@ -493,6 +493,9 @@ function openUploadU(){
           '<span class="tx"><b>360&deg; panorama</b>' +
           '<span id="upPanoN">Ixtiyoriy &mdash; panorama rasm</span></span></div>'
         : '') +
+      '<div class="geo-pick" id="upTag"><span class="ic">&#127991;</span>' +
+      '<span class="tx"><b>Odamlarni belgilash</b>' +
+      '<span id="upTagN">Ixtiyoriy &mdash; tanlang</span></span></div>' +
       '<div class="geo-pick" id="upGeo"><span class="ic">&#128205;</span>' +
       '<span class="tx"><b>Xaritada belgilash</b>' +
       '<span id="upGeoN">Ixtiyoriy &mdash; xaritadan tanlang</span></span></div>' +
@@ -522,6 +525,17 @@ function openUploadU(){
         pp.classList.add('on');
         bg.querySelector('#upPanoN').textContent = 'Tanlandi';
         haptic('light');
+      });
+    });
+
+    let tagged = [];
+    const tg_ = bg.querySelector('#upTag');
+    if(tg_) tg_.addEventListener('click', function(){
+      pickPeople(tagged, function(sel){
+        tagged = sel;
+        tg_.classList.toggle('on', sel.length > 0);
+        bg.querySelector('#upTagN').textContent = sel.length
+          ? sel.length + ' ta tanlandi' : 'Ixtiyoriy — tanlang';
       });
     });
 
@@ -557,6 +571,16 @@ function openUploadU(){
         items: picked, price: price, description: full,
         lat: geoLat, lng: geoLng
       }).then(function(d){
+        if(d.ok && tagged.length){
+          setTimeout(function(){
+            api('/api/mening-postlarim?tg_id=' + myId()).then(function(r){
+              const last = (r.posts || [])[0];
+              if(last) apiPost('/api/belgilash', {
+                post_id: last.id, tagged: tagged
+              }).catch(function(){});
+            });
+          }, 2500);
+        }
         if(d.ok && panoData){
           apiPost('/api/pano-qoshish', {
             media: panoData, price: price,
@@ -783,4 +807,84 @@ function showGeo(cb){
   });
 
   setTimeout(function(){ m.invalidateSize(); }, 200);
+}
+
+
+// ---------- Odam tanlash ----------
+function pickPeople(current, cb){
+  const sel = {};
+  (current || []).forEach(function(x){ sel[x] = 1; });
+
+  const bg = document.createElement('div');
+  bg.className = 'sheet-bg';
+  bg.style.zIndex = '9000';
+  bg.innerHTML = '<div class="sheet" id="ppS" style="max-height:82vh;overflow-y:auto;">' +
+    '<div class="sheet-bar"></div>' +
+    '<div class="sheet-title">Odamlarni belgilash</div>' +
+    '<div class="search-bar" style="padding:0 16px 10px;">' +
+    '<input class="inp" id="ppQ" placeholder="Ism yoki username"></div>' +
+    '<div id="ppL"><div class="load">Yuklanmoqda...</div></div>' +
+    '<div class="wrap"><button class="btn" id="ppGo">Tayyor</button></div></div>';
+
+  document.body.appendChild(bg);
+  bg.addEventListener('click', function(e){ if(e.target === bg) bg.remove(); });
+  bg.querySelector('#ppS').addEventListener('click', function(e){ e.stopPropagation(); });
+
+  let LIST = [];
+
+  api('/api/maklerlar').then(function(d){
+    LIST = (d.maklers || []).filter(function(m){ return m.tg_id && m.tg_id !== myId(); });
+    draw('');
+  }).catch(function(){
+    bg.querySelector('#ppL').innerHTML = '<div class="load">Xato</div>';
+  });
+
+  function draw(f){
+    f = (f || '').toLowerCase();
+    const box = bg.querySelector('#ppL');
+    const list = LIST.filter(function(m){
+      if(!f) return true;
+      return (m.name || '').toLowerCase().indexOf(f) !== -1 ||
+             (m.username || '').toLowerCase().indexOf(f) !== -1;
+    }).slice(0, 50);
+
+    if(!list.length){
+      box.innerHTML = '<div class="empty" style="padding:36px 16px;"><span>Topilmadi</span></div>';
+      return;
+    }
+
+    box.innerHTML = list.map(function(m){
+      const on = sel[m.tg_id] ? ' on' : '';
+      const ava = m.avatar
+        ? mediaUrl(m.avatar)
+        : 'https://api.dicebear.com/7.x/initials/svg?seed=' + encodeURIComponent(m.name);
+      return '<div class="share-row" data-tg="' + m.tg_id + '">' +
+        '<img src="' + ava + '">' +
+        '<div class="si"><b>' + esc(m.name) + '</b><span>@' + esc(m.username) + '</span></div>' +
+        '<div class="share-chk' + on + '">' + (on ? '&#10003;' : '') + '</div></div>';
+    }).join('');
+
+    box.querySelectorAll('.share-row').forEach(function(r){
+      r.addEventListener('click', function(){
+        const id = r.dataset.tg;
+        const chk = r.querySelector('.share-chk');
+        if(sel[id]){
+          delete sel[id];
+          chk.classList.remove('on');
+          chk.innerHTML = '';
+        } else {
+          sel[id] = 1;
+          chk.classList.add('on');
+          chk.innerHTML = '\u2713';
+        }
+        haptic('light');
+      });
+    });
+  }
+
+  bg.querySelector('#ppQ').addEventListener('input', function(e){ draw(e.target.value); });
+  bg.querySelector('#ppGo').addEventListener('click', function(){
+    cb(Object.keys(sel).map(function(x){ return parseInt(x); }));
+    bg.remove();
+  });
 }
