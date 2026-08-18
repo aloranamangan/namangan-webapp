@@ -1697,3 +1697,21 @@ body{padding-bottom:80px !important;}
 }
 .pf-tab.on{color:#fff;border-bottom-color:#fff;}
 .pf-tab svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;}
+
+/* E'lon turi tugmalari */
+.tp{
+  flex:1 1 calc(50% - 4px);min-width:0;
+  padding:12px 6px;border-radius:12px;background:#141414;
+  border:1px solid var(--line);color:var(--muted);cursor:pointer;
+  font-family:inherit;font-size:13px;font-weight:700;
+}
+.tp.on{background:#0095F6;border-color:#0095F6;color:#fff;}
+
+/* E'lon turi tugmalari */
+.tp{
+  flex:1 1 calc(50% - 4px);min-width:0;
+  padding:12px 6px;border-radius:12px;background:#141414;
+  border:1px solid var(--line);color:var(--muted);cursor:pointer;
+  font-family:inherit;font-size:13px;font-weight:700;
+}
+.tp.on{background:#0095F6;border-color:#0095F6;color:#fff;}

@@ -59,9 +59,7 @@ function render(){
 
     '<div class="pf-btns">' +
       '<button id="pfEdit">Profilni tahrirlash</button>' +
-      (isMak
-        ? '<button id="pfNew" class="blue">Elon qoshish</button>'
-        : '<button id="pfBecome" class="blue">Elon joylash</button>') +
+      '<button id="pfNew" class="blue">Elon qoshish</button>' +
       '<button id="pfShare">Ulashish</button>' +
     '</div>' +
 
@@ -120,15 +118,12 @@ function bindProfile(isMak){
 
   const nw = el('pfNew');
   if(nw) nw.addEventListener('click', function(){
-    if(typeof openUpload === 'function') openUpload();
+    haptic('light');
+    if(typeof openUploadU === 'function') openUploadU();
     else toast('Elon qoshish tayyorlanmoqda');
   });
 
-  const bc = el('pfBecome');
-  if(bc) bc.addEventListener('click', function(){
-    if(typeof openMaklerForm === 'function') openMaklerForm();
-    else toast('Ariza formasi tayyorlanmoqda');
-  });
+
 
   const sh = el('pfShare');
   if(sh) sh.addEventListener('click', function(){
@@ -177,8 +172,7 @@ function loadTab(tab){
   else url = '/api/postlar?username=' + encodeURIComponent(PF.username || '');
 
   if(tab === 'posts' && !PF.username){
-    g.innerHTML = emptyBox('&#128247;', 'Elon yoq', 'Elon joylash uchun ariza bering');
-    return;
+    url = '/api/mening-postlarim?tg_id=' + id;
   }
 
   api(url).then(function(d){
@@ -450,4 +444,320 @@ function addHighlightU(){
       });
     });
   }).catch(function(){ toast('Xato'); });
+}
+
+// ---------- E'lon qo'shish (hamma uchun) ----------
+function openUploadU(){
+  pickFiles(true, function(items){
+    if(!items.length) return;
+    const picked = items.slice(0, 10);
+
+    let type = 'sotuv';
+    let geoLat = null, geoLng = null;
+
+    const bg = document.createElement('div');
+    bg.className = 'sheet-bg';
+    bg.innerHTML = '<div class="sheet" id="upS" style="max-height:92vh;overflow-y:auto;">' +
+      '<div class="sheet-bar"></div>' +
+      '<div class="sheet-title">Yangi elon</div>' +
+      '<div class="wrap">' +
+
+      '<div class="prev-row" style="display:flex;gap:8px;overflow-x:auto;margin-bottom:18px;">' +
+      picked.map(function(it){
+        return it.is_video
+          ? '<video src="' + it.media + '" style="width:88px;height:88px;object-fit:cover;' +
+            'border-radius:11px;flex-shrink:0;" muted></video>'
+          : '<img src="' + it.media + '" style="width:88px;height:88px;object-fit:cover;' +
+            'border-radius:11px;flex-shrink:0;">';
+      }).join('') + '</div>' +
+
+      '<label class="label">Turi</label>' +
+      '<div class="type-row" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;">' +
+        '<button class="tp on" data-t="sotuv">Sotiladi</button>' +
+        '<button class="tp" data-t="ijara">Ijaraga</button>' +
+        '<button class="tp" data-t="kunlik">Kunlik</button>' +
+        '<button class="tp" data-t="student">Student</button>' +
+      '</div>' +
+
+      '<label class="label">Sarlavha</label>' +
+      '<input class="inp" id="upT" placeholder="3 xonali kvartira, Navoiy kochasi">' +
+
+      '<label class="label">Narx</label>' +
+      '<input class="inp" id="upP" placeholder="420 000 000">' +
+
+      '<label class="label">Malumot</label>' +
+      '<textarea class="txt" id="upD" placeholder="Qavat, maydon, tamir holati..."></textarea>' +
+
+      '<div class="geo-pick" id="upGeo"><span class="ic">&#128205;</span>' +
+      '<span class="tx"><b>Xaritada belgilash</b>' +
+      '<span id="upGeoN">Ixtiyoriy &mdash; xaritadan tanlang</span></span></div>' +
+
+      '<button class="btn" id="upGo">Joylash</button>' +
+      '</div></div>';
+
+    document.body.appendChild(bg);
+    bg.addEventListener('click', function(e){ if(e.target === bg) bg.remove(); });
+    bg.querySelector('#upS').addEventListener('click', function(e){ e.stopPropagation(); });
+
+    bg.querySelectorAll('.tp').forEach(function(b){
+      b.addEventListener('click', function(){
+        bg.querySelectorAll('.tp').forEach(function(x){ x.classList.remove('on'); });
+        b.classList.add('on');
+        type = b.dataset.t;
+        haptic('light');
+      });
+    });
+
+    const gp = bg.querySelector('#upGeo');
+    gp.addEventListener('click', function(){
+      if(typeof openGeoPickerU === 'function'){
+        openGeoPickerU(function(la, ln){
+          geoLat = la; geoLng = ln;
+          gp.classList.add('on');
+          bg.querySelector('#upGeoN').textContent = la.toFixed(5) + ', ' + ln.toFixed(5);
+        });
+      } else toast('Xarita yuklanmoqda');
+    });
+
+    const gb = bg.querySelector('#upGo');
+    gb.addEventListener('click', function(){
+      const title = bg.querySelector('#upT').value.trim();
+      const price = bg.querySelector('#upP').value.trim();
+      const desc = bg.querySelector('#upD').value.trim();
+
+      if(!title){ toast('Sarlavhani kiriting'); return; }
+
+      const HEADS = {
+        sotuv: 'Sotiladi', ijara: 'Ijaraga beriladi',
+        kunlik: 'Kunlik ijara', student: 'Studentlar uchun'
+      };
+      const full = HEADS[type] + '\n' + title + (desc ? '\n' + desc : '');
+
+      gb.disabled = true;
+      gb.textContent = 'Yuklanmoqda...';
+
+      apiPost('/api/post-qoshish', {
+        items: picked, price: price, description: full,
+        lat: geoLat, lng: geoLng
+      }).then(function(d){
+        if(d.ok){
+          haptic('medium');
+          toast('Elon joylandi');
+          bg.remove();
+          setTimeout(function(){ drawProfile(); }, 2000);
+        } else {
+          toast(d.error || 'Xato');
+          gb.disabled = false;
+          gb.textContent = 'Joylash';
+        }
+      }).catch(function(){
+        toast('Server xatosi');
+        gb.disabled = false;
+        gb.textContent = 'Joylash';
+      });
+    });
+  });
+}
+
+function openGeoPickerU(cb){
+  if(typeof L === 'undefined'){
+    const css = document.createElement('link');
+    css.rel = 'stylesheet';
+    css.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+    document.head.appendChild(css);
+    const s = document.createElement('script');
+    s.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+    s.onload = function(){ showGeo(cb); };
+    document.head.appendChild(s);
+  } else showGeo(cb);
+}
+
+function showGeo(cb){
+  const d = document.createElement('div');
+  d.id = 'geoMap';
+  d.innerHTML = '<div id="geoMapBox"></div>' +
+    '<div class="geo-center">&#128205;</div>' +
+    '<button class="geo-x" id="geoX">&times;</button>' +
+    '<button class="geo-ok" id="geoOk">Shu joyni tasdiqlash</button>';
+  document.body.appendChild(d);
+
+  const m = L.map('geoMapBox', { zoomControl: false, attributionControl: false })
+    .setView([40.9983, 71.6726], 14);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+    { maxZoom: 19 }).addTo(m);
+  L.control.zoom({ position: 'bottomright' }).addTo(m);
+
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(function(p){
+      m.setView([p.coords.latitude, p.coords.longitude], 16);
+    }, function(){}, { timeout: 4000 });
+  }
+
+  document.getElementById('geoX').addEventListener('click', function(){ d.remove(); });
+  document.getElementById('geoOk').addEventListener('click', function(){
+    const c = m.getCenter();
+    d.remove();
+    cb(c.lat, c.lng);
+    haptic('medium');
+  });
+
+  setTimeout(function(){ m.invalidateSize(); }, 200);
+}
+
+// ---------- E'lon qo'shish (hamma uchun) ----------
+function openUploadU(){
+  pickFiles(true, function(items){
+    if(!items.length) return;
+    const picked = items.slice(0, 10);
+
+    let type = 'sotuv';
+    let geoLat = null, geoLng = null;
+
+    const bg = document.createElement('div');
+    bg.className = 'sheet-bg';
+    bg.innerHTML = '<div class="sheet" id="upS" style="max-height:92vh;overflow-y:auto;">' +
+      '<div class="sheet-bar"></div>' +
+      '<div class="sheet-title">Yangi elon</div>' +
+      '<div class="wrap">' +
+
+      '<div class="prev-row" style="display:flex;gap:8px;overflow-x:auto;margin-bottom:18px;">' +
+      picked.map(function(it){
+        return it.is_video
+          ? '<video src="' + it.media + '" style="width:88px;height:88px;object-fit:cover;' +
+            'border-radius:11px;flex-shrink:0;" muted></video>'
+          : '<img src="' + it.media + '" style="width:88px;height:88px;object-fit:cover;' +
+            'border-radius:11px;flex-shrink:0;">';
+      }).join('') + '</div>' +
+
+      '<label class="label">Turi</label>' +
+      '<div class="type-row" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;">' +
+        '<button class="tp on" data-t="sotuv">Sotiladi</button>' +
+        '<button class="tp" data-t="ijara">Ijaraga</button>' +
+        '<button class="tp" data-t="kunlik">Kunlik</button>' +
+        '<button class="tp" data-t="student">Student</button>' +
+      '</div>' +
+
+      '<label class="label">Sarlavha</label>' +
+      '<input class="inp" id="upT" placeholder="3 xonali kvartira, Navoiy kochasi">' +
+
+      '<label class="label">Narx</label>' +
+      '<input class="inp" id="upP" placeholder="420 000 000">' +
+
+      '<label class="label">Malumot</label>' +
+      '<textarea class="txt" id="upD" placeholder="Qavat, maydon, tamir holati..."></textarea>' +
+
+      '<div class="geo-pick" id="upGeo"><span class="ic">&#128205;</span>' +
+      '<span class="tx"><b>Xaritada belgilash</b>' +
+      '<span id="upGeoN">Ixtiyoriy &mdash; xaritadan tanlang</span></span></div>' +
+
+      '<button class="btn" id="upGo">Joylash</button>' +
+      '</div></div>';
+
+    document.body.appendChild(bg);
+    bg.addEventListener('click', function(e){ if(e.target === bg) bg.remove(); });
+    bg.querySelector('#upS').addEventListener('click', function(e){ e.stopPropagation(); });
+
+    bg.querySelectorAll('.tp').forEach(function(b){
+      b.addEventListener('click', function(){
+        bg.querySelectorAll('.tp').forEach(function(x){ x.classList.remove('on'); });
+        b.classList.add('on');
+        type = b.dataset.t;
+        haptic('light');
+      });
+    });
+
+    const gp = bg.querySelector('#upGeo');
+    gp.addEventListener('click', function(){
+      if(typeof openGeoPickerU === 'function'){
+        openGeoPickerU(function(la, ln){
+          geoLat = la; geoLng = ln;
+          gp.classList.add('on');
+          bg.querySelector('#upGeoN').textContent = la.toFixed(5) + ', ' + ln.toFixed(5);
+        });
+      } else toast('Xarita yuklanmoqda');
+    });
+
+    const gb = bg.querySelector('#upGo');
+    gb.addEventListener('click', function(){
+      const title = bg.querySelector('#upT').value.trim();
+      const price = bg.querySelector('#upP').value.trim();
+      const desc = bg.querySelector('#upD').value.trim();
+
+      if(!title){ toast('Sarlavhani kiriting'); return; }
+
+      const HEADS = {
+        sotuv: 'Sotiladi', ijara: 'Ijaraga beriladi',
+        kunlik: 'Kunlik ijara', student: 'Studentlar uchun'
+      };
+      const full = HEADS[type] + '\n' + title + (desc ? '\n' + desc : '');
+
+      gb.disabled = true;
+      gb.textContent = 'Yuklanmoqda...';
+
+      apiPost('/api/post-qoshish', {
+        items: picked, price: price, description: full,
+        lat: geoLat, lng: geoLng
+      }).then(function(d){
+        if(d.ok){
+          haptic('medium');
+          toast('Elon joylandi');
+          bg.remove();
+          setTimeout(function(){ drawProfile(); }, 2000);
+        } else {
+          toast(d.error || 'Xato');
+          gb.disabled = false;
+          gb.textContent = 'Joylash';
+        }
+      }).catch(function(){
+        toast('Server xatosi');
+        gb.disabled = false;
+        gb.textContent = 'Joylash';
+      });
+    });
+  });
+}
+
+function openGeoPickerU(cb){
+  if(typeof L === 'undefined'){
+    const css = document.createElement('link');
+    css.rel = 'stylesheet';
+    css.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+    document.head.appendChild(css);
+    const s = document.createElement('script');
+    s.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+    s.onload = function(){ showGeo(cb); };
+    document.head.appendChild(s);
+  } else showGeo(cb);
+}
+
+function showGeo(cb){
+  const d = document.createElement('div');
+  d.id = 'geoMap';
+  d.innerHTML = '<div id="geoMapBox"></div>' +
+    '<div class="geo-center">&#128205;</div>' +
+    '<button class="geo-x" id="geoX">&times;</button>' +
+    '<button class="geo-ok" id="geoOk">Shu joyni tasdiqlash</button>';
+  document.body.appendChild(d);
+
+  const m = L.map('geoMapBox', { zoomControl: false, attributionControl: false })
+    .setView([40.9983, 71.6726], 14);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+    { maxZoom: 19 }).addTo(m);
+  L.control.zoom({ position: 'bottomright' }).addTo(m);
+
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(function(p){
+      m.setView([p.coords.latitude, p.coords.longitude], 16);
+    }, function(){}, { timeout: 4000 });
+  }
+
+  document.getElementById('geoX').addEventListener('click', function(){ d.remove(); });
+  document.getElementById('geoOk').addEventListener('click', function(){
+    const c = m.getCenter();
+    d.remove();
+    cb(c.lat, c.lng);
+    haptic('medium');
+  });
+
+  setTimeout(function(){ m.invalidateSize(); }, 200);
 }
