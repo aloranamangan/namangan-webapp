@@ -488,6 +488,11 @@ function openUploadU(){
       '<label class="label">Malumot</label>' +
       '<textarea class="txt" id="upD" placeholder="Qavat, maydon, tamir holati..."></textarea>' +
 
+      ((typeof IS_ADMIN !== 'undefined' && IS_ADMIN)
+        ? '<div class="pano-pick" id="upPano"><span class="ic">&#127760;</span>' +
+          '<span class="tx"><b>360&deg; panorama</b>' +
+          '<span id="upPanoN">Ixtiyoriy &mdash; panorama rasm</span></span></div>'
+        : '') +
       '<div class="geo-pick" id="upGeo"><span class="ic">&#128205;</span>' +
       '<span class="tx"><b>Xaritada belgilash</b>' +
       '<span id="upGeoN">Ixtiyoriy &mdash; xaritadan tanlang</span></span></div>' +
@@ -504,6 +509,18 @@ function openUploadU(){
         bg.querySelectorAll('.tp').forEach(function(x){ x.classList.remove('on'); });
         b.classList.add('on');
         type = b.dataset.t;
+        haptic('light');
+      });
+    });
+
+    let panoData = null;
+    const pp = bg.querySelector('#upPano');
+    if(pp) pp.addEventListener('click', function(){
+      pickFiles(false, function(its){
+        if(!its.length || its[0].is_video){ toast('Faqat rasm'); return; }
+        panoData = its[0].media;
+        pp.classList.add('on');
+        bg.querySelector('#upPanoN').textContent = 'Tanlandi';
         haptic('light');
       });
     });
@@ -540,6 +557,12 @@ function openUploadU(){
         items: picked, price: price, description: full,
         lat: geoLat, lng: geoLng
       }).then(function(d){
+        if(d.ok && panoData){
+          apiPost('/api/pano-qoshish', {
+            media: panoData, price: price,
+            description: '360 panorama\n' + title
+          }).catch(function(){});
+        }
         if(d.ok){
           haptic('medium');
           toast('Elon joylandi');
