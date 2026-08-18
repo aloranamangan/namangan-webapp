@@ -1715,3 +1715,7 @@ body{padding-bottom:80px !important;}
   font-family:inherit;font-size:13px;font-weight:700;
 }
 .tp.on{background:#0095F6;border-color:#0095F6;color:#fff;}
+
+/* Saqlash tugmasi */
+.act.save svg{fill:none;stroke:currentColor;}
+.act.save.on svg{fill:#fff;stroke:#fff;}
