@@ -398,7 +398,7 @@ function showAdminPanels(cb, force){
     "padding:36px 26px;text-align:center;font-family:'Manrope',sans-serif;";
 
   const P = [
-    ['sotuvchi.html', '🏠', 'Sotuvchi paneli', "E'lon joylash, kabinet"],
+    ['sotuvchi.html', '🧩', 'Zaxira 2', 'Eski sotuvchi paneli'],
     ['xaridor.html', '👥', 'Xaridor paneli', "E'lonlarni ko'rish"],
     ['admin.html', '📊', 'Nazorat paneli', 'Foydalanuvchilar boshqaruvi'],
     ['zaxira.html', '⚙️', 'Boshqaruv markazi', 'Reklama, xabar, kanallar']
