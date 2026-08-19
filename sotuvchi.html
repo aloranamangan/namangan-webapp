@@ -165,7 +165,16 @@ body::after{
 <div class="hdr glow">◤ UYGRAM SYSTEM MONITOR<span class="cur"></span></div>
 <button class="bk" id="bk">← EXIT</button>
 
-<div class="box">
+<div class="radar-box">
+  <div class="radar" id="radar">
+    <div class="cross-h"></div>
+    <div class="cross-v"></div>
+    <div class="sweep"></div>
+  </div>
+</div>
+<div class="radar-lb" id="radarLb">SCANNING &middot; <b>0</b> ISSUES</div>
+
+<div class="box" style="margin-top:14px;">
   <div class="box-t">SYSTEM STATUS</div>
   <div class="row"><span><span class="dot" id="dot"></span><b id="st">CONNECTING...</b></span></div>
   <div class="row"><span class="dim">UPTIME</span><span id="up">--</span></div>
