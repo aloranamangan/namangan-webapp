@@ -2,10 +2,14 @@
 let STORIES = [];
 
 function loadStories(cb){
-  api('/api/storylar').then(function(d){
+  api('/api/storylar?t=' + Date.now()).then(function(d){
     STORIES = d.stories || [];
     if(cb) cb();
-  }).catch(function(){ if(cb) cb(); });
+  }).catch(function(e){
+    console.log('Storylar xatosi:', e);
+    STORIES = [];
+    if(cb) cb();
+  });
 }
 
 function groupStories(){
