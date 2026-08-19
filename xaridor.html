@@ -1177,8 +1177,8 @@ document.addEventListener('DOMContentLoaded', function(){
     const cam = el('tbCam');
     if(cam) cam.addEventListener('click', function(){
       haptic('light');
-      if(typeof addStoryQuick === 'function') addStoryQuick();
-      else toast('Storiy qoshish tez orada');
+      if(typeof addStoryU === 'function') addStoryU();
+      else toast('Storiy qoshish');
     });
 
     const hb = el('tbHeart');
