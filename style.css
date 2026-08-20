@@ -1719,3 +1719,133 @@ body{padding-bottom:80px !important;}
 /* Saqlash tugmasi */
 .act.save svg{fill:none;stroke:currentColor;}
 .act.save.on svg{fill:#fff;stroke:#fff;}
+
+/* ═══ KIRISH EKRANI (premium) ═══ */
+.login-scr{
+  position:fixed;inset:0;z-index:9500;
+  background:linear-gradient(165deg,#0A0E1A 0%,#0F1729 45%,#080C16 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:40px 28px;text-align:center;overflow:hidden;
+}
+
+/* Fonda suzuvchi doiralar */
+.login-scr .orb{
+  position:absolute;border-radius:50%;pointer-events:none;
+  filter:blur(50px);opacity:.45;
+}
+.orb.o1{
+  width:280px;height:280px;top:-60px;left:-70px;
+  background:radial-gradient(circle,#0095F6,transparent 70%);
+  animation:float1 14s ease-in-out infinite;
+}
+.orb.o2{
+  width:240px;height:240px;bottom:-50px;right:-60px;
+  background:radial-gradient(circle,#ED4956,transparent 70%);
+  animation:float2 17s ease-in-out infinite;
+}
+.orb.o3{
+  width:200px;height:200px;top:40%;right:-80px;
+  background:radial-gradient(circle,#F5D547,transparent 70%);
+  animation:float3 20s ease-in-out infinite;
+}
+@keyframes float1{
+  0%,100%{transform:translate(0,0) scale(1)}
+  50%{transform:translate(40px,60px) scale(1.15)}
+}
+@keyframes float2{
+  0%,100%{transform:translate(0,0) scale(1)}
+  50%{transform:translate(-50px,-40px) scale(1.2)}
+}
+@keyframes float3{
+  0%,100%{transform:translate(0,0) scale(1)}
+  50%{transform:translate(-60px,50px) scale(.9)}
+}
+
+/* Uy ikonkasi */
+.login-scr .uy-ico{
+  font-size:76px;margin-bottom:22px;position:relative;z-index:2;
+  animation:uyKir 1s cubic-bezier(.2,1,.3,1);
+  filter:drop-shadow(0 8px 24px rgba(0,149,246,.35));
+}
+@keyframes uyKir{
+  0%{opacity:0;transform:translateY(30px) scale(.6)}
+  100%{opacity:1;transform:none}
+}
+
+/* Logotip */
+.login-scr .lg{
+  font-size:42px;font-weight:800;letter-spacing:-1.5px;
+  margin-bottom:12px;position:relative;z-index:2;
+  animation:kirUp .9s .15s cubic-bezier(.2,1,.3,1) both;
+}
+.login-scr .lg .uy{
+  color:#ED4956;
+  text-shadow:-1.5px -1.5px 0 rgba(255,255,255,.9),1.5px -1.5px 0 rgba(255,255,255,.9),
+              -1.5px 1.5px 0 rgba(255,255,255,.9),1.5px 1.5px 0 rgba(255,255,255,.9);
+}
+.login-scr .lg .gram{
+  color:#fff;
+}
+
+/* Tavsif */
+.login-scr .desc{
+  font-size:15px;color:rgba(255,255,255,.62);line-height:1.65;
+  margin-bottom:34px;max-width:290px;position:relative;z-index:2;
+  animation:kirUp .9s .28s cubic-bezier(.2,1,.3,1) both;
+}
+
+/* Imkoniyatlar */
+.login-scr .feats{
+  display:flex;gap:22px;margin-bottom:38px;position:relative;z-index:2;
+  animation:kirUp .9s .4s cubic-bezier(.2,1,.3,1) both;
+}
+.login-scr .feat{text-align:center;}
+.login-scr .feat .e{
+  font-size:26px;display:block;margin-bottom:6px;
+  animation:featPuls 3s ease-in-out infinite;
+}
+.login-scr .feat:nth-child(2) .e{animation-delay:.4s;}
+.login-scr .feat:nth-child(3) .e{animation-delay:.8s;}
+@keyframes featPuls{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.14)}
+}
+.login-scr .feat span{
+  font-size:11px;color:rgba(255,255,255,.5);font-weight:600;
+}
+
+/* Kirish tugmasi */
+.login-scr .btn-tg{
+  width:100%;max-width:320px;padding:17px 0;border:none;border-radius:100px;
+  background:linear-gradient(135deg,#2AABEE,#229ED9);
+  color:#fff;font-size:16px;font-weight:800;cursor:pointer;
+  font-family:'Manrope',sans-serif;position:relative;z-index:2;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  box-shadow:0 8px 28px rgba(42,171,238,.42);
+  overflow:hidden;
+  animation:kirUp .9s .52s cubic-bezier(.2,1,.3,1) both;
+  transition:transform .2s;
+}
+.login-scr .btn-tg::before{
+  content:'';position:absolute;top:0;left:-100%;width:55%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);
+  animation:shineBtn 3.2s ease-in-out infinite;
+}
+@keyframes shineBtn{
+  0%,70%{left:-100%}
+  100%{left:160%}
+}
+.login-scr .btn-tg:active{transform:scale(.97);}
+.login-scr .btn-tg svg{width:22px;height:22px;fill:#fff;}
+
+/* Pastki matn */
+.login-scr .note{
+  font-size:11.5px;color:rgba(255,255,255,.35);margin-top:18px;
+  position:relative;z-index:2;line-height:1.55;
+  animation:kirUp .9s .64s cubic-bezier(.2,1,.3,1) both;
+}
+
+@keyframes kirUp{
+  from{opacity:0;transform:translateY(24px)}
+  to{opacity:1;transform:none}
+}
