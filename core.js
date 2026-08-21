@@ -284,16 +284,26 @@ function checkSession(cb){
 function requireAuth(cb){
   checkSession(function(ok){
     if(ok){ cb(); return; }
+
     document.body.innerHTML =
-      '<div style="min-height:100vh;display:flex;flex-direction:column;' +
-      'align-items:center;justify-content:center;padding:40px 28px;text-align:center;">' +
-      '<div style="font-size:60px;margin-bottom:20px;">&#127968;</div>' +
-      '<h2 style="font-size:24px;font-weight:800;margin-bottom:10px;">UYgram</h2>' +
-      '<p style="font-size:14px;color:#8E8E8E;line-height:1.6;margin-bottom:32px;">' +
-      'Davom etish uchun Telegram akkauntingiz bilan kiring</p>' +
-      '<button id="loginBtn" style="padding:15px 34px;border:none;border-radius:100px;' +
-      'background:#0095F6;color:#fff;font-size:15px;font-weight:800;cursor:pointer;">' +
-      'Telegram bilan kirish</button></div>';
+      '<div class="login-scr">' +
+        '<div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>' +
+        '<div class="uy-ico">\u{1F3E0}</div>' +
+        '<div class="lg"><span class="uy">UY</span><span class="gram">gram</span></div>' +
+        '<div class="desc">Namangandagi eng qulay<br>kochmas mulk platformasi</div>' +
+        '<div class="feats">' +
+          '<div class="feat"><span class="e">\u{1F3E0}</span><span>Elonlar</span></div>' +
+          '<div class="feat"><span class="e">\u{1F4AC}</span><span>Muloqot</span></div>' +
+          '<div class="feat"><span class="e">\u{1F3AF}</span><span>Sovgalar</span></div>' +
+        '</div>' +
+        '<button class="btn-tg" id="loginBtn">' +
+          '<svg viewBox="0 0 24 24"><path d="M23.1 3.2c-.3-.3-.8-.4-1.4-.2L1.6 10.8c-.6.2-.9.6-.9 1s.3.8.9 1l5.1 1.9 2 6c.1.4.4.6.8.6.3 0 .5-.1.7-.3l2.8-2.8 5 3.7c.3.2.6.3.9.3.5 0 .9-.4 1-.9l3.5-16.6c.1-.6 0-1.1-.3-1.5zM8.5 14.2l-3.9-1.5L18 6.4 8.5 14.2zm1.4 4.3l-1.2-3.6 9.4-7.7-6.4 9.4-1.8 1.9z"/></svg>' +
+          'Telegram bilan kirish' +
+        '</button>' +
+        '<div class="note">Bir bosishda kirasiz &middot; Parol kerak emas<br>' +
+        'Malumotlaringiz himoyalangan</div>' +
+      '</div>';
+
     const b = document.getElementById('loginBtn');
     if(b) b.addEventListener('click', goLogin);
   });
