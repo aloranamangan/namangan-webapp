@@ -67,12 +67,12 @@ function showIntro(done){
 
   ko(0);
 
-  const t1 = setTimeout(function(){ ko(1); }, 2000);
-  const t2 = setTimeout(function(){ ko(2); }, 3800);
+  const t1 = setTimeout(function(){ ko(1); }, 3400);
+  const t2 = setTimeout(function(){ ko(2); }, 6400);
   const t3 = setTimeout(function(){
     ov.classList.add('chiq');
     setTimeout(function(){ ov.remove(); done(); }, 650);
-  }, 5200);
+  }, 8800);
 
   // bosilsa o'tkazib yuborish
   ov.addEventListener('click', function(){

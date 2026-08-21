@@ -2102,7 +2102,7 @@ body{padding-bottom:80px !important;}
 .intro-bar i{
   display:block;height:100%;width:0;border-radius:2px;
   background:linear-gradient(90deg,#ED4956,#F5D547);
-  animation:barFill 5.2s linear forwards;
+  animation:barFill 8.8s linear forwards;
 }
 @keyframes barFill{to{width:100%}}
 
@@ -2115,7 +2115,7 @@ body{padding-bottom:80px !important;}
 }
 .map-photo img{
   width:100%;height:100%;object-fit:cover;display:block;
-  animation:photoZoom 5.5s ease-out both;
+  animation:photoZoom 3.4s ease-out both;
 }
 .map-photo::after{
   content:'';position:absolute;inset:0;
