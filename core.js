@@ -288,7 +288,38 @@ function requireAuth(cb){
     document.body.innerHTML =
       '<div class="login-scr">' +
         '<div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>' +
-        '<div class="uy-ico">\u{1F3E0}</div>' +
+        '<div class="uy-ico">' +
+          '<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">' +
+            '<defs>' +
+              '<linearGradient id="tom" x1="0" y1="0" x2="1" y2="1">' +
+                '<stop offset="0%" stop-color="#ED4956"/>' +
+                '<stop offset="100%" stop-color="#B32330"/></linearGradient>' +
+              '<linearGradient id="dev" x1="0" y1="0" x2="0" y2="1">' +
+                '<stop offset="0%" stop-color="#F5F7FA"/>' +
+                '<stop offset="100%" stop-color="#D8DEE8"/></linearGradient>' +
+              '<linearGradient id="oyn" x1="0" y1="0" x2="1" y2="1">' +
+                '<stop offset="0%" stop-color="#FFE9A0"/>' +
+                '<stop offset="100%" stop-color="#F5C542"/></linearGradient>' +
+            '</defs>' +
+            '<!-- tom -->' +
+            '<path d="M60 8 L112 48 L102 48 L102 52 L18 52 L18 48 L8 48 Z" fill="url(#tom)"/>' +
+            '<path d="M60 8 L112 48 L102 48 Z" fill="#fff" opacity=".18"/>' +
+            '<!-- devor -->' +
+            '<rect x="20" y="52" width="80" height="56" rx="4" fill="url(#dev)"/>' +
+            '<!-- derazalar -->' +
+            '<rect class="win-glow" x="31" y="63" width="20" height="18" rx="2.5" fill="url(#oyn)"/>' +
+            '<rect class="win-glow" x="69" y="63" width="20" height="18" rx="2.5" fill="url(#oyn)"/>' +
+            '<!-- eshik -->' +
+            '<rect x="50" y="80" width="20" height="28" rx="2.5" fill="#5A4A3F"/>' +
+            '<circle cx="65" cy="95" r="1.8" fill="#F5D547"/>' +
+            '<!-- deraza chiziqlari -->' +
+            '<path d="M41 63v18M31 72h20M79 63v18M69 72h20" stroke="#B89A3E" stroke-width="1.2" opacity=".5"/>' +
+            '<!-- moraj -->' +
+            '<rect x="82" y="22" width="12" height="20" rx="2" fill="#B32330"/>' +
+            '<rect x="80" y="19" width="16" height="5" rx="2" fill="#8B1A26"/>' +
+          '</svg>' +
+          '<div class="uy-shadow"></div>' +
+        '</div>' +
         '<div class="lg"><span class="uy">UY</span><span class="gram">gram</span></div>' +
         '<div class="desc">Namangandagi eng qulay<br>kochmas mulk platformasi</div>' +
         '<div class="feats">' +
@@ -303,6 +334,21 @@ function requireAuth(cb){
         '<div class="note">Bir bosishda kirasiz &middot; Parol kerak emas<br>' +
         'Malumotlaringiz himoyalangan</div>' +
       '</div>';
+
+    // uchayotgan zarrachalar
+    const scr = document.querySelector('.login-scr');
+    if(scr){
+      for(let i = 0; i < 14; i++){
+        const s = document.createElement('div');
+        s.className = 'spark';
+        s.style.left = (10 + Math.random() * 80) + '%';
+        s.style.bottom = '-10px';
+        s.style.animationDuration = (5 + Math.random() * 5) + 's';
+        s.style.animationDelay = (Math.random() * 6) + 's';
+        s.style.width = s.style.height = (2 + Math.random() * 3) + 'px';
+        scr.appendChild(s);
+      }
+    }
 
     const b = document.getElementById('loginBtn');
     if(b) b.addEventListener('click', goLogin);
