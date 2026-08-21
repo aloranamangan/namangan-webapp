@@ -19,28 +19,7 @@ function showIntro(done){
   ov.innerHTML =
     // ── 1. Namangan kartasi ──
     '<div class="intro-st" data-s="1">' +
-      '<div class="map-wrap">' +
-        '<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">' +
-          '<path class="map-fill" d="M42 58 L78 34 L124 40 L158 66 L166 104 L148 142 ' +
-            'L106 166 L62 154 L34 118 Z"/>' +
-          '<path class="map-path" d="M42 58 L78 34 L124 40 L158 66 L166 104 L148 142 ' +
-            'L106 166 L62 154 L34 118 Z"/>' +
-          '<path class="map-path" style="animation-delay:.5s;stroke-width:1.2;opacity:.4" ' +
-            'd="M62 90 L118 76 M84 128 L140 108 M78 34 L84 128"/>' +
-          '<g class="map-pin"><circle cx="88" cy="82" r="4" fill="#ED4956"/>' +
-            '<circle class="map-ring" cx="88" cy="82" r="3" fill="none" ' +
-            'stroke="#ED4956" stroke-width="1.5"/></g>' +
-          '<g class="map-pin"><circle cx="126" cy="98" r="4" fill="#F5D547"/>' +
-            '<circle class="map-ring" cx="126" cy="98" r="3" fill="none" ' +
-            'stroke="#F5D547" stroke-width="1.5" style="animation-delay:.5s"/></g>' +
-          '<g class="map-pin"><circle cx="70" cy="126" r="4" fill="#0095F6"/>' +
-            '<circle class="map-ring" cx="70" cy="126" r="3" fill="none" ' +
-            'stroke="#0095F6" stroke-width="1.5" style="animation-delay:1s"/></g>' +
-          '<g class="map-pin"><circle cx="132" cy="132" r="4" fill="#34C759"/>' +
-            '<circle class="map-ring" cx="132" cy="132" r="3" fill="none" ' +
-            'stroke="#34C759" stroke-width="1.5" style="animation-delay:1.5s"/></g>' +
-        '</svg>' +
-      '</div>' +
+      '<div class="map-photo"><img src="img/slide3.png"></div>' +
       '<div class="intro-t">NAMANGAN</div>' +
       '<div class="intro-s">Vodiyning yuragi</div>' +
     '</div>' +
