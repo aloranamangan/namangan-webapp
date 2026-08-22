@@ -1,9 +1,5 @@
-const CACHE = 'ni-v36';
-const FILES = [
-  'xaridor.html', 'sotuvchi.html', 'obhavo.html', 'valyuta.html',
-  'style.css', 'weather.css', 'core.js', 'reg.js', 'dm.js', 'story.js', 'profil.js', 'intro.js', 'pano.js',
-  'manifest.json', 'icon-192.png', 'icon-512.png'
-];
+const CACHE = 'ni-v41';
+const FILES = ['manifest.json','icon-192.png','icon-512.png'];
 
 self.addEventListener('install', function(e){
   self.skipWaiting();
