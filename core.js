@@ -285,90 +285,9 @@ function requireAuth(cb){
   checkSession(function(ok){
     if(ok){ cb(); return; }
 
-    document.body.innerHTML =
-      '<div class="login-scr">' +
-        '<div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>' +
-        '<div class="uy-ico">' +
-          '<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">' +
-            '<defs>' +
-              '<linearGradient id="tom" x1="0" y1="0" x2="1" y2="1">' +
-                '<stop offset="0%" stop-color="#ED4956"/>' +
-                '<stop offset="100%" stop-color="#B32330"/></linearGradient>' +
-              '<linearGradient id="dev" x1="0" y1="0" x2="0" y2="1">' +
-                '<stop offset="0%" stop-color="#F5F7FA"/>' +
-                '<stop offset="100%" stop-color="#D8DEE8"/></linearGradient>' +
-              '<linearGradient id="oyn" x1="0" y1="0" x2="1" y2="1">' +
-                '<stop offset="0%" stop-color="#FFE9A0"/>' +
-                '<stop offset="100%" stop-color="#F5C542"/></linearGradient>' +
-            '</defs>' +
-            '<!-- tom -->' +
-            '<path d="M60 8 L112 48 L102 48 L102 52 L18 52 L18 48 L8 48 Z" fill="url(#tom)"/>' +
-            '<path d="M60 8 L112 48 L102 48 Z" fill="#fff" opacity=".18"/>' +
-            '<!-- devor -->' +
-            '<rect x="20" y="52" width="80" height="56" rx="4" fill="url(#dev)"/>' +
-            '<!-- derazalar -->' +
-            '<rect class="win-glow" x="31" y="63" width="20" height="18" rx="2.5" fill="url(#oyn)"/>' +
-            '<rect class="win-glow" x="69" y="63" width="20" height="18" rx="2.5" fill="url(#oyn)"/>' +
-            '<!-- eshik -->' +
-            '<rect x="50" y="80" width="20" height="28" rx="2.5" fill="#5A4A3F"/>' +
-            '<circle cx="65" cy="95" r="1.8" fill="#F5D547"/>' +
-            '<!-- deraza chiziqlari -->' +
-            '<path d="M41 63v18M31 72h20M79 63v18M69 72h20" stroke="#B89A3E" stroke-width="1.2" opacity=".5"/>' +
-            '<!-- moraj -->' +
-            '<rect x="82" y="22" width="12" height="20" rx="2" fill="#B32330"/>' +
-            '<rect x="80" y="19" width="16" height="5" rx="2" fill="#8B1A26"/>' +
-          '</svg>' +
-          '<div class="uy-shadow"></div>' +
-        '</div>' +
-        '<div class="lg"><span class="uy">UY</span><span class="gram">gram</span></div>' +
-        '<div class="desc">Namangandagi eng qulay<br>kochmas mulk platformasi</div>' +
-        '<div class="feats">' +
-          '<div class="feat"><span class="e">\u{1F3E0}</span><span>Elonlar</span></div>' +
-          '<div class="feat"><span class="e">\u{1F4AC}</span><span>Muloqot</span></div>' +
-          '<div class="feat"><span class="e">\u{1F3AF}</span><span>Sovgalar</span></div>' +
-        '</div>' +
-        '<button class="btn-tg" id="loginBtn">' +
-          '<svg viewBox="0 0 24 24"><path d="M23.1 3.2c-.3-.3-.8-.4-1.4-.2L1.6 10.8c-.6.2-.9.6-.9 1s.3.8.9 1l5.1 1.9 2 6c.1.4.4.6.8.6.3 0 .5-.1.7-.3l2.8-2.8 5 3.7c.3.2.6.3.9.3.5 0 .9-.4 1-.9l3.5-16.6c.1-.6 0-1.1-.3-1.5zM8.5 14.2l-3.9-1.5L18 6.4 8.5 14.2zm1.4 4.3l-1.2-3.6 9.4-7.7-6.4 9.4-1.8 1.9z"/></svg>' +
-          'Telegram bilan kirish' +
-        '</button>' +
-        '<div class="yoki">yoki</div>' +
+ 
 
-        '<button class="btn-gg" id="loginGoogle">' +
-          '<svg viewBox="0 0 24 24">' +
-            '<path fill="#4285F4" d="M22.6 12.2c0-.8-.1-1.4-.2-2.1H12v3.9h6c-.1 1-.8 2.6-2.2 3.6l3.4 2.6c2-1.8 3.4-4.6 3.4-8z"/>' +
-            '<path fill="#34A853" d="M12 23c2.9 0 5.4-1 7.2-2.6l-3.4-2.6c-.9.6-2.1 1.1-3.8 1.1-2.9 0-5.3-1.9-6.2-4.5l-3.5 2.7C4.1 20.5 7.8 23 12 23z"/>' +
-            '<path fill="#FBBC05" d="M5.8 14.4c-.2-.7-.4-1.4-.4-2.2s.1-1.5.3-2.2L2.3 7.3C1.5 8.7 1 10.3 1 12.2s.5 3.5 1.3 4.9l3.5-2.7z"/>' +
-            '<path fill="#EA4335" d="M12 5.4c2 0 3.4.9 4.2 1.6l3-3C17.4 2.2 14.9 1 12 1 7.8 1 4.1 3.5 2.3 7.3l3.5 2.7C6.7 7.3 9.1 5.4 12 5.4z"/>' +
-          '</svg>' +
-          'Google bilan kirish' +
-        '</button>' +
-
-        '<div class="note">Bir bosishda kirasiz &middot; Parol kerak emas<br>' +
-        'Malumotlaringiz himoyalangan</div>' +
-      '</div>';
-
-    // uchayotgan zarrachalar
-    const scr = document.querySelector('.login-scr');
-    if(scr){
-      for(let i = 0; i < 14; i++){
-        const s = document.createElement('div');
-        s.className = 'spark';
-        s.style.left = (10 + Math.random() * 80) + '%';
-        s.style.bottom = '-10px';
-        s.style.animationDuration = (5 + Math.random() * 5) + 's';
-        s.style.animationDelay = (Math.random() * 6) + 's';
-        s.style.width = s.style.height = (2 + Math.random() * 3) + 'px';
-        scr.appendChild(s);
-      }
-    }
-
-    const b = document.getElementById('loginBtn');
-    if(b) b.addEventListener('click', goLogin);
-
-    const g = document.getElementById('loginGoogle');
-    if(g) g.addEventListener('click', function(){
-      location.href = 'https://namangan-ijara-bot.onrender.com/google-login';
-    });
+    igLoginScreen();
   });
 }
 
@@ -772,5 +691,88 @@ function openUserProfile(tgId, username){
   }).catch(function(){
     const box = document.getElementById('upBody');
     if(box) box.innerHTML = '<div class="load">Xato yuz berdi</div>';
+  });
+}
+
+// ---------- Instagram uslubidagi kirish ekrani ----------
+function igLoginScreen(){
+  document.body.innerHTML =
+    '<div class="ig-login">' +
+      '<div class="ig-top">' +
+        '<div class="ig-logo"><span class="uy">UY</span><span class="gram">gram</span></div>' +
+        '<div class="ig-slogan">Zamonaviy uylar bizda</div>' +
+
+        '<input class="ig-inp" id="igUser" placeholder="Login yoki telefon" autocomplete="username">' +
+        '<input class="ig-inp" id="igPass" type="password" placeholder="Parol" autocomplete="current-password">' +
+        '<button class="ig-btn" id="igGo" disabled>Kirish</button>' +
+        '<div class="ig-forgot" id="igForgot">Parolni unutdingizmi?</div>' +
+
+        '<div class="ig-or"><span>YOKI</span></div>' +
+
+        '<div class="ig-socials">' +
+          '<button class="ig-soc tg" id="socTg">' +
+            '<svg viewBox="0 0 24 24"><path d="M23.1 3.2c-.3-.3-.8-.4-1.4-.2L1.6 10.8c-.6.2-.9.6-.9 1s.3.8.9 1l5.1 1.9 2 6c.1.4.4.6.8.6.3 0 .5-.1.7-.3l2.8-2.8 5 3.7c.3.2.6.3.9.3.5 0 .9-.4 1-.9l3.5-16.6c.1-.6 0-1.1-.3-1.5zM8.5 14.2l-3.9-1.5L18 6.4 8.5 14.2zm1.4 4.3l-1.2-3.6 9.4-7.7-6.4 9.4-1.8 1.9z"/></svg>' +
+            'Telegram bilan davom etish</button>' +
+
+          '<button class="ig-soc gg" id="socGg">' +
+            '<svg viewBox="0 0 24 24">' +
+            '<path fill="#4285F4" d="M22.6 12.2c0-.8-.1-1.4-.2-2.1H12v3.9h6c-.1 1-.8 2.6-2.2 3.6l3.4 2.6c2-1.8 3.4-4.6 3.4-8z"/>' +
+            '<path fill="#34A853" d="M12 23c2.9 0 5.4-1 7.2-2.6l-3.4-2.6c-.9.6-2.1 1.1-3.8 1.1-2.9 0-5.3-1.9-6.2-4.5l-3.5 2.7C4.1 20.5 7.8 23 12 23z"/>' +
+            '<path fill="#FBBC05" d="M5.8 14.4c-.2-.7-.4-1.4-.4-2.2s.1-1.5.3-2.2L2.3 7.3C1.5 8.7 1 10.3 1 12.2s.5 3.5 1.3 4.9l3.5-2.7z"/>' +
+            '<path fill="#EA4335" d="M12 5.4c2 0 3.4.9 4.2 1.6l3-3C17.4 2.2 14.9 1 12 1 7.8 1 4.1 3.5 2.3 7.3l3.5 2.7C6.7 7.3 9.1 5.4 12 5.4z"/></svg>' +
+            'Google bilan davom etish</button>' +
+
+          '<button class="ig-soc fb" id="socFb">' +
+            '<svg viewBox="0 0 24 24"><path d="M24 12c0-6.6-5.4-12-12-12S0 5.4 0 12c0 6 4.4 11 10.1 11.9v-8.4H7.1V12h3V9.4c0-3 1.8-4.6 4.5-4.6 1.3 0 2.6.2 2.6.2v2.9h-1.5c-1.5 0-1.9.9-1.9 1.8V12h3.3l-.5 3.5h-2.8v8.4C19.6 23 24 18 24 12z"/></svg>' +
+            'Facebook bilan davom etish</button>' +
+        '</div>' +
+
+        '<div class="ig-team" id="igTeam">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' +
+          '<rect x="2" y="2" width="20" height="20" rx="5"/>' +
+          '<circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>' +
+          'DIKKIYLORD JAMOASI' +
+        '</div>' +
+      '</div>' +
+
+      '<div class="ig-bottom">Hisobingiz yoqmi? <b id="igReg">Royxatdan oting</b></div>' +
+    '</div>';
+
+  // Tugmalarni ulash
+  const u = document.getElementById('igUser');
+  const p = document.getElementById('igPass');
+  const g = document.getElementById('igGo');
+
+  function tekshir(){
+    g.disabled = !(u.value.trim().length >= 3 && p.value.length >= 4);
+  }
+  u.addEventListener('input', tekshir);
+  p.addEventListener('input', tekshir);
+
+  g.addEventListener('click', function(){
+    toast('Login/parol tez orada ishga tushadi');
+  });
+
+  document.getElementById('igForgot').addEventListener('click', function(){
+    toast('Telegram yoki Google bilan kiring');
+  });
+
+  document.getElementById('igReg').addEventListener('click', function(){
+    toast('Telegram yoki Google bilan kiring');
+  });
+
+  document.getElementById('socTg').addEventListener('click', goLogin);
+
+  document.getElementById('socGg').addEventListener('click', function(){
+    location.href = 'https://namangan-ijara-bot.onrender.com/google-login';
+  });
+
+  document.getElementById('socFb').addEventListener('click', function(){
+    toast('Facebook tez orada');
+  });
+
+  document.getElementById('igTeam').addEventListener('click', function(){
+    const url = 'https://instagram.com/dikkiylord';
+    if(TG && TG.openLink) TG.openLink(url); else window.open(url, '_blank');
   });
 }
