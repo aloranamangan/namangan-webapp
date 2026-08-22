@@ -331,6 +331,18 @@ function requireAuth(cb){
           '<svg viewBox="0 0 24 24"><path d="M23.1 3.2c-.3-.3-.8-.4-1.4-.2L1.6 10.8c-.6.2-.9.6-.9 1s.3.8.9 1l5.1 1.9 2 6c.1.4.4.6.8.6.3 0 .5-.1.7-.3l2.8-2.8 5 3.7c.3.2.6.3.9.3.5 0 .9-.4 1-.9l3.5-16.6c.1-.6 0-1.1-.3-1.5zM8.5 14.2l-3.9-1.5L18 6.4 8.5 14.2zm1.4 4.3l-1.2-3.6 9.4-7.7-6.4 9.4-1.8 1.9z"/></svg>' +
           'Telegram bilan kirish' +
         '</button>' +
+        '<div class="yoki">yoki</div>' +
+
+        '<button class="btn-gg" id="loginGoogle">' +
+          '<svg viewBox="0 0 24 24">' +
+            '<path fill="#4285F4" d="M22.6 12.2c0-.8-.1-1.4-.2-2.1H12v3.9h6c-.1 1-.8 2.6-2.2 3.6l3.4 2.6c2-1.8 3.4-4.6 3.4-8z"/>' +
+            '<path fill="#34A853" d="M12 23c2.9 0 5.4-1 7.2-2.6l-3.4-2.6c-.9.6-2.1 1.1-3.8 1.1-2.9 0-5.3-1.9-6.2-4.5l-3.5 2.7C4.1 20.5 7.8 23 12 23z"/>' +
+            '<path fill="#FBBC05" d="M5.8 14.4c-.2-.7-.4-1.4-.4-2.2s.1-1.5.3-2.2L2.3 7.3C1.5 8.7 1 10.3 1 12.2s.5 3.5 1.3 4.9l3.5-2.7z"/>' +
+            '<path fill="#EA4335" d="M12 5.4c2 0 3.4.9 4.2 1.6l3-3C17.4 2.2 14.9 1 12 1 7.8 1 4.1 3.5 2.3 7.3l3.5 2.7C6.7 7.3 9.1 5.4 12 5.4z"/>' +
+          '</svg>' +
+          'Google bilan kirish' +
+        '</button>' +
+
         '<div class="note">Bir bosishda kirasiz &middot; Parol kerak emas<br>' +
         'Malumotlaringiz himoyalangan</div>' +
       '</div>';
@@ -352,6 +364,11 @@ function requireAuth(cb){
 
     const b = document.getElementById('loginBtn');
     if(b) b.addEventListener('click', goLogin);
+
+    const g = document.getElementById('loginGoogle');
+    if(g) g.addEventListener('click', function(){
+      location.href = 'https://namangan-ijara-bot.onrender.com/google-login';
+    });
   });
 }
 
