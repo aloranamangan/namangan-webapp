@@ -21,7 +21,12 @@ function isApk(){
   return !TG || !TG.initData;
 }
 
+function loginTozala(){
+  try { localStorage.removeItem('ni_logout'); } catch(e){}
+}
+
 function goLogin(){
+  loginTozala();
   location.href = 'https://namangan-ijara-bot.onrender.com/login';
 }
 
@@ -282,6 +287,15 @@ function checkSession(cb){
 }
 
 function requireAuth(cb){
+  // Chiqib ketganmi?
+  let chiqqan = false;
+  try { chiqqan = localStorage.getItem('ni_logout') === '1'; } catch(e){}
+
+  if(chiqqan){
+    igLoginScreen();
+    return;
+  }
+
   checkSession(function(ok){
     if(ok){ cb(); return; }
 
@@ -764,6 +778,7 @@ function igLoginScreen(){
   document.getElementById('socTg').addEventListener('click', goLogin);
 
   document.getElementById('socGg').addEventListener('click', function(){
+    loginTozala();
     location.href = 'https://namangan-ijara-bot.onrender.com/google-login';
   });
 
