@@ -7,7 +7,7 @@
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#000000">
 <link rel="apple-touch-icon" href="icon-192.png">
-<link rel="stylesheet" href="style.css?v=1787422627">
+<link rel="stylesheet" href="style.css?v=1787423354">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
@@ -28,8 +28,40 @@
     <button id="tbDm" title="Xabarlar">
       <svg viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
     </button>
+    <button id="tbMenu" title="Menyu">
+      <span class="burger"><i></i><i></i><i></i></span>
+    </button>
   </div>
 </header>
+
+<div class="side-bg" id="smBg"></div>
+<div class="side-menu" id="smMenu">
+  <div class="sm-hd">
+    <img id="smAva" src="">
+    <div class="i"><b id="smNom">—</b><span id="smSub">—</span></div>
+  </div>
+
+  <button class="sm-item" data-a="profil"><span class="e">👤</span>Profil</button>
+  <button class="sm-item" data-a="saqlangan"><span class="e">🔖</span>Saqlangan</button>
+  <button class="sm-item" data-a="referal"><span class="e">🎁</span>Referal dastur</button>
+
+  <div class="sm-sep"></div>
+
+  <button class="sm-item" data-a="valyuta"><span class="e">💰</span>Valyuta kursi</button>
+  <button class="sm-item" data-a="obhavo"><span class="e">🌤</span>Ob-havo</button>
+  <button class="sm-item" data-a="xarita"><span class="e">🗺</span>Xarita</button>
+
+  <div class="sm-sep"></div>
+
+  <button class="sm-item" data-a="lang"><span class="e">🌐</span>Til</button>
+  <button class="sm-item" id="smAdmin" data-a="panel" style="display:none;">
+    <span class="e">⚙️</span>Boshqaruv markazi</button>
+
+  <div class="sm-sep"></div>
+
+  <button class="sm-item danger" data-a="chiqish"><span class="e">🚪</span>Chiqish</button>
+</div>
+
 
 <div class="view on" id="vFeed">
   <div class="stories" id="stories"></div>
@@ -1202,6 +1234,76 @@ document.addEventListener('DOMContentLoaded', function(){
     });
   }, 600);
 });
+
+function menyuOch(){
+  const bg = el('smBg'), m = el('smMenu');
+  if(!bg || !m) return;
+
+  const u = (typeof PF !== 'undefined' && PF) ? PF : (USER || {});
+  const nm = u.name || 'Foydalanuvchi';
+  const av = u.avatar ? mediaUrl(u.avatar)
+    : 'https://api.dicebear.com/7.x/initials/svg?seed=' + encodeURIComponent(nm);
+
+  el('smAva').src = av;
+  el('smNom').textContent = nm;
+  el('smSub').textContent = u.username ? ('@' + u.username) : (u.nickname ? '@' + u.nickname : '');
+
+  const ad = el('smAdmin');
+  if(ad) ad.style.display = (typeof IS_ADMIN !== 'undefined' && IS_ADMIN) ? '' : 'none';
+
+  bg.classList.add('ochiq');
+  m.classList.add('ochiq');
+  haptic('light');
+}
+
+function menyuYop(){
+  const bg = el('smBg'), m = el('smMenu');
+  if(bg) bg.classList.remove('ochiq');
+  if(m) m.classList.remove('ochiq');
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  setTimeout(function(){
+    const mb = el('tbMenu');
+    if(mb) mb.addEventListener('click', menyuOch);
+
+    const bg = el('smBg');
+    if(bg) bg.addEventListener('click', menyuYop);
+
+    document.querySelectorAll('.sm-item').forEach(function(b){
+      b.addEventListener('click', function(){
+        const a = b.dataset.a;
+        menyuYop();
+        haptic('light');
+
+        if(a === 'profil'){ go('vProfile'); if(typeof drawProfile === 'function') drawProfile(); return; }
+        if(a === 'saqlangan'){ go('vProfile'); setTimeout(function(){
+          const t = document.querySelector('.pf-tab[data-tb="saved"]');
+          if(t) t.click();
+        }, 400); return; }
+        if(a === 'lang'){ if(typeof openLangPicker === 'function') openLangPicker(); return; }
+        if(a === 'panel'){ location.href = 'zaxira.html'; return; }
+        if(a === 'chiqish'){ chiqish(); return; }
+        location.href = a + '.html';
+      });
+    });
+  }, 700);
+});
+
+function chiqish(){
+  if(!confirm('Hisobdan chiqasizmi?\n\nQayta kirish uchun Telegram yoki Google kerak boladi.')) return;
+
+  try {
+    localStorage.removeItem('ni_token');
+    localStorage.removeItem('ni_uid');
+    localStorage.removeItem('ni_admin_panel');
+    localStorage.removeItem('ni_role');
+    sessionStorage.clear();
+  } catch(e){}
+
+  toast('Chiqildi');
+  setTimeout(function(){ location.reload(); }, 600);
+}
 </script>
 </body>
 </html>
