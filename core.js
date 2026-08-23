@@ -764,16 +764,43 @@ function igLoginScreen(){
   p.addEventListener('input', tekshir);
 
   g.addEventListener('click', function(){
-    toast('Login/parol tez orada ishga tushadi');
+    const lg = u.value.trim().toLowerCase();
+    const pw = p.value;
+
+    g.disabled = true;
+    g.textContent = 'Tekshirilmoqda...';
+
+    apiPost('/api/kirish', { login: lg, parol: pw }).then(function(d){
+      if(d.ok && d.token){
+        try {
+          localStorage.setItem('ni_token', d.token);
+          localStorage.removeItem('ni_logout');
+        } catch(e){}
+        haptic('medium');
+        toast('Xush kelibsiz!');
+        setTimeout(function(){ location.reload(); }, 600);
+      } else {
+        toast(d.error || 'Login yoki parol xato');
+        g.disabled = false;
+        g.textContent = 'Kirish';
+      }
+    }).catch(function(){
+      toast('Server xatosi');
+      g.disabled = false;
+      g.textContent = 'Kirish';
+    });
+  });
+
+  // Enter bilan kirish
+  p.addEventListener('keypress', function(e){
+    if(e.key === 'Enter' && !g.disabled) g.click();
   });
 
   document.getElementById('igForgot').addEventListener('click', function(){
-    toast('Telegram yoki Google bilan kiring');
+    toast('Telegram yoki Google bilan kirib, parolni tiklang');
   });
 
-  document.getElementById('igReg').addEventListener('click', function(){
-    toast('Telegram yoki Google bilan kiring');
-  });
+  document.getElementById('igReg').addEventListener('click', royxatOyna);
 
   document.getElementById('socTg').addEventListener('click', goLogin);
 
@@ -790,4 +817,121 @@ function igLoginScreen(){
     const url = 'https://instagram.com/dikkiylord';
     if(TG && TG.openLink) TG.openLink(url); else window.open(url, '_blank');
   });
+}
+
+// ---------- Ro'yxatdan o'tish oynasi ----------
+function royxatOyna(){
+  const bg = document.createElement('div');
+  bg.className = 'ig-login';
+  bg.style.zIndex = '9600';
+
+  bg.innerHTML =
+    '<div class="ig-top">' +
+      '<div class="ig-logo"><span class="uy">UY</span><span class="gram">gram</span></div>' +
+      '<div class="ig-slogan">Royxatdan oting</div>' +
+
+      '<input class="ig-inp" id="rgIsm" placeholder="Ism familiya" autocomplete="name">' +
+      '<input class="ig-inp" id="rgLogin" placeholder="Login (lotin harflari)" autocomplete="username">' +
+      '<div class="un-msg" id="rgMsg" style="margin:-4px 0 8px 4px;"></div>' +
+      '<input class="ig-inp" id="rgPass" type="password" placeholder="Parol (kamida 6 belgi)" autocomplete="new-password">' +
+      '<input class="ig-inp" id="rgPass2" type="password" placeholder="Parolni takrorlang" autocomplete="new-password">' +
+      '<button class="ig-btn" id="rgGo" disabled>Royxatdan otish</button>' +
+
+      '<div class="ig-forgot" id="rgBack" style="margin-top:22px;">&#8592; Kirish sahifasiga qaytish</div>' +
+    '</div>';
+
+  document.body.appendChild(bg);
+
+  const ism = bg.querySelector('#rgIsm');
+  const lg = bg.querySelector('#rgLogin');
+  const p1 = bg.querySelector('#rgPass');
+  const p2 = bg.querySelector('#rgPass2');
+  const msg = bg.querySelector('#rgMsg');
+  const go = bg.querySelector('#rgGo');
+
+  let loginOk = false;
+  let tm = null;
+
+  function tekshir(){
+    go.disabled = !(
+      ism.value.trim().length >= 3 &&
+      loginOk &&
+      p1.value.length >= 6 &&
+      p1.value === p2.value
+    );
+  }
+
+  [ism, p1, p2].forEach(function(e){ e.addEventListener('input', tekshir); });
+
+  lg.addEventListener('input', function(){
+    const v = lg.value.trim().toLowerCase();
+    clearTimeout(tm);
+    loginOk = false;
+
+    if(!v){ msg.textContent = ''; msg.className = 'un-msg'; tekshir(); return; }
+
+    if(!/^[a-z0-9._]{4,32}$/.test(v)){
+      msg.textContent = '\u2717 4-32 belgi, lotin harflari, raqam, nuqta';
+      msg.className = 'un-msg busy';
+      tekshir();
+      return;
+    }
+
+    msg.textContent = 'Tekshirilmoqda...';
+    msg.className = 'un-msg check';
+
+    tm = setTimeout(function(){
+      api('/api/nom-tekshir?uname=' + encodeURIComponent(v)).then(function(d){
+        if(d.free){
+          msg.textContent = '\u2713 Bosh';
+          msg.className = 'un-msg free';
+          loginOk = true;
+        } else {
+          msg.textContent = '\u2717 Band';
+          msg.className = 'un-msg busy';
+          loginOk = false;
+        }
+        tekshir();
+      }).catch(function(){ msg.textContent = ''; });
+    }, 500);
+  });
+
+  p2.addEventListener('input', function(){
+    if(p2.value && p1.value !== p2.value){
+      p2.style.borderColor = '#ED4956';
+    } else {
+      p2.style.borderColor = '';
+    }
+  });
+
+  go.addEventListener('click', function(){
+    go.disabled = true;
+    go.textContent = 'Yaratilmoqda...';
+
+    apiPost('/api/royxat', {
+      ism: ism.value.trim(),
+      login: lg.value.trim().toLowerCase(),
+      parol: p1.value
+    }).then(function(d){
+      if(d.ok && d.token){
+        try {
+          localStorage.setItem('ni_token', d.token);
+          localStorage.removeItem('ni_logout');
+        } catch(e){}
+        haptic('medium');
+        toast('Xush kelibsiz!');
+        setTimeout(function(){ location.reload(); }, 700);
+      } else {
+        toast(d.error || 'Xato');
+        go.disabled = false;
+        go.textContent = 'Royxatdan otish';
+      }
+    }).catch(function(){
+      toast('Server xatosi');
+      go.disabled = false;
+      go.textContent = 'Royxatdan otish';
+    });
+  });
+
+  bg.querySelector('#rgBack').addEventListener('click', function(){ bg.remove(); });
 }
