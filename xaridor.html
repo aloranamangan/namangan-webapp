@@ -162,15 +162,11 @@ function bootAfterIntro(){
 }
 
 function bootAfterLang(){
-  if(typeof showSplash === 'function' && isApk()){
-    if(false) showSplash(function(){
-      requireAuth(function(){
-        checkSubs(function(){ askRole(function(){ bootAuthed(); }); });
-      });
+  requireAuth(function(){
+    checkSubs(function(){
+      askRole(function(){ bootAuthed(); });
     });
-  } else {
-    requireAuth(function(){ checkSubs(function(){ bootAuthed(); }); });
-  }
+  });
 }
 
 function bootAuthed(){
