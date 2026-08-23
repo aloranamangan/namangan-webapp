@@ -853,15 +853,18 @@ function royxatOyna(){
   let tm = null;
 
   function tekshir(){
+    const lgV = lg.value.trim().toLowerCase();
+    const lgOk = /^[a-z0-9._]{4,32}$/.test(lgV);
+
     go.disabled = !(
       ism.value.trim().length >= 3 &&
-      loginOk &&
+      lgOk &&
       p1.value.length >= 6 &&
       p1.value === p2.value
     );
   }
 
-  [ism, p1, p2].forEach(function(e){ e.addEventListener('input', tekshir); });
+  [ism, lg, p1, p2].forEach(function(e){ e.addEventListener('input', tekshir); });
 
   lg.addEventListener('input', function(){
     const v = lg.value.trim().toLowerCase();
