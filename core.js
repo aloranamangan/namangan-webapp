@@ -881,18 +881,26 @@ function royxatOyna(){
     msg.className = 'un-msg check';
 
     tm = setTimeout(function(){
-      api('/api/nom-tekshir?uname=' + encodeURIComponent(v)).then(function(d){
-        if(d.free){
-          msg.textContent = '\u2713 Bosh';
+      fetch(API + '/api/nom-tekshir?uname=' + encodeURIComponent(v))
+        .then(function(r){ return r.json(); })
+        .then(function(d){
+          if(d && d.free){
+            msg.textContent = '\u2713 Bosh';
+            msg.className = 'un-msg free';
+            loginOk = true;
+          } else {
+            msg.textContent = '\u2717 ' + ((d && d.msg) || 'Band');
+            msg.className = 'un-msg busy';
+            loginOk = false;
+          }
+          tekshir();
+        })
+        .catch(function(){
+          msg.textContent = '\u2713 Davom eting';
           msg.className = 'un-msg free';
           loginOk = true;
-        } else {
-          msg.textContent = '\u2717 Band';
-          msg.className = 'un-msg busy';
-          loginOk = false;
-        }
-        tekshir();
-      }).catch(function(){ msg.textContent = ''; });
+          tekshir();
+        });
     }, 500);
   });
 
