@@ -868,43 +868,16 @@ function royxatOyna(){
 
   lg.addEventListener('input', function(){
     const v = lg.value.trim().toLowerCase();
-    clearTimeout(tm);
-    loginOk = false;
 
-    if(!v){ msg.textContent = ''; msg.className = 'un-msg'; tekshir(); return; }
+    if(!v){ msg.textContent = ''; msg.className = 'un-msg'; return; }
 
     if(!/^[a-z0-9._]{4,32}$/.test(v)){
       msg.textContent = '\u2717 4-32 belgi, lotin harflari, raqam, nuqta';
       msg.className = 'un-msg busy';
-      tekshir();
-      return;
+    } else {
+      msg.textContent = '\u2713 Yaxshi';
+      msg.className = 'un-msg free';
     }
-
-    msg.textContent = 'Tekshirilmoqda...';
-    msg.className = 'un-msg check';
-
-    tm = setTimeout(function(){
-      fetch(API + '/api/nom-tekshir?uname=' + encodeURIComponent(v))
-        .then(function(r){ return r.json(); })
-        .then(function(d){
-          if(d && d.free){
-            msg.textContent = '\u2713 Bosh';
-            msg.className = 'un-msg free';
-            loginOk = true;
-          } else {
-            msg.textContent = '\u2717 ' + ((d && d.msg) || 'Band');
-            msg.className = 'un-msg busy';
-            loginOk = false;
-          }
-          tekshir();
-        })
-        .catch(function(){
-          msg.textContent = '\u2713 Davom eting';
-          msg.className = 'un-msg free';
-          loginOk = true;
-          tekshir();
-        });
-    }, 500);
   });
 
   p2.addEventListener('input', function(){
