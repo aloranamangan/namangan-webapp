@@ -770,7 +770,11 @@ function igLoginScreen(){
     g.disabled = true;
     g.textContent = 'Tekshirilmoqda...';
 
-    apiPost('/api/kirish', { login: lg, parol: pw }).then(function(d){
+    fetch(API + '/api/kirish', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ login: lg, parol: pw })
+    }).then(function(r){ return r.json(); }).then(function(d){
       if(d.ok && d.token){
         try {
           localStorage.setItem('ni_token', d.token);
@@ -892,11 +896,15 @@ function royxatOyna(){
     go.disabled = true;
     go.textContent = 'Yaratilmoqda...';
 
-    apiPost('/api/royxat', {
-      ism: ism.value.trim(),
-      login: lg.value.trim().toLowerCase(),
-      parol: p1.value
-    }).then(function(d){
+    fetch(API + '/api/royxat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ism: ism.value.trim(),
+        login: lg.value.trim().toLowerCase(),
+        parol: p1.value
+      })
+    }).then(function(r){ return r.json(); }).then(function(d){
       if(d.ok && d.token){
         try {
           localStorage.setItem('ni_token', d.token);
