@@ -1,4 +1,4 @@
-const API = 'https://types-mayor-items-spend.trycloudflare.com';
+const API = 'https://namangan-ijara-bot.onrender.com';
 const TG = (window.Telegram && window.Telegram.WebApp) ? window.Telegram.WebApp : null;
 
 function tgReady(){
@@ -27,7 +27,7 @@ function loginTozala(){
 
 function goLogin(){
   loginTozala();
-  location.href = 'https://types-mayor-items-spend.trycloudflare.com/login';
+  location.href = 'https://namangan-ijara-bot.onrender.com/login';
 }
 
 function myId(){
@@ -810,12 +810,12 @@ function igLoginScreen(){
 
   document.getElementById('socGg').addEventListener('click', function(){
     loginTozala();
-    location.href = 'https://types-mayor-items-spend.trycloudflare.com/google-login';
+    location.href = 'https://namangan-ijara-bot.onrender.com/google-login';
   });
 
   document.getElementById('socFb').addEventListener('click', function(){
     loginTozala();
-    location.href = 'https://types-mayor-items-spend.trycloudflare.com/facebook-login';
+    location.href = 'https://namangan-ijara-bot.onrender.com/facebook-login';
   });
 
   document.getElementById('igTeam').addEventListener('click', function(){
