@@ -814,7 +814,8 @@ function igLoginScreen(){
   });
 
   document.getElementById('socFb').addEventListener('click', function(){
-    toast('Facebook tez orada');
+    loginTozala();
+    location.href = 'https://namangan-ijara-bot.onrender.com/facebook-login';
   });
 
   document.getElementById('igTeam').addEventListener('click', function(){
