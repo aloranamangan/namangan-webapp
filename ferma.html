@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>Ferma</title>
-<link rel="stylesheet" href="style.css?v=1787822027">
+<link rel="stylesheet" href="style.css?v=1787822125">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
 body{
@@ -270,25 +270,55 @@ function drawWheel(){
   const segs = FM.gildirak || [];
   const n = segs.length;
   const ang = 360 / n;
+  const R = 130, CX = 145, CY = 145;
 
-  const RANG = ['#8BC34A','#689F38','#AED581','#7CB342','#9CCC65',
-                '#558B2F','#C5E1A5','#33691E','#DCEDC8','#FFD54F','#FF6F00'];
+  const RANG = ['#7CB342','#558B2F','#8BC34A','#689F38','#9CCC65',
+                '#33691E','#AED581','#43A047','#66BB6A','#FFA000','#E65100'];
+
+  // Sektorlarni SVG bilan chizamiz
+  let paths = '';
+  for(let i = 0; i < n; i++){
+    const a1 = (i * ang - 90) * Math.PI / 180;
+    const a2 = ((i + 1) * ang - 90) * Math.PI / 180;
+
+    const x1 = CX + R * Math.cos(a1), y1 = CY + R * Math.sin(a1);
+    const x2 = CX + R * Math.cos(a2), y2 = CY + R * Math.sin(a2);
+    const big = ang > 180 ? 1 : 0;
+
+    paths += '<path d="M' + CX + ' ' + CY + ' L' + x1.toFixed(1) + ' ' + y1.toFixed(1) +
+      ' A' + R + ' ' + R + ' 0 ' + big + ' 1 ' + x2.toFixed(1) + ' ' + y2.toFixed(1) + ' Z" ' +
+      'fill="' + RANG[i % RANG.length] + '" stroke="rgba(0,0,0,.15)" stroke-width="1"/>';
+
+    // Matn
+    const am = ((i + 0.5) * ang - 90) * Math.PI / 180;
+    const tr = R * 0.66;
+    const tx = CX + tr * Math.cos(am), ty = CY + tr * Math.sin(am);
+    const rot = (i + 0.5) * ang;
+
+    const nom = segs[i].nom;
+    const kichik = nom.length > 6;
+
+    paths += '<text x="' + tx.toFixed(1) + '" y="' + ty.toFixed(1) + '" ' +
+      'text-anchor="middle" dominant-baseline="middle" ' +
+      'fill="#fff" font-size="' + (kichik ? 9 : 11) + '" font-weight="800" ' +
+      'font-family="Manrope,sans-serif" ' +
+      'transform="rotate(' + rot.toFixed(1) + ' ' + tx.toFixed(1) + ' ' + ty.toFixed(1) + ')" ' +
+      'style="text-shadow:0 1px 3px rgba(0,0,0,.5)">' + esc(nom) + '</text>';
+  }
 
   el('fmBody').innerHTML =
     '<div class="wh-wrap">' +
-      '<div class="wh-box">' +
-        '<div class="wh-arrow"></div>' +
-        '<div class="wh" id="whEl">' +
-          segs.map(function(s, i){
-            return '<div class="wh-seg" style="' +
-              'transform:rotate(' + (i * ang) + 'deg) skewY(' + (90 - ang) + 'deg);' +
-              'background:' + RANG[i % RANG.length] + ';">' +
-              '<span style="transform:skewY(' + (ang - 90) + 'deg) rotate(' + (ang/2) + 'deg);' +
-              'display:block;">' + esc(s.nom) + '</span></div>';
-          }).join('') +
-        '</div>' +
-        '<div class="wh-center">🎡</div>' +
+      '<div class="wh-box2">' +
+        '<div class="wh-arrow2"></div>' +
+        '<svg id="whEl" viewBox="0 0 290 290" class="wh-svg">' +
+          '<circle cx="145" cy="145" r="136" fill="none" stroke="#8BC34A" stroke-width="7"/>' +
+          paths +
+          '<circle cx="145" cy="145" r="30" fill="#2D5016" stroke="#8BC34A" stroke-width="3"/>' +
+          '<text x="145" y="145" text-anchor="middle" dominant-baseline="middle" ' +
+          'font-size="26">\u{1F33E}</text>' +
+        '</svg>' +
       '</div>' +
+
       (FM.spin > 0
         ? '<button class="wh-btn" id="whGo">Aylantirish</button>' +
           '<div class="wh-cnt">Aylantirishlar: <b style="color:#8BC34A;">' +
