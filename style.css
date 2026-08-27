@@ -2569,3 +2569,20 @@ body{padding-bottom:80px !important;}
 /* Ferma tablar - 6 ta */
 .fm-tabs{flex-wrap:wrap;gap:6px !important;}
 .fm-tab{flex:1 1 30% !important;font-size:10.5px !important;padding:9px 2px !important;}
+
+/* Mayning boshlash tugmasi */
+.mn-start{padding:0 20px 16px;}
+.mn-start button{
+  width:100%;padding:18px 0;border:none;border-radius:100px;
+  background:linear-gradient(135deg,#FFD54F,#FFA000);
+  color:#3E2723;font-size:16px;font-weight:800;
+  cursor:pointer;font-family:'Manrope',sans-serif;
+  letter-spacing:.04em;
+  box-shadow:0 8px 30px rgba(255,213,79,.42);
+  animation:mnStartPuls 2.4s ease-in-out infinite;
+}
+@keyframes mnStartPuls{
+  0%,100%{box-shadow:0 8px 30px rgba(255,213,79,.42),0 0 0 0 rgba(255,213,79,.4)}
+  50%{box-shadow:0 8px 30px rgba(255,213,79,.5),0 0 0 14px rgba(255,213,79,0)}
+}
+.mn-start button:active{transform:scale(.98);}
