@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>Ferma</title>
-<link rel="stylesheet" href="style.css?v=1787822605">
+<link rel="stylesheet" href="style.css?v=1787823423">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
 body{
@@ -321,10 +321,10 @@ function drawWheel(){
         '</svg>' +
       '</div>' +
 
-      (FM.spin > 0
+      ((FM.spin > 0 || FM.admin)
         ? '<button class="wh-btn" id="whGo">Aylantirish</button>' +
           '<div class="wh-cnt">Aylantirishlar: <b style="color:#8BC34A;">' +
-          FM.spin + '</b></div>'
+          (FM.admin ? '\u221E' : FM.spin) + '</b></div>'
         : '<div class="no-spin">' +
             '<div class="e">\u{1F517}</div>' +
             '<b>Aylantirish tugadi</b>' +
@@ -421,10 +421,10 @@ function drawWheel2(){
         '</svg>' +
       '</div>' +
 
-      (FM.spin2 > 0
+      ((FM.spin2 > 0 || FM.admin)
         ? '<button class="wh-btn gold" id="wh2Go">Aylantirish</button>' +
           '<div class="wh-cnt">Aylantirishlar: <b style="color:#FFD54F;">' +
-          FM.spin2 + '</b></div>'
+          (FM.admin ? '\u221E' : FM.spin2) + '</b></div>'
         : '<div class="no-spin">' +
             '<div class="e">\u{1F517}</div>' +
             '<b>Aylantirish tugadi</b>' +
