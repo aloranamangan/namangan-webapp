@@ -446,6 +446,7 @@ function showAdminPanels(cb, force){
 // ---------- Majburiy obuna ----------
 function checkSubs(cb){
   const id = myId();
+  if(id && id < 0){ cb(true); return; }
   if(!id){ cb(true); return; }
 
   api('/api/obuna-tekshir?tg_id=' + id).then(function(d){
