@@ -2586,3 +2586,45 @@ body{padding-bottom:80px !important;}
   50%{box-shadow:0 8px 30px rgba(255,213,79,.5),0 0 0 14px rgba(255,213,79,0)}
 }
 .mn-start button:active{transform:scale(.98);}
+
+/* Mayning - urish animatsiyasi */
+.mn-img-w.ish .mn-img{
+  animation:mnUrish 1.1s ease-in-out infinite !important;
+  transform-origin:50% 85%;
+}
+@keyframes mnUrish{
+  0%   {transform:rotate(0deg) translateY(0)}
+  20%  {transform:rotate(-13deg) translateY(-9px)}
+  38%  {transform:rotate(-16deg) translateY(-11px)}
+  52%  {transform:rotate(9deg) translateY(4px)}
+  60%  {transform:rotate(11deg) translateY(6px)}
+  72%  {transform:rotate(2deg) translateY(1px)}
+  100% {transform:rotate(0deg) translateY(0)}
+}
+
+/* Zarba to'lqini */
+.mn-hit{
+  position:absolute;bottom:24px;left:50%;
+  width:64px;height:64px;border-radius:50%;
+  transform:translateX(-50%);
+  border:3px solid rgba(255,213,79,.75);
+  opacity:0;pointer-events:none;z-index:1;
+}
+.mn-img-w.ish .mn-hit{
+  animation:mnHit 1.1s ease-out infinite;
+}
+@keyframes mnHit{
+  0%,50%{opacity:0;transform:translateX(-50%) scale(.3)}
+  58%{opacity:1;transform:translateX(-50%) scale(.6)}
+  100%{opacity:0;transform:translateX(-50%) scale(2.1)}
+}
+
+/* Silkinish */
+.mn-img-w.ish{animation:mnShake 1.1s ease-in-out infinite;}
+@keyframes mnShake{
+  0%,50%,100%{transform:translateX(0)}
+  58%{transform:translateX(-3px)}
+  62%{transform:translateX(3px)}
+  66%{transform:translateX(-2px)}
+  70%{transform:translateX(0)}
+}
