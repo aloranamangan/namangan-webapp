@@ -19,6 +19,7 @@
       <h1 id="cName">Namangan</h1>
       <p id="cTime">—</p>
     </div>
+    <button class="ico-btn" id="btnBack">&#8592;</button>
     <button class="ico-btn" id="btnTheme">🌙</button>
     <button class="ico-btn" id="btnGeo">📍</button>
   </div>
@@ -584,6 +585,13 @@ document.addEventListener('DOMContentLoaded', function(){
 
   load();
   setInterval(load, 600000);
+});
+
+document.addEventListener('DOMContentLoaded', function(){
+  const b = document.getElementById('btnBack');
+  if(b) b.addEventListener('click', function(){
+    location.href = 'xaridor.html';
+  });
 });
 </script>
 </body>
