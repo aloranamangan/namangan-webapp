@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>Ferma</title>
-<link rel="stylesheet" href="style.css?v=1787823423">
+<link rel="stylesheet" href="style.css?v=1787837102">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
 body{
@@ -205,6 +205,7 @@ body{
   <button class="fm-tab" data-t="wheel">🎡 G'ildirak</button>
   <button class="fm-tab" data-t="wheel2">🏆 Katta</button>
   <button class="fm-tab" data-t="reklama">📢 Reklama</button>
+  <button class="fm-tab" data-t="sovrin">🎁 Sovrinlarim</button>
 </div>
 
 <div id="fmBody"><div class="load">Yuklanmoqda...</div></div>
@@ -243,6 +244,7 @@ function draw(){
   if(TAB === 'hayvon') drawHayvon();
   else if(TAB === 'wheel') drawWheel();
   else if(TAB === 'wheel2') drawWheel2();
+  else if(TAB === 'sovrin') drawSovrin();
   else drawReklama();
 }
 
@@ -510,6 +512,49 @@ function showWin2(d){
   haptic('medium');
 
   el('win2Ok').addEventListener('click', function(){ ov.remove(); });
+}
+
+
+function drawSovrin(){
+  el('fmBody').innerHTML = '<div class="load">Yuklanmoqda...</div>';
+
+  api('/api/sovrinlarim?tg_id=' + myId() + '&t=' + Date.now()).then(function(d){
+    const list = d.list || [];
+
+    if(!list.length){
+      el('fmBody').innerHTML =
+        '<div class="empty" style="padding:60px 20px;">' +
+        '<div class="ic">\u{1F381}</div><p>Sovrin yoq</p>' +
+        '<span>Gildirakni aylantiring va yuting</span></div>';
+      return;
+    }
+
+    const EM = {
+      galichka: '\u2705', vip: '\u{1F451}', tepa: '\u2B06\uFE0F',
+      reklama: '\u{1F4E2}', chegirma: '\u{1F3F7}\uFE0F',
+      ijara: '\u{1F3E0}', sovga: '\u{1F4F1}'
+    };
+
+    el('fmBody').innerHTML = list.map(function(s){
+      let muddat = '';
+      if(s.tugash && s.tugash.length > 8){
+        const dt = new Date(String(s.tugash).replace(' ', 'T'));
+        if(!isNaN(dt)){
+          const kun = Math.ceil((dt - new Date()) / 86400000);
+          muddat = kun > 0 ? (kun + ' kun qoldi') : 'Muddati tugagan';
+        }
+      }
+
+      return '<div class="sov-card">' +
+        '<span class="em">' + (EM[s.tur] || '\u{1F381}') + '</span>' +
+        '<div class="t"><b>' + esc(s.nom) + '</b>' +
+        (muddat ? '<span>' + muddat + '</span>' : '<span>Faol</span>') +
+        '</div>' +
+        '<span class="ok">\u2713</span></div>';
+    }).join('') + '<div style="height:20px;"></div>';
+  }).catch(function(){
+    el('fmBody').innerHTML = '<div class="load">Xato</div>';
+  });
 }
 
 function drawReklama(){
