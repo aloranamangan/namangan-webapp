@@ -446,7 +446,6 @@ function showAdminPanels(cb, force){
 // ---------- Majburiy obuna ----------
 function checkSubs(cb){
   const id = myId();
-  if(id && id < 0){ cb(true); return; }
   if(!id){ cb(true); return; }
 
   api('/api/obuna-tekshir?tg_id=' + id).then(function(d){
@@ -462,72 +461,95 @@ function showSubScreen(list, cb){
   const s = document.createElement('div');
   s.id = 'subScr';
   s.className = 'sub-screen';
+
+  const KIND = { channel: '\u{1F4E2}', group: '\u{1F465}', bot: '\u{1F916}' };
+  const KLBL = { channel: 'Kanal', group: 'Guruh', bot: 'Bot' };
+
   s.innerHTML =
-    '<div class="ic">&#128276;</div>' +
+    '<div class="orb a"></div><div class="orb b"></div>' +
+    '<div class="ic">\u{1F514}</div>' +
     '<h2>Ilovadan foydalanish uchun</h2>' +
-    '<p>Quyidagilarga aʼzo boling,<br>song <b style="color:#fff;">Tekshirish</b> tugmasini bosing</p>' +
+    '<p>Quyidagilarga a\u2019zo bo\u2018ling,<br>so\u2018ng <b style="color:#fff;">Tekshirish</b> tugmasini bosing</p>' +
+
     '<div class="sub-list">' +
-    list.map(function(c){
-      const k = c.kind || 'channel';
-      const e = k === 'bot' ? '&#129302;' : (k === 'group' ? '&#128101;' : '&#128227;');
-      return '<div class="sub-c" data-u="' + esc(c.link) + '">' +
-        '<span class="e">' + e + '</span>' +
-        '<b>' + esc(c.title) + '</b>' +
-        '<span>Ochish &rsaquo;</span></div>';
-    }).join('') +
-    '</div>';
+      list.map(function(c){
+        const k = c.kind || 'channel';
+        return '<div class="sub-item" data-u="' + esc(c.url || '') + '">' +
+          '<span class="e">' + (KIND[k] || KIND.channel) + '</span>' +
+          '<span class="t"><b>' + esc(c.title || c.username || '') + '</b>' +
+          '<span>' + (KLBL[k] || 'Kanal') + '</span></span>' +
+          '<span class="go">Ochish</span></div>';
+      }).join('') +
+    '</div>' +
+
+    '<div class="sub-warn">' +
+      '\u26A0\uFE0F Obuna bo\u2018lmasangiz ilova ishlamaydi' +
+    '</div>' +
+
+    '<button class="sub-check" id="subGo">Tekshirish</button>';
 
   document.body.appendChild(s);
 
-  const btn = document.createElement('button');
-  btn.className = 'sub-go';
-  btn.textContent = '\u2705  Tekshirish';
-  document.body.appendChild(btn);
-
-  s.querySelectorAll('.sub-c').forEach(function(c){
-    c.addEventListener('click', function(){
-      const u = c.dataset.u;
+  // Kanallarni ochish
+  s.querySelectorAll('.sub-item').forEach(function(it){
+    it.addEventListener('click', function(){
+      const u = it.dataset.u;
+      if(!u) return;
+      haptic('light');
+      it.classList.add('done');
+      it.querySelector('.go').textContent = '\u2713 Ochildi';
       if(TG && TG.openTelegramLink) TG.openTelegramLink(u);
       else window.open(u, '_blank');
     });
   });
 
-  btn.addEventListener('click', function(){
-    btn.disabled = true;
-    btn.textContent = 'Tekshirilmoqda...';
-    api('/api/obuna-tekshir?tg_id=' + myId()).then(function(d){
+  // Tekshirish
+  const gb = s.querySelector('#subGo');
+  gb.addEventListener('click', function(){
+    gb.disabled = true;
+    gb.textContent = 'Tekshirilmoqda...';
+    haptic('light');
+
+    const id = myId();
+
+    // Telegram bo'lmagan foydalanuvchilar - o'tkazamiz
+    if(!id || id < 0){
+      setTimeout(function(){ subOkScreen(s, cb); }, 900);
+      return;
+    }
+
+    api('/api/obuna-tekshir?tg_id=' + id + '&t=' + Date.now()).then(function(d){
       if(d.subscribed){
-        haptic('medium');
-        s.remove();
-        btn.remove();
-        cb(true);
+        subOkScreen(s, cb);
       } else {
-        toast(t('notSubbed'));
-        btn.disabled = false;
-        btn.textContent = '\u2705  Tekshirish';
-        const box = s.querySelector('.sub-list');
-        if(box && d.missing){
-          box.innerHTML = d.missing.map(function(c){
-            const k = c.kind || 'channel';
-            const e = k === 'bot' ? '&#129302;' : (k === 'group' ? '&#128101;' : '&#128227;');
-            return '<div class="sub-c" data-u="' + esc(c.link) + '">' +
-              '<span class="e">' + e + '</span><b>' + esc(c.title) + '</b>' +
-              '<span>Ochish &rsaquo;</span></div>';
-          }).join('');
-          box.querySelectorAll('.sub-c').forEach(function(c){
-            c.addEventListener('click', function(){
-              const u = c.dataset.u;
-              if(TG && TG.openTelegramLink) TG.openTelegramLink(u);
-              else window.open(u, '_blank');
-            });
-          });
-        }
+        toast('Hali a\u2019zo bo\u2018lmadingiz');
+        haptic('medium');
+        gb.disabled = false;
+        gb.textContent = 'Tekshirish';
       }
     }).catch(function(){
-      btn.disabled = false;
-      btn.textContent = '\u2705  Tekshirish';
+      // Xato bo'lsa ham o'tkazamiz
+      subOkScreen(s, cb);
     });
   });
+}
+
+function subOkScreen(subEl, cb){
+  const ok = document.createElement('div');
+  ok.className = 'sub-ok';
+  ok.innerHTML =
+    '<div class="circle">\u2713</div>' +
+    '<h2>Obuna bo\u2018ldingiz!</h2>' +
+    '<p>Ilovaga xush kelibsiz</p>';
+
+  document.body.appendChild(ok);
+  haptic('medium');
+
+  setTimeout(function(){
+    ok.remove();
+    if(subEl) subEl.remove();
+    cb(true);
+  }, 1800);
 }
 
 // ---------- Ommaviy profil ----------
