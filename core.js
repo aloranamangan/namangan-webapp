@@ -840,7 +840,9 @@ function igLoginScreen(){
 
   document.getElementById('socFb').addEventListener('click', function(){
     loginTozala();
-    location.href = 'https://namangan-ijara-bot.onrender.com/facebook-login';
+    const u = 'https://namangan-ijara-bot.onrender.com/facebook-login';
+    if(TG && TG.openLink) TG.openLink(u);
+    else window.open(u, '_blank') || (location.href = u);
   });
 
   document.getElementById('igTeam').addEventListener('click', function(){
