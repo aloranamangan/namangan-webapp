@@ -82,7 +82,8 @@ body{
 <body>
 
 <div class="top">
-  <h1>💱 Valyuta</h1>
+  <button class="rf" id="btnBack" style="margin-right:8px;">&#8592;</button>
+  <h1 style="flex:1;">💱 Valyuta</h1>
   <button class="rf" id="btnRef">↻</button>
 </div>
 <div class="upd" id="upd">Yuklanmoqda...</div>
@@ -254,6 +255,13 @@ document.addEventListener('DOMContentLoaded', function(){
       el('inA').value = b.dataset.q;
       calc('A');
     });
+  });
+});
+
+document.addEventListener('DOMContentLoaded', function(){
+  const b = document.getElementById('btnBack');
+  if(b) b.addEventListener('click', function(){
+    location.href = 'xaridor.html';
   });
 });
 </script>
