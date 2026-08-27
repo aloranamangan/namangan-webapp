@@ -78,23 +78,13 @@ function render(){
 
     '<div id="pfGrid"><div class="load">Yuklanmoqda...</div></div>' +
 
-    '<div class="pm-list">' +
-      '<div class="pm" data-go="referal"><span class="e">&#127873;</span>' +
-      '<span class="t">Referal dastur</span><span class="ar">&rsaquo;</span></div>' +
-      '<div class="pm" data-go="valyuta"><span class="e">&#128176;</span>' +
-      '<span class="t">Valyuta kursi</span><span class="ar">&rsaquo;</span></div>' +
-      '<div class="pm" data-go="obhavo"><span class="e">&#127780;</span>' +
-      '<span class="t">Ob-havo</span><span class="ar">&rsaquo;</span></div>' +
-      '<div class="pm" data-go="lang"><span class="e">&#127760;</span>' +
-      '<span class="t">' + (typeof t === 'function' ? t('language') : 'Til') + '</span>' +
-      '<span class="v">' + (typeof langFlag === 'function' ? langFlag(LANG) + ' ' + langName(LANG) : '') + '</span>' +
-      '<span class="ar">&rsaquo;</span></div>' +
-      ((typeof IS_ADMIN !== 'undefined' && IS_ADMIN)
-        ? '<div class="pm" data-go="panel" style="border-color:rgba(0,149,246,.4);">' +
+    ((typeof IS_ADMIN !== 'undefined' && IS_ADMIN)
+      ? '<div class="pm-list">' +
+          '<div class="pm" data-go="panel" style="border-color:rgba(0,149,246,.4);">' +
           '<span class="e">&#9881;&#65039;</span><span class="t">Boshqaruv markazi</span>' +
-          '<span class="ar">&rsaquo;</span></div>'
-        : '') +
-    '</div>';
+          '<span class="ar">&rsaquo;</span></div>' +
+        '</div>'
+      : '');
 
   bindProfile(isMak);
   loadTab('posts');
