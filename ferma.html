@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>Ferma</title>
-<link rel="stylesheet" href="style.css?v=1787822125">
+<link rel="stylesheet" href="style.css?v=1787822605">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
 body{
@@ -203,6 +203,7 @@ body{
 <div class="fm-tabs">
   <button class="fm-tab on" data-t="hayvon">🐄 Hayvonlar</button>
   <button class="fm-tab" data-t="wheel">🎡 G'ildirak</button>
+  <button class="fm-tab" data-t="wheel2">🏆 Katta</button>
   <button class="fm-tab" data-t="reklama">📢 Reklama</button>
 </div>
 
@@ -241,6 +242,7 @@ function draw(){
 
   if(TAB === 'hayvon') drawHayvon();
   else if(TAB === 'wheel') drawWheel();
+  else if(TAB === 'wheel2') drawWheel2();
   else drawReklama();
 }
 
@@ -340,6 +342,174 @@ function drawWheel(){
 
   const rb = el('whRef');
   if(rb) rb.addEventListener('click', ulash);
+}
+
+
+function drawWheel2(){
+  // Ochilmagan bo'lsa
+  if(!FM.g2_ochiq){
+    const bor = FM.ref_soni || 0;
+    const kerak = FM.g2_kerak || 10;
+    const foiz = Math.min(100, Math.round(bor / kerak * 100));
+
+    el('fmBody').innerHTML =
+      '<div class="wh-wrap">' +
+        '<div class="lock-box">' +
+          '<div class="e">\u{1F512}</div>' +
+          '<b>Katta gildirak</b>' +
+          '<span>iPhone, Samsung, ijara tolovi,<br>galichka va boshqa katta sovrinlar</span>' +
+
+          '<div class="prog"><i style="width:' + foiz + '%"></i></div>' +
+          '<div class="prog-t"><b>' + bor + '</b> / ' + kerak + ' referal</div>' +
+
+          '<button class="wh-btn" id="w2Ref">Havolani ulashish</button>' +
+          '<div class="wh-cnt">Ochilgach har <b style="color:#FFD54F;">5</b> referalga ' +
+          '<b style="color:#FFD54F;">+1</b> aylantirish</div>' +
+        '</div>' +
+      '</div>';
+
+    const rb = el('w2Ref');
+    if(rb) rb.addEventListener('click', ulash);
+    return;
+  }
+
+  const segs = FM.gildirak2 || [];
+  const n = segs.length;
+  const ang = 360 / n;
+  const R = 130, CX = 145, CY = 145;
+
+  const RANG = ['#FFB300','#F57C00','#FFA000','#EF6C00','#FFC107',
+                '#E65100','#FFCA28','#D84315','#FFD54F','#BF360C',
+                '#FFE082','#FF6F00','#FFECB3','#E64A19','#FFF3E0',
+                '#FF8F00','#FFAB00','#C62828','#B71C1C'];
+
+  let paths = '';
+  for(let i = 0; i < n; i++){
+    const a1 = (i * ang - 90) * Math.PI / 180;
+    const a2 = ((i + 1) * ang - 90) * Math.PI / 180;
+    const x1 = CX + R * Math.cos(a1), y1 = CY + R * Math.sin(a1);
+    const x2 = CX + R * Math.cos(a2), y2 = CY + R * Math.sin(a2);
+
+    paths += '<path d="M' + CX + ' ' + CY + ' L' + x1.toFixed(1) + ' ' + y1.toFixed(1) +
+      ' A' + R + ' ' + R + ' 0 0 1 ' + x2.toFixed(1) + ' ' + y2.toFixed(1) + ' Z" ' +
+      'fill="' + RANG[i % RANG.length] + '" stroke="rgba(0,0,0,.2)" stroke-width="1"/>';
+
+    const am = ((i + 0.5) * ang - 90) * Math.PI / 180;
+    const tr = R * 0.68;
+    const tx = CX + tr * Math.cos(am), ty = CY + tr * Math.sin(am);
+    const rot = (i + 0.5) * ang;
+    const nom = segs[i].nom;
+
+    paths += '<text x="' + tx.toFixed(1) + '" y="' + ty.toFixed(1) + '" ' +
+      'text-anchor="middle" dominant-baseline="middle" ' +
+      'fill="#1A1A1A" font-size="' + (nom.length > 9 ? 6.5 : 8) + '" font-weight="800" ' +
+      'font-family="Manrope,sans-serif" ' +
+      'transform="rotate(' + rot.toFixed(1) + ' ' + tx.toFixed(1) + ' ' + ty.toFixed(1) + ')">' +
+      esc(nom) + '</text>';
+  }
+
+  el('fmBody').innerHTML =
+    '<div class="wh-wrap">' +
+      '<div class="wh-box2">' +
+        '<div class="wh-arrow2"></div>' +
+        '<svg id="wh2El" viewBox="0 0 290 290" class="wh-svg gold">' +
+          '<circle cx="145" cy="145" r="136" fill="none" stroke="#FFD54F" stroke-width="7"/>' +
+          paths +
+          '<circle cx="145" cy="145" r="30" fill="#5D4037" stroke="#FFD54F" stroke-width="3"/>' +
+          '<text x="145" y="145" text-anchor="middle" dominant-baseline="middle" ' +
+          'font-size="26">\u{1F3C6}</text>' +
+        '</svg>' +
+      '</div>' +
+
+      (FM.spin2 > 0
+        ? '<button class="wh-btn gold" id="wh2Go">Aylantirish</button>' +
+          '<div class="wh-cnt">Aylantirishlar: <b style="color:#FFD54F;">' +
+          FM.spin2 + '</b></div>'
+        : '<div class="no-spin">' +
+            '<div class="e">\u{1F517}</div>' +
+            '<b>Aylantirish tugadi</b>' +
+            '<span>Har <b style="color:#FFD54F;">5</b> ta yangi referal uchun<br>' +
+            '<b style="color:#FFD54F;">+1 aylantirish</b></span>' +
+            '<button class="wh-btn gold" id="wh2Ref" style="margin-top:16px;">' +
+            'Havolani ulashish</button>' +
+          '</div>') +
+    '</div>';
+
+  const b = el('wh2Go');
+  if(b) b.addEventListener('click', spin2);
+
+  const rb2 = el('wh2Ref');
+  if(rb2) rb2.addEventListener('click', ulash);
+}
+
+function spin2(){
+  const b = el('wh2Go');
+  const w = el('wh2El');
+  if(!b || !w) return;
+
+  b.disabled = true;
+  b.textContent = 'Aylanmoqda...';
+  haptic('light');
+
+  apiPost('/api/ferma-amal', { action: 'spin2' }).then(function(d){
+    if(!d.ok){
+      toast(d.error || 'Xato');
+      b.disabled = false;
+      b.textContent = 'Aylantirish';
+      return;
+    }
+
+    const n = (FM.gildirak2 || []).length;
+    const ang = 360 / n;
+    const target = 360 * 7 + (360 - (d.index * ang) - ang / 2);
+
+    w.style.transform = 'rotate(' + target + 'deg)';
+
+    setTimeout(function(){
+      showWin2(d);
+      b.textContent = 'Aylantirish';
+      boot();
+    }, 5600);
+  }).catch(function(){
+    toast('Server xatosi');
+    b.disabled = false;
+    b.textContent = 'Aylantirish';
+  });
+}
+
+function showWin2(d){
+  const EM = {
+    ball: '\u{1F4B0}', chegirma: '\u{1F3F7}\uFE0F', reklama: '\u{1F4E2}',
+    quti: '\u{1F381}', galichka: '\u2705', spin: '\u{1F3A1}',
+    vip: '\u{1F451}', tepa: '\u2B06\uFE0F', ijara: '\u{1F3E0}',
+    sovga: '\u{1F4F1}'
+  };
+
+  const IZOH = {
+    ball: 'Balansingizga qoshildi',
+    chegirma: 'Reklama sotib olishda ishlatiladi',
+    reklama: 'Admin bogla nadi',
+    quti: 'Balansingizga qoshildi',
+    galichka: 'Profilingizda paydo boladi',
+    spin: 'Asosiy gildirakka qoshildi',
+    vip: 'Profilingiz oltin ramkada',
+    tepa: 'Eloningiz tepada turadi',
+    ijara: 'Tabriklaymiz! Admin bogla nadi',
+    sovga: 'Tabriklaymiz! Admin bogla nadi'
+  };
+
+  const ov = document.createElement('div');
+  ov.className = 'win-ov gold';
+  ov.innerHTML =
+    '<div class="em">' + (EM[d.tur] || '\u{1F389}') + '</div>' +
+    '<h2>' + esc(d.nom) + '</h2>' +
+    '<p>' + (IZOH[d.tur] || '') + '</p>' +
+    '<button id="win2Ok">Zor!</button>';
+
+  document.body.appendChild(ov);
+  haptic('medium');
+
+  el('win2Ok').addEventListener('click', function(){ ov.remove(); });
 }
 
 function drawReklama(){
