@@ -260,11 +260,26 @@ function editProfileU(){
     '<label class="label">Bio</label>' +
     '<textarea class="txt" id="euBio" maxlength="200" ' +
     'placeholder="Oz haqingizda qisqacha...">' + esc(d.bio || '') + '</textarea>' +
-    '<button class="btn" id="euGo">Saqlash</button></div></div>';
+
+    (d.type === 'makler'
+      ? '<div class="pm" id="euUn" style="margin:18px 0 4px;">' +
+        '<span class="e">\u{1F517}</span>' +
+        '<span class="t">Usernamelar</span>' +
+        '<span class="v">@' + esc(d.username || '') + '</span>' +
+        '<span class="ar">&rsaquo;</span></div>'
+      : '') +
+
+    '<button class="btn" id="euGo" style="margin-top:16px;">Saqlash</button></div></div>';
 
   document.body.appendChild(bg);
   bg.addEventListener('click', function(e){ if(e.target === bg) bg.remove(); });
   bg.querySelector('#epU').addEventListener('click', function(e){ e.stopPropagation(); });
+
+  const un = bg.querySelector('#euUn');
+  if(un) un.addEventListener('click', function(){
+    bg.remove();
+    usernameOyna();
+  });
 
   const gb = bg.querySelector('#euGo');
   gb.addEventListener('click', function(){
@@ -876,5 +891,218 @@ function pickPeople(current, cb){
   bg.querySelector('#ppGo').addEventListener('click', function(){
     cb(Object.keys(sel).map(function(x){ return parseInt(x); }));
     bg.remove();
+  });
+}
+
+// ---------- Username boshqaruvi ----------
+function usernameOyna(){
+  const bg = document.createElement('div');
+  bg.className = 'sheet-bg';
+  bg.innerHTML = '<div class="sheet" id="unS" style="max-height:90vh;overflow-y:auto;">' +
+    '<div class="sheet-bar"></div>' +
+    '<div class="sheet-title">Usernamelar</div>' +
+    '<div id="unBody"><div class="load">Yuklanmoqda...</div></div></div>';
+
+  document.body.appendChild(bg);
+  bg.addEventListener('click', function(e){ if(e.target === bg) bg.remove(); });
+  bg.querySelector('#unS').addEventListener('click', function(e){ e.stopPropagation(); });
+
+  api('/api/profil?tg_id=' + myId()).then(function(d){
+    if(!d.ok || d.type !== 'makler'){
+      bg.querySelector('#unBody').innerHTML =
+        '<div class="empty" style="padding:44px 20px;">' +
+        '<div class="ic">\\u{1F517}</div><p>Username yoq</p>' +
+        '<span>Elon joylaganingizdan song<br>username paydo boladi</span></div>';
+      return;
+    }
+
+    api('/api/qoshimcha-nomlar?username=' + encodeURIComponent(d.username))
+      .then(function(x){
+        chizUn(bg, d, x.names || []);
+      }).catch(function(){ chizUn(bg, d, []); });
+  }).catch(function(){
+    bg.querySelector('#unBody').innerHTML = '<div class="load">Xato</div>';
+  });
+}
+
+function chizUn(bg, prof, extra){
+  const box = bg.querySelector('#unBody');
+
+  let slots = '';
+  for(let i = 0; i < 5; i++){
+    const cur = extra[i] ? extra[i].uname : '';
+    const cid = extra[i] ? extra[i].id : '';
+    slots += '<div class="un-slot' + (cur ? ' ok' : '') + '"' +
+      (cid ? ' data-id="' + cid + '"' : '') + '>' +
+      '<input class="inp un-inp" placeholder="Qoshimcha ' + (i + 1) + '" value="' + esc(cur) + '"' +
+      (cur ? ' readonly style="opacity:.7;"' : '') + '>' +
+      '<div class="un-msg' + (cur ? ' free' : '') + '">' +
+      (cur ? '\\u2713 Sizniki (bosib ochirish)' : '') + '</div></div>';
+  }
+
+  box.innerHTML =
+    '<div class="wrap">' +
+      '<label class="label">Asosiy username</label>' +
+      '<input class="inp" id="unMain" value="' + esc(prof.username || '') + '">' +
+      '<div class="un-msg" id="unMainMsg"></div>' +
+      '<button class="btn" id="unMainGo" style="margin-bottom:26px;">Asosiyni ozgartirish</button>' +
+
+      '<div style="height:1px;background:var(--line);margin-bottom:20px;"></div>' +
+
+      '<label class="label">Qoshimcha usernamelar</label>' +
+      '<div style="font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.5;">' +
+      'Qidiruvda topilish uchun 5 tagacha nom band qilishingiz mumkin.</div>' +
+      slots +
+      '<button class="btn" id="unExtraGo">Qoshimchalarni saqlash</button>' +
+    '</div>';
+
+  // Asosiy username tekshiruvi
+  const mi = bg.querySelector('#unMain');
+  const mm = bg.querySelector('#unMainMsg');
+  const eski = prof.username || '';
+  let tm = null;
+
+  mi.addEventListener('input', function(){
+    const v = mi.value.trim().replace(/^@/, '').toLowerCase();
+    clearTimeout(tm);
+
+    if(v === eski){ mm.textContent = ''; mm.className = 'un-msg'; return; }
+    if(!v){ mm.textContent = ''; mm.className = 'un-msg'; return; }
+
+    if(!/^[a-z0-9._]{4,32}$/.test(v)){
+      mm.textContent = '\\u2717 4-32 belgi, lotin harflari, raqam, nuqta';
+      mm.className = 'un-msg busy';
+      return;
+    }
+
+    mm.textContent = 'Tekshirilmoqda...';
+    mm.className = 'un-msg check';
+
+    tm = setTimeout(function(){
+      fetch(API + '/api/nom-tekshir?uname=' + encodeURIComponent(v) + '&tg_id=' + myId())
+        .then(function(r){ return r.json(); })
+        .then(function(d){
+          if(d && d.free){
+            mm.textContent = '\\u2713 Bosh';
+            mm.className = 'un-msg free';
+          } else {
+            mm.textContent = '\\u2717 ' + ((d && d.msg) || 'Band');
+            mm.className = 'un-msg busy';
+          }
+        }).catch(function(){ mm.textContent = ''; });
+    }, 500);
+  });
+
+  bg.querySelector('#unMainGo').addEventListener('click', function(){
+    const v = mi.value.trim().replace(/^@/, '').toLowerCase();
+
+    if(v === eski){ toast('Ozgarish yoq'); return; }
+    if(!/^[a-z0-9._]{4,32}$/.test(v)){ toast('Notogri format'); return; }
+    if(!confirm('Username @' + eski + ' \\u2192 @' + v + '\\n\\nOzgartirasizmi?')) return;
+
+    const b = bg.querySelector('#unMainGo');
+    b.disabled = true;
+    b.textContent = 'Ozgartirilmoqda...';
+
+    apiPost('/api/username-ozgartir', { yangi: v }).then(function(d){
+      if(d.ok){
+        haptic('medium');
+        toast('Username ozgartirildi');
+        bg.remove();
+        if(typeof drawProfile === 'function') drawProfile();
+      } else {
+        toast(d.error || 'Xato');
+        b.disabled = false;
+        b.textContent = 'Asosiyni ozgartirish';
+      }
+    }).catch(function(){
+      toast('Server xatosi');
+      b.disabled = false;
+      b.textContent = 'Asosiyni ozgartirish';
+    });
+  });
+
+  // Qo'shimchalar
+  bg.querySelectorAll('.un-slot').forEach(function(s){
+    const inp = s.querySelector('.un-inp');
+    const msg = s.querySelector('.un-msg');
+    const id = s.dataset.id;
+
+    if(id){
+      inp.addEventListener('click', function(){
+        if(!confirm('@' + inp.value + ' ni ochirasizmi?')) return;
+        apiPost('/api/nom-amal', { action: 'delete', id: parseInt(id) })
+          .then(function(d){
+            if(d.ok){ toast('Ochirildi'); bg.remove(); setTimeout(usernameOyna, 700); }
+          });
+      });
+      return;
+    }
+
+    let t2 = null;
+    inp.addEventListener('input', function(){
+      const v = inp.value.trim().replace(/^@/, '').toLowerCase();
+      clearTimeout(t2);
+
+      if(!v){ msg.textContent = ''; msg.className = 'un-msg'; s.classList.remove('ok'); return; }
+
+      if(!/^[a-z0-9._]{4,32}$/.test(v)){
+        msg.textContent = '\\u2717 Notogri format';
+        msg.className = 'un-msg busy';
+        s.classList.remove('ok');
+        return;
+      }
+
+      msg.textContent = 'Tekshirilmoqda...';
+      msg.className = 'un-msg check';
+
+      t2 = setTimeout(function(){
+        fetch(API + '/api/nom-tekshir?uname=' + encodeURIComponent(v) + '&tg_id=' + myId())
+          .then(function(r){ return r.json(); })
+          .then(function(d){
+            if(d && d.free){
+              msg.textContent = '\\u2713 Bosh';
+              msg.className = 'un-msg free';
+              s.classList.add('ok');
+            } else {
+              msg.textContent = '\\u2717 Band';
+              msg.className = 'un-msg busy';
+              s.classList.remove('ok');
+            }
+          }).catch(function(){ msg.textContent = ''; });
+      }, 500);
+    });
+  });
+
+  bg.querySelector('#unExtraGo').addEventListener('click', function(){
+    const jobs = [];
+    bg.querySelectorAll('.un-slot').forEach(function(s){
+      if(s.dataset.id) return;
+      const v = s.querySelector('.un-inp').value.trim().replace(/^@/, '').toLowerCase();
+      if(v) jobs.push(v);
+    });
+
+    if(!jobs.length){ toast('Yangi username yoq'); return; }
+
+    const b = bg.querySelector('#unExtraGo');
+    b.disabled = true;
+    b.textContent = 'Saqlanmoqda...';
+
+    let i = 0;
+    const errs = [];
+    function next(){
+      if(i >= jobs.length){
+        b.disabled = false;
+        b.textContent = 'Qoshimchalarni saqlash';
+        if(errs.length) toast('Xato: ' + errs[0]);
+        else { haptic('medium'); toast('Saqlandi'); }
+        bg.remove();
+        return;
+      }
+      apiPost('/api/nom-amal', { action: 'add', uname: jobs[i++] })
+        .then(function(d){ if(!d.ok) errs.push(d.error || ''); next(); })
+        .catch(function(){ next(); });
+    }
+    next();
   });
 }

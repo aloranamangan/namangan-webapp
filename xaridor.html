@@ -41,6 +41,7 @@
     <div class="i"><b id="smNom">—</b><span id="smSub">—</span></div>
   </div>
 
+  <button class="sm-item" data-a="arxiv"><span class="e">🗄</span>Arxiv</button>
   <button class="sm-item" data-a="profil"><span class="e">👤</span>Profil</button>
   <button class="sm-item" data-a="saqlangan"><span class="e">🔖</span>Saqlangan</button>
   <button class="sm-item" data-a="referal"><span class="e">🎁</span>Referal dastur</button>
@@ -145,7 +146,7 @@
 <script src="story.js?v=1787140329"></script>
 <script src="pano.js"></script>
 <script src="ads.js"></script>
-<script src="profil.js?v=1787845721"></script>
+<script src="profil.js?v=1787846160"></script>
 <script>
 let POSTS = [];
 let SELLERS = [];
@@ -1282,6 +1283,7 @@ document.addEventListener('DOMContentLoaded', function(){
         menyuYop();
         haptic('light');
 
+        if(a === 'arxiv'){ location.href = 'arxiv.html'; return; }
         if(a === 'profil'){ go('vProfile'); if(typeof drawProfile === 'function') drawProfile(); return; }
         if(a === 'saqlangan'){ go('vProfile'); setTimeout(function(){
           const t = document.querySelector('.pf-tab[data-tb="saved"]');
