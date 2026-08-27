@@ -7,7 +7,7 @@
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#000000">
 <link rel="apple-touch-icon" href="icon-192.png">
-<link rel="stylesheet" href="style.css?v=1787812194">
+<link rel="stylesheet" href="style.css?v=1787818917">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
@@ -125,6 +125,10 @@
   <button id="mapBtn">
     <svg viewBox="0 0 24 24"><path d="M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4z"/><path d="M8 2v16M16 6v16"/></svg>
     <span data-t="navMap">Xarita</span>
+  </button>
+  <button id="fermaBtn">
+    <svg viewBox="0 0 24 24"><path d="M3 21V9l9-6 9 6v12"/><path d="M9 21v-7h6v7"/></svg>
+    <span>Ferma</span>
   </button>
   <button data-v="vProfile">
     <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -1260,6 +1264,12 @@ function menyuYop(){
 
 document.addEventListener('DOMContentLoaded', function(){
   setTimeout(function(){
+    const fb = el('fermaBtn');
+    if(fb) fb.addEventListener('click', function(){
+      haptic('light');
+      location.href = 'ferma.html';
+    });
+
     const mb = el('tbMenu');
     if(mb) mb.addEventListener('click', menyuOch);
 

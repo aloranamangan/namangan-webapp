@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Ferma</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+body{
+  background:linear-gradient(175deg,#0F1A0D 0%,#16250F 45%,#0A1208 100%);
+  padding-bottom:100px;
+}
+.fm-top{
+  display:flex;align-items:center;gap:12px;
+  padding:calc(14px + env(safe-area-inset-top)) 16px 14px;
+  position:sticky;top:0;z-index:60;
+  background:linear-gradient(180deg,rgba(15,26,13,.96),transparent);
+  backdrop-filter:blur(14px);
+}
+.fm-top h1{font-size:20px;font-weight:800;flex:1;color:#fff;}
+.fm-x{
+  width:34px;height:34px;border-radius:50%;border:none;
+  background:rgba(255,255,255,.1);color:#fff;font-size:19px;cursor:pointer;
+}
+
+/* Balans */
+.fm-bal{
+  margin:0 16px 14px;padding:18px;border-radius:20px;
+  background:linear-gradient(135deg,#2D5016,#4A7C1F);
+  box-shadow:0 8px 26px rgba(74,124,31,.35);
+  position:relative;overflow:hidden;
+}
+.fm-bal::before{
+  content:'';position:absolute;top:-40%;right:-15%;
+  width:180px;height:180px;border-radius:50%;
+  background:rgba(255,255,255,.07);
+}
+.fm-bal .lb{font-size:11px;font-weight:800;letter-spacing:.14em;opacity:.7;}
+.fm-bal .sum{
+  font-size:34px;font-weight:800;letter-spacing:-1px;margin:5px 0 3px;
+  font-variant-numeric:tabular-nums;
+}
+.fm-bal .cur{font-size:13px;opacity:.65;}
+
+/* Yig'ish */
+.fm-collect{
+  margin:0 16px 16px;padding:16px;border-radius:18px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.1);
+  display:flex;align-items:center;gap:14px;
+}
+.fm-collect .i{flex:1;}
+.fm-collect .i b{display:block;font-size:22px;font-weight:800;color:#8BC34A;}
+.fm-collect .i span{font-size:11.5px;color:rgba(255,255,255,.5);}
+.fm-collect button{
+  padding:12px 20px;border:none;border-radius:13px;
+  background:#8BC34A;color:#0F1A0D;font-size:14px;font-weight:800;
+  cursor:pointer;font-family:inherit;white-space:nowrap;
+}
+.fm-collect button:disabled{opacity:.35;}
+
+/* Tablar */
+.fm-tabs{display:flex;gap:8px;padding:0 16px 14px;}
+.fm-tab{
+  flex:1;padding:11px 0;border-radius:12px;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+  color:rgba(255,255,255,.55);cursor:pointer;font-family:inherit;
+  font-size:12.5px;font-weight:700;
+}
+.fm-tab.on{background:#8BC34A;color:#0F1A0D;border-color:#8BC34A;}
+
+/* Hayvonlar */
+.fm-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;padding:0 16px;}
+.fm-card{
+  padding:15px 12px;border-radius:18px;text-align:center;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.1);
+  cursor:pointer;transition:transform .2s;
+}
+.fm-card:active{transform:scale(.97);}
+.fm-card.have{border-color:rgba(139,195,74,.4);background:rgba(139,195,74,.08);}
+.fm-card .em{font-size:42px;display:block;margin-bottom:7px;}
+.fm-card .nm{font-size:14px;font-weight:700;color:#fff;}
+.fm-card .pr{font-size:12px;color:#8BC34A;font-weight:700;margin-top:4px;}
+.fm-card .in{font-size:10.5px;color:rgba(255,255,255,.4);margin-top:2px;}
+.fm-card .cnt{
+  display:inline-block;margin-top:7px;padding:3px 10px;border-radius:20px;
+  background:rgba(139,195,74,.2);color:#8BC34A;
+  font-size:11px;font-weight:800;
+}
+
+/* G'ildirak */
+.wh-wrap{
+  display:flex;flex-direction:column;align-items:center;
+  padding:10px 16px 20px;
+}
+.wh-box{position:relative;width:280px;height:280px;margin-bottom:20px;}
+.wh{
+  width:100%;height:100%;border-radius:50%;
+  border:6px solid #8BC34A;position:relative;overflow:hidden;
+  box-shadow:0 0 34px rgba(139,195,74,.3),inset 0 0 30px rgba(0,0,0,.4);
+  transition:transform 5.5s cubic-bezier(.15,.9,.25,1);
+}
+.wh-seg{
+  position:absolute;width:50%;height:50%;
+  top:0;left:50%;transform-origin:0% 100%;
+  display:flex;align-items:flex-start;justify-content:center;
+  padding-top:16px;font-size:10px;font-weight:800;
+  color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.6);
+}
+.wh-arrow{
+  position:absolute;top:-8px;left:50%;transform:translateX(-50%);
+  width:0;height:0;z-index:5;
+  border-left:14px solid transparent;
+  border-right:14px solid transparent;
+  border-top:26px solid #FFD54F;
+  filter:drop-shadow(0 2px 6px rgba(0,0,0,.5));
+}
+.wh-center{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:62px;height:62px;border-radius:50%;z-index:4;
+  background:linear-gradient(135deg,#8BC34A,#5A8F2B);
+  display:flex;align-items:center;justify-content:center;
+  font-size:26px;box-shadow:0 3px 14px rgba(0,0,0,.4);
+}
+.wh-btn{
+  width:100%;max-width:300px;padding:16px 0;border:none;border-radius:100px;
+  background:linear-gradient(135deg,#8BC34A,#689F38);
+  color:#0F1A0D;font-size:16px;font-weight:800;cursor:pointer;
+  font-family:inherit;box-shadow:0 8px 26px rgba(139,195,74,.4);
+}
+.wh-btn:disabled{opacity:.4;}
+.wh-cnt{
+  font-size:12.5px;color:rgba(255,255,255,.5);margin-top:11px;
+}
+
+/* Yutuq oynasi */
+.win-ov{
+  position:fixed;inset:0;z-index:9700;background:rgba(0,0,0,.88);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:40px 28px;text-align:center;
+  animation:winIn .35s ease;
+}
+@keyframes winIn{from{opacity:0}to{opacity:1}}
+.win-ov .em{
+  font-size:80px;margin-bottom:18px;
+  animation:winPop .8s cubic-bezier(.16,1.4,.3,1) both;
+}
+@keyframes winPop{
+  0%{transform:scale(.2) rotate(-25deg);opacity:0}
+  60%{transform:scale(1.2) rotate(6deg)}
+  100%{transform:scale(1);opacity:1}
+}
+.win-ov h2{font-size:26px;font-weight:800;color:#FFD54F;margin-bottom:8px;}
+.win-ov p{font-size:15px;color:rgba(255,255,255,.65);margin-bottom:26px;}
+.win-ov button{
+  padding:14px 40px;border:none;border-radius:100px;
+  background:#8BC34A;color:#0F1A0D;font-size:15px;font-weight:800;
+  cursor:pointer;font-family:inherit;
+}
+
+/* Reklama */
+.ad-card{
+  margin:0 16px 11px;padding:16px;border-radius:16px;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.1);
+  display:flex;align-items:center;gap:13px;
+}
+.ad-card .em{font-size:28px;}
+.ad-card .t{flex:1;}
+.ad-card .t b{display:block;font-size:14px;font-weight:700;color:#fff;}
+.ad-card .t span{font-size:12px;color:#8BC34A;font-weight:700;}
+.ad-card button{
+  padding:9px 16px;border:none;border-radius:11px;
+  background:#8BC34A;color:#0F1A0D;font-size:12.5px;font-weight:800;
+  cursor:pointer;font-family:inherit;
+}
+.ad-card button:disabled{opacity:.3;}
+</style>
+</head>
+<body>
+
+<div class="fm-top">
+  <h1>🌾 Mening fermam</h1>
+  <button class="fm-x" id="fmX">&times;</button>
+</div>
+
+<div class="fm-bal">
+  <div class="lb">BALANS</div>
+  <div class="sum" id="fmSum">0</div>
+  <div class="cur">ball</div>
+</div>
+
+<div class="fm-collect">
+  <div class="i">
+    <b id="fmYig">0</b>
+    <span id="fmSoat">soatiga 0 ball</span>
+  </div>
+  <button id="fmGet" disabled>Yig'ish</button>
+</div>
+
+<div class="fm-tabs">
+  <button class="fm-tab on" data-t="hayvon">🐄 Hayvonlar</button>
+  <button class="fm-tab" data-t="wheel">🎡 G'ildirak</button>
+  <button class="fm-tab" data-t="reklama">📢 Reklama</button>
+</div>
+
+<div id="fmBody"><div class="load">Yuklanmoqda...</div></div>
+
+<script src="core.js"></script>
+<script>
+let FM = null, TAB = 'hayvon';
+
+const EMOJI = {
+  ari: '🐝', tovuq: '🐔', ordak: '🦆', echki: '🐐',
+  qoy: '🐑', sigir: '🐄', ot: '🐎'
+};
+
+function boot(){
+  const id = myId();
+  if(!id){ el('fmBody').innerHTML = '<div class="load">Kirish kerak</div>'; return; }
+
+  api('/api/ferma?tg_id=' + id + '&t=' + Date.now()).then(function(d){
+    if(!d.ok){ el('fmBody').innerHTML = '<div class="load">Xato</div>'; return; }
+    FM = d;
+    draw();
+    kunlikBonus();
+  }).catch(function(){
+    el('fmBody').innerHTML = '<div class="load">Server xatosi</div>';
+  });
+}
+
+function draw(){
+  el('fmSum').textContent = fmt(FM.balans || 0);
+  el('fmYig').textContent = '+' + fmt(FM.yigilgan || 0);
+  el('fmSoat').textContent = 'soatiga ' + fmt(FM.soatlik || 0) + ' ball';
+
+  const g = el('fmGet');
+  g.disabled = !(FM.yigilgan > 0);
+
+  if(TAB === 'hayvon') drawHayvon();
+  else if(TAB === 'wheel') drawWheel();
+  else drawReklama();
+}
+
+function drawHayvon(){
+  const bor = {};
+  (FM.hayvonlar || []).forEach(function(a){ bor[a.tur] = a.soni; });
+
+  const list = Object.keys(FM.narxlar || {});
+  el('fmBody').innerHTML = '<div class="fm-grid">' + list.map(function(k){
+    const h = FM.narxlar[k];
+    const n = bor[k] || 0;
+    return '<div class="fm-card' + (n ? ' have' : '') + '" data-k="' + k + '">' +
+      '<span class="em">' + (EMOJI[k] || '🐾') + '</span>' +
+      '<div class="nm">' + esc(h.nom) + '</div>' +
+      '<div class="pr">' + fmt(h.narx) + '</div>' +
+      '<div class="in">soatiga ' + fmt(h.soat) + '</div>' +
+      (n ? '<span class="cnt">' + n + ' ta</span>' : '') +
+      '</div>';
+  }).join('') + '</div>';
+
+  document.querySelectorAll('.fm-card').forEach(function(c){
+    c.addEventListener('click', function(){ sotibOl(c.dataset.k); });
+  });
+}
+
+function drawWheel(){
+  const segs = FM.gildirak || [];
+  const n = segs.length;
+  const ang = 360 / n;
+
+  const RANG = ['#8BC34A','#689F38','#AED581','#7CB342','#9CCC65',
+                '#558B2F','#C5E1A5','#33691E','#DCEDC8','#FFD54F','#FF6F00'];
+
+  el('fmBody').innerHTML =
+    '<div class="wh-wrap">' +
+      '<div class="wh-box">' +
+        '<div class="wh-arrow"></div>' +
+        '<div class="wh" id="whEl">' +
+          segs.map(function(s, i){
+            return '<div class="wh-seg" style="' +
+              'transform:rotate(' + (i * ang) + 'deg) skewY(' + (90 - ang) + 'deg);' +
+              'background:' + RANG[i % RANG.length] + ';">' +
+              '<span style="transform:skewY(' + (ang - 90) + 'deg) rotate(' + (ang/2) + 'deg);' +
+              'display:block;">' + esc(s.nom) + '</span></div>';
+          }).join('') +
+        '</div>' +
+        '<div class="wh-center">🎡</div>' +
+      '</div>' +
+      '<button class="wh-btn" id="whGo"' + (FM.spin > 0 ? '' : ' disabled') + '>' +
+        'Aylantirish</button>' +
+      '<div class="wh-cnt">Aylantirishlar: <b style="color:#8BC34A;">' +
+        (FM.spin || 0) + '</b></div>' +
+    '</div>';
+
+  const b = el('whGo');
+  if(b) b.addEventListener('click', spin);
+}
+
+function drawReklama(){
+  const r = FM.reklama || {};
+  const EM = { lenta: '📱', storiy: '⭕', tepa: '⬆️', vip: '👑' };
+
+  el('fmBody').innerHTML = Object.keys(r).map(function(k){
+    const x = r[k];
+    const yeta = (FM.balans || 0) >= x.narx;
+    return '<div class="ad-card">' +
+      '<span class="em">' + (EM[k] || '📢') + '</span>' +
+      '<div class="t"><b>' + esc(x.nom) + '</b>' +
+      '<span>' + fmt(x.narx) + ' ball</span></div>' +
+      '<button data-k="' + k + '"' + (yeta ? '' : ' disabled') + '>Olish</button>' +
+      '</div>';
+  }).join('') + '<div style="height:20px;"></div>';
+
+  document.querySelectorAll('.ad-card button').forEach(function(b){
+    b.addEventListener('click', function(){ reklamaOl(b.dataset.k); });
+  });
+}
+
+function sotibOl(tur){
+  const h = FM.narxlar[tur];
+  if(!h) return;
+
+  if((FM.balans || 0) < h.narx){
+    toast('Ball yetarli emas');
+    haptic('medium');
+    return;
+  }
+
+  if(!confirm(h.nom + ' sotib olasizmi?\n\nNarxi: ' + fmt(h.narx) + ' ball')) return;
+
+  apiPost('/api/ferma-amal', { action: 'sotib', tur: tur }).then(function(d){
+    if(d.ok){ haptic('medium'); toast(h.nom + ' qoshildi!'); boot(); }
+    else toast(d.error || 'Xato');
+  }).catch(function(){ toast('Server xatosi'); });
+}
+
+function reklamaOl(k){
+  const x = FM.reklama[k];
+  if(!x) return;
+  if(!confirm(x.nom + '\n\n' + fmt(x.narx) + ' ball sarflanadi')) return;
+
+  apiPost('/api/ferma-amal', { action: 'reklama', tur: k }).then(function(d){
+    if(d.ok){ haptic('medium'); toast('Buyurtma yuborildi! Admin bogla nadi'); boot(); }
+    else toast(d.error || 'Xato');
+  }).catch(function(){ toast('Server xatosi'); });
+}
+
+function spin(){
+  const b = el('whGo');
+  const w = el('whEl');
+  if(!b || !w) return;
+
+  b.disabled = true;
+  b.textContent = 'Aylanmoqda...';
+  haptic('light');
+
+  apiPost('/api/ferma-amal', { action: 'spin' }).then(function(d){
+    if(!d.ok){
+      toast(d.error || 'Xato');
+      b.disabled = false;
+      b.textContent = 'Aylantirish';
+      return;
+    }
+
+    const n = (FM.gildirak || []).length;
+    const ang = 360 / n;
+    const target = 360 * 6 + (360 - (d.index * ang) - ang / 2);
+
+    w.style.transform = 'rotate(' + target + 'deg)';
+
+    setTimeout(function(){
+      showWin(d);
+      b.textContent = 'Aylantirish';
+      boot();
+    }, 5600);
+  }).catch(function(){
+    toast('Server xatosi');
+    b.disabled = false;
+    b.textContent = 'Aylantirish';
+  });
+}
+
+function showWin(d){
+  const EM = { ball: '💰', hayvon: '🐾', sovga: '🎁' };
+
+  const ov = document.createElement('div');
+  ov.className = 'win-ov';
+  ov.innerHTML =
+    '<div class="em">' + (EM[d.tur] || '🎉') + '</div>' +
+    '<h2>' + esc(d.nom) + '</h2>' +
+    '<p>' + (d.tur === 'sovga'
+      ? 'Tabriklaymiz! Admin siz bilan boglanadi'
+      : (d.tur === 'hayvon' ? 'Fermangizga qoshildi' : 'Balansingizga qoshildi')) + '</p>' +
+    '<button id="winOk">Zor!</button>';
+
+  document.body.appendChild(ov);
+  haptic('medium');
+
+  el('winOk').addEventListener('click', function(){ ov.remove(); });
+}
+
+function kunlikBonus(){
+  apiPost('/api/ferma-amal', { action: 'kunlik' }).then(function(d){
+    if(!d.ok) return;
+
+    let msg = '+' + fmt(d.miqdor) + ' ball';
+    if(d.bonus) msg += ' va +' + fmt(d.bonus) + ' haftalik bonus!';
+
+    toast('Kunlik bonus: ' + msg);
+    haptic('medium');
+    setTimeout(boot, 1200);
+  }).catch(function(){});
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  el('fmX').addEventListener('click', function(){ location.href = 'xaridor.html'; });
+
+  el('fmGet').addEventListener('click', function(){
+    apiPost('/api/ferma-amal', { action: 'yigish' }).then(function(d){
+      if(d.ok){
+        haptic('medium');
+        toast('+' + fmt(d.miqdor) + ' ball');
+        boot();
+      } else toast(d.error || 'Xato');
+    }).catch(function(){ toast('Server xatosi'); });
+  });
+
+  document.querySelectorAll('.fm-tab').forEach(function(t){
+    t.addEventListener('click', function(){
+      document.querySelectorAll('.fm-tab').forEach(function(x){ x.classList.remove('on'); });
+      t.classList.add('on');
+      TAB = t.dataset.t;
+      haptic('light');
+      draw();
+    });
+  });
+
+  setTimeout(boot, 400);
+});
+</script>
+</body>
+</html>
