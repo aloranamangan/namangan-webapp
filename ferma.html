@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>Ferma</title>
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=1787822027">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
 body{
@@ -289,14 +289,27 @@ function drawWheel(){
         '</div>' +
         '<div class="wh-center">🎡</div>' +
       '</div>' +
-      '<button class="wh-btn" id="whGo"' + (FM.spin > 0 ? '' : ' disabled') + '>' +
-        'Aylantirish</button>' +
-      '<div class="wh-cnt">Aylantirishlar: <b style="color:#8BC34A;">' +
-        (FM.spin || 0) + '</b></div>' +
+      (FM.spin > 0
+        ? '<button class="wh-btn" id="whGo">Aylantirish</button>' +
+          '<div class="wh-cnt">Aylantirishlar: <b style="color:#8BC34A;">' +
+          FM.spin + '</b></div>'
+        : '<div class="no-spin">' +
+            '<div class="e">\u{1F517}</div>' +
+            '<b>Aylantirish tugadi</b>' +
+            '<span>Do\u2018st taklif qiling \u2014 har biri uchun<br>' +
+            '<b style="color:#8BC34A;">+1 aylantirish</b> va ' +
+            '<b style="color:#8BC34A;">+5 000 ball</b></span>' +
+            '<button class="wh-btn" id="whRef" style="margin-top:16px;">' +
+            'Havolani ulashish</button>' +
+            '<div class="wh-cnt">Ertaga yana 1 ta bepul aylantirish</div>' +
+          '</div>') +
     '</div>';
 
   const b = el('whGo');
   if(b) b.addEventListener('click', spin);
+
+  const rb = el('whRef');
+  if(rb) rb.addEventListener('click', ulash);
 }
 
 function drawReklama(){
@@ -413,6 +426,23 @@ function kunlikBonus(){
     haptic('medium');
     setTimeout(boot, 1200);
   }).catch(function(){});
+}
+
+
+function ulash(){
+  const id = myId();
+  if(!id) return;
+
+  const link = 'https://t.me/Ijaraga_uybot?start=ref_' + id;
+  const text = 'UYgram \u2014 Namangandagi eng qulay kochmas mulk platformasi!\n\n' +
+    'Menga qoshiling va fermangizni boshlang \u{1F33E}';
+
+  const url = 'https://t.me/share/url?url=' + encodeURIComponent(link) +
+    '&text=' + encodeURIComponent(text);
+
+  haptic('light');
+  if(TG && TG.openTelegramLink) TG.openTelegramLink(url);
+  else window.open(url, '_blank');
 }
 
 document.addEventListener('DOMContentLoaded', function(){

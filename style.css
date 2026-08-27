@@ -2464,3 +2464,19 @@ body{padding-bottom:80px !important;}
 /* Navigatsiya - 7 ta tugma */
 .nav button{flex:1 !important;font-size:8px !important;padding:0 1px !important;}
 .nav button svg{width:19px !important;height:19px !important;}
+
+/* Aylantirish tugagan ekran */
+.no-spin{
+  width:100%;max-width:320px;text-align:center;
+  padding:24px 20px;border-radius:20px;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.1);
+}
+.no-spin .e{
+  font-size:46px;margin-bottom:12px;
+  animation:featPuls 2.5s ease-in-out infinite;
+}
+.no-spin b{display:block;font-size:17px;font-weight:800;color:#fff;margin-bottom:8px;}
+.no-spin span{
+  display:block;font-size:13px;color:rgba(255,255,255,.55);line-height:1.6;
+}
