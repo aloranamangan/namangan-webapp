@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>Ferma</title>
-<link rel="stylesheet" href="style.css?v=1787837102">
+<link rel="stylesheet" href="style.css?v=1787837278">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
 body{
@@ -189,13 +189,13 @@ body{
 <div class="fm-bal">
   <div class="lb">BALANS</div>
   <div class="sum" id="fmSum">0</div>
-  <div class="cur">ball</div>
+  <div class="cur">UYcoin</div>
 </div>
 
 <div class="fm-collect">
   <div class="i">
     <b id="fmYig">0</b>
-    <span id="fmSoat">soatiga 0 ball</span>
+    <span id="fmSoat">soatiga 0 UYcoin</span>
   </div>
   <button id="fmGet" disabled>Yig'ish</button>
 </div>
@@ -236,7 +236,7 @@ function boot(){
 function draw(){
   el('fmSum').textContent = fmt(FM.balans || 0);
   el('fmYig').textContent = '+' + fmt(FM.yigilgan || 0);
-  el('fmSoat').textContent = 'soatiga ' + fmt(FM.soatlik || 0) + ' ball';
+  el('fmSoat').textContent = 'soatiga ' + fmt(FM.soatlik || 0) + ' UYcoin';
 
   const g = el('fmGet');
   g.disabled = !(FM.yigilgan > 0);
@@ -567,7 +567,7 @@ function drawReklama(){
     return '<div class="ad-card">' +
       '<span class="em">' + (EM[k] || '📢') + '</span>' +
       '<div class="t"><b>' + esc(x.nom) + '</b>' +
-      '<span>' + fmt(x.narx) + ' ball</span></div>' +
+      '<span>' + fmt(x.narx) + ' UYcoin</span></div>' +
       '<button data-k="' + k + '"' + (yeta ? '' : ' disabled') + '>Olish</button>' +
       '</div>';
   }).join('') + '<div style="height:20px;"></div>';
@@ -582,12 +582,12 @@ function sotibOl(tur){
   if(!h) return;
 
   if((FM.balans || 0) < h.narx){
-    toast('Ball yetarli emas');
+    toast('UYcoin yetarli emas');
     haptic('medium');
     return;
   }
 
-  if(!confirm(h.nom + ' sotib olasizmi?\n\nNarxi: ' + fmt(h.narx) + ' ball')) return;
+  if(!confirm(h.nom + ' sotib olasizmi?\n\nNarxi: ' + fmt(h.narx) + ' UYcoin')) return;
 
   apiPost('/api/ferma-amal', { action: 'sotib', tur: tur }).then(function(d){
     if(d.ok){ haptic('medium'); toast(h.nom + ' qoshildi!'); boot(); }
@@ -598,7 +598,7 @@ function sotibOl(tur){
 function reklamaOl(k){
   const x = FM.reklama[k];
   if(!x) return;
-  if(!confirm(x.nom + '\n\n' + fmt(x.narx) + ' ball sarflanadi')) return;
+  if(!confirm(x.nom + '\n\n' + fmt(x.narx) + ' UYcoin sarflanadi')) return;
 
   apiPost('/api/ferma-amal', { action: 'reklama', tur: k }).then(function(d){
     if(d.ok){ haptic('medium'); toast('Buyurtma yuborildi! Admin bogla nadi'); boot(); }
@@ -664,7 +664,7 @@ function kunlikBonus(){
   apiPost('/api/ferma-amal', { action: 'kunlik' }).then(function(d){
     if(!d.ok) return;
 
-    let msg = '+' + fmt(d.miqdor) + ' ball';
+    let msg = '+' + fmt(d.miqdor) + ' UYcoin';
     if(d.bonus) msg += ' va +' + fmt(d.bonus) + ' haftalik bonus!';
 
     toast('Kunlik bonus: ' + msg);
@@ -697,7 +697,7 @@ document.addEventListener('DOMContentLoaded', function(){
     apiPost('/api/ferma-amal', { action: 'yigish' }).then(function(d){
       if(d.ok){
         haptic('medium');
-        toast('+' + fmt(d.miqdor) + ' ball');
+        toast('+' + fmt(d.miqdor) + ' UYcoin');
         boot();
       } else toast(d.error || 'Xato');
     }).catch(function(){ toast('Server xatosi'); });
