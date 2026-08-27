@@ -761,9 +761,6 @@ function igLoginScreen(){
             '<path fill="#EA4335" d="M12 5.4c2 0 3.4.9 4.2 1.6l3-3C17.4 2.2 14.9 1 12 1 7.8 1 4.1 3.5 2.3 7.3l3.5 2.7C6.7 7.3 9.1 5.4 12 5.4z"/></svg>' +
             'Google bilan davom etish</button>' +
 
-          '<button class="ig-soc fb" id="socFb">' +
-            '<svg viewBox="0 0 24 24"><path d="M24 12c0-6.6-5.4-12-12-12S0 5.4 0 12c0 6 4.4 11 10.1 11.9v-8.4H7.1V12h3V9.4c0-3 1.8-4.6 4.5-4.6 1.3 0 2.6.2 2.6.2v2.9h-1.5c-1.5 0-1.9.9-1.9 1.8V12h3.3l-.5 3.5h-2.8v8.4C19.6 23 24 18 24 12z"/></svg>' +
-            'Facebook bilan davom etish</button>' +
         '</div>' +
 
         '<div class="ig-team" id="igTeam">' +
@@ -836,13 +833,6 @@ function igLoginScreen(){
   document.getElementById('socGg').addEventListener('click', function(){
     loginTozala();
     location.href = 'https://namangan-ijara-bot.onrender.com/google-login';
-  });
-
-  document.getElementById('socFb').addEventListener('click', function(){
-    loginTozala();
-    const u = 'https://namangan-ijara-bot.onrender.com/facebook-login';
-    if(TG && TG.openLink) TG.openLink(u);
-    else window.open(u, '_blank') || (location.href = u);
   });
 
   document.getElementById('igTeam').addEventListener('click', function(){
