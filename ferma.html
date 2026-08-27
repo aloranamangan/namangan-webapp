@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>Ferma</title>
-<link rel="stylesheet" href="style.css?v=1787837278">
+<link rel="stylesheet" href="style.css?v=1787839793">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
 body{
@@ -703,9 +703,15 @@ document.addEventListener('DOMContentLoaded', function(){
     }).catch(function(){ toast('Server xatosi'); });
   });
 
-  document.querySelectorAll('.fm-tab').forEach(function(t){
+  const mt = el('mnTab');
+  if(mt) mt.addEventListener('click', function(){
+    haptic('light');
+    location.href = 'mayning.html';
+  });
+
+  document.querySelectorAll('.fm-tab[data-t]').forEach(function(t){
     t.addEventListener('click', function(){
-      document.querySelectorAll('.fm-tab').forEach(function(x){ x.classList.remove('on'); });
+      document.querySelectorAll('.fm-tab[data-t]').forEach(function(x){ x.classList.remove('on'); });
       t.classList.add('on');
       TAB = t.dataset.t;
       haptic('light');

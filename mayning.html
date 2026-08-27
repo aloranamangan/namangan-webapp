@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Mayning</title>
+<link rel="stylesheet" href="style.css?v=1787839793">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+body{
+  background:radial-gradient(ellipse at 50% 20%,#1A2332 0%,#0D1420 55%,#070B12 100%);
+  padding-bottom:90px;min-height:100vh;
+}
+.mn-top{
+  display:flex;align-items:center;gap:12px;
+  padding:calc(14px + env(safe-area-inset-top)) 16px 10px;
+}
+.mn-top h1{font-size:19px;font-weight:800;flex:1;color:#fff;}
+.mn-x{
+  width:34px;height:34px;border-radius:50%;border:none;
+  background:rgba(255,255,255,.1);color:#fff;font-size:19px;cursor:pointer;
+}
+
+/* Balans */
+.mn-bal{
+  text-align:center;padding:6px 20px 18px;
+}
+.mn-bal .coin-row{
+  display:flex;align-items:center;justify-content:center;gap:11px;
+}
+.mn-bal img.coin-ic{width:44px;height:44px;object-fit:contain;}
+.mn-bal .sum{
+  font-size:40px;font-weight:800;letter-spacing:-1.5px;
+  color:#FFD54F;font-variant-numeric:tabular-nums;
+  text-shadow:0 0 30px rgba(255,213,79,.35);
+}
+.mn-bal .lb{
+  font-size:12px;color:rgba(255,255,255,.45);margin-top:4px;
+  letter-spacing:.14em;font-weight:700;
+}
+.mn-bal .val{
+  font-size:12.5px;color:#8BC34A;margin-top:7px;font-weight:600;
+}
+
+/* Mayning rasmi */
+.mn-core{
+  display:flex;flex-direction:column;align-items:center;
+  padding:6px 20px 20px;
+}
+.mn-img-w{
+  position:relative;width:260px;height:260px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;user-select:none;
+}
+.mn-img{
+  width:100%;height:100%;object-fit:contain;
+  filter:drop-shadow(0 10px 30px rgba(255,213,79,.25));
+  transition:transform .2s;
+  position:relative;z-index:3;
+}
+.mn-img-w.ish .mn-img{
+  animation:mnPulse 2.6s ease-in-out infinite;
+}
+@keyframes mnPulse{
+  0%,100%{transform:scale(1) translateY(0)}
+  50%{transform:scale(1.04) translateY(-6px)}
+}
+.mn-img-w:active .mn-img{transform:scale(.95);}
+
+/* Aylanuvchi halqa */
+.mn-ring{
+  position:absolute;inset:8px;border-radius:50%;
+  border:2px dashed rgba(255,213,79,.25);
+  animation:mnRing 14s linear infinite;
+}
+@keyframes mnRing{to{transform:rotate(360deg)}}
+.mn-ring2{
+  position:absolute;inset:26px;border-radius:50%;
+  border:1px solid rgba(139,195,74,.18);
+  animation:mnRing 20s linear infinite reverse;
+}
+
+/* Zarrachalar */
+.mn-spark{
+  position:absolute;width:5px;height:5px;border-radius:50%;
+  background:#FFD54F;box-shadow:0 0 10px #FFD54F;
+  pointer-events:none;z-index:2;
+  animation:mnSpark 3s ease-out infinite;
+}
+@keyframes mnSpark{
+  0%{opacity:0;transform:translate(0,0) scale(0)}
+  15%{opacity:1;transform:scale(1)}
+  100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.3)}
+}
+
+/* Yig'ilgan */
+.mn-got{
+  margin:0 20px 16px;padding:17px;border-radius:20px;
+  background:linear-gradient(135deg,rgba(255,213,79,.12),rgba(255,160,0,.06));
+  border:1px solid rgba(255,213,79,.28);
+  display:flex;align-items:center;gap:14px;
+}
+.mn-got .i{flex:1;}
+.mn-got .i b{
+  display:block;font-size:24px;font-weight:800;color:#FFD54F;
+  font-variant-numeric:tabular-nums;
+}
+.mn-got .i span{font-size:11.5px;color:rgba(255,255,255,.5);}
+.mn-got button{
+  padding:13px 22px;border:none;border-radius:14px;
+  background:linear-gradient(135deg,#FFD54F,#FFA000);
+  color:#3E2723;font-size:14px;font-weight:800;
+  cursor:pointer;font-family:inherit;white-space:nowrap;
+}
+.mn-got button:disabled{opacity:.35;}
+
+/* Tezlik */
+.mn-speed{
+  margin:0 20px 18px;padding:15px 17px;border-radius:16px;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+}
+.mn-speed .row{
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:13px;margin-bottom:8px;
+}
+.mn-speed .row:last-child{margin-bottom:0;}
+.mn-speed .row span{color:rgba(255,255,255,.5);}
+.mn-speed .row b{color:#fff;font-weight:700;}
+.mn-speed .row b.g{color:#8BC34A;}
+
+/* Hayvonlar */
+.mn-sec-t{
+  font-size:14px;font-weight:800;color:#fff;
+  padding:6px 20px 12px;letter-spacing:.03em;
+}
+.mn-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;padding:0 20px;}
+.mn-card{
+  padding:15px 12px;border-radius:18px;text-align:center;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.1);
+}
+.mn-card.have{border-color:rgba(255,213,79,.35);background:rgba(255,213,79,.07);}
+.mn-card .em{font-size:38px;display:block;margin-bottom:6px;}
+.mn-card .nm{font-size:13.5px;font-weight:700;color:#fff;}
+.mn-card .sp{font-size:11px;color:#8BC34A;margin-top:3px;font-weight:600;}
+.mn-card .cnt{
+  display:inline-block;margin-top:6px;padding:2px 9px;border-radius:20px;
+  background:rgba(255,213,79,.2);color:#FFD54F;font-size:10.5px;font-weight:800;
+}
+.mn-card .btns{display:flex;gap:6px;margin-top:9px;}
+.mn-card .btns button{
+  flex:1;padding:8px 0;border:none;border-radius:10px;
+  font-size:10.5px;font-weight:800;cursor:pointer;font-family:inherit;
+}
+.mn-card .b-coin{background:rgba(255,213,79,.2);color:#FFD54F;}
+.mn-card .b-cash{background:rgba(139,195,74,.2);color:#8BC34A;}
+.mn-card .btns button:disabled{opacity:.3;}
+</style>
+</head>
+<body>
+
+<div class="mn-top">
+  <h1>⛏ Mayning</h1>
+  <button class="mn-x" id="mnX">&times;</button>
+</div>
+
+<div class="mn-bal">
+  <div class="coin-row">
+    <img class="coin-ic" src="img/coin.png" alt="">
+    <span class="sum" id="mnCoin">0.000</span>
+  </div>
+  <div class="lb">UYCOIN</div>
+  <div class="val" id="mnVal">—</div>
+</div>
+
+<div class="mn-core">
+  <div class="mn-img-w" id="mnBtn">
+    <div class="mn-ring"></div>
+    <div class="mn-ring2"></div>
+    <img class="mn-img" src="img/mining.png" alt="">
+  </div>
+</div>
+
+<div class="mn-got">
+  <div class="i">
+    <b id="mnGot">0.000</b>
+    <span id="mnInfo">tayyor</span>
+  </div>
+  <button id="mnGet" disabled>Yig'ish</button>
+</div>
+
+<div class="mn-speed">
+  <div class="row"><span>Tezlik</span><b class="g" id="mnSpd">—</b></div>
+  <div class="row"><span>1 UYcoin</span><b id="mnTime">—</b></div>
+  <div class="row"><span>1 UYcoin qiymati</span><b class="g" id="mnPrice">—</b></div>
+</div>
+
+<div class="mn-sec-t">🚀 Tezlikni oshiring</div>
+<div id="mnAnimals"><div class="load">Yuklanmoqda...</div></div>
+
+<script src="core.js"></script>
+<script>
+let MN = null, TIK = null;
+
+const EMOJI = {
+  ari: '🐝', tovuq: '🐔', ordak: '🦆', echki: '🐐',
+  qoy: '🐑', sigir: '🐄', ot: '🐎'
+};
+const NOM = {
+  ari: 'Ari', tovuq: 'Tovuq', ordak: "O'rdak", echki: 'Echki',
+  qoy: "Qo'y", sigir: 'Sigir', ot: 'Ot'
+};
+
+function boot(){
+  const id = myId();
+  if(!id) return;
+
+  api('/api/mayning?tg_id=' + id + '&t=' + Date.now()).then(function(d){
+    if(!d.ok) return;
+    MN = d;
+    draw();
+    if(!d.boshlangan) boshlash();
+    startTik();
+  }).catch(function(){});
+}
+
+function draw(){
+  el('mnCoin').textContent = (MN.coin || 0).toFixed(3);
+  el('mnGot').textContent = (MN.yigilgan || 0).toFixed(4);
+
+  const val = Math.round((MN.coin || 0) * (MN.coin_qiymat || 100000));
+  el('mnVal').textContent = '≈ ' + fmt(val) + " so'mlik reklama";
+
+  el('mnSpd').textContent = (MN.tezlik_kun || 0).toFixed(3) + ' / kun';
+
+  const soat = MN.tezlik_soat > 0 ? (1 / MN.tezlik_soat) : 0;
+  const kun = soat / 24;
+  el('mnTime').textContent = kun >= 1
+    ? kun.toFixed(1) + ' kun'
+    : Math.round(soat) + ' soat';
+
+  el('mnPrice').textContent = fmt(MN.coin_qiymat || 100000) + " so'm";
+
+  el('mnGet').disabled = !(MN.yigilgan > 0.0001);
+
+  const w = el('mnBtn');
+  if(w) w.classList.toggle('ish', MN.boshlangan);
+
+  el('mnInfo').textContent = MN.boshlangan
+    ? ('maksimum ' + (MN.max_soat || 24) + ' soat yigiladi')
+    : 'boshlash uchun bosing';
+
+  drawAnimals();
+}
+
+function drawAnimals(){
+  const bor = {};
+  (MN.hayvonlar || []).forEach(function(a){ bor[a.tur] = a.soni; });
+
+  const list = Object.keys(MN.narx_coin || {});
+  el('mnAnimals').innerHTML = '<div class="mn-grid">' + list.map(function(k){
+    const n = bor[k] || 0;
+    const tz = ((MN.tezlik_jadval || {})[k] || 0) * 24;
+    const nc = (MN.narx_coin || {})[k] || 0;
+    const nn = (MN.narx_naqd || {})[k] || 0;
+    const yeta = (MN.coin || 0) >= nc;
+
+    return '<div class="mn-card' + (n ? ' have' : '') + '">' +
+      '<span class="em">' + (EMOJI[k] || '🐾') + '</span>' +
+      '<div class="nm">' + (NOM[k] || k) + '</div>' +
+      '<div class="sp">+' + tz.toFixed(2) + ' / kun</div>' +
+      (n ? '<span class="cnt">' + n + ' ta</span>' : '') +
+      '<div class="btns">' +
+        '<button class="b-coin" data-k="' + k + '"' + (yeta ? '' : ' disabled') + '>' +
+          nc + ' 🪙</button>' +
+        '<button class="b-cash" data-c="' + k + '">' +
+          Math.round(nn / 1000) + 'k</button>' +
+      '</div></div>';
+  }).join('') + '</div><div style="height:24px;"></div>';
+
+  document.querySelectorAll('.b-coin').forEach(function(b){
+    b.addEventListener('click', function(){ coinOl(b.dataset.k); });
+  });
+  document.querySelectorAll('.b-cash').forEach(function(b){
+    b.addEventListener('click', function(){ naqdOl(b.dataset.c); });
+  });
+}
+
+function boshlash(){
+  apiPost('/api/mayning-amal', { action: 'boshlash' }).then(function(d){
+    if(d.ok){
+      haptic('medium');
+      toast('Mayning boshlandi!');
+      MN.boshlangan = true;
+      draw();
+      sparks();
+    }
+  }).catch(function(){});
+}
+
+function yigish(){
+  apiPost('/api/mayning-amal', { action: 'yigish' }).then(function(d){
+    if(d.ok){
+      haptic('medium');
+      toast('+' + d.miqdor.toFixed(4) + ' UYcoin');
+      sparks();
+      boot();
+    } else toast(d.error || 'Hozircha yoq');
+  }).catch(function(){ toast('Server xatosi'); });
+}
+
+function coinOl(tur){
+  const nc = (MN.narx_coin || {})[tur] || 0;
+  if(!confirm((NOM[tur] || tur) + ' sotib olasizmi?\n\n' + nc + ' UYcoin')) return;
+
+  apiPost('/api/mayning-amal', { action: 'hayvon-coin', tur: tur }).then(function(d){
+    if(d.ok){ haptic('medium'); toast('Qoshildi!'); boot(); }
+    else toast(d.error || 'Xato');
+  }).catch(function(){ toast('Server xatosi'); });
+}
+
+function naqdOl(tur){
+  const nn = (MN.narx_naqd || {})[tur] || 0;
+
+  apiPost('/api/mayning-amal', { action: 'hayvon-naqd', tur: tur }).then(function(d){
+    if(!d.ok){ toast('Xato'); return; }
+
+    const bg = document.createElement('div');
+    bg.className = 'sheet-bg';
+    bg.innerHTML = '<div class="sheet" id="nqS"><div class="sheet-bar"></div>' +
+      '<div class="sheet-title">' + (NOM[tur] || tur) + ' sotib olish</div>' +
+      '<div class="wrap">' +
+      '<div class="pay-card"><div class="lb">KARTA RAQAMI</div>' +
+      '<div class="num">' + esc(d.karta || '') + '</div>' +
+      '<div class="lb">KARTA EGASI</div>' +
+      '<div class="own">' + esc(d.egasi || '') + '</div></div>' +
+      '<div style="text-align:center;font-size:28px;font-weight:300;margin-bottom:4px;">' +
+      fmt(d.narx) + '</div>' +
+      '<div style="text-align:center;font-size:12px;color:var(--muted);margin-bottom:20px;">som</div>' +
+      '<div class="pay-warn">Tolovni amalga oshirgach, chek skrinshotini adminga yuboring. ' +
+      'Tasdiqlangach hayvon fermangizga qoshiladi.</div>' +
+      '<button class="btn" id="nqCopy" style="background:#262626;margin-bottom:10px;">' +
+      'Karta raqamini nusxalash</button>' +
+      '<button class="btn" id="nqAdmin">Adminga yozish</button>' +
+      '</div></div>';
+
+    document.body.appendChild(bg);
+    bg.addEventListener('click', function(e){ if(e.target === bg) bg.remove(); });
+    el('nqS').addEventListener('click', function(e){ e.stopPropagation(); });
+
+    el('nqCopy').addEventListener('click', function(){
+      if(navigator.clipboard) navigator.clipboard.writeText((d.karta || '').replace(/\s/g, ''));
+      toast('Nusxalandi');
+      haptic('light');
+    });
+
+    el('nqAdmin').addEventListener('click', function(){
+      const u = 'https://t.me/Ijara_admin_namangan';
+      if(TG && TG.openTelegramLink) TG.openTelegramLink(u);
+      else window.open(u, '_blank');
+    });
+  }).catch(function(){ toast('Server xatosi'); });
+}
+
+function sparks(){
+  const w = el('mnBtn');
+  if(!w) return;
+
+  for(let i = 0; i < 10; i++){
+    const s = document.createElement('div');
+    s.className = 'mn-spark';
+    const a = Math.random() * Math.PI * 2;
+    const d = 70 + Math.random() * 60;
+    s.style.setProperty('--dx', (Math.cos(a) * d).toFixed(0) + 'px');
+    s.style.setProperty('--dy', (Math.sin(a) * d).toFixed(0) + 'px');
+    s.style.left = '50%';
+    s.style.top = '50%';
+    s.style.animationDelay = (i * 0.08) + 's';
+    w.appendChild(s);
+    setTimeout(function(){ s.remove(); }, 3200);
+  }
+}
+
+function startTik(){
+  if(TIK) clearInterval(TIK);
+  TIK = setInterval(function(){
+    if(!MN || !MN.boshlangan) return;
+    MN.yigilgan = (MN.yigilgan || 0) + (MN.tezlik_soat || 0) / 3600;
+    el('mnGot').textContent = MN.yigilgan.toFixed(4);
+    el('mnGet').disabled = !(MN.yigilgan > 0.0001);
+  }, 1000);
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  el('mnX').addEventListener('click', function(){ location.href = 'ferma.html'; });
+  el('mnGet').addEventListener('click', yigish);
+
+  el('mnBtn').addEventListener('click', function(){
+    haptic('light');
+    sparks();
+    if(MN && !MN.boshlangan) boshlash();
+  });
+
+  setTimeout(boot, 400);
+});
+</script>
+</body>
+</html>
