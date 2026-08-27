@@ -62,7 +62,12 @@ body{background:linear-gradient(170deg,#0a0a0a 0%,#0d1b2a 100%);}
 </head>
 <body>
 
-<header class="topbar"><h1>🎁 Referal <span class="gold">dastur</span></h1></header>
+<header class="topbar" style="display:flex;align-items:center;gap:10px;">
+  <button id="refBack" style="width:34px;height:34px;border-radius:50%;border:none;
+    background:rgba(255,255,255,.12);color:#fff;font-size:19px;cursor:pointer;
+    flex-shrink:0;">&#8592;</button>
+  <h1 style="flex:1;">🎁 Referal <span class="gold">dastur</span></h1>
+</header>
 <div id="root"><div class="load">Yuklanmoqda...</div></div>
 
 <script src="i18n.js?v=1786724767"></script>
@@ -255,6 +260,14 @@ document.addEventListener('DOMContentLoaded', function(){
   setTimeout(function(){
     if(typeof loadAdminState === 'function') loadAdminState();
   }, 500);
+});
+
+document.addEventListener('DOMContentLoaded', function(){
+  const b = document.getElementById('refBack');
+  if(b) b.addEventListener('click', function(){
+    if(typeof haptic === 'function') haptic('light');
+    location.href = 'xaridor.html';
+  });
 });
 </script>
 </body>
