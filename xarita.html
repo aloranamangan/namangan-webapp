@@ -97,6 +97,7 @@ body{font-family:'Manrope',sans-serif;background:#000;color:#fff;overflow:hidden
 <div id="map"></div>
 
 <div class="topbar">
+  <button class="tb-btn" id="back" style="margin-right:4px;">←</button>
   <h1>🗺 Xarita</h1>
   <button class="tb-btn" id="layer">🌓</button>
 </div>
@@ -231,6 +232,12 @@ document.addEventListener('DOMContentLoaded', function(){
   });
 
   el('cClose').addEventListener('click', function(){ el('card').classList.remove('on'); });
+
+  const bk = el('back');
+  if(bk) bk.addEventListener('click', function(){
+    if(typeof haptic === 'function') haptic('light');
+    location.href = 'xaridor.html';
+  });
 
   el('layer').addEventListener('click', function(){
     dark = !dark;
