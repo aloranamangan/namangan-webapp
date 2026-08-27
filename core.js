@@ -474,7 +474,9 @@ function showSubScreen(list, cb){
     '<div class="sub-list">' +
       list.map(function(c){
         const k = c.kind || 'channel';
-        return '<div class="sub-item" data-u="' + esc(c.url || '') + '">' +
+        const lnk = c.url || c.link ||
+          ('https://t.me/' + String(c.username || c.chat_id || '').replace('@',''));
+        return '<div class="sub-item" data-u="' + esc(lnk) + '">' +
           '<span class="e">' + (KIND[k] || KIND.channel) + '</span>' +
           '<span class="t"><b>' + esc(c.title || c.username || '') + '</b>' +
           '<span>' + (KLBL[k] || 'Kanal') + '</span></span>' +
