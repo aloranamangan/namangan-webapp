@@ -205,9 +205,7 @@ function loadTab(tab){
     g.querySelectorAll('.cell').forEach(function(c){
       c.addEventListener('click', function(){
         const p = list.filter(function(x){ return String(x.id) === c.dataset.id; })[0];
-        if(p && typeof openUserProfile === 'function' && PF_TAB !== 'posts'){
-          openUserProfile(null, p.username);
-        }
+        if(p) openPostFull(p);
       });
     });
   }).catch(function(){
