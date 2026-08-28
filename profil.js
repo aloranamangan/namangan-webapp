@@ -178,7 +178,7 @@ function loadTab(tab){
   else url = '/api/postlar?username=' + encodeURIComponent(PF.username || '');
 
   if(tab === 'posts' && !PF.username){
-    url = '/api/mening-postlarim?tg_id=' + id;
+    url = '/api/postlar?username=user' + id;
   }
 
   api(url).then(function(d){
