@@ -1122,3 +1122,99 @@ function chizUn(bg, prof, extra){
     next();
   });
 }
+
+
+// ---------- Elonni toliq ekranda ochish ----------
+function openPostFull(p){
+  const media = (p.media && p.media.length) ? p.media
+    : [{ file_id: p.file_id, is_video: p.is_video }];
+
+  let idx = 0;
+
+  const v = document.createElement('div');
+  v.className = 'pf-full';
+
+  function chiz(){
+    const m = media[idx] || media[0];
+    const u = mediaUrl(m.file_id);
+
+    v.innerHTML =
+      '<div class="pf-bar">' +
+        '<button id="pfClose">&#8592;</button>' +
+        '<b>Elon</b>' +
+        '<button id="pfMenu">&#8942;</button>' +
+      '</div>' +
+
+      '<div class="pf-media">' +
+        (m.is_video
+          ? '<video src="' + u + '" controls autoplay playsinline></video>'
+          : '<img src="' + u + '">') +
+        (media.length > 1
+          ? '<div class="pf-dots">' + media.map(function(_, i){
+              return '<i class="' + (i === idx ? 'on' : '') + '"></i>';
+            }).join('') + '</div>' +
+            '<button class="pf-nav l" id="pfPrev">&#8249;</button>' +
+            '<button class="pf-nav r" id="pfNext">&#8250;</button>'
+          : '') +
+      '</div>' +
+
+      '<div class="pf-info">' +
+        (p.price ? '<div class="pf-price">' + esc(p.price) + '</div>' : '') +
+        (p.description ? '<div class="pf-desc">' + esc(p.description) + '</div>' : '') +
+        '<div class="pf-stats">' +
+          '<span>\u{1F441} ' + fmt(p.views || 0) + '</span>' +
+          '<span>\u2764\uFE0F ' + fmt(p.likes || 0) + '</span>' +
+        '</div>' +
+      '</div>' +
+
+      '<div class="pf-acts">' +
+        '<button class="pf-btn blue" id="pfAd">\u{1F4E2} Reklama qilish</button>' +
+        '<button class="pf-btn" id="pfEdit2">\u270F\uFE0F Tahrirlash</button>' +
+        '<button class="pf-btn red" id="pfDel">\u{1F5D1}</button>' +
+      '</div>';
+
+    // Tugmalar
+    v.querySelector('#pfClose').addEventListener('click', function(){ v.remove(); });
+
+    const pv = v.querySelector('#pfPrev');
+    if(pv) pv.addEventListener('click', function(){
+      idx = (idx - 1 + media.length) % media.length;
+      chiz();
+    });
+
+    const nx = v.querySelector('#pfNext');
+    if(nx) nx.addEventListener('click', function(){
+      idx = (idx + 1) % media.length;
+      chiz();
+    });
+
+    v.querySelector('#pfAd').addEventListener('click', function(){
+      haptic('light');
+      if(typeof reklamaOyna === 'function') reklamaOyna(p.id);
+    });
+
+    v.querySelector('#pfEdit2').addEventListener('click', function(){
+      toast('Tahrirlash tez orada');
+    });
+
+    v.querySelector('#pfDel').addEventListener('click', function(){
+      if(!confirm('Elonni ochirasizmi?')) return;
+      apiPost('/api/post-ochirish', { post_id: p.id }).then(function(d){
+        if(d.ok){
+          haptic('medium');
+          toast('Ochirildi');
+          v.remove();
+          if(typeof loadTab === 'function') loadTab(PF_TAB);
+        } else toast('Xato');
+      }).catch(function(){ toast('Server xatosi'); });
+    });
+
+    const mn = v.querySelector('#pfMenu');
+    if(mn) mn.addEventListener('click', function(){
+      if(typeof openShare === 'function') openShare(p);
+    });
+  }
+
+  document.body.appendChild(v);
+  chiz();
+}
