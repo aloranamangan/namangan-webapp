@@ -2628,3 +2628,11 @@ body{padding-bottom:80px !important;}
   66%{transform:translateX(-2px)}
   70%{transform:translateX(0)}
 }
+
+/* Xabarlar - pastki panel ustida */
+.dm-full,.chat-full{
+  bottom:calc(72px + env(safe-area-inset-bottom)) !important;
+}
+.chat-input{
+  bottom:calc(72px + env(safe-area-inset-bottom)) !important;
+}
