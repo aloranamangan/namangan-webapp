@@ -318,7 +318,13 @@ function askRole(cb){
 
     if(IS_ADMIN || myId() === 7894423610){
       let last = null;
-      try { last = localStorage.getItem('ni_admin_panel'); } catch(e){}
+      try {
+        last = localStorage.getItem('ni_admin_panel');
+        if(last === 'sotuvchi.html'){
+          localStorage.removeItem('ni_admin_panel');
+          last = null;
+        }
+      } catch(e){}
       const cur = location.pathname.split('/').pop();
       if(last){
         if(last !== cur){ location.href = last; return; }
@@ -435,7 +441,10 @@ function showAdminPanels(cb, force){
   ov.querySelectorAll('.apn').forEach(function(b){
     b.addEventListener('click', function(){
       const u = b.dataset.u;
-      try { localStorage.setItem('ni_admin_panel', u); } catch(e){}
+      try {
+        if(u !== 'sotuvchi.html') localStorage.setItem('ni_admin_panel', u);
+        else localStorage.removeItem('ni_admin_panel');
+      } catch(e){}
       const cur = location.pathname.split('/').pop();
       if(u === cur){ ov.remove(); if(cb) cb(); }
       else location.href = u;
