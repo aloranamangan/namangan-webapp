@@ -139,7 +139,7 @@
 
 <script src="i18n.js?v=1786726305"></script>
 <script src="intro.js?v=1787312621"></script>
-<script src="core.js?v=1787920508"></script>
+<script src="core.js?v=1787920895"></script>
 <script src="splash.js"></script>
 <script src="reg.js"></script>
 <script src="dm.js?v=1786724767"></script>
@@ -148,6 +148,13 @@
 <script src="ads.js"></script>
 <script src="profil.js?v=1787920216"></script>
 <script>
+// APK: monitor eslab qolinmasin
+try {
+  if(localStorage.getItem('ni_admin_panel') === 'sotuvchi.html'){
+    localStorage.removeItem('ni_admin_panel');
+  }
+} catch(e){}
+
 let POSTS = [];
 let SELLERS = [];
 let SUBS = {};
