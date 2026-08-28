@@ -945,3 +945,210 @@ function royxatOyna(){
 
   bg.querySelector('#rgBack').addEventListener('click', function(){ bg.remove(); });
 }
+
+// ---------- Reklama kalkulyatori ----------
+function reklamaOyna(postId){
+  const bg = document.createElement('div');
+  bg.className = 'sheet-bg';
+  bg.style.zIndex = '9100';
+  bg.innerHTML = '<div class="sheet" id="rkS" style="max-height:92vh;overflow-y:auto;">' +
+    '<div class="sheet-bar"></div>' +
+    '<div class="sheet-title">\u{1F4E2} Reklama qilish</div>' +
+    '<div id="rkBody"><div class="load">Yuklanmoqda...</div></div></div>';
+
+  document.body.appendChild(bg);
+  bg.addEventListener('click', function(e){ if(e.target === bg) bg.remove(); });
+  bg.querySelector('#rkS').addEventListener('click', function(e){ e.stopPropagation(); });
+
+  api('/api/reklama-narx?t=' + Date.now()).then(function(d){
+    if(!d.ok){ bg.querySelector('#rkBody').innerHTML = '<div class="load">Xato</div>'; return; }
+    chizRk(bg, d, postId);
+  }).catch(function(){
+    bg.querySelector('#rkBody').innerHTML = '<div class="load">Server xatosi</div>';
+  });
+}
+
+function chizRk(bg, d, postId){
+  const baza = d.baza || {};
+  const turlar = Object.keys(baza);
+  let tur = turlar[0] || 'lenta';
+  let kun = 1;
+  let soni = 1;
+
+  const box = bg.querySelector('#rkBody');
+
+  box.innerHTML =
+    '<div class="wrap">' +
+      (d.keyingi_bosqich
+        ? '<div class="rk-info">\u{1F4C8} Hozir <b>' + fmt(d.foydalanuvchi) + '</b> foydalanuvchi. ' +
+          '<b>' + fmt(d.keyingi_bosqich) + '</b> ga yetganda narx oshadi \u2014 hozir oling!</div>'
+        : '') +
+
+      '<div class="rk-types" id="rkTypes">' +
+        turlar.map(function(k){
+          const b = baza[k];
+          return '<div class="rk-type' + (k === tur ? ' on' : '') + '" data-k="' + k + '">' +
+            '<span class="e">' + b.emoji + '</span>' +
+            '<div class="n">' + esc(b.nom) + '</div>' +
+            '<div class="p">' + fmt(b.narx) + ' / kun</div>' +
+            '<div class="iz">' + esc(b.izoh) + '</div>' +
+          '</div>';
+        }).join('') +
+      '</div>' +
+
+      '<div class="rk-row">' +
+        '<div class="lb"><span>Muddat</span><b id="rkKunT">1 kun</b></div>' +
+        '<input type="range" class="rk-slider" id="rkKun" min="1" max="30" value="1">' +
+      '</div>' +
+
+      '<div class="rk-row">' +
+        '<div class="lb"><span>Elonlar soni</span><b id="rkSonT">1 ta</b></div>' +
+        '<input type="range" class="rk-slider" id="rkSon" min="1" max="10" value="1">' +
+      '</div>' +
+
+      '<div class="rk-disc-list" id="rkDisc">' +
+        (d.chegirma || []).map(function(c){
+          return '<span class="rk-disc" data-n="' + c.soni + '">' +
+            c.soni + ' ta \u2192 ' + c.foiz + '%</span>';
+        }).join('') +
+      '</div>' +
+
+      '<div class="rk-total">' +
+        '<div class="r"><span>Kunlik narx</span><b id="rkDay">\u2014</b></div>' +
+        '<div class="r"><span>Muddat</span><b id="rkKunN">1 kun</b></div>' +
+        '<div class="r"><span>Elonlar</span><b id="rkSonN">1 ta</b></div>' +
+        '<div class="r disc" id="rkDiscRow" style="display:none;">' +
+          '<span>Chegirma</span><b id="rkDiscN">\u2014</b></div>' +
+        '<div class="big"><span>Jami</span>' +
+          '<div><span class="rk-old" id="rkOld" style="display:none;"></span>' +
+          '<b id="rkSum">\u2014</b></div></div>' +
+      '</div>' +
+
+      '<button class="btn" id="rkGo">Buyurtma berish</button>' +
+    '</div>';
+
+  function hisobla(){
+    const b = baza[tur];
+    if(!b) return;
+
+    const asos = b.narx * kun * soni;
+
+    let ch = 0;
+    (d.chegirma || []).forEach(function(c){
+      if(soni >= c.soni) ch = c.foiz;
+    });
+
+    const yakuniy = Math.round(asos * (100 - ch) / 100);
+
+    bg.querySelector('#rkDay').textContent = fmt(b.narx);
+    bg.querySelector('#rkKunN').textContent = kun + ' kun';
+    bg.querySelector('#rkSonN').textContent = soni + ' ta';
+    bg.querySelector('#rkKunT').textContent = kun + ' kun';
+    bg.querySelector('#rkSonT').textContent = soni + ' ta';
+
+    const dr = bg.querySelector('#rkDiscRow');
+    const ol = bg.querySelector('#rkOld');
+    if(ch > 0){
+      dr.style.display = '';
+      bg.querySelector('#rkDiscN').textContent = '\u2212' + ch + '%';
+      ol.style.display = '';
+      ol.textContent = fmt(asos);
+    } else {
+      dr.style.display = 'none';
+      ol.style.display = 'none';
+    }
+
+    bg.querySelector('#rkSum').textContent = fmt(yakuniy);
+
+    // Chegirma yorliqlari
+    bg.querySelectorAll('.rk-disc').forEach(function(x){
+      x.classList.toggle('on', soni >= parseInt(x.dataset.n));
+    });
+  }
+
+  bg.querySelectorAll('.rk-type').forEach(function(t){
+    t.addEventListener('click', function(){
+      bg.querySelectorAll('.rk-type').forEach(function(x){ x.classList.remove('on'); });
+      t.classList.add('on');
+      tur = t.dataset.k;
+      haptic('light');
+      hisobla();
+    });
+  });
+
+  bg.querySelector('#rkKun').addEventListener('input', function(e){
+    kun = parseInt(e.target.value);
+    hisobla();
+  });
+
+  bg.querySelector('#rkSon').addEventListener('input', function(e){
+    soni = parseInt(e.target.value);
+    hisobla();
+  });
+
+  bg.querySelector('#rkGo').addEventListener('click', function(){
+    const gb = bg.querySelector('#rkGo');
+    gb.disabled = true;
+    gb.textContent = 'Yuborilmoqda...';
+
+    apiPost('/api/reklama-buyurtma', {
+      tur: tur, kun: kun, soni: soni, post_id: postId || null
+    }).then(function(r){
+      if(!r.ok){
+        toast(r.error || 'Xato');
+        gb.disabled = false;
+        gb.textContent = 'Buyurtma berish';
+        return;
+      }
+      bg.remove();
+      tolovOyna(r);
+    }).catch(function(){
+      toast('Server xatosi');
+      gb.disabled = false;
+      gb.textContent = 'Buyurtma berish';
+    });
+  });
+
+  hisobla();
+}
+
+function tolovOyna(r){
+  const bg = document.createElement('div');
+  bg.className = 'sheet-bg';
+  bg.style.zIndex = '9200';
+  bg.innerHTML = '<div class="sheet" id="tlS" style="max-height:88vh;overflow-y:auto;">' +
+    '<div class="sheet-bar"></div>' +
+    '<div class="sheet-title">Tolov</div>' +
+    '<div class="wrap">' +
+      '<div class="pay-card">' +
+        '<div class="lb">KARTA RAQAMI</div>' +
+        '<div class="num">' + esc(r.karta || '') + '</div>' +
+        '<div class="lb">KARTA EGASI</div>' +
+        '<div class="own">' + esc(r.egasi || '') + '</div>' +
+      '</div>' +
+      '<div style="text-align:center;font-size:32px;font-weight:300;margin-bottom:4px;">' +
+        fmt(r.narx) + '</div>' +
+      '<div style="text-align:center;font-size:12px;color:var(--muted);margin-bottom:20px;">som</div>' +
+      '<div class="pay-warn">Tolovni amalga oshirgach, chek skrinshotini adminga yuboring. ' +
+      'Tasdiqlangach reklama darhol ishga tushadi.</div>' +
+      '<button class="btn" id="tlCopy" style="background:#262626;margin-bottom:10px;">' +
+        'Karta raqamini nusxalash</button>' +
+      '<button class="btn" id="tlAdmin">Adminga chek yuborish</button>' +
+    '</div></div>';
+
+  document.body.appendChild(bg);
+  bg.addEventListener('click', function(e){ if(e.target === bg) bg.remove(); });
+  bg.querySelector('#tlS').addEventListener('click', function(e){ e.stopPropagation(); });
+
+  bg.querySelector('#tlCopy').addEventListener('click', function(){
+    if(navigator.clipboard) navigator.clipboard.writeText((r.karta || '').replace(/\s/g, ''));
+    toast('Nusxalandi');
+    haptic('light');
+  });
+
+  bg.querySelector('#tlAdmin').addEventListener('click', function(){
+    const u = r.admin || 'https://t.me/Ijara_admin_namangan';
+    if(TG && TG.openTelegramLink) TG.openTelegramLink(u);
+    else window.open(u, '_blank');
+  });
+}
