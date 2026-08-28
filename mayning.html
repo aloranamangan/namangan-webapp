@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>Mayning</title>
-<link rel="stylesheet" href="style.css?v=1787841246">
+<link rel="stylesheet" href="style.css?v=1787911181">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
 body{
@@ -174,6 +174,8 @@ body{
   <div class="val" id="mnVal">—</div>
 </div>
 
+<div class="mn-level" id="mnLvl"></div>
+
 <div class="mn-core">
   <div class="mn-img-w" id="mnBtn">
     <div class="mn-ring"></div>
@@ -260,7 +262,54 @@ function draw(){
   const st = el('mnStart');
   if(st) st.style.display = MN.boshlangan ? 'none' : '';
 
+  drawLevel();
   drawAnimals();
+}
+
+function drawLevel(){
+  const box = el('mnLvl');
+  if(!box || !MN.level) return;
+
+  const lvl = MN.level;
+  const nom = MN.level_nom || '';
+  const bonus = MN.level_bonus || 0;
+  const ball = MN.ball || 0;
+  const kn = MN.keyingi;
+
+  let prog = 100, qoldi = '';
+  if(kn){
+    const oldingi = (MN.levellar || []).filter(function(x){ return x.lvl === lvl; })[0];
+    const bosh = oldingi ? oldingi.ball : 0;
+    prog = Math.min(100, Math.round((ball - bosh) / (kn.ball - bosh) * 100));
+    qoldi = fmt(kn.ball - ball) + ' ball \u2192 ' + kn.nom;
+  } else {
+    qoldi = 'Eng yuqori daraja!';
+  }
+
+  const kc = MN.kunlik_chegara || 0;
+  const ko = MN.kunlik_olingan || 0;
+  const kprog = kc > 0 ? Math.min(100, Math.round(ko / kc * 100)) : 0;
+
+  box.innerHTML =
+    '<div class="lv-card">' +
+      '<img class="lv-img" src="img/lvl/' + lvl + '.png" alt="">' +
+      '<div class="lv-i">' +
+        '<div class="lv-top">' +
+          '<b>' + esc(nom) + '</b>' +
+          '<span class="lv-n">LVL ' + lvl + '</span>' +
+        '</div>' +
+        '<div class="lv-bonus">\u26A1 +' + bonus + '% tezlik</div>' +
+        '<div class="lv-bar"><i style="width:' + prog + '%"></i></div>' +
+        '<div class="lv-txt">' + esc(qoldi) + '</div>' +
+      '</div>' +
+    '</div>' +
+
+    '<div class="lv-day">' +
+      '<div class="lv-day-t"><span>Bugungi limit</span>' +
+      '<b>' + ko.toFixed(2) + ' / ' + kc + '</b></div>' +
+      '<div class="lv-bar sm"><i style="width:' + kprog + '%;' +
+      (kprog >= 100 ? 'background:#ED4956;' : '') + '"></i></div>' +
+    '</div>';
 }
 
 function drawAnimals(){
