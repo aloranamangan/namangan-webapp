@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Wallet</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+body{
+  background:radial-gradient(ellipse at 50% 0%,#1C1608 0%,#0E0C06 55%,#070604 100%);
+  padding-bottom:60px;min-height:100vh;
+}
+.wl-top{
+  display:flex;align-items:center;gap:12px;
+  padding:calc(14px + env(safe-area-inset-top)) 16px 10px;
+}
+.wl-top h1{font-size:19px;font-weight:800;flex:1;color:#fff;}
+.wl-x{
+  width:34px;height:34px;border-radius:50%;border:none;
+  background:rgba(255,255,255,.1);color:#fff;font-size:19px;cursor:pointer;
+}
+
+/* Karta */
+.wl-card{
+  margin:6px 16px 18px;padding:24px 22px;border-radius:24px;
+  background:linear-gradient(135deg,#B8860B 0%,#FFD54F 45%,#FFA000 100%);
+  position:relative;overflow:hidden;
+  box-shadow:0 12px 36px rgba(255,160,0,.28);
+}
+.wl-card::before{
+  content:'';position:absolute;top:-45%;right:-18%;
+  width:220px;height:220px;border-radius:50%;
+  background:rgba(255,255,255,.13);
+}
+.wl-card::after{
+  content:'';position:absolute;bottom:-35%;left:-12%;
+  width:170px;height:170px;border-radius:50%;
+  background:rgba(0,0,0,.07);
+}
+.wl-card .lb{
+  font-size:10.5px;font-weight:800;letter-spacing:.16em;
+  color:rgba(62,39,35,.65);position:relative;z-index:2;
+}
+.wl-card .row{
+  display:flex;align-items:center;gap:12px;
+  margin:8px 0 4px;position:relative;z-index:2;
+}
+.wl-card img{width:46px;height:46px;object-fit:contain;}
+.wl-card .sum{
+  font-size:38px;font-weight:800;letter-spacing:-1.5px;color:#3E2723;
+  font-variant-numeric:tabular-nums;
+}
+.wl-card .val{
+  font-size:13px;color:rgba(62,39,35,.72);font-weight:600;
+  position:relative;z-index:2;
+}
+.wl-card .foot{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-top:18px;position:relative;z-index:2;
+}
+.wl-card .lvl{
+  font-size:11px;font-weight:800;padding:5px 11px;border-radius:20px;
+  background:rgba(62,39,35,.16);color:#3E2723;
+}
+
+/* Amallar */
+.wl-acts{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px 18px;}
+.wl-act{
+  padding:16px 12px;border-radius:18px;text-align:center;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.1);
+  cursor:pointer;transition:transform .18s;
+}
+.wl-act:active{transform:scale(.97);}
+.wl-act.off{opacity:.4;}
+.wl-act .e{font-size:26px;display:block;margin-bottom:6px;}
+.wl-act .t{font-size:12.5px;font-weight:700;color:#fff;}
+.wl-act .s{font-size:10px;color:rgba(255,255,255,.4);margin-top:2px;}
+
+/* Statistika */
+.wl-stats{
+  margin:0 16px 18px;padding:16px;border-radius:18px;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+}
+.wl-stats .r{
+  display:flex;justify-content:space-between;
+  font-size:13px;margin-bottom:9px;
+}
+.wl-stats .r:last-child{margin-bottom:0;}
+.wl-stats .r span{color:rgba(255,255,255,.5);}
+.wl-stats .r b{color:#fff;font-weight:700;}
+.wl-stats .r b.g{color:#FFD54F;}
+
+/* Emissiya */
+.wl-sup{
+  margin:0 16px 18px;padding:16px;border-radius:18px;
+  background:linear-gradient(135deg,rgba(255,213,79,.08),rgba(184,134,11,.04));
+  border:1px solid rgba(255,213,79,.2);
+}
+.wl-sup .t{
+  font-size:12px;font-weight:800;color:#FFD54F;
+  letter-spacing:.08em;margin-bottom:11px;
+}
+.wl-sup .bar{
+  height:8px;border-radius:5px;background:rgba(255,255,255,.1);
+  overflow:hidden;margin-bottom:9px;
+}
+.wl-sup .bar i{
+  display:block;height:100%;border-radius:5px;
+  background:linear-gradient(90deg,#B8860B,#FFD54F);
+}
+.wl-sup .n{
+  display:flex;justify-content:space-between;
+  font-size:11.5px;color:rgba(255,255,255,.5);
+}
+.wl-sup .n b{color:#FFD54F;}
+
+/* Tarix */
+.wl-sec{
+  font-size:14px;font-weight:800;color:#fff;
+  padding:6px 16px 12px;
+}
+.tx{
+  margin:0 16px 9px;padding:13px 15px;border-radius:15px;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.07);
+  display:flex;align-items:center;gap:12px;
+}
+.tx .e{
+  width:38px;height:38px;border-radius:12px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:18px;
+}
+.tx .e.in{background:rgba(139,195,74,.16);}
+.tx .e.out{background:rgba(237,73,86,.16);}
+.tx .i{flex:1;min-width:0;}
+.tx .i b{display:block;font-size:13.5px;font-weight:700;color:#fff;}
+.tx .i span{font-size:11px;color:rgba(255,255,255,.42);}
+.tx .m{font-size:14px;font-weight:800;font-variant-numeric:tabular-nums;}
+.tx .m.in{color:#8BC34A;}
+.tx .m.out{color:#ED4956;}
+</style>
+</head>
+<body>
+
+<div class="wl-top">
+  <button class="wl-x" id="wlBack">&#8592;</button>
+  <h1>💰 Wallet</h1>
+</div>
+
+<div id="wlBody"><div class="load">Yuklanmoqda...</div></div>
+
+<script src="core.js"></script>
+<script>
+let WL = null;
+
+const TX_EM = {
+  mayning: '⛏', spin: '🎡', spin2: '🏆', quti: '🎁',
+  referal: '👥', kunlik: '📅', hayvon: '🐄',
+  reklama: '📢', yigish: '💰'
+};
+const TX_NOM = {
+  mayning: 'Mayning', spin: "G'ildirak", spin2: 'Katta gildirak',
+  quti: 'Omadli quti', referal: 'Referal', kunlik: 'Kunlik bonus',
+  hayvon: 'Hayvon sotib olish', reklama: 'Reklama', yigish: 'Ferma daromadi'
+};
+
+function boot(){
+  const id = myId();
+  if(!id){ el('wlBody').innerHTML = '<div class="load">Kirish kerak</div>'; return; }
+
+  api('/api/wallet?tg_id=' + id + '&t=' + Date.now()).then(function(d){
+    if(!d.ok){ el('wlBody').innerHTML = '<div class="load">Xato</div>'; return; }
+    WL = d;
+    draw();
+  }).catch(function(){
+    el('wlBody').innerHTML = '<div class="load">Server xatosi</div>';
+  });
+}
+
+function draw(){
+  const s = WL.supply || {};
+  const foiz = s.foiz || 0;
+
+  let html =
+    '<div class="wl-card">' +
+      '<div class="lb">UYCOIN BALANS</div>' +
+      '<div class="row">' +
+        '<img src="img/coin.png" alt="">' +
+        '<span class="sum">' + (WL.coin || 0).toFixed(3) + '</span>' +
+      '</div>' +
+      '<div class="val">\u2248 ' + fmt(WL.qiymat || 0) + " so'mlik reklama</div>" +
+      '<div class="foot">' +
+        '<span class="lvl">LVL ' + (WL.level || 1) + ' \u00B7 ' + esc(WL.level_nom || '') + '</span>' +
+        '<span class="lvl">Bosqich ' + (WL.bosqich || 1) + '</span>' +
+      '</div>' +
+    '</div>' +
+
+    '<div class="wl-acts">' +
+      '<div class="wl-act" data-a="olish">' +
+        '<span class="e">\u2795</span><div class="t">UYcoin olish</div>' +
+        '<div class="s">mayning, gildirak</div></div>' +
+      '<div class="wl-act off" data-a="yuborish">' +
+        '<span class="e">\u{1F4B8}</span><div class="t">Yuborish</div>' +
+        '<div class="s">tez orada</div></div>' +
+      '<div class="wl-act" data-a="reklama">' +
+        '<span class="e">\u{1F4E2}</span><div class="t">Reklamaga</div>' +
+        '<div class="s">almashtirish</div></div>' +
+      '<div class="wl-act" data-a="nima">' +
+        '<span class="e">\u2753</span><div class="t">UYcoin nima?</div>' +
+        '<div class="s">malumot</div></div>' +
+    '</div>' +
+
+    '<div class="wl-stats">' +
+      '<div class="r"><span>1 UYcoin qiymati</span><b class="g">' +
+        fmt(WL.coin_qiymat || 100000) + " so'm</b></div>" +
+      '<div class="r"><span>Referallar</span><b>' + (WL.referal || 0) + ' ta</b></div>' +
+      '<div class="r"><span>Hayvonlar</span><b>' + (WL.hayvonlar || 0) + ' ta</b></div>' +
+    '</div>' +
+
+    '<div class="wl-sup">' +
+      '<div class="t">\u{1FA99} UYCOIN EMISSIYASI</div>' +
+      '<div class="bar"><i style="width:' + Math.max(0.5, foiz) + '%"></i></div>' +
+      '<div class="n"><span>Chiqarilgan: <b>' + fmt(Math.round(s.chiqarilgan || 0)) + '</b></span>' +
+      '<span>Jami: <b>' + fmt(s.chegara || 25000000) + '</b></span></div>' +
+      '<div class="n" style="margin-top:6px;">' +
+      '<span>Kuydirilgan: <b>' + fmt(Math.round(s.kuydirilgan || 0)) + '</b></span>' +
+      '<span>' + foiz.toFixed(3) + '%</span></div>' +
+    '</div>' +
+
+    '<div class="wl-sec">\u{1F4DC} Tranzaksiyalar</div>';
+
+  const tx = WL.tarix || [];
+  if(!tx.length){
+    html += '<div class="empty" style="padding:44px 20px;">' +
+      '<div class="ic">\u{1F4DC}</div><p>Tranzaksiya yoq</p>' +
+      '<span>Mayning boshlang</span></div>';
+  } else {
+    html += tx.map(function(t){
+      const kir = (t.miqdor || 0) > 0;
+      let vaqt = '';
+      if(t.vaqt && t.vaqt.length > 8){
+        const dt = new Date(String(t.vaqt).replace(' ', 'T'));
+        if(!isNaN(dt)){
+          vaqt = dt.getDate() + '.' + (dt.getMonth() + 1) + ' ' +
+            dt.getHours() + ':' + String(dt.getMinutes()).padStart(2, '0');
+        }
+      }
+      return '<div class="tx">' +
+        '<span class="e ' + (kir ? 'in' : 'out') + '">' +
+          (TX_EM[t.tur] || '\u{1F4B0}') + '</span>' +
+        '<div class="i"><b>' + (TX_NOM[t.tur] || t.tur) + '</b>' +
+        '<span>' + vaqt + (t.izoh ? ' \u00B7 ' + esc(t.izoh.slice(0, 24)) : '') + '</span></div>' +
+        '<span class="m ' + (kir ? 'in' : 'out') + '">' +
+          (kir ? '+' : '') + (t.miqdor || 0).toFixed(3) + '</span>' +
+        '</div>';
+    }).join('');
+  }
+
+  el('wlBody').innerHTML = html + '<div style="height:24px;"></div>';
+
+  document.querySelectorAll('.wl-act').forEach(function(a){
+    a.addEventListener('click', function(){ amal(a.dataset.a); });
+  });
+}
+
+function amal(a){
+  haptic('light');
+
+  if(a === 'yuborish'){
+    toast('Ozaro otkazma tez orada ishga tushadi');
+    return;
+  }
+
+  if(a === 'olish'){ location.href = 'mayning.html'; return; }
+
+  if(a === 'reklama'){ reklamaOyna(); return; }
+
+  if(a === 'nima'){ nimaOyna(); return; }
+}
+
+function reklamaOyna(){
+  const r = WL.reklama || {};
+  const EM = { lenta: '📱', storiy: '⭕', tepa: '⬆️', vip: '👑' };
+
+  const bg = document.createElement('div');
+  bg.className = 'sheet-bg';
+  bg.innerHTML = '<div class="sheet" id="rkS" style="max-height:80vh;overflow-y:auto;">' +
+    '<div class="sheet-bar"></div>' +
+    '<div class="sheet-title">Reklamaga almashtirish</div>' +
+    '<div class="wrap">' +
+    Object.keys(r).map(function(k){
+      const x = r[k];
+      const kerak = x.narx / (WL.coin_qiymat || 100000);
+      const yeta = (WL.coin || 0) >= kerak;
+      return '<div class="ad-card" style="margin:0 0 11px;">' +
+        '<span class="em">' + (EM[k] || '📢') + '</span>' +
+        '<div class="t"><b>' + esc(x.nom) + '</b>' +
+        '<span>' + kerak.toFixed(1) + ' UYcoin</span></div>' +
+        '<button data-k="' + k + '"' + (yeta ? '' : ' disabled') + '>Olish</button>' +
+        '</div>';
+    }).join('') +
+    '</div></div>';
+
+  document.body.appendChild(bg);
+  bg.addEventListener('click', function(e){ if(e.target === bg) bg.remove(); });
+  el('rkS').addEventListener('click', function(e){ e.stopPropagation(); });
+
+  bg.querySelectorAll('.ad-card button').forEach(function(b){
+    b.addEventListener('click', function(){
+      const k = b.dataset.k;
+      const x = r[k];
+      if(!confirm(x.nom + '\n\nAlmashtirasizmi?')) return;
+
+      apiPost('/api/ferma-amal', { action: 'reklama', tur: k }).then(function(d){
+        if(d.ok){ haptic('medium'); toast('Buyurtma yuborildi'); bg.remove(); boot(); }
+        else toast(d.error || 'Xato');
+      }).catch(function(){ toast('Server xatosi'); });
+    });
+  });
+}
+
+function nimaOyna(){
+  const bg = document.createElement('div');
+  bg.className = 'sheet-bg';
+  bg.innerHTML = '<div class="sheet" id="nmS" style="max-height:85vh;overflow-y:auto;">' +
+    '<div class="sheet-bar"></div>' +
+    '<div class="sheet-title">UYcoin nima?</div>' +
+    '<div class="wrap" style="font-size:14px;line-height:1.7;color:rgba(255,255,255,.75);">' +
+      '<p style="margin-bottom:16px;"><b style="color:#FFD54F;">UYcoin</b> \u2014 UYgram ilovasining ichki valyutasi. ' +
+      'Uni mayning, gildirak va referal orqali yigasiz.</p>' +
+
+      '<p style="margin-bottom:16px;"><b style="color:#fff;">Nimaga ishlatiladi:</b><br>' +
+      '\u2022 Reklama joylash<br>' +
+      '\u2022 Elonni tepaga chiqarish<br>' +
+      '\u2022 VIP belgi olish<br>' +
+      '\u2022 Hayvon sotib olish</p>' +
+
+      '<p style="margin-bottom:16px;"><b style="color:#fff;">Qancha chiqariladi:</b><br>' +
+      'Jami <b style="color:#FFD54F;">25 000 000</b> UYcoin. Bundan ortiq hech qachon chiqarilmaydi.</p>' +
+
+      '<p style="margin-bottom:16px;"><b style="color:#fff;">Bosqichlar:</b><br>' +
+      'Har bosqichda mayning tezligi 2 barobar kamayadi \u2014 shuning uchun ' +
+      'erta boshlagan kopro yigadi.</p>' +
+
+      '<p style="padding:14px;border-radius:12px;background:rgba(255,193,7,.1);' +
+      'border:1px solid rgba(255,193,7,.3);font-size:12.5px;color:#FFC107;">' +
+      '\u26A0\uFE0F UYcoin \u2014 ichki ball. Naqd pulga almashtirilmaydi va ' +
+      'kripto valyuta emas.</p>' +
+    '</div></div>';
+
+  document.body.appendChild(bg);
+  bg.addEventListener('click', function(e){ if(e.target === bg) bg.remove(); });
+  el('nmS').addEventListener('click', function(e){ e.stopPropagation(); });
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  el('wlBack').addEventListener('click', function(){ location.href = 'xaridor.html'; });
+  setTimeout(boot, 400);
+});
+</script>
+</body>
+</html>

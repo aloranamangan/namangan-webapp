@@ -78,6 +78,15 @@ function render(){
 
     '<div id="pfGrid"><div class="load">Yuklanmoqda...</div></div>' +
 
+    '<div class="pm-list">' +
+      '<div class="pm" data-go="wallet" style="border-color:rgba(255,213,79,.4);' +
+      'background:linear-gradient(135deg,rgba(255,213,79,.1),rgba(184,134,11,.04));">' +
+      '<span class="e">\u{1F4B0}</span>' +
+      '<span class="t">UYcoin Wallet</span>' +
+      '<span class="v" id="pfCoin">\u2014</span>' +
+      '<span class="ar">&rsaquo;</span></div>' +
+    '</div>' +
+
     ((typeof IS_ADMIN !== 'undefined' && IS_ADMIN)
       ? '<div class="pm-list">' +
           '<div class="pm" data-go="panel" style="border-color:rgba(0,149,246,.4);">' +
@@ -137,6 +146,13 @@ function bindProfile(isMak){
       loadTab(tb.dataset.tb);
     });
   });
+
+  const pc = el('pfCoin');
+  if(pc && myId()){
+    api('/api/wallet?tg_id=' + myId()).then(function(w){
+      if(w.ok) pc.textContent = (w.coin || 0).toFixed(2) + ' UYcoin';
+    }).catch(function(){});
+  }
 
   document.querySelectorAll('.pm[data-go]').forEach(function(m){
     m.addEventListener('click', function(){
