@@ -2697,3 +2697,17 @@ body{padding-bottom:80px !important;}
   box-shadow:0 6px 20px rgba(0,149,246,.32);
 }
 .lv-btn:active{transform:scale(.98);}
+
+/* Yutmadi oynasi */
+.win-ov.lose h2{color:#FFC107;}
+.win-ov.lose .em{
+  animation:loseShake .8s ease-out both;
+}
+@keyframes loseShake{
+  0%{transform:scale(.4) rotate(0);opacity:0}
+  40%{transform:scale(1.15) rotate(-8deg);opacity:1}
+  60%{transform:scale(1) rotate(6deg)}
+  80%{transform:rotate(-3deg)}
+  100%{transform:rotate(0)}
+}
+.win-ov.lose button{background:#FFC107;color:#3E2723;}

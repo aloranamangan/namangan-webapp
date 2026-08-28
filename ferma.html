@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>Ferma</title>
-<link rel="stylesheet" href="style.css?v=1787840389">
+<link rel="stylesheet" href="style.css?v=1787917113">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
 body{
@@ -481,6 +481,7 @@ function spin2(){
 }
 
 function showWin2(d){
+  if(d.tur === 'bosh'){ showLose(); return; }
   const EM = {
     ball: '\u{1F4B0}', chegirma: '\u{1F3F7}\uFE0F', reklama: '\u{1F4E2}',
     quti: '\u{1F381}', galichka: '\u2705', spin: '\u{1F3A1}',
@@ -642,7 +643,26 @@ function spin(){
   });
 }
 
+
+function showLose(){
+  const ov = document.createElement('div');
+  ov.className = 'win-ov lose';
+  ov.innerHTML =
+    '<div class="em">\u{1F340}</div>' +
+    '<h2>Bu safar omad kulmadi</h2>' +
+    '<p>Qayta urinib koring \u2014<br>keyingi safar sizniki boladi!</p>' +
+    '<button id="loseOk">Yana urinish</button>';
+
+  document.body.appendChild(ov);
+  try {
+    if(TG && TG.HapticFeedback) TG.HapticFeedback.notificationOccurred('warning');
+  } catch(e){}
+
+  el('loseOk').addEventListener('click', function(){ ov.remove(); });
+}
+
 function showWin(d){
+  if(d.tur === 'bosh'){ showLose(); return; }
   const EM = { ball: '💰', hayvon: '🐾', sovga: '🎁' };
 
   const ov = document.createElement('div');
