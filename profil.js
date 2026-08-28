@@ -202,6 +202,8 @@ function loadTab(tab){
         '</div>';
     }).join('') + '</div>';
 
+    PF_POSTS = list;
+
     g.querySelectorAll('.cell').forEach(function(c){
       c.addEventListener('click', function(){
         const p = list.filter(function(x){ return String(x.id) === c.dataset.id; })[0];
@@ -1218,3 +1220,28 @@ function openPostFull(p){
   document.body.appendChild(v);
   chiz();
 }
+
+
+// Zaxira: grid bosilishi (delegatsiya orqali)
+document.addEventListener('click', function(e){
+  const c = e.target.closest ? e.target.closest('#pfGrid .cell') : null;
+  if(!c) return;
+
+  const id = c.dataset.id;
+  if(!id) return;
+
+  e.preventDefault();
+  e.stopPropagation();
+
+  if(typeof PF_POSTS !== 'undefined' && PF_POSTS.length){
+    const p = PF_POSTS.filter(function(x){ return String(x.id) === id; })[0];
+    if(p){ openPostFull(p); return; }
+  }
+
+  // Serverdan olamiz
+  api('/api/postlar?id=' + id).then(function(d){
+    const p = (d.posts || []).filter(function(x){ return String(x.id) === id; })[0];
+    if(p) openPostFull(p);
+    else toast('Elon topilmadi');
+  }).catch(function(){ toast('Xato'); });
+});
