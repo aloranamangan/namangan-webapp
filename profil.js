@@ -215,9 +215,14 @@ function loadTab(tab){
     });
 
     g.querySelectorAll('.cell').forEach(function(c){
-      c.addEventListener('click', function(){
+      c.addEventListener('click', function(ev){
+        ev.preventDefault();
+        ev.stopPropagation();
+        toast('Bosildi: ' + c.dataset.id);
         const p = list.filter(function(x){ return String(x.id) === c.dataset.id; })[0];
-        if(p) openPostFull(p);
+        if(!p){ toast('Post topilmadi'); return; }
+        if(typeof openPostFull !== 'function'){ toast('Funksiya yoq'); return; }
+        try { openPostFull(p); } catch(er){ toast('Xato: ' + er.message); }
       });
 
       // Uzoq bosish - menyu
