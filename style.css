@@ -2881,3 +2881,18 @@ body{padding-bottom:80px !important;}
   visibility:visible !important;
   opacity:1 !important;
 }
+
+/* Grid: menyu va pin */
+.cell-menu{
+  position:absolute;top:4px;right:4px;z-index:5;
+  width:26px;height:26px;border-radius:50%;border:none;
+  background:rgba(0,0,0,.5);color:#fff;font-size:15px;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  backdrop-filter:blur(6px);
+  pointer-events:auto !important;
+}
+.cell-menu:active{background:rgba(0,0,0,.75);}
+.cell .pinned{
+  position:absolute;top:4px;left:4px;z-index:4;
+  font-size:14px;filter:drop-shadow(0 1px 3px rgba(0,0,0,.6));
+}

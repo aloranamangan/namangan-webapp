@@ -199,18 +199,38 @@ function loadTab(tab){
       return '<div class="cell" data-id="' + p.id + '">' +
         (m.is_video ? '<video src="' + u + '" muted></video>' : '<img src="' + u + '">') +
         ((p.media && p.media.length > 1) ? '<span class="multi">&#9673;</span>' : '') +
+        (p.pinned ? '<span class="pinned">&#128204;</span>' : '') +
+        (tab === 'posts' ? '<button class="cell-menu" data-m="' + p.id + '">&#8942;</button>' : '') +
         '</div>';
     }).join('') + '</div>';
 
     PF_POSTS = list;
 
+    g.querySelectorAll('.cell-menu').forEach(function(b){
+      b.addEventListener('click', function(e){
+        e.stopPropagation();
+        const p = list.filter(function(x){ return String(x.id) === b.dataset.m; })[0];
+        if(p) postMenu(p);
+      });
+    });
+
     g.querySelectorAll('.cell').forEach(function(c){
       c.addEventListener('click', function(){
         const p = list.filter(function(x){ return String(x.id) === c.dataset.id; })[0];
-        if(!p){ toast('Elon topilmadi: ' + c.dataset.id); return; }
-        if(typeof openPostFull !== 'function'){ toast('openPostFull yoq'); return; }
-        openPostFull(p);
+        if(p) openPostFull(p);
       });
+
+      // Uzoq bosish - menyu
+      let lt = null;
+      c.addEventListener('touchstart', function(){
+        if(tab !== 'posts') return;
+        lt = setTimeout(function(){
+          const p = list.filter(function(x){ return String(x.id) === c.dataset.id; })[0];
+          if(p) postMenu(p);
+        }, 550);
+      }, { passive: true });
+      c.addEventListener('touchend', function(){ clearTimeout(lt); });
+      c.addEventListener('touchmove', function(){ clearTimeout(lt); });
     });
   }).catch(function(){
     g.innerHTML = '<div class="load">Xato yuz berdi</div>';
@@ -1245,3 +1265,107 @@ document.addEventListener('click', function(e){
     else toast('Elon topilmadi');
   }).catch(function(){ toast('Xato'); });
 });
+
+
+// ---------- Elon boshqaruvi (eski paneldan) ----------
+function postMenu(p){
+  if(!p) return;
+  haptic('medium');
+
+  const bg = document.createElement('div');
+  bg.className = 'sheet-bg';
+  bg.innerHTML = '<div class="sheet" id="pmS"><div class="sheet-bar"></div>' +
+    '<div class="sheet-title">Eʼlon boshqaruvi</div>' +
+    '<button class="sheet-item" data-a="edit">&#9999;&#65039;&nbsp;&nbsp;Tahrirlash</button>' +
+    '<button class="sheet-item" data-a="pin">&#128204; ' +
+      (p.pinned ? 'Qadashni bekor qilish' : 'Tepaga qadash') + '</button>' +
+    '<button class="sheet-item" data-a="geo">&#128205;&nbsp;&nbsp;Joylashuvni belgilash</button>' +
+    '<button class="sheet-item danger" data-a="del">&#128465;&#65039;&nbsp;&nbsp;Eʼlonni oʻchirish</button>' +
+    '</div>';
+
+  document.body.appendChild(bg);
+  bg.addEventListener('click', function(e){ if(e.target === bg) bg.remove(); });
+  el('pmS').addEventListener('click', function(e){ e.stopPropagation(); });
+
+  bg.querySelectorAll('.sheet-item').forEach(function(b){
+    b.addEventListener('click', function(){
+      const a = b.dataset.a;
+      bg.remove();
+
+      if(a === 'del'){
+        if(!confirm('Elonni ochirasizmi?\n\nLayk, komentariya, korishlar ham ochadi.')) return;
+        apiPost('/api/post-ochirish', { post_id: p.id }).then(function(d){
+          if(d.ok){ haptic('medium'); toast('Ochirildi'); drawProfile(); }
+          else toast(d.error || 'Xato');
+        }).catch(function(){ toast('Server xatosi'); });
+      }
+
+      if(a === 'edit') editPost(p);
+
+      if(a === 'pin'){
+        apiPost('/api/post-pin', { post_id: p.id, on: !p.pinned }).then(function(d){
+          if(d.ok){
+            haptic('medium');
+            toast(p.pinned ? 'Qadash bekor qilindi' : 'Tepaga qadaldi');
+            drawProfile();
+          } else toast('Xato');
+        }).catch(function(){ toast('Server xatosi'); });
+      }
+
+      if(a === 'geo'){
+        openGeoPicker(function(la, ln){
+          apiPost('/api/post-tahrirlash', {
+            post_id: p.id, price: p.price || '',
+            description: p.description || '', lat: la, lng: ln
+          }).then(function(d){
+            if(d.ok){ haptic('medium'); toast('Joylashuv saqlandi'); }
+            else toast('Xato');
+          });
+        });
+      }
+    });
+  });
+}
+
+function editPost(p){
+  const lines = String(p.description || '').split('\n');
+  const head = lines[0] || '';
+  const title = lines[1] || '';
+  const body = lines.slice(2).join('\n');
+
+  const bg = document.createElement('div');
+  bg.className = 'sheet-bg';
+  bg.innerHTML = '<div class="sheet" id="epS" style="max-height:88vh;">' +
+    '<div class="sheet-bar"></div><div class="sheet-title">Eʼlonni tahrirlash</div>' +
+    '<div class="wrap">' +
+    '<label class="label">Sarlavha</label>' +
+    '<input class="inp" id="eT" value="' + esc(title) + '">' +
+    '<label class="label">Narx</label>' +
+    '<input class="inp" id="eP" value="' + esc(p.price || '') + '">' +
+    '<label class="label">Malumot</label>' +
+    '<textarea class="txt" id="eD">' + esc(body) + '</textarea>' +
+    '<button class="btn" id="eGo">Saqlash</button></div></div>';
+
+  document.body.appendChild(bg);
+  bg.addEventListener('click', function(e){ if(e.target === bg) bg.remove(); });
+  el('epS').addEventListener('click', function(e){ e.stopPropagation(); });
+
+  el('eGo').addEventListener('click', function(){
+    const t = el('eT').value.trim();
+    if(!t){ toast('Sarlavhani kiriting'); return; }
+
+    const full = head + '\n' + t + (el('eD').value.trim() ? '\n' + el('eD').value.trim() : '');
+    const b = el('eGo');
+    b.disabled = true;
+    b.textContent = 'Saqlanmoqda...';
+
+    apiPost('/api/post-tahrirlash', {
+      post_id: p.id, price: el('eP').value.trim(), description: full
+    }).then(function(d){
+      if(d.ok){ haptic('medium'); toast('Saqlandi'); bg.remove(); drawProfile(); }
+      else { toast('Xato'); b.disabled = false; b.textContent = 'Saqlash'; }
+    }).catch(function(){
+      toast('Server xatosi'); b.disabled = false; b.textContent = 'Saqlash';
+    });
+  });
+}
