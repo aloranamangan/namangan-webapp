@@ -2896,3 +2896,15 @@ body{padding-bottom:80px !important;}
   position:absolute;top:4px;left:4px;z-index:4;
   font-size:14px;filter:drop-shadow(0 1px 3px rgba(0,0,0,.6));
 }
+
+/* Rasmga bosish ishlashi */
+#pfGrid .cell{
+  position:relative;
+  cursor:pointer;
+  -webkit-tap-highlight-color:rgba(255,255,255,.1);
+}
+#pfGrid .cell::after{
+  content:'';position:absolute;inset:0;z-index:2;
+}
+#pfGrid .cell-menu{z-index:6 !important;}
+#pfGrid .cell .pinned{z-index:5;}
