@@ -205,7 +205,9 @@ function loadTab(tab){
     g.querySelectorAll('.cell').forEach(function(c){
       c.addEventListener('click', function(){
         const p = list.filter(function(x){ return String(x.id) === c.dataset.id; })[0];
-        if(p) openPostFull(p);
+        if(!p){ toast('Elon topilmadi: ' + c.dataset.id); return; }
+        if(typeof openPostFull !== 'function'){ toast('openPostFull yoq'); return; }
+        openPostFull(p);
       });
     });
   }).catch(function(){
