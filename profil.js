@@ -183,6 +183,7 @@ function loadTab(tab){
 
   api(url).then(function(d){
     const list = d.posts || [];
+    if(typeof toast === 'function') toast('Yuklandi: ' + list.length + ' ta');
     if(!list.length){
       g.innerHTML = tab === 'saved'
         ? emptyBox('&#128278;', 'Saqlangan yoq', 'Yoqqan elonlarni saqlang')
