@@ -2866,3 +2866,18 @@ body{padding-bottom:80px !important;}
 }
 .pf-btn.blue{background:#0095F6;flex:2;}
 .pf-btn.red{background:rgba(237,73,86,.18);color:#ED4956;flex:0 0 52px;}
+
+/* Grid kataklari bosilishi */
+.grid .cell{
+  cursor:pointer !important;
+  pointer-events:auto !important;
+  position:relative;
+}
+.grid .cell img,.grid .cell video{
+  pointer-events:none !important;
+}
+.pf-full{
+  display:flex !important;
+  visibility:visible !important;
+  opacity:1 !important;
+}
