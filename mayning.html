@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>Mayning</title>
-<link rel="stylesheet" href="style.css?v=1787911181">
+<link rel="stylesheet" href="style.css?v=1787911531">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
 body{
@@ -263,6 +263,8 @@ function draw(){
   if(st) st.style.display = MN.boshlangan ? 'none' : '';
 
   drawLevel();
+  const lb = el('lvRef');
+  if(lb) lb.addEventListener('click', lvUlash);
   drawAnimals();
 }
 
@@ -273,17 +275,18 @@ function drawLevel(){
   const lvl = MN.level;
   const nom = MN.level_nom || '';
   const bonus = MN.level_bonus || 0;
-  const ball = MN.ball || 0;
+  const ref = MN.referal || 0;
   const kn = MN.keyingi;
 
   let prog = 100, qoldi = '';
   if(kn){
     const oldingi = (MN.levellar || []).filter(function(x){ return x.lvl === lvl; })[0];
-    const bosh = oldingi ? oldingi.ball : 0;
-    prog = Math.min(100, Math.round((ball - bosh) / (kn.ball - bosh) * 100));
-    qoldi = fmt(kn.ball - ball) + ' ball \u2192 ' + kn.nom;
+    const bosh = oldingi ? oldingi.ref : 0;
+    prog = Math.min(100, Math.round((ref - bosh) / (kn.ref - bosh) * 100));
+    qoldi = 'Yana <b style="color:#FFD54F;">' + (kn.ref - ref) +
+      '</b> dost \u2192 ' + kn.nom;
   } else {
-    qoldi = 'Eng yuqori daraja!';
+    qoldi = '\u{1F451} Eng yuqori daraja!';
   }
 
   const kc = MN.kunlik_chegara || 0;
@@ -298,11 +301,16 @@ function drawLevel(){
           '<b>' + esc(nom) + '</b>' +
           '<span class="lv-n">LVL ' + lvl + '</span>' +
         '</div>' +
-        '<div class="lv-bonus">\u26A1 +' + bonus + '% tezlik</div>' +
+        '<div class="lv-bonus">\u26A1 +' + bonus + '% tezlik &middot; ' +
+        '\u{1F465} ' + ref + ' dost</div>' +
         '<div class="lv-bar"><i style="width:' + prog + '%"></i></div>' +
-        '<div class="lv-txt">' + esc(qoldi) + '</div>' +
+        '<div class="lv-txt">' + qoldi + '</div>' +
       '</div>' +
     '</div>' +
+
+    (kn
+      ? '<button class="lv-btn" id="lvRef">\u{1F517} Dostlarni taklif qilish</button>'
+      : '') +
 
     '<div class="lv-day">' +
       '<div class="lv-day-t"><span>Bugungi limit</span>' +
@@ -310,6 +318,22 @@ function drawLevel(){
       '<div class="lv-bar sm"><i style="width:' + kprog + '%;' +
       (kprog >= 100 ? 'background:#ED4956;' : '') + '"></i></div>' +
     '</div>';
+}
+
+function lvUlash(){
+  const id = myId();
+  if(!id) return;
+
+  const link = 'https://t.me/Ijaraga_uybot?start=ref_' + id;
+  const text = 'UYgram \u2014 uy topish va UYcoin yigish!\n\n' +
+    'Menga qoshiling \u{1F3E0}';
+
+  const url = 'https://t.me/share/url?url=' + encodeURIComponent(link) +
+    '&text=' + encodeURIComponent(text);
+
+  haptic('light');
+  if(TG && TG.openTelegramLink) TG.openTelegramLink(url);
+  else window.open(url, '_blank');
 }
 
 function drawAnimals(){

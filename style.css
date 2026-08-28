@@ -2686,3 +2686,14 @@ body{padding-bottom:80px !important;}
 }
 .lv-day-t span{color:rgba(255,255,255,.5);}
 .lv-day-t b{color:#FFD54F;font-weight:700;}
+
+/* Level ulashish tugmasi */
+.lv-btn{
+  width:100%;padding:13px 0;border:none;border-radius:14px;
+  background:linear-gradient(135deg,#0095F6,#0077C8);
+  color:#fff;font-size:13.5px;font-weight:800;
+  cursor:pointer;font-family:'Manrope',sans-serif;
+  margin-bottom:11px;
+  box-shadow:0 6px 20px rgba(0,149,246,.32);
+}
+.lv-btn:active{transform:scale(.98);}
