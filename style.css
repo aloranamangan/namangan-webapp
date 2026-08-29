@@ -2981,3 +2981,62 @@ body{padding-bottom:80px !important;}
   border-radius:50%;object-fit:cover;
   border:2px solid #0D0D0D;
 }
+
+/* ---- Xazina ---- */
+.xz-dot{
+  display:inline-block;width:8px;height:8px;border-radius:50%;
+  background:#E8433D;margin-left:4px;vertical-align:middle;
+  animation:xzPulse 1.4s ease-in-out infinite;
+}
+@keyframes xzPulse{
+  0%,100%{transform:scale(1);opacity:1;}
+  50%{transform:scale(1.4);opacity:.6;}
+}
+.xz-dot[hidden]{display:none !important;}
+
+.xz-panel{
+  position:fixed;inset:0;z-index:8600;
+  background:radial-gradient(circle at 50% 30%, #1a1508 0%, #0D0D0D 60%, #080808 100%);
+  font-family:'Manrope',sans-serif;color:#F5F5F0;
+}
+.xz-panel[hidden]{display:none !important;}
+.xz-x{
+  position:absolute;top:calc(14px + env(safe-area-inset-top));right:16px;
+  width:36px;height:36px;border-radius:50%;border:none;
+  background:rgba(255,255,255,.08);color:#fff;font-size:20px;cursor:pointer;z-index:2;
+}
+.xz-in{
+  height:100%;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;padding:30px 24px;text-align:center;
+}
+.xz-box{
+  font-size:92px;margin-bottom:18px;
+  filter:drop-shadow(0 8px 26px rgba(212,175,55,.5));
+}
+.xz-box.shake{animation:xzShake .35s ease-in-out infinite;}
+.xz-box.pop{animation:xzPop .5s ease;}
+@keyframes xzShake{
+  0%,100%{transform:rotate(-7deg) scale(1);}
+  50%{transform:rotate(7deg) scale(1.08);}
+}
+@keyframes xzPop{
+  0%{transform:scale(.5);}
+  60%{transform:scale(1.25);}
+  100%{transform:scale(1);}
+}
+.xz-t{font-size:23px;font-weight:800;margin-bottom:6px;}
+.xz-s{font-size:13px;color:#9A9A90;margin-bottom:26px;}
+.xz-btn{
+  padding:15px 44px;border-radius:14px;border:none;
+  background:linear-gradient(135deg,#F0C868,#D4AF37);color:#12100A;
+  font-family:inherit;font-weight:800;font-size:16px;cursor:pointer;
+  box-shadow:0 6px 22px rgba(212,175,55,.4);
+}
+.xz-btn:disabled{opacity:.5;cursor:default;box-shadow:none;}
+.xz-res{margin-top:26px;}
+.xz-res[hidden]{display:none !important;}
+.xz-win{font-size:13px;color:#9A9A90;margin-bottom:6px;}
+.xz-prize{
+  font-size:21px;font-weight:800;color:#F0C868;
+  text-shadow:0 0 22px rgba(212,175,55,.5);
+}
