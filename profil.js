@@ -1153,6 +1153,18 @@ function chizUn(bg, prof, extra){
 
 // ---------- Elonni toliq ekranda ochish ----------
 function openPostFull(p){
+  const E = function(s){
+    return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){
+      return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c];
+    });
+  };
+  const F = function(n){
+    return String(n || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  };
+  const U = function(fid){
+    return 'https://namangan-ijara-bot.onrender.com/media/' + fid;
+  };
+
   const media = (p.media && p.media.length) ? p.media
     : [{ file_id: p.file_id, is_video: p.is_video }];
 
@@ -1160,17 +1172,16 @@ function openPostFull(p){
 
   const v = document.createElement('div');
   v.className = 'pf-full';
+  document.body.appendChild(v);
 
   function chiz(){
     const m = media[idx] || media[0];
-    const u = mediaUrl(m.file_id);
+    const u = U(m.file_id);
 
     v.innerHTML =
       '<div class="pf-bar">' +
-        '<button id="pfClose">&#8592;</button>' +
-        '<b>Elon</b>' +
-        '<button id="pfMenu">&#8942;</button>' +
-      '</div>' +
+        '<button id="pfClose">&#8592;</button><b>Elon</b>' +
+        '<button id="pfMenu">&#8942;</button></div>' +
 
       '<div class="pf-media">' +
         (m.is_video
@@ -1186,13 +1197,12 @@ function openPostFull(p){
       '</div>' +
 
       '<div class="pf-info">' +
-        (p.price ? '<div class="pf-price">' + esc(p.price) + '</div>' : '') +
-        (p.description ? '<div class="pf-desc">' + esc(p.description) + '</div>' : '') +
+        (p.price ? '<div class="pf-price">' + E(p.price) + '</div>' : '') +
+        (p.description ? '<div class="pf-desc">' + E(p.description) + '</div>' : '') +
         '<div class="pf-stats">' +
-          '<span>\u{1F441} ' + fmt(p.views || 0) + '</span>' +
-          '<span>\u2764\uFE0F ' + fmt(p.likes || 0) + '</span>' +
-        '</div>' +
-      '</div>' +
+          '<span>\u{1F441} ' + F(p.views) + '</span>' +
+          '<span>\u2764\uFE0F ' + F(p.likes) + '</span>' +
+        '</div></div>' +
 
       '<div class="pf-acts">' +
         '<button class="pf-btn blue" id="pfAd">\u{1F4E2} Reklama qilish</button>' +
@@ -1200,49 +1210,51 @@ function openPostFull(p){
         '<button class="pf-btn red" id="pfDel">\u{1F5D1}</button>' +
       '</div>';
 
-    // Tugmalar
-    v.querySelector('#pfClose').addEventListener('click', function(){ v.remove(); });
+    const cb = v.querySelector('#pfClose');
+    if(cb) cb.onclick = function(){ v.remove(); };
 
     const pv = v.querySelector('#pfPrev');
-    if(pv) pv.addEventListener('click', function(){
-      idx = (idx - 1 + media.length) % media.length;
-      chiz();
-    });
+    if(pv) pv.onclick = function(){
+      idx = (idx - 1 + media.length) % media.length; chiz();
+    };
 
     const nx = v.querySelector('#pfNext');
-    if(nx) nx.addEventListener('click', function(){
-      idx = (idx + 1) % media.length;
-      chiz();
-    });
+    if(nx) nx.onclick = function(){
+      idx = (idx + 1) % media.length; chiz();
+    };
 
-    v.querySelector('#pfAd').addEventListener('click', function(){
-      haptic('light');
+    const ad = v.querySelector('#pfAd');
+    if(ad) ad.onclick = function(){
       if(typeof reklamaOyna === 'function') reklamaOyna(p.id);
-    });
+      else if(typeof toast === 'function') toast('Reklama oynasi yoq');
+    };
 
-    v.querySelector('#pfEdit2').addEventListener('click', function(){
-      toast('Tahrirlash tez orada');
-    });
+    const ed = v.querySelector('#pfEdit2');
+    if(ed) ed.onclick = function(){
+      v.remove();
+      if(typeof editPost === 'function') editPost(p);
+      else if(typeof toast === 'function') toast('Tahrirlash yoq');
+    };
 
-    v.querySelector('#pfDel').addEventListener('click', function(){
+    const dl = v.querySelector('#pfDel');
+    if(dl) dl.onclick = function(){
       if(!confirm('Elonni ochirasizmi?')) return;
       apiPost('/api/post-ochirish', { post_id: p.id }).then(function(d){
         if(d.ok){
-          haptic('medium');
-          toast('Ochirildi');
+          if(typeof toast === 'function') toast('Ochirildi');
           v.remove();
           if(typeof loadTab === 'function') loadTab(PF_TAB);
-        } else toast('Xato');
-      }).catch(function(){ toast('Server xatosi'); });
-    });
+        }
+      });
+    };
 
     const mn = v.querySelector('#pfMenu');
-    if(mn) mn.addEventListener('click', function(){
-      if(typeof openShare === 'function') openShare(p);
-    });
+    if(mn) mn.onclick = function(){
+      v.remove();
+      if(typeof postMenu === 'function') postMenu(p);
+    };
   }
 
-  document.body.appendChild(v);
   chiz();
 }
 
