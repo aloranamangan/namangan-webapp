@@ -250,7 +250,7 @@ document.addEventListener('DOMContentLoaded', function(){
   el('ax').addEventListener('click', function(){
     let last = null;
     try { last = localStorage.getItem('ni_admin_panel'); } catch(e){}
-    location.href = (last && last !== 'zaxira.html') ? last : 'sotuvchi.html';
+    location.href = (last && last !== 'zaxira.html') ? last : 'xaridor.html';
   });
   setTimeout(function(){
     if(typeof checkSession === 'function') checkSession(function(){ boot(); });

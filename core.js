@@ -377,7 +377,7 @@ function showRolePick(cb){
   }
 
   document.getElementById('rMak').addEventListener('click', function(){
-    pick('makler', function(){ location.href = 'sotuvchi.html'; });
+    pick('makler', function(){ location.href = 'xaridor.html'; });
   });
   document.getElementById('rXar').addEventListener('click', function(){
     pick('xaridor', function(){ ov.remove(); cb(); });
