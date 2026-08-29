@@ -2,7 +2,11 @@
 let STORIES = [];
 
 function loadStories(cb){
-  api('/api/storylar?t=' + Date.now()).then(function(d){
+  var _p = 't=' + Date.now();
+  try { if(initData()) _p += '&init_data=' + encodeURIComponent(initData()); } catch(e){}
+  try { if(typeof APP_TOKEN !== 'undefined' && APP_TOKEN) _p += '&token=' + encodeURIComponent(APP_TOKEN); } catch(e){}
+
+  api('/api/storylar?' + _p).then(function(d){
     STORIES = d.stories || [];
     if(cb) cb();
   }).catch(function(e){
