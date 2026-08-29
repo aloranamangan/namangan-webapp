@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>SYSTEM MONITOR</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+
+body{
+  font-family:'JetBrains Mono',monospace;
+  background:#080B0A;color:#00FF41;
+  min-height:100vh;padding:12px 12px 40px;
+  font-size:12px;line-height:1.5;overflow-x:hidden;
+  position:relative;
+}
+
+/* Skan chiziqlari */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:100;
+  background:repeating-linear-gradient(
+    0deg, rgba(0,255,65,.03) 0px, rgba(0,255,65,.03) 1px,
+    transparent 1px, transparent 3px);
+}
+body::after{
+  content:'';position:fixed;left:0;right:0;height:90px;pointer-events:none;z-index:101;
+  background:linear-gradient(180deg,transparent,rgba(0,255,65,.05),transparent);
+  animation:scan 7s linear infinite;
+}
+@keyframes scan{0%{top:-90px}100%{top:100vh}}
+
+.glow{text-shadow:0 0 6px rgba(0,255,65,.55);}
+
+.box{
+  border:1px solid rgba(0,255,65,.28);
+  padding:10px 12px;margin-bottom:11px;
+  background:rgba(0,255,65,.02);
+  position:relative;
+}
+.box-t{
+  position:absolute;top:-8px;left:10px;
+  background:#080B0A;padding:0 7px;
+  font-size:10px;letter-spacing:.14em;
+  color:rgba(0,255,65,.75);
+}
+
+.dot{
+  display:inline-block;width:7px;height:7px;border-radius:50%;
+  background:#00FF41;margin-right:7px;
+  box-shadow:0 0 9px #00FF41;
+  animation:pulse 1.6s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.dot.red{background:#FF3B30;box-shadow:0 0 9px #FF3B30;}
+
+.row{display:flex;justify-content:space-between;margin:3px 0;}
+.dim{color:rgba(0,255,65,.5);}
+
+.grid4{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:11px;}
+.stat{
+  border:1px solid rgba(0,255,65,.22);padding:11px 10px;
+  background:rgba(0,255,65,.02);text-align:center;
+}
+.stat b{display:block;font-size:26px;font-weight:700;letter-spacing:-.5px;}
+.stat span{font-size:9.5px;letter-spacing:.14em;color:rgba(0,255,65,.55);}
+
+.chart{display:flex;align-items:flex-end;gap:2px;height:52px;margin-top:8px;}
+.chart i{
+  flex:1;background:rgba(0,255,65,.45);min-height:2px;
+  border-top:1.5px solid #00FF41;
+}
+
+.log{max-height:250px;overflow-y:auto;font-size:11px;}
+.log::-webkit-scrollbar{width:3px;}
+.log::-webkit-scrollbar-thumb{background:rgba(0,255,65,.3);}
+.le{margin-bottom:7px;animation:slide .35s ease;}
+@keyframes slide{from{opacity:0;transform:translateY(-7px)}to{opacity:1;transform:none}}
+.le .t{color:rgba(0,255,65,.45);}
+.le .lv{font-weight:700;}
+.le.err .lv{color:#FF3B30;}
+.le.warn .lv{color:#FFB300;}
+.le .d{color:rgba(0,255,65,.4);padding-left:14px;font-size:10px;}
+
+.req{font-size:10.5px;max-height:150px;overflow-y:auto;}
+.req div{color:rgba(0,255,65,.55);margin-bottom:3px;}
+.req .ok{color:rgba(0,255,65,.75);}
+.req .bad{color:#FF3B30;}
+
+.cur{display:inline-block;width:8px;height:14px;background:#00FF41;
+  vertical-align:-2px;animation:blink 1s step-end infinite;}
+@keyframes blink{50%{opacity:0}}
+
+/* RADAR */
+.radar-box{
+  display:flex;justify-content:center;
+  padding:16px 0 12px;
+}
+.radar{
+  width:230px;height:230px;border-radius:50%;
+  border:1.5px solid rgba(0,255,65,.35);
+  position:relative;overflow:hidden;
+  background:radial-gradient(circle,rgba(0,255,65,.05),transparent 70%);
+  box-shadow:0 0 30px rgba(0,255,65,.12),inset 0 0 40px rgba(0,255,65,.05);
+}
+.radar::before,.radar::after{
+  content:'';position:absolute;border:1px solid rgba(0,255,65,.18);
+  border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);
+}
+.radar::before{width:66%;height:66%;}
+.radar::after{width:33%;height:33%;}
+
+.radar .cross-h,.radar .cross-v{
+  position:absolute;background:rgba(0,255,65,.15);
+}
+.radar .cross-h{left:0;right:0;top:50%;height:1px;}
+.radar .cross-v{top:0;bottom:0;left:50%;width:1px;}
+
+.sweep{
+  position:absolute;inset:0;border-radius:50%;
+  background:conic-gradient(
+    from 0deg,
+    rgba(0,255,65,.45) 0deg,
+    rgba(0,255,65,.18) 25deg,
+    transparent 60deg,
+    transparent 360deg);
+  animation:sweep 3.5s linear infinite;
+}
+@keyframes sweep{to{transform:rotate(360deg)}}
+
+.blip{
+  position:absolute;width:9px;height:9px;border-radius:50%;
+  transform:translate(-50%,-50%);
+  animation:blip 3.5s ease-out infinite;
+}
+.blip.ok{background:#00FF41;box-shadow:0 0 12px #00FF41;}
+.blip.warn{background:#FFB300;box-shadow:0 0 14px #FFB300;}
+.blip.err{background:#FF3B30;box-shadow:0 0 16px #FF3B30;}
+@keyframes blip{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.4)}
+  10%{opacity:1;transform:translate(-50%,-50%) scale(1.3)}
+  40%{opacity:.85;transform:translate(-50%,-50%) scale(1)}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(.8)}
+}
+
+.radar-lb{
+  text-align:center;font-size:10px;letter-spacing:.16em;
+  color:rgba(0,255,65,.55);margin-top:8px;
+}
+.radar-lb b{color:#00FF41;}
+.radar-lb.alert b{color:#FF3B30;}
+
+.hdr{font-size:15px;font-weight:700;letter-spacing:.2em;margin-bottom:14px;}
+.bk{
+  background:none;border:1px solid rgba(0,255,65,.3);color:#00FF41;
+  padding:7px 14px;font-family:inherit;font-size:11px;cursor:pointer;
+  margin-bottom:12px;letter-spacing:.1em;
+}
+</style>
+</head>
+<body>
+
+<div class="hdr glow">◤ UYGRAM SYSTEM MONITOR<span class="cur"></span></div>
+<button class="bk" id="bk">← EXIT</button>
+
+<div class="radar-box">
+  <div class="radar" id="radar">
+    <div class="cross-h"></div>
+    <div class="cross-v"></div>
+    <div class="sweep"></div>
+  </div>
+</div>
+<div class="radar-lb" id="radarLb">SCANNING &middot; <b>0</b> ISSUES</div>
+
+<div class="box" style="margin-top:14px;">
+  <div class="box-t">SYSTEM STATUS</div>
+  <div class="row"><span><span class="dot" id="dot"></span><b id="st">CONNECTING...</b></span></div>
+  <div class="row"><span class="dim">UPTIME</span><span id="up">--</span></div>
+  <div class="row"><span class="dim">MEMORY</span><span id="mem">--</span></div>
+  <div class="row"><span class="dim">PING</span><span id="ping">--</span></div>
+</div>
+
+<div class="grid4">
+  <div class="stat"><b id="nUsers">0</b><span>USERS</span></div>
+  <div class="stat"><b id="nPosts">0</b><span>POSTS</span></div>
+  <div class="stat"><b id="nMsgs">0</b><span>MESSAGES</span></div>
+  <div class="stat"><b id="nOnline">0</b><span>ONLINE</span></div>
+</div>
+
+<div class="box">
+  <div class="box-t">ACTIVITY / 24H</div>
+  <div class="row"><span class="dim">NEW POSTS</span><span id="tPosts">0</span></div>
+  <div class="row"><span class="dim">MESSAGES</span><span id="tMsgs">0</span></div>
+  <div class="chart" id="chart"></div>
+</div>
+
+<div class="box">
+  <div class="box-t">ERROR LOG</div>
+  <div class="log" id="errors"><div class="dim">scanning...</div></div>
+</div>
+
+<div class="box">
+  <div class="box-t">LIVE REQUESTS</div>
+  <div class="req" id="reqs"><div class="dim">waiting...</div></div>
+</div>
+
+<script>
+const API = 'https://namangan-ijara-bot.onrender.com';
+const TG = (window.Telegram && window.Telegram.WebApp) ? window.Telegram.WebApp : null;
+try { if(TG){ TG.ready(); TG.expand(); } } catch(e){}
+
+let TOKEN = null;
+try {
+  const p = new URLSearchParams(location.search);
+  TOKEN = p.get('token') || localStorage.getItem('ni_token');
+} catch(e){}
+
+const el = function(id){ return document.getElementById(id); };
+const fmt = function(n){ return (n || 0).toLocaleString('en-US'); };
+
+function initData(){
+  try { return (TG && TG.initData) ? TG.initData : ''; } catch(e){ return ''; }
+}
+
+function load(){
+  const t0 = Date.now();
+  const q = API + '/api/monitor?init_data=' + encodeURIComponent(initData()) +
+    (TOKEN ? '&token=' + encodeURIComponent(TOKEN) : '');
+
+  fetch(q).then(function(r){ return r.json(); }).then(function(d){
+    const ping = Date.now() - t0;
+
+    if(!d.ok){
+      el('st').textContent = 'ACCESS DENIED';
+      el('dot').classList.add('red');
+      el('errors').innerHTML = '<div class="le err"><span class="lv">FORBIDDEN</span> ' +
+        'admin access required</div>';
+      return;
+    }
+
+    el('st').textContent = 'ONLINE';
+    el('dot').classList.remove('red');
+    el('up').textContent = d.uptime || '--';
+    el('mem').textContent = (d.mem || 0) + ' MB / 512 MB';
+    el('ping').textContent = ping + ' ms';
+
+    const s = d.stats || {};
+    setNum('nUsers', s.users);
+    setNum('nPosts', s.posts);
+    setNum('nMsgs', s.msgs);
+    setNum('nOnline', d.online);
+
+    const td = d.today || {};
+    el('tPosts').textContent = fmt(td.posts);
+    el('tMsgs').textContent = fmt(td.msgs);
+
+    drawRadar(d.errors || [], d.online || 0);
+    drawChart(d.requests || []);
+    drawErrors(d.errors || []);
+    drawReqs(d.requests || []);
+  }).catch(function(){
+    el('st').textContent = 'CONNECTION LOST';
+    el('dot').classList.add('red');
+  });
+}
+
+function setNum(id, v){
+  const e = el(id);
+  if(!e) return;
+  const nv = fmt(v);
+  if(e.textContent !== nv){
+    e.textContent = nv;
+    e.style.textShadow = '0 0 14px #00FF41';
+    setTimeout(function(){ e.style.textShadow = ''; }, 400);
+  }
+}
+
+function drawRadar(errors, online){
+  const r = el('radar');
+  const lb = el('radarLb');
+  if(!r) return;
+
+  r.querySelectorAll('.blip').forEach(function(b){ b.remove(); });
+
+  const errs = errors.filter(function(e){ return e.level === 'ERROR'; }).length;
+  const warns = errors.filter(function(e){ return e.level === 'WARN'; }).length;
+
+  // Onlayn foydalanuvchilar - yashil nuqta
+  const dots = [];
+  for(let i = 0; i < Math.min(online, 12); i++) dots.push('ok');
+  for(let i = 0; i < Math.min(warns, 6); i++) dots.push('warn');
+  for(let i = 0; i < Math.min(errs, 8); i++) dots.push('err');
+
+  if(!dots.length) dots.push('ok');
+
+  dots.forEach(function(cls, i){
+    const b = document.createElement('div');
+    b.className = 'blip ' + cls;
+    const ang = Math.random() * 360;
+    const dist = 12 + Math.random() * 38;
+    b.style.left = (50 + Math.cos(ang * Math.PI / 180) * dist) + '%';
+    b.style.top = (50 + Math.sin(ang * Math.PI / 180) * dist) + '%';
+    b.style.animationDelay = (i * 0.25) + 's';
+    r.appendChild(b);
+  });
+
+  const total = errs + warns;
+  if(lb){
+    lb.className = 'radar-lb' + (errs ? ' alert' : '');
+    lb.innerHTML = errs
+      ? '&#9888; <b>' + errs + '</b> ERRORS &middot; ' + warns + ' WARNINGS'
+      : (warns
+        ? 'SCANNING &middot; <b>' + warns + '</b> WARNINGS'
+        : 'ALL SYSTEMS &middot; <b>OK</b>');
+  }
+}
+
+function drawChart(reqs){
+  const box = el('chart');
+  if(!box) return;
+  const bars = 24;
+  let html = '';
+  for(let i = 0; i < bars; i++){
+    const h = 10 + Math.round(Math.random() * (reqs.length ? 80 : 20));
+    html += '<i style="height:' + h + '%"></i>';
+  }
+  box.innerHTML = html;
+}
+
+function drawErrors(list){
+  const box = el('errors');
+  if(!box) return;
+  if(!list.length){
+    box.innerHTML = '<div class="dim">no errors detected</div>';
+    return;
+  }
+  box.innerHTML = list.map(function(e){
+    const cls = e.level === 'ERROR' ? 'err' : (e.level === 'WARN' ? 'warn' : '');
+    return '<div class="le ' + cls + '">' +
+      '<span class="t">[' + e.time + ']</span> ' +
+      '<span class="lv">' + e.level + '</span> ' + esc(e.msg) +
+      (e.detail ? '<div class="d">└─ ' + esc(e.detail) + '</div>' : '') +
+      '</div>';
+  }).join('');
+}
+
+function drawReqs(list){
+  const box = el('reqs');
+  if(!box) return;
+  if(!list.length){
+    box.innerHTML = '<div class="dim">no traffic</div>';
+    return;
+  }
+  box.innerHTML = list.map(function(r){
+    const cls = (r.code >= 200 && r.code < 300) ? 'ok' : 'bad';
+    return '<div class="' + cls + '">&gt; ' + r.method + ' ' + esc(r.path) +
+      ' ' + r.code + ' ' + r.ms + 'ms</div>';
+  }).join('');
+}
+
+function esc(s){
+  return String(s || '').replace(/[&<>"]/g, function(c){
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  el('bk').addEventListener('click', function(){ location.href = 'xaridor.html'; });
+  load();
+  setInterval(load, 5000);
+});
+</script>
+</body>
+</html>
