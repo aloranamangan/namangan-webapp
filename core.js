@@ -320,7 +320,7 @@ function askRole(cb){
       let last = null;
       try {
         last = localStorage.getItem('ni_admin_panel');
-        if(last === 'sotuvchi.html'){
+        if(last === 'radar.html'){
           localStorage.removeItem('ni_admin_panel');
           last = null;
         }
@@ -410,7 +410,7 @@ function showAdminPanels(cb, force){
     "padding:36px 26px;text-align:center;font-family:'Manrope',sans-serif;";
 
   const P = [
-    ['sotuvchi.html', '🖥', 'Tizim monitori', 'Server, xatolar, statistika'],
+    ['radar.html', '🖥', 'Tizim monitori', 'Server, xatolar, statistika'],
     ['xaridor.html', '👥', 'Xaridor paneli', "E'lonlarni ko'rish"],
     ['admin.html', '📊', 'Nazorat paneli', 'Foydalanuvchilar boshqaruvi'],
     ['zaxira.html', '⚙️', 'Boshqaruv markazi', 'Reklama, xabar, kanallar']
@@ -442,7 +442,7 @@ function showAdminPanels(cb, force){
     b.addEventListener('click', function(){
       const u = b.dataset.u;
       try {
-        if(u !== 'sotuvchi.html') localStorage.setItem('ni_admin_panel', u);
+        if(u !== 'radar.html') localStorage.setItem('ni_admin_panel', u);
         else localStorage.removeItem('ni_admin_panel');
       } catch(e){}
       const cur = location.pathname.split('/').pop();
