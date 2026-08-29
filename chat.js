@@ -221,7 +221,12 @@
   function checkStatus(){
     cGet('/api/chat-holat').then(function(d){
       if(!d || !d.ok) return;
-      var b = cEl('chatBadge');
+      var b = cEl('chatBadge') || cEl('chatTabBadge');
+      var b2 = cEl('chatTabBadge');
+      if(b2 && b2 !== b){
+        if(d.oqilmagan > 0){ b2.textContent = d.oqilmagan > 99 ? '99+' : d.oqilmagan; b2.hidden = false; }
+        else b2.hidden = true;
+      }
       if(!b) return;
       if(d.oqilmagan > 0){
         b.textContent = d.oqilmagan > 99 ? '99+' : d.oqilmagan;
@@ -234,6 +239,17 @@
 
   function init(){
     buildUI();
+
+    var tab = cEl('chatTab');
+    if(tab){
+      cEl('chatFab').style.display = 'none';
+      tab.addEventListener('click', function(){
+        document.querySelectorAll('.fm-tab').forEach(function(t){ t.classList.remove('on'); });
+        tab.classList.add('on');
+        openChat();
+      });
+    }
+
     checkStatus();
     setInterval(function(){ if(!CHAT_OPEN) checkStatus(); }, 20000);
   }

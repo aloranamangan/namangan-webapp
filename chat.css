@@ -98,3 +98,9 @@
 .chat-emo-i{
   background:none;border:none;font-size:22px;cursor:pointer;padding:5px;
 }
+
+.chat-tab-badge{
+  display:inline-block;min-width:18px;height:18px;padding:0 5px;
+  border-radius:9px;background:#E8433D;color:#fff;
+  font:700 10px/18px 'Manrope',sans-serif;margin-left:4px;
+}
