@@ -114,8 +114,10 @@
 
   function openChat(){
     CHAT_OPEN = true;
-    cEl('chatPanel').hidden = false;
-    cEl('chatFab').style.display = 'none';
+    var p = cEl('chatPanel');
+    if(p) p.hidden = false;
+    var f = cEl('chatFab');
+    if(f) f.style.display = 'none';
     loadMsgs(true);
     if(CHAT_TIMER) clearInterval(CHAT_TIMER);
     CHAT_TIMER = setInterval(function(){ loadMsgs(false); }, 4000);
@@ -123,9 +125,13 @@
 
   function closeChat(){
     CHAT_OPEN = false;
-    cEl('chatPanel').hidden = true;
-    cEl('chatFab').style.display = '';
+    var p = cEl('chatPanel');
+    if(p) p.hidden = true;
+    var f = cEl('chatFab');
+    if(f && !cEl('chatTab')) f.style.display = '';
     if(CHAT_TIMER){ clearInterval(CHAT_TIMER); CHAT_TIMER = null; }
+    var t = cEl('chatTab');
+    if(t) t.classList.remove('on');
     checkStatus();
   }
 
