@@ -14,13 +14,10 @@
 }
 
 .chat-panel{
-  position:fixed;left:0;right:0;bottom:0;z-index:8500;
-  height:70vh;max-height:560px;
+  position:fixed;inset:0;z-index:8500;
   display:flex;flex-direction:column;
-  background:#0D0D0D;color:#F5F5F0;font-family:'Manrope',sans-serif;
-  border-radius:20px 20px 0 0;
-  border-top:1px solid rgba(212,175,55,.3);
-  box-shadow:0 -8px 30px rgba(0,0,0,.6);
+  background:radial-gradient(circle at 50% 0%, #14140F 0%, #0D0D0D 55%, #080808 100%);
+  color:#F5F5F0;font-family:'Manrope',sans-serif;
 }
 .chat-head{
   padding:calc(14px + env(safe-area-inset-top)) 56px 12px 16px;
@@ -104,3 +101,46 @@
   border-radius:9px;background:#E8433D;color:#fff;
   font:700 10px/18px 'Manrope',sans-serif;margin-left:4px;
 }
+
+
+/* ---- Chat: yaxshilangan ko'rinish ---- */
+.chat-head{
+  background:linear-gradient(180deg,rgba(212,175,55,.10),transparent);
+  backdrop-filter:blur(10px);
+}
+.chat-title{letter-spacing:.2px;}
+
+.chat-body{
+  gap:6px;
+  background-image:radial-gradient(rgba(212,175,55,.05) 1px, transparent 1px);
+  background-size:22px 22px;
+}
+
+.chat-m{
+  animation:chatIn .22s ease both;
+}
+@keyframes chatIn{
+  from{opacity:0;transform:translateY(8px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+.chat-bub{
+  padding:9px 13px;border-radius:16px;
+  box-shadow:0 2px 8px rgba(0,0,0,.28);
+  max-width:100%;
+}
+.chat-m:not(.me) .chat-bub{border-bottom-left-radius:5px;}
+.chat-m.me .chat-bub{border-bottom-right-radius:5px;}
+
+.chat-m.me .chat-bub{
+  background:linear-gradient(135deg,#D4AF37,#B8942A);
+  border-color:transparent;color:#12100A;
+}
+.chat-m.me .chat-time{color:rgba(18,16,10,.55);}
+
+.chat-av{border:1.5px solid rgba(212,175,55,.4);}
+.chat-n{letter-spacing:.1px;}
+.chat-t{font-size:14.5px;}
+
+.chat-input input:focus{border-color:rgba(212,175,55,.55);}
+.chat-send{box-shadow:0 3px 12px rgba(212,175,55,.4);}
