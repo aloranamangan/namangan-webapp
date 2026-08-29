@@ -144,3 +144,11 @@
 
 .chat-input input:focus{border-color:rgba(212,175,55,.55);}
 .chat-send{box-shadow:0 3px 12px rgba(212,175,55,.4);}
+
+/* Panel yopiq holatda ko'rinmasin */
+.chat-panel[hidden]{display:none !important;}
+.chat-emo-box[hidden]{display:none !important;}
+.chat-join[hidden]{display:none !important;}
+.chat-input[hidden]{display:none !important;}
+.chat-badge[hidden]{display:none !important;}
+.chat-tab-badge[hidden]{display:none !important;}
