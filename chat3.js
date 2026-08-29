@@ -185,7 +185,7 @@
       cEl('chatInput').hidden = !CHAT_AZO;
 
       var from = scrollEnd ? Math.max(0, (h.oxirgi_oqilgan || 0) - 20) : CHAT_LAST;
-      return cGet('/api/chat-xabarlar&oxirgi=' + from + '&limit=50');
+      return cGet('/api/chat-xabarlar?oxirgi=' + from + '&limit=50');
     }).then(function(d){
       if(!d || !d.ok || !d.xabarlar) return;
       var body = cEl('chatBody');
