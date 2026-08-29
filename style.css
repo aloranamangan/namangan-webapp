@@ -2916,3 +2916,21 @@ body{padding-bottom:80px !important;}
   color:#F0C868 !important;
   margin-bottom:6px;
 }
+
+/* ---- Coin statistikasi ---- */
+.coin-stats{
+  display:flex;gap:8px;margin:0 14px 14px;
+}
+.cs-i{
+  flex:1;padding:11px 6px;border-radius:12px;text-align:center;
+  background:linear-gradient(160deg,rgba(212,175,55,.12),rgba(212,175,55,.03));
+  border:1px solid rgba(212,175,55,.22);
+}
+.cs-v{
+  font-size:17px;font-weight:800;color:#F0C868;
+  font-family:'Manrope',sans-serif;
+}
+.cs-l{
+  font-size:10px;color:#9A9A90;margin-top:2px;
+  font-family:'Manrope',sans-serif;
+}
