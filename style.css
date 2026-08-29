@@ -2934,3 +2934,20 @@ body{padding-bottom:80px !important;}
   font-size:10px;color:#9A9A90;margin-top:2px;
   font-family:'Manrope',sans-serif;
 }
+
+/* ---- Jamoa ulushi ---- */
+.jamoa-box{
+  display:flex;align-items:center;gap:11px;
+  margin:0 14px 14px;padding:12px 14px;border-radius:14px;
+  background:linear-gradient(135deg,rgba(212,175,55,.14),rgba(212,175,55,.04));
+  border:1px solid rgba(212,175,55,.28);
+  font-family:'Manrope',sans-serif;
+}
+.jb-ic{font-size:24px;}
+.jb-t{flex:1;}
+.jb-l{font-size:11px;color:#9A9A90;}
+.jb-v{font-size:16px;font-weight:800;color:#F0C868;}
+.jb-b{
+  font-size:11px;color:#31C48D;font-weight:700;
+  padding:5px 9px;border-radius:8px;background:rgba(49,196,141,.12);
+}

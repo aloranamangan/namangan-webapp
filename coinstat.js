@@ -44,3 +44,32 @@
   }
   setInterval(loadCoinStats, 30000);
 })();
+
+// ---- Jamoa ulushi ----
+(function(){
+  'use strict';
+  var JAPI = (typeof API !== 'undefined' && API) ? API : 'https://namangan-ijara-bot.onrender.com';
+
+  function jFmt(n){ return String(n || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
+
+  function loadJamoa(){
+    var box = document.getElementById('jamoaBox');
+    if(!box) return;
+    fetch(JAPI + '/api/jamoa-stat')
+      .then(function(r){ return r.json(); })
+      .then(function(d){
+        if(!d || !d.ok) return;
+        var a = document.getElementById('jbJami');
+        var b = document.getElementById('jbBugun');
+        if(a) a.textContent = jFmt(d.jami);
+        if(b) b.textContent = jFmt(d.bugun);
+      }).catch(function(){});
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', loadJamoa);
+  } else {
+    loadJamoa();
+  }
+  setInterval(loadJamoa, 30000);
+})();
