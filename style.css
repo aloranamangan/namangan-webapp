@@ -2908,3 +2908,11 @@ body{padding-bottom:80px !important;}
 }
 #pfGrid .cell-menu{z-index:6 !important;}
 #pfGrid .cell .pinned{z-index:5;}
+
+/* ---- Reklama: profil tugmasi ---- */
+.ad-prof{
+  background:rgba(212,175,55,.15) !important;
+  border:1px solid rgba(212,175,55,.4) !important;
+  color:#F0C868 !important;
+  margin-bottom:6px;
+}

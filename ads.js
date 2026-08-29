@@ -27,6 +27,9 @@ function adHTML(a){
     '<div class="ad-body">' +
       '<b>' + esc(a.title) + '</b>' +
       (a.text ? '<p>' + esc(a.text) + '</p>' : '') +
+      (a.owner_id
+        ? '<button class="ad-go ad-prof" data-prof="' + a.owner_id + '">\uD83D\uDC64 Profilni ko\'rish</button>'
+        : '') +
       (a.btn_url ? '<button class="ad-go" data-go="' + a.id + '">' +
         esc(a.btn_text || 'Batafsil') + '</button>' : '') +
     '</div></article>';
@@ -55,10 +58,21 @@ function bindAd(node, a){
     else window.open(u, '_blank');
   }
 
+  function openProf(){
+    apiPost('/api/reklama-amal', { action: 'click', id: a.id }).catch(function(){});
+    haptic('light');
+    if(a.owner_id && typeof openUserProfile === 'function'){
+      openUserProfile(a.owner_id, a.owner_username || null);
+    }
+  }
+
   const m = node.querySelector('.ad-media');
   if(m) m.addEventListener('click', open);
-  const g = node.querySelector('[data-go]');
+  const g = node.querySelector('[data-go]:not(.ad-prof)');
   if(g) g.addEventListener('click', function(e){ e.stopPropagation(); open(); });
+
+  const pf = node.querySelector('.ad-prof');
+  if(pf) pf.addEventListener('click', function(e){ e.stopPropagation(); openProf(); });
 }
 
 // Lentaga reklama joylash (har N postdan keyin)
