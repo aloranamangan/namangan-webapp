@@ -112,7 +112,12 @@ function apiPost(path, body){
   });
 }
 
-function mediaUrl(id){ return API + '/media/' + id; }
+function mediaUrl(id){
+  if(!id) return '';
+  var s = String(id);
+  if(s.indexOf('http://') === 0 || s.indexOf('https://') === 0) return s;
+  return API + '/media/' + s;
+}
 
 function shrink(dataUrl, cb){
   const img = new Image();
