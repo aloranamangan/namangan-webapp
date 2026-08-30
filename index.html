@@ -2,451 +2,1341 @@
 <html lang="uz">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>UYgram</title>
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0A2A1F">
-<link rel="icon" href="icon-192.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="sellers.css?v=1785789557">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css">
+<meta name="theme-color" content="#000000">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="stylesheet" href="style.css?v=1788109748">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-<div class="referral-view" id="referralView" hidden>
-  <div class="coin-rain" id="coinRain"></div>
-  <div class="referral-content">
-    <div class="ref-icon">🎁</div>
-    <h1 class="ref-title">Referal dasturi</h1>
-    <p class="ref-subtitle">Do'stlaringizni taklif qiling, pul ishlang!</p>
-
-    <div class="ref-stats">
-      <div class="ref-stat-box">
-        <div class="ref-stat-value" id="refCount">0</div>
-        <div class="ref-stat-label">Taklif qilingan</div>
-      </div>
-      <div class="ref-stat-box">
-        <div class="ref-stat-value" id="refEarnings">0</div>
-        <div class="ref-stat-label">so'm ishlangan</div>
-      </div>
-    </div>
-
-    <div class="ref-progress-wrap">
-      <div class="ref-progress-label">
-        <span id="refProgressText">0 / 3 600 000 so'm</span>
-      </div>
-      <div class="ref-progress-bar">
-        <div class="ref-progress-fill" id="refProgressFill"></div>
-      </div>
-    </div>
-
-    <div class="ref-link-box">
-      <div class="ref-link-title">Sizning referal havolangiz:</div>
-      <div class="ref-link-value" id="refLinkValue">...</div>
-      <button class="ref-copy-btn" id="refCopyBtn">📋 Nusxalash</button>
-    </div>
-
-    <div class="ref-disclaimer">
-      Siz topgan pullar faqat <b>uy joylashtirish to'lovi</b> uchun ishlatiladi.
-      Kartaga yoki naqd pul qilib berilmaydi — qancha topsangiz, shuncha oylik
-      to'lovlaringiz avtomatik qoplanadi.
-    </div>
-  </div>
-</div>
-
-<div class="profile-view" id="profileView" hidden>
-  <button class="profile-close" id="profileClose">✕</button>
-  <div class="profile-content">
-    <img id="profileAvatar" class="profile-avatar" src="" alt="">
-    <h2 id="profileName" class="profile-name">...</h2>
-    <p id="profileUsername" class="profile-username"></p>
-
-    <div class="profile-stats">
-      <div class="profile-stat-box" data-target="sevimli">
-        <div class="profile-stat-value" id="statFavorites">0</div>
-        <div class="profile-stat-label">Sevimlilar</div>
-      </div>
-      <div class="profile-stat-box" data-target="mening">
-        <div class="profile-stat-value" id="statMyListings">0</div>
-        <div class="profile-stat-label">E'lonlarim</div>
-      </div>
-      <div class="profile-stat-box">
-        <div class="profile-stat-value" id="statViewed">0</div>
-        <div class="profile-stat-label">Ko'rilgan</div>
-      </div>
-    </div>
-
-    <div class="profile-menu">
-      <button class="profile-menu-item" data-target="sevimli">❤️ Sevimlilar <span>›</span></button>
-      <button class="profile-menu-item" data-target="mening">📋 Mening e'lonlarim <span>›</span></button>
-      <button class="profile-menu-item" id="profileContactAdmin">💬 Admin bilan bog'lanish <span>›</span></button>
-    </div>
-
-    <div class="sv-section-divider"><span>Makler bo'limi</span></div>
-    <div id="svMaklerBox">
-
-      <form id="svRegForm">
-        <p class="sv-reg-intro">Makler bo'lib ishlash uchun ariza qoldiring. Admin tasdiqlagach profilingiz Sotuvchilar bo'limida chiqadi.</p>
-
-        <label class="sv-field-label">Profil rasmi</label>
-        <div class="sv-reg-photo">
-          <div class="sv-reg-photo-preview" id="svRegPhotoPreview">📷</div>
-          <label class="sv-reg-photo-btn">Rasm tanlash
-            <input type="file" id="svRegPhoto" accept="image/*" hidden>
-          </label>
-        </div>
-
-        <label class="sv-field-label">Ism familiya</label>
-        <input class="sv-select" id="svRegName" placeholder="Bahromjon Karimov">
-
-        <label class="sv-field-label">Username (@ orqali topiladi)</label>
-        <input class="sv-select" id="svRegUsername" placeholder="bahromjon_makler">
-
-        <label class="sv-field-label">Yo'nalishingiz</label>
-        <div class="sv-role-choice">
-          <label class="sv-role-opt"><input type="checkbox" id="svRoleSell"> Sotuvchi</label>
-          <label class="sv-role-opt"><input type="checkbox" id="svRoleRent"> Ijarachi</label>
-        </div>
-
-        <label class="sv-field-label">Telefon raqam</label>
-        <input class="sv-select" id="svRegPhone" type="tel" placeholder="+998901234567">
-
-        <button type="submit" class="sv-submit-btn">Ariza yuborish</button>
-      </form>
-
-      <div id="svRegPending" hidden>
-        <div class="sv-pending-box">
-          <div class="sv-pending-icon">⏳</div>
-          <p>Arizangiz ko'rib chiqilmoqda</p>
-          <span>Admin tasdiqlagach profilingiz Sotuvchilar bo'limida paydo bo'ladi.</span>
-        </div>
-      </div>
-
-      <div id="svRegDone" hidden>
-        <div class="sv-my-header">
-          <div class="sv-my-avatar-wrap"><img class="sv-my-avatar" id="svRegDoneAvatar" src=""></div>
-          <div class="sv-my-counts">
-            <div class="sv-my-count"><b id="svMyPosts">0</b><span>post</span></div>
-            <div class="sv-my-count"><b id="svMyFollowers">0</b><span>obunachi</span></div>
-            <div class="sv-my-count"><b id="svMyViews">0</b><span>ko'rish</span></div>
-          </div>
-        </div>
-        <div class="sv-my-bio">
-          <div class="sv-my-bio-name" id="svRegDoneName"></div>
-          <div class="sv-my-bio-user" id="svRegDoneUser"></div>
-          <div class="sv-my-bio-phone" id="svRegDonePhone"></div>
-        </div>
-        <button class="sv-upload-cta" id="svOpenUploadBtn">＋ E'lon qo'shish</button>
-        <div class="sv-section-divider"><span>Havolalar</span></div>
-        <div id="svSocialBox"></div>
-        <div class="sv-section-divider"><span>Mening e'lonlarim</span></div>
-        <div class="sv-explore-grid" id="svMyGrid"></div>
-      </div>
-
-    </div>
-  </div>
-</div>
-
-<div class="lang-select-overlay" id="langSelectOverlay" style="display:none !important;">
-  <div class="lang-select-box">
-    <div class="lang-select-icon">🌐</div>
-    <h2>Tilni tanlang / Выберите язык / Choose language</h2>
-    <button class="lang-btn" data-lang="uz">🇺🇿 O'zbekcha</button>
-    <button class="lang-btn" data-lang="ru">🇷🇺 Русский</button>
-    <button class="lang-btn" data-lang="en">🇬🇧 English</button>
-  </div>
-</div>
-
-<div class="app">
-
-  <header class="topbar">
-    <div class="brand">
-      <div class="brand-mark">NI</div>
-      <div class="brand-text">
-        <h1>Namangan <span>Ijara</span></h1>
-        <p>Ishonchli ijara e'lonlari</p>
-      </div>
-    </div>
-    <button class="profile-btn" id="profileBtn">👤</button>
-  </header>
-
-  <div class="sv-stories" id="svStories"></div>
-  <div class="sv-feed" id="svFeed"></div>
-
-  <nav class="type-tabs" id="typeTabs">
-    <button class="type-tab active" data-type="hammasi">Hammasi</button>
-    <button class="type-tab" data-type="sotish">Sotuv</button>
-    <button class="type-tab" data-type="ijara">Ijara</button>
-    <button class="type-tab" data-type="sevimli">❤️ Sevimli</button>
-    <button class="type-tab" data-type="mashhur">📈 Mashhur</button>
-  </nav>
-
-  <button class="map-toggle-btn" id="mapToggleBtn">🗺 Xaritadan qidirish</button>
-  <div id="mapView" class="map-view" hidden></div>
-
-  <div class="search-bar">
-    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    <input type="text" id="searchInput" placeholder="Uy, tuman yoki kalit so'z...">
-  </div>
-
-  <nav class="tabs" id="tabs">
-    <button class="tab active" data-cat="hammasi">✨ Hammasi</button>
-    <button class="tab" data-cat="kvartira">🏢 Kvartira</button>
-    <button class="tab" data-cat="uy">🏡 Uy</button>
-    <button class="tab" data-cat="ofis">🏬 Ofis</button>
-    <button class="tab" data-cat="dokon">🏪 Do'kon</button>
-  </nav>
-
-  <div class="filter-bar">
-    <button class="filter-chip" id="openFilters">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
-      Filtr
+<header class="topbar topbar-ug">
+  <div class="side left">
+    <button id="tbCam" title="Storiy">
+      <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
     </button>
-    <span class="result-count" id="resultCount"></span>
   </div>
 
-  <main class="listing-grid" id="listingGrid"></main>
+  <h1 class="logo-ug"><span class="uy">UY</span><span class="gram">gram</span></h1>
 
-  <div class="empty-state" id="emptyState" hidden>
-    <div class="empty-glyph">◱</div>
-    <p>Bu bo'yicha e'lon topilmadi</p>
-    <span>Filtrni o'zgartirib ko'ring</span>
+  <div class="side right">
+    <button id="tbHeart" title="Bildirishnoma">
+      <svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1L12 21l7.7-7.6 1.1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+    </button>
+    <button id="tbDm" title="Xabarlar">
+      <svg viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+    </button>
+    <button id="tbMenu" title="Menyu">
+      <span class="burger"><i></i><i></i><i></i></span>
+    </button>
+  </div>
+</header>
+
+<div class="side-bg" id="smBg"></div>
+<div class="side-menu" id="smMenu">
+  <div class="sm-hd">
+    <img id="smAva" src="">
+    <div class="i"><b id="smNom">—</b><span id="smSub">—</span></div>
   </div>
 
+  <button class="sm-item" data-a="arxiv"><span class="e">🗄</span>Arxiv</button>
+  <button class="sm-item" data-a="profil"><span class="e">👤</span>Profil</button>
+  <button class="sm-item" data-a="saqlangan"><span class="e">🔖</span>Saqlangan</button>
+  <button class="sm-item" data-a="referal"><span class="e">🎁</span>Referal dastur</button>
+
+  <div class="sm-sep"></div>
+
+  <button class="sm-item" data-a="valyuta"><span class="e">💰</span>Valyuta kursi</button>
+  <button class="sm-item" data-a="obhavo"><span class="e">🌤</span>Ob-havo</button>
+  <button class="sm-item" data-a="xarita"><span class="e">🗺</span>Xarita</button>
+
+  <div class="sm-sep"></div>
+
+  <button class="sm-item" data-a="lang"><span class="e">🌐</span>Til</button>
+  <button class="sm-item" id="smAdmin" data-a="panel" style="display:none;">
+    <span class="e">⚙️</span>Boshqaruv markazi</button>
+
+  <div class="sm-sep"></div>
+
+  <button class="sm-item danger" data-a="chiqish"><span class="e">🚪</span>Chiqish</button>
 </div>
 
-<!-- Filter Sheet -->
-<div class="sheet-overlay" id="sheetOverlay">
-  <div class="sheet">
-    <div class="sheet-handle"></div>
-    <h2>Filtr</h2>
 
-    <label class="field-label">Narx oralig'i (so'm)</label>
-    <div class="range-row">
-      <input type="number" id="minPrice" placeholder="Dan">
-      <span>—</span>
-      <input type="number" id="maxPrice" placeholder="Gacha">
-    </div>
+<div class="view on" id="vFeed">
+  <div class="stories" id="stories"></div>
+  <div id="feed"><div class="load">Yuklanmoqda...</div></div>
+</div>
 
-    <label class="field-label">Tuman</label>
-    <select id="districtSelect">
-      <option value="">Barcha tumanlar</option>
-    </select>
-
-    <div class="sheet-actions">
-      <button class="btn-ghost" id="resetFilters">Tozalash</button>
-      <button class="btn-gold" id="applyFilters">Qo'llash</button>
-    </div>
+<div class="view" id="vSearch">
+  <div class="sp-tabs" style="padding:12px 16px 8px;">
+    <button class="sp-tab on" data-q="posts">🏠 Elonlar</button>
+    <button class="sp-tab" data-q="users">👤 Odamlar</button>
   </div>
+  <div class="search-bar"><input id="q" placeholder="Qidirish: kvartira, hovli, @username"></div>
+  <div id="results"></div>
 </div>
 
-<!-- Detail Sheet -->
-<div class="sheet-overlay" id="detailOverlay">
-  <div class="sheet detail-sheet">
-    <div class="sheet-handle"></div>
-    <div class="gallery" id="gallery"></div>
-    <div class="dots" id="dots"></div>
-
-    <div class="detail-body">
-      <div class="detail-price" id="detailPrice"></div>
-      <h2 id="detailTitle"></h2>
-      <div class="detail-meta" id="detailMeta"></div>
-      <p class="detail-desc" id="detailDesc"></p>
-    </div>
-
-    <button class="btn-gold btn-360" id="panoBtn" hidden>🔄 360° Ko'rish</button>
-    <div class="contact-buttons">
-      <button class="btn-gold btn-contact-half" id="callBtn">📞 Telefon</button>
-      <button class="btn-tg btn-contact-half" id="telegramBtn">✈️ Telegram</button>
-    </div>
+<div class="view" id="vSellers">
+  <div class="top-hd">
+    <h2>&#127942; Eng faol sotuvchilar</h2>
+    <span>Obunachi, koʻrish va layk asosida</span>
   </div>
+  <div id="topList"></div>
+  <div class="top-hd" style="padding-top:22px;">
+    <h2>Barcha mutaxassislar</h2>
+  </div>
+  <div id="sellers"><div class="load">Yuklanmoqda...</div></div>
 </div>
 
-<div id="panoOverlay" class="pano-overlay" hidden>
-  <button id="panoClose" class="pano-close">✕</button>
-  <div id="panoViewer" style="width:100%;height:100%;"></div>
+<div class="view" id="vSpecial">
+  <div class="sp-tabs">
+    <button class="sp-tab on" data-s="kunlik">🗓 Kunlik ijara</button>
+    <button class="sp-tab" data-s="student">🎓 Studentlar</button>
+  </div>
+  <div id="spBody"><div class="load">Yuklanmoqda...</div></div>
 </div>
 
-<nav class="sv-bottom-nav" id="svBottomNav">
-  <button class="sv-nav-item active" data-sv-nav="home"><span class="sv-nav-icon">🏠</span>Asosiy</button>
-  <button class="sv-nav-item" data-sv-nav="sellers"><span class="sv-nav-icon">🎖️</span>Sotuvchilar</button>
-  <button class="sv-nav-item" data-sv-nav="search"><span class="sv-nav-icon">🔍</span>Qidiruv</button>
-  <button class="sv-nav-item" data-sv-nav="complaint"><span class="sv-nav-icon">⚠️</span>Shikoyat</button>
-  <button class="sv-nav-item" data-sv-nav="favorites"><span class="sv-nav-icon">❤️</span>Sevimli</button>
-  <button class="sv-nav-item" data-sv-nav="profile"><span class="sv-nav-icon">👤</span>Profil</button>
+<div class="view" id="vProfile">
+  <div id="profBody"><div class="load">Yuklanmoqda...</div></div>
+</div>
+
+<div class="view" id="vSaved">
+  <div id="saved"></div>
+</div>
+
+<nav class="nav">
+  <button class="on" data-v="vHome">
+    <svg class="fillable" viewBox="0 0 24 24"><path d="M3 10l9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+    <span data-t="navHome">Asosiy</span>
+  </button>
+  <button data-v="vSearch">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg>
+    <span data-t="navSearch">Qidiruv</span>
+  </button>
+  <button data-v="vSellers">
+    <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
+    <span data-t="navSellers">Sotuvchilar</span>
+  </button>
+  <button data-v="vSpecial">
+    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+    <span data-t="navSpecial">Maxsus</span>
+  </button>
+  <button id="mapBtn">
+    <svg viewBox="0 0 24 24"><path d="M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4z"/><path d="M8 2v16M16 6v16"/></svg>
+    <span data-t="navMap">Xarita</span>
+  </button>
+  <button id="fermaBtn">
+    <svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="3"/><path d="M7 12h3M8.5 10.5v3"/><circle cx="16" cy="11" r="1"/><circle cx="18" cy="14" r="1"/></svg>
+    <span>Oyinlar</span>
+  </button>
+  <button data-v="vProfile">
+    <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <span data-t="navProfile">Profil</span>
+  </button>
 </nav>
 
-<div class="sv-view" id="sellersView" hidden>
-  <div class="sv-header">
-    <h1 id="svRankTitle">Sotuvchilar</h1>
-    <button class="sv-close" id="svClose">✕</button>
-  </div>
-  <div class="sv-panel active">
-    <div class="sv-section-head">
-      <div class="sv-section-title">Eng ko'p obunachi</div>
-      <div class="sv-section-note" id="svRankCount"></div>
-    </div>
-    <div id="svRankList"></div>
-  </div>
-</div>
-
-<div class="sv-view" id="svSearchView" hidden>
-  <div class="sv-header">
-    <h1>Qidiruv</h1>
-    <button class="sv-close" id="svSearchClose">✕</button>
-  </div>
-  <div class="sv-panel active">
-    <div class="sv-search-box">
-      <span>🔍</span>
-      <input type="text" id="svSearchInput" placeholder="Sotuvchi nomi bo'yicha qidiring">
-    </div>
-    <div class="sv-explore-grid" id="svSearchGrid"></div>
-  </div>
-</div>
-
-<div class="sv-view" id="svProfileView" hidden>
-  <div class="sv-header">
-    <button class="sv-close" id="svProfileClose">&larr;</button>
-  </div>
-  <div class="sv-panel active">
-    <div class="sv-profile-head">
-      <img class="sv-profile-avatar" id="svPAvatar" src="">
-      <div>
-        <div class="sv-profile-name" id="svPName"></div>
-        <div class="sv-profile-id" id="svPId"></div>
-      </div>
-    </div>
-
-    <div class="sv-ig-stats">
-      <div class="sv-ig-stat"><div class="sv-ig-stat-num" id="svPPosts"></div><div class="sv-ig-stat-label">Postlar</div></div>
-      <div class="sv-ig-stat"><div class="sv-ig-stat-num" id="svPFollowers"></div><div class="sv-ig-stat-label">Obunachilar</div></div>
-      <div class="sv-ig-stat"><div class="sv-ig-stat-num" id="svPFollowing"></div><div class="sv-ig-stat-label">Obunalar</div></div>
-    </div>
-
-    <div class="sv-stat-grid">
-      <div class="sv-stat-cell"><div class="sv-stat-num" id="svPElon"></div><div class="sv-stat-label">E'lonlar</div></div>
-      <div class="sv-stat-cell"><div class="sv-stat-num" id="svPKorish"></div><div class="sv-stat-label">Ko'rishlar</div></div>
-      <div class="sv-stat-cell"><div class="sv-stat-num" id="svPObuna"></div><div class="sv-stat-label">Obunachi</div></div>
-      <div class="sv-stat-cell"><div class="sv-stat-num" id="svPSotuv"></div><div class="sv-stat-label">Sotuvlar</div></div>
-    </div>
-    <div class="sv-cta-row">
-      <button class="sv-cta sv-cta-ghost">Qo'ng'iroq</button>
-      <button class="sv-cta sv-cta-primary">Sotuvchiga yozing</button>
-    </div>
-    <div class="sv-explore-grid" id="svPListings"></div>
-  </div>
-</div>
-
-<div class="sv-view" id="svComplaintView" hidden>
-  <div class="sv-header">
-    <h1>Shikoyat</h1>
-    <button class="sv-close" id="svComplaintClose">✕</button>
-  </div>
-  <div class="sv-panel active">
-    <form id="svComplaintForm">
-      <label class="sv-field-label">Kim ustidan (sotuvchi/ijarachi)</label>
-      <button type="button" class="sv-target-picker" id="svTargetPicker">
-        <span class="sv-target-placeholder" id="svTargetPlaceholder">@ Tanlang</span>
-      </button>
-      <input type="hidden" id="svTargetSellerId">
-
-      <label class="sv-field-label">Shikoyat sababi</label>
-      <select class="sv-select" id="svComplaintReason" required>
-        <option value="">Tanlang...</option>
-        <option value="Soxta e'lon">Soxta e'lon</option>
-        <option value="Firibgarlik / pul talab qilish">Firibgarlik / pul talab qilish</option>
-        <option value="Narx boshqacha ko'rsatilgan">Narx boshqacha ko'rsatilgan</option>
-        <option value="Nomunosib muomala">Nomunosib muomala</option>
-        <option value="Boshqa">Boshqa</option>
-      </select>
-
-      <label class="sv-field-label">Izoh</label>
-      <textarea class="sv-textarea" id="svComplaintText" placeholder="Nima bo'lganini qisqacha yozing..." required></textarea>
-
-      <button type="submit" class="sv-submit-btn">Yuborish</button>
-    </form>
-
-    <div class="sv-complaint-success" id="svComplaintSuccess">
-      <div class="sv-icon">✅</div>
-      <h3>Qabul qilindi</h3>
-      <p>Shikoyatingiz administratorga yuborildi, tez orada ko'rib chiqiladi.</p>
-    </div>
-  </div>
-</div>
-
-<div class="sv-view" id="svPostView" hidden>
-  <div class="sv-header">
-    <button class="sv-close" id="svPostBack">&larr;</button>
-  </div>
-  <div class="sv-panel active">
-    <div class="sv-post-media" id="svPostMedia"></div>
-
-    <div class="sv-post-seller-row" id="svPostSellerRow">
-      <img id="svPostAvatar" src="">
-      <span class="sv-post-seller-name" id="svPostSellerName"></span>
-    </div>
-
-    <div class="sv-post-price" id="svPostPrice"></div>
-
-    <div class="sv-post-actionbar">
-      <button class="sv-post-action" id="svLikeBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
-        <span id="svLikeCount">0</span>
-      </button>
-      <button class="sv-post-action" id="svCommentFocusBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        <span id="svCommentCount">0</span>
-      </button>
-      <button class="sv-post-action" id="svRepostBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
-        <span id="svRepostCount">0</span>
-      </button>
-      <button class="sv-post-action" id="svSaveBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
-      </button>
-      <span class="sv-post-views" id="svPostViews"></span>
-    </div>
-
-    <div class="sv-comment-input-row">
-      <input type="text" id="svCommentInput" placeholder="Komentariya yozing...">
-      <button class="sv-comment-send" id="svCommentSendBtn">Yuborish</button>
-    </div>
-
-    <div id="svCommentList"></div>
-  </div>
-</div>
-
-<div class="sv-view" id="svFavView" hidden>
-  <div class="sv-header">
-    <h1>Sevimlilar</h1>
-    <button class="sv-close" id="svFavClose">✕</button>
-  </div>
-  <div class="sv-panel active">
-    <div class="sv-explore-grid" id="svFavGrid"></div>
-    <div class="sv-fav-empty" id="svFavEmpty" hidden>
-      <div class="sv-fav-icon">🔖</div>
-      <p>Hali sevimlilar yo'q</p>
-      <span>Yoqqan e'lonni ochib, 🔖 tugmasini bosing</span>
-    </div>
-  </div>
-</div>
-
-
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+<script src="i18n.js?v=1786726305"></script>
+<script src="intro.js?v=1787312621"></script>
+<script src="core.js?v=1788084465"></script>
+<script src="profil.js?v=1787962597"></script>
+<script src="splash.js"></script>
+<script src="reg.js"></script>
+<script src="dm.js?v=1786724767"></script>
+<script src="story.js?v=1788022073"></script>
+<script src="pano.js"></script>
+<script src="ads.js?v=1788005416"></script>
 <script>
-window.onerror = function(m, s, l){
-  var d = document.createElement('div');
-  d.style.cssText='position:fixed;top:0;left:0;right:0;z-index:2147483647;background:#c00;color:#fff;padding:9px;font-size:11px;font-family:monospace';
-  d.textContent = 'XATO: ' + m + ' | ' + String(s).split('/').pop() + ':' + l;
-  document.body.appendChild(d);
-};
+// APK: monitor eslab qolinmasin
+try {
+  if(localStorage.getItem('ni_admin_panel') === 'xaridor.html'){
+    localStorage.removeItem('ni_admin_panel');
+  }
+} catch(e){}
+
+let POSTS = [];
+let SELLERS = [];
+let SUBS = {};
+let LIKED = {};
+let SAVED = [];
+
+function boot(){
+  if(typeof showIntro === 'function'){
+    showIntro(function(){ bootAfterIntro(); });
+  } else bootAfterIntro();
+}
+
+function bootAfterIntro(){
+  if(typeof askLangOnce === 'function'){
+    askLangOnce(function(){ bootAfterLang(); });
+  } else bootAfterLang();
+}
+
+function bootAfterLang(){
+  requireAuth(function(){
+    checkSubs(function(){
+      askRole(function(){ bootAuthed(); });
+    });
+  });
+}
+
+function bootAuthed(){
+  checkRestriction(function(stop){
+    if(stop) return;
+    bootReal();
+  });
+}
+
+function bootReal(){
+  loadLocal();
+  checkUser(function(u){
+    if(needReg()){
+      document.querySelector('.nav').style.display = 'none';
+      document.querySelectorAll('.view').forEach(function(v){ v.classList.remove('on'); });
+      let r = el('root');
+      if(!r){
+        r = document.createElement('div');
+        r.id = 'root';
+        document.body.insertBefore(r, document.querySelector('.nav'));
+      }
+      r.style.display = 'block';
+      showReg('xaridor', function(){
+        r.style.display = 'none';
+        document.querySelector('.nav').style.display = 'flex';
+        el('vFeed').classList.add('on');
+        realBoot();
+      });
+      return;
+    }
+    realBoot();
+  });
+}
+
+function realBoot(){
+  Promise.all([
+    api('/api/maklerlar').catch(function(){ return { maklers: [] }; }),
+    api('/api/postlar').catch(function(){ return { posts: [] }; })
+  ]).then(function(r){
+    SELLERS = r[0].maklers || [];
+    POSTS = (r[1].posts || []).map(normalize);
+    loadSubs(function(){
+      drawStories();
+      drawFeed();
+      drawSellers();
+      drawTop();
+    });
+  });
+}
+
+function normalize(p){
+  const m = (p.media && p.media.length) ? p.media : [{ file_id: p.file_id, is_video: p.is_video }];
+  return {
+    id: p.id,
+    username: p.username,
+    price: p.price || '',
+    desc: p.description || '',
+    media: m.filter(function(x){ return x.file_id; }).map(function(x){
+      return { url: mediaUrl(x.file_id), video: !!x.is_video };
+    }),
+    views: p.views || 0,
+    likes: p.likes || 0,
+    pano: !!p.pano,
+    created: p.created || '',
+    comments: p.comments || []
+  };
+}
+
+function vBadge(s){
+  return (s && s.verified)
+    ? '<svg class="vbadge" viewBox="0 0 24 24" fill="#0095F6"><path d="M12 1l2.5 2.2 3.3-.4 1 3.2 3 1.5-1.2 3.1 1.2 3.1-3 1.5-1 3.2-3.3-.4L12 23l-2.5-2.2-3.3.4-1-3.2-3-1.5 1.2-3.1L2.2 10l3-1.5 1-3.2 3.3.4z"/><path d="M10.5 15.2l-3-3 1.2-1.2 1.8 1.8 4.3-4.3 1.2 1.2z" fill="#000"/></svg>'
+    : '';
+}
+
+
+function timeAgo(s){
+  if(!s) return '';
+  const d = new Date(String(s).replace(' ', 'T'));
+  if(isNaN(d)) return '';
+  const m = Math.floor((Date.now() - d.getTime()) / 60000);
+  if(m < 1) return 'hozirgina';
+  if(m < 60) return m + ' daqiqa oldin';
+  const h = Math.floor(m / 60);
+  if(h < 24) return h + ' soat oldin';
+  const dd = Math.floor(h / 24);
+  if(dd < 7) return dd + ' kun oldin';
+  if(dd < 30) return Math.floor(dd / 7) + ' hafta oldin';
+  return Math.floor(dd / 30) + ' oy oldin';
+}
+
+function sellerOf(u){
+  for(let i = 0; i < SELLERS.length; i++){
+    if(SELLERS[i].username === u) return SELLERS[i];
+  }
+  return null;
+}
+
+function avaOf(u){
+  const s = sellerOf(u);
+  if(s && s.avatar) return mediaUrl(s.avatar);
+  return 'https://api.dicebear.com/7.x/initials/svg?seed=' + encodeURIComponent(s ? s.name : u);
+}
+
+function loadSubs(cb){
+  const id = myId();
+  if(!id || !SELLERS.length){ cb(); return; }
+  let n = 0;
+  SELLERS.forEach(function(s){
+    api('/api/obuna-holat?username=' + encodeURIComponent(s.username) + '&follower_id=' + id)
+      .then(function(d){ SUBS[s.username] = !!d.following; s.followers = d.followers || 0; })
+      .catch(function(){})
+      .then(function(){ n++; if(n === SELLERS.length) cb(); });
+  });
+}
+
+function loadLocal(){
+  try { SAVED = JSON.parse(localStorage.getItem('ni_saved')) || []; } catch(e){ SAVED = []; }
+  try { LIKED = JSON.parse(localStorage.getItem('ni_liked')) || {}; } catch(e){ LIKED = {}; }
+}
+
+function keepLocal(){
+  try { localStorage.setItem('ni_saved', JSON.stringify(SAVED)); } catch(e){}
+  try { localStorage.setItem('ni_liked', JSON.stringify(LIKED)); } catch(e){}
+}
+
+function drawStories(){
+  const box = el('stories');
+  loadStories(function(){
+    const groups = groupStories();
+    if(!groups.length){ box.style.display = 'none'; return; }
+    box.style.display = 'flex';
+    box.innerHTML = groups.map(function(g, i){
+      const seenAll = g.items.every(function(s){ return isStorySeen(s.id); });
+      return '<button class="story" data-i="' + i + '">' +
+        '<div class="story-ring ' + (seenAll ? 'seen' : 'fresh') + '"><img src="https://api.dicebear.com/7.x/initials/svg?seed=' +
+        encodeURIComponent(g.name) + '"></div>' +
+        '<span>' + esc(g.name) + '</span></button>';
+    }).join('');
+    box.querySelectorAll('.story').forEach(function(b){
+      b.addEventListener('click', function(){
+        openStory(groups[parseInt(b.dataset.i)], 0);
+      });
+    });
+  });
+}
+
+function drawFeed(){
+  setTimeout(function(){
+    const f = el('feed');
+    if(f && typeof injectAds === 'function') injectAds(f, 'feed', 5);
+  }, 800);
+
+  const box = el('feed');
+  const sub = SELLERS.filter(function(s){ return SUBS[s.username]; })
+                     .map(function(s){ return s.username; });
+  let list = sub.length ? POSTS.filter(function(p){ return sub.indexOf(p.username) !== -1; }) : POSTS;
+  if(!list.length) list = POSTS;
+  if(!list.length){
+    box.innerHTML = '<div class="empty"><div class="ic">&#128235;</div>' +
+      '<p>Hali elon yoq</p><span>Sotuvchilar elon joylagach shu yerda chiqadi</span></div>';
+    return;
+  }
+  box.innerHTML = list.map(postHTML).join('');
+  bindPosts(box);
+}
+function postHTML(p){
+  const s = sellerOf(p.username);
+  const slides = p.media.map(function(m){
+    return '<div class="slide">' + (m.video
+      ? '<video src="' + m.url + '" muted loop playsinline preload="metadata"></video>'
+      : '<img src="' + m.url + '" loading="lazy">') + '</div>';
+  }).join('');
+
+  const dots = p.media.length > 1
+    ? '<div class="dots">' + p.media.map(function(_, i){
+        return '<div class="dot' + (i === 0 ? ' on' : '') + '"></div>';
+      }).join('') + '</div><div class="counter">1/' + p.media.length + '</div>'
+    : '';
+
+  const lines = p.desc.split('\n');
+  const head = lines[0] || '';
+  const rest = lines.slice(1).join('\n');
+  const isSell = head.indexOf('Sotiladi') === 0;
+  const hasTag = isSell || head.indexOf('Ijaraga') === 0;
+  const tag = hasTag ? '<span class="tag ' + (isSell ? 'sell' : 'rent') + '">' + esc(head) + '</span>' : '';
+  const body = hasTag ? rest : p.desc;
+
+  const liked = LIKED[p.id] ? ' liked' : '';
+  const saved = SAVED.indexOf(p.id) !== -1 ? ' on' : '';
+
+  return '<article class="post" data-id="' + p.id + '">' +
+    '<div class="post-head" data-u="' + esc(p.username) + '">' +
+      '<img src="' + avaOf(p.username) + '">' +
+      '<b>' + esc(s ? s.name : p.username) + vBadge(s) + '</b>' +
+      ((p.media && p.media[0] && p.media[0].video)
+        ? '<span class="badge">' + fmt(p.views) + ' korish</span>' : '') +
+    '</div>' +
+    '<div class="slider"><div class="slides">' + slides + '</div>' + dots +
+      (p.pano ? '<div class="pano-badge">&#127760; 360&deg;</div>' : '') +
+      '<svg class="big-heart" viewBox="0 0 24 24" fill="#fff"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1L12 21l7.7-7.6 1.1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>' +
+    '</div>' +
+    '<div class="acts">' +
+      '<button class="act like' + liked + '">' +
+        '<svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1L12 21l7.7-7.6 1.1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>' +
+        '<span>' + fmt(p.likes) + '</span></button>' +
+      '<button class="act cm">' +
+        '<svg viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.5 8.5 0 0 1-3.8-.9L3 21l2-4.9A8.4 8.4 0 0 1 12 3a8.4 8.4 0 0 1 9 8.5z"/></svg>' +
+        '<span>' + fmt(p.comments.length) + '</span></button>' +
+      '<button class="act share">' +
+        '<svg viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg></button>' +
+      '<button class="act save' + saved + '">' +
+        '<svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></button>' +
+    '</div>' +
+    '<div class="post-body">' +
+      (p.price ? '<div class="price">' + esc(p.price) + '</div>' : '') + tag +
+      (body ? '<div class="desc">' + esc(body) + '</div>' : '') +
+    '</div>' +
+    (p.created ? '<div class="post-time">' + timeAgo(p.created) + '</div>' : '') +
+    '</article>';
+}
+
+function bindPosts(box){
+  box.querySelectorAll('.post').forEach(function(art){
+    const id = parseInt(art.dataset.id);
+    let p = null;
+    for(let i = 0; i < POSTS.length; i++){ if(POSTS[i].id === id){ p = POSTS[i]; break; } }
+    if(!p) return;
+
+    const slider = art.querySelector('.slider');
+    const slides = art.querySelector('.slides');
+    const dots = art.querySelectorAll('.dot');
+    const counter = art.querySelector('.counter');
+    let idx = 0, x0 = null;
+
+    slider.addEventListener('touchstart', function(e){ x0 = e.touches[0].clientX; }, { passive: true });
+    slider.addEventListener('touchend', function(e){
+      if(x0 === null) return;
+      const dx = e.changedTouches[0].clientX - x0;
+      x0 = null;
+      if(Math.abs(dx) < 45) return;
+      if(dx < 0 && idx < p.media.length - 1) idx++;
+      else if(dx > 0 && idx > 0) idx--;
+      else return;
+      slides.style.transform = 'translateX(-' + (idx * 100) + '%)';
+      dots.forEach(function(d, i){ d.classList.toggle('on', i === idx); });
+      if(counter) counter.textContent = (idx + 1) + '/' + p.media.length;
+    }, { passive: true });
+
+    let lastTap = 0;
+    slider.addEventListener('click', function(){
+      const now = Date.now();
+      if(now - lastTap < 320){ lastTap = 0; doLike(art, p, true); }
+      else {
+        lastTap = now;
+        if(p.pano && p.media[0]){
+          setTimeout(function(){
+            if(lastTap) openPano(p.media[0].url);
+          }, 330);
+        }
+      }
+    });
+
+    art.querySelector('.like').addEventListener('click', function(){ doLike(art, p, false); });
+    art.querySelector('.like span').addEventListener('click', function(e){
+      e.stopPropagation();
+      if(p.likes > 0) openLikers(p);
+    });
+    art.querySelector('.cm').addEventListener('click', function(){ openComments(p); });
+    art.querySelector('.share').addEventListener('click', function(){ openShare(p); });
+
+    const pr = art.querySelector('.ad-promote');
+    if(pr) pr.addEventListener('click', function(e){
+      e.stopPropagation();
+      haptic('light');
+      if(typeof reklamaOyna === 'function') reklamaOyna(p.id);
+    });
+    art.querySelector('.save').addEventListener('click', function(){ doSave(art, p); });
+    art.querySelector('.post-head').addEventListener('click', function(){ openSeller(p.username); });
+  });
+
+  if(window.IntersectionObserver){
+    const seen = {};
+    const vio = new IntersectionObserver(function(en){
+      en.forEach(function(e){
+        if(!e.isIntersecting) return;
+        const id = parseInt(e.target.dataset.id);
+        if(!id || seen[id]) return;
+        seen[id] = true;
+        apiPost('/api/korish', { post_id: id }).catch(function(){});
+      });
+    }, { threshold: 0.5 });
+    box.querySelectorAll('.post').forEach(function(a){ vio.observe(a); });
+  }
+
+  const vids = box.querySelectorAll('video');
+  if(vids.length && window.IntersectionObserver){
+    const io = new IntersectionObserver(function(en){
+      en.forEach(function(e){
+        if(e.isIntersecting) e.target.play().catch(function(){});
+        else e.target.pause();
+      });
+    }, { threshold: 0.6 });
+    vids.forEach(function(v){ io.observe(v); });
+  }
+}
+
+function doLike(art, p, force){
+  const btn = art.querySelector('.like');
+  const on = !!LIKED[p.id];
+  const heart = art.querySelector('.big-heart');
+
+  if(force && on){
+    heart.classList.remove('pop'); void heart.offsetWidth; heart.classList.add('pop');
+    return;
+  }
+
+  LIKED[p.id] = !on;
+  p.likes = Math.max(0, p.likes + (on ? -1 : 1));
+  btn.classList.toggle('liked', !on);
+  btn.querySelector('span').textContent = fmt(p.likes);
+  keepLocal();
+  haptic('light');
+
+  if(!on){
+    heart.classList.remove('pop'); void heart.offsetWidth; heart.classList.add('pop');
+  }
+  apiPost('/api/layk', { post_id: p.id, action: on ? 'unlike' : 'like' }).catch(function(){});
+}
+
+function doSave(art, p){
+  const i = SAVED.indexOf(p.id);
+  if(i === -1) SAVED.push(p.id); else SAVED.splice(i, 1);
+  art.querySelector('.save').classList.toggle('on', i === -1);
+  apiPost('/api/saqlash', { post_id: p.id, on: i === -1 }).catch(function(){});
+  keepLocal();
+  toast(i === -1 ? 'Saqlandi' : 'Saqlanganlardan olindi');
+}
+
+function sharePost(p){
+  const txt = [p.desc, p.price ? 'Narx: ' + p.price : '', '@' + p.username].filter(Boolean).join('\n');
+  const url = 'https://t.me/share/url?url=' + encodeURIComponent('https://t.me/Ijaraga_uybot') +
+              '&text=' + encodeURIComponent(txt);
+  if(TG && TG.openTelegramLink) TG.openTelegramLink(url);
+  else window.open(url, '_blank');
+}
+function openComments(p){
+  const bg = document.createElement('div');
+  bg.className = 'sheet-bg';
+  bg.innerHTML = '<div class="sheet" id="cmSheet"><div class="sheet-bar"></div>' +
+    '<div class="sheet-title">Komentariyalar</div>' +
+    '<div class="cm-list" id="cmList"></div>' +
+    '<div class="cm-bar"><input id="cmInp" placeholder="Komentariya yozing...">' +
+    '<button id="cmSend">Yuborish</button></div></div>';
+  document.body.appendChild(bg);
+  bg.addEventListener('click', function(e){ if(e.target === bg) bg.remove(); });
+  el('cmSheet').addEventListener('click', function(e){ e.stopPropagation(); });
+
+  el('cmList').innerHTML = '<div class="load">Yuklanmoqda...</div>';
+  api('/api/komentlar?post_id=' + p.id)
+    .then(function(d){
+      p.comments = (d.ok && d.comments) ? d.comments : [];
+      draw();
+      const art = document.querySelector('.post[data-id="' + p.id + '"]');
+      if(art){
+        const sp = art.querySelector('.cm span');
+        if(sp) sp.textContent = fmt(p.comments.length);
+      }
+    })
+    .catch(function(){ draw(); });
+
+  el('cmSend').addEventListener('click', send);
+  el('cmInp').addEventListener('keypress', function(e){ if(e.key === 'Enter') send(); });
+
+  function send(){
+    const inp = el('cmInp');
+    const t = inp.value.trim();
+    if(!t) return;
+    let nm = 'Siz';
+    try { nm = TG.initDataUnsafe.user.first_name || 'Siz'; } catch(e){}
+    p.comments.push({ name: nm, text: t });
+    inp.value = '';
+    draw();
+    apiPost('/api/koment', { post_id: p.id, text: t }).catch(function(){});
+    haptic('light');
+
+    const art = document.querySelector('.post[data-id="' + p.id + '"]');
+    if(art){
+      const sp = art.querySelector('.cm span');
+      if(sp) sp.textContent = fmt(p.comments.length);
+    }
+  }
+
+  function draw(){
+    const box = el('cmList');
+    if(!box) return;
+    if(!p.comments.length){
+      box.innerHTML = '<div class="empty" style="padding:40px 10px;">' +
+        '<span>Hali komentariya yoq.<br>Birinchi boling!</span></div>';
+      return;
+    }
+    box.innerHTML = p.comments.map(function(c){
+      return '<div class="cm"><img src="https://api.dicebear.com/7.x/initials/svg?seed=' +
+        encodeURIComponent(c.name) + '"><div class="cm-txt"><b>' + esc(c.name) +
+        '</b><p>' + esc(c.text) + '</p></div></div>';
+    }).join('');
+  }
+}
+
+
+function drawTop(){
+  const box = el('topList');
+  if(!box) return;
+
+  api('/api/top').then(function(d){
+    const list = d.top || [];
+    if(!list.length){
+      box.innerHTML = '<div class="empty" style="padding:30px 16px;">' +
+        '<span>Hali reyting yoq</span></div>';
+      return;
+    }
+
+    box.innerHTML = list.map(function(s, i){
+      const n = i + 1;
+      const m = n <= 3 ? ('m' + n) : '';
+      const rowM = n <= 3 ? ('medal-' + n) : '';
+      const ico = n === 1 ? '&#129351;' : (n === 2 ? '&#129352;' : (n === 3 ? '&#129353;' : n));
+      const ava = s.avatar
+        ? mediaUrl(s.avatar)
+        : 'https://api.dicebear.com/7.x/initials/svg?seed=' + encodeURIComponent(s.name);
+      const vb = s.verified
+        ? '<svg class="vbadge" viewBox="0 0 24 24" fill="#0095F6"><path d="M12 1l2.5 2.2 3.3-.4 1 3.2 3 1.5-1.2 3.1 1.2 3.1-3 1.5-1 3.2-3.3-.4L12 23l-2.5-2.2-3.3.4-1-3.2-3-1.5 1.2-3.1L2.2 10l3-1.5 1-3.2 3.3.4z"/><path d="M10.5 15.2l-3-3 1.2-1.2 1.8 1.8 4.3-4.3 1.2 1.2z" fill="#000"/></svg>'
+        : '';
+
+      return '<div class="top-row ' + rowM + '" data-u="' + esc(s.username) + '">' +
+        '<div class="top-num ' + m + '">' + ico + '</div>' +
+        '<div class="top-ava ' + m + '"><img src="' + ava + '"></div>' +
+        '<div class="top-info"><b>' + esc(s.name) + vb + '</b>' +
+        '<div class="st">' + fmt(s.followers) + ' obunachi &middot; ' +
+          fmt(s.views) + ' korish &middot; ' + fmt(s.likes) + ' layk</div></div>' +
+        '<div class="top-score">' + fmt(s.score) + '</div></div>';
+    }).join('');
+
+    box.querySelectorAll('.top-row').forEach(function(r){
+      r.addEventListener('click', function(){ openSeller(r.dataset.u); });
+    });
+  }).catch(function(){});
+}
+
+function drawSellers(){
+  const box = el('sellers');
+  if(!SELLERS.length){
+    box.innerHTML = '<div class="empty"><div class="ic">&#128101;</div>' +
+      '<p>Hali sotuvchi yoq</p><span>Tez orada qoshiladi</span></div>';
+    return;
+  }
+  const sorted = SELLERS.slice().sort(function(a, b){ return (b.followers||0) - (a.followers||0); });
+  box.innerHTML = sorted.map(function(s){
+    const roles = (s.roles || []).map(function(r){
+      return r === 'sotuvchi' ? '<span class="role s">Sotuvchi</span>'
+                              : '<span class="role i">Ijarachi</span>';
+    }).join('');
+    const on = SUBS[s.username] ? ' on' : '';
+    const txt = SUBS[s.username] ? 'Obuna bolingan' : 'Obuna bolish';
+    return '<div class="seller" data-u="' + esc(s.username) + '">' +
+      '<img src="' + avaOf(s.username) + '">' +
+      '<div class="seller-info"><b>' + esc(s.name) + vBadge(s) + '</b>' +
+      '<span>@' + esc(s.username) + ' &middot; ' + fmt(s.followers) + ' obunachi</span>' +
+      '<div class="roles">' + roles + '</div></div>' +
+      '<button class="follow-btn' + on + '" data-f="' + esc(s.username) + '">' + txt + '</button></div>';
+  }).join('');
+
+  box.querySelectorAll('.follow-btn').forEach(function(b){
+    b.addEventListener('click', function(e){ e.stopPropagation(); toggleFollow(b.dataset.f); });
+  });
+  box.querySelectorAll('.seller').forEach(function(d){
+    d.addEventListener('click', function(){ openSeller(d.dataset.u); });
+  });
+}
+
+const OWNER = 'bahromjon';
+
+function toggleFollow(u){
+  if(!myId()){ toast('Telegram orqali kiring'); return; }
+  if(u === OWNER && SUBS[u]){
+    toast('Asosiy kanalga obuna majburiy');
+    return;
+  }
+  const on = !!SUBS[u];
+  apiPost('/api/obuna', { action: on ? 'unfollow' : 'follow', username: u })
+    .then(function(d){
+      if(d.ok){
+        SUBS[u] = d.following;
+        const s = sellerOf(u);
+        if(s) s.followers = d.followers;
+        haptic('light');
+        drawSellers(); drawStories(); drawFeed();
+      } else toast('Xato yuz berdi');
+    })
+    .catch(function(){ toast('Server xatosi'); });
+}
+
+function cellHTML(p){
+  const m = p.media[0] || {};
+  const inner = m.video
+    ? '<video src="' + m.url + '" muted preload="metadata"></video>'
+    : '<img src="' + m.url + '" loading="lazy">';
+  const multi = p.media.length > 1
+    ? '<svg class="multi" viewBox="0 0 24 24" fill="#fff"><rect x="7" y="3" width="14" height="14" rx="2"/><rect x="3" y="7" width="14" height="14" rx="2" opacity=".85"/></svg>'
+    : '';
+  return '<div class="cell">' + inner + multi + '</div>';
+}
+
+function openSeller(u){
+  const s = sellerOf(u);
+  if(!s) return;
+  const mine = POSTS.filter(function(p){ return p.username === u; });
+  const on = SUBS[u] ? ' on' : '';
+  const txt = SUBS[u] ? 'Obuna bolingan' : 'Obuna bolish';
+
+  const bg = document.createElement('div');
+  bg.className = 'sheet-bg';
+  bg.innerHTML = '<div class="sheet" id="spSheet" style="max-height:92vh;">' +
+    '<div class="sheet-bar"></div>' +
+    '<div class="pro-top"><div class="pro-ava-wrap"><img class="pro-ava" src="' + avaOf(u) + '"></div>' +
+    '<div class="pro-stats"><div class="pro-stat"><b>' + mine.length + '</b><span>elon</span></div>' +
+    '<div class="pro-stat"><b>' + fmt(s.followers) + '</b><span>obunachi</span></div></div></div>' +
+    '<div class="pro-bio"><b>' + esc(s.name) + vBadge(s) + '</b><div class="ph">@' + esc(u) + '</div></div>' +
+    '<div class="pro-btns"><button class="follow-btn' + on + '" id="spF" style="flex:1;padding:10px 0;">' + txt + '</button>' +
+    '<button id="spM">Yozish</button><button id="spC">Qongiroq</button></div>' +
+    '<div class="grid" id="spGrid"></div></div>';
+
+  document.body.appendChild(bg);
+  bg.addEventListener('click', function(e){ if(e.target === bg) bg.remove(); });
+  el('spSheet').addEventListener('click', function(e){ e.stopPropagation(); });
+
+  const g = el('spGrid');
+  g.innerHTML = mine.length
+    ? mine.map(cellHTML).join('')
+    : '<div class="empty" style="grid-column:1/-1;padding:44px 10px;"><span>Hali elon yoq</span></div>';
+
+  const st = bg.querySelectorAll('.pro-stat')[1];
+  if(st){
+    st.style.cursor = 'pointer';
+    st.addEventListener('click', function(){ openFollowers(u); });
+  }
+  el('spF').addEventListener('click', function(){ toggleFollow(u); bg.remove(); });
+  const mb = el('spM');
+  if(mb) mb.addEventListener('click', function(){
+    if(!s.tg_id){ toast('Bu sotuvchiga yozib bolmaydi'); return; }
+    bg.remove();
+    openChat(s.tg_id, s.name);
+  });
+  el('spC').addEventListener('click', function(){
+    if(s.phone) window.open('tel:' + s.phone);
+    else toast('Telefon korsatilmagan');
+  });
+}
+
+function drawSearch(q){
+  const box = el('results');
+  q = (q || '').trim().toLowerCase();
+
+  if(q.indexOf('@') === 0){
+    const t = q.slice(1);
+    const list = SELLERS.filter(function(s){
+      return s.username.toLowerCase().indexOf(t) !== -1 || s.name.toLowerCase().indexOf(t) !== -1;
+    });
+    box.innerHTML = list.length
+      ? list.map(function(s){
+          return '<div class="seller" data-u="' + esc(s.username) + '">' +
+            '<img src="' + avaOf(s.username) + '"><div class="seller-info"><b>' + esc(s.name) +
+            '</b><span>@' + esc(s.username) + '</span></div></div>';
+        }).join('')
+      : '<div class="empty"><span>Topilmadi</span></div>';
+    box.querySelectorAll('.seller').forEach(function(d){
+      d.addEventListener('click', function(){ openSeller(d.dataset.u); });
+    });
+    return;
+  }
+
+  const list = q ? POSTS.filter(function(p){
+    return p.desc.toLowerCase().indexOf(q) !== -1 ||
+           p.price.toLowerCase().indexOf(q) !== -1 ||
+           p.username.toLowerCase().indexOf(q) !== -1;
+  }) : POSTS;
+
+  box.innerHTML = list.length
+    ? '<div class="grid">' + list.map(cellHTML).join('') + '</div>'
+    : '<div class="empty"><span>Topilmadi</span></div>';
+}
+
+function drawSaved(){
+  const box = el('saved');
+  const list = POSTS.filter(function(p){ return SAVED.indexOf(p.id) !== -1; });
+  box.innerHTML = list.length
+    ? '<div class="grid">' + list.map(cellHTML).join('') + '</div>'
+    : '<div class="empty"><div class="ic">&#128278;</div><p>Saqlangan elon yoq</p>' +
+      '<span>Yoqqan elonni saqlab qoying</span></div>';
+}
+
+
+function openLikers(p){
+  showUserList('Layk bosganlar', '/api/laykchilar?post_id=' + p.id);
+}
+
+function openFollowers(u){
+  showUserList('Obunachilar', '/api/obunachilar?username=' + encodeURIComponent(u));
+}
+
+function showUserList(title, path){
+  const bg = document.createElement('div');
+  bg.className = 'sheet-bg';
+  bg.innerHTML = '<div class="sheet" id="ulSheet"><div class="sheet-bar"></div>' +
+    '<div class="sheet-title">' + title + '</div>' +
+    '<div id="ulBody"><div class="load">Yuklanmoqda...</div></div></div>';
+
+  document.body.appendChild(bg);
+  bg.addEventListener('click', function(e){ if(e.target === bg) bg.remove(); });
+  el('ulSheet').addEventListener('click', function(e){ e.stopPropagation(); });
+
+  api(path).then(function(d){
+    const box = el('ulBody');
+    if(!box) return;
+    const list = d.users || [];
+    if(!list.length){
+      box.innerHTML = '<div class="empty" style="padding:44px 10px;"><span>Hali hech kim yoq</span></div>';
+      return;
+    }
+    box.innerHTML = list.map(function(u){
+      return '<div class="seller" style="cursor:default;">' +
+        '<img src="https://api.dicebear.com/7.x/initials/svg?seed=' + encodeURIComponent(u.name) + '">' +
+        '<div class="seller-info"><b>' + esc(u.name) + '</b></div></div>';
+    }).join('');
+  }).catch(function(){
+    const box = el('ulBody');
+    if(box) box.innerHTML = '<div class="empty" style="padding:44px 10px;"><span>Xato yuz berdi</span></div>';
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  const hb = document.querySelector('.nav button[data-v="vHome"]');
+  if(hb && IS_ADMIN && typeof isApk === 'function' && isApk()){
+    let ht = null;
+    hb.addEventListener('touchstart', function(){
+      ht = setTimeout(function(){
+        ht = null;
+        haptic('medium');
+        if(typeof showAdminPanels === 'function') showAdminPanels(null, true);
+      }, 700);
+    }, { passive: true });
+    hb.addEventListener('touchend', function(){ if(ht) clearTimeout(ht); }, { passive: true });
+    hb.addEventListener('touchmove', function(){ if(ht) clearTimeout(ht); }, { passive: true });
+  }
+
+  document.querySelectorAll('.nav button').forEach(function(b){
+    b.addEventListener('click', function(){
+      document.querySelectorAll('.nav button').forEach(function(x){ x.classList.remove('on'); });
+      document.querySelectorAll('.view').forEach(function(v){ v.classList.remove('on'); });
+      b.classList.add('on');
+      const v = el(b.dataset.v);
+      if(v) v.classList.add('on');
+      if(b.dataset.v === 'vSaved') drawSaved();
+      if(b.dataset.v === 'vProfile') drawProfile();
+      if(b.dataset.v === 'vSpecial') drawSpecial('kunlik');
+      if(b.dataset.v === 'vSearch') doSearch(el('q').value);
+      window.scrollTo(0, 0);
+    });
+  });
+  el('q').addEventListener('input', function(e){ doSearch(e.target.value); });
+  boot();
+});
+
+
+function drawProfileOld(){
+  const box = el('profBody');
+  if(!box) return;
+  const u = USER || {};
+  const ava = u.avatar
+    ? mediaUrl(u.avatar)
+    : 'https://api.dicebear.com/7.x/initials/svg?seed=' + encodeURIComponent(u.name || 'U');
+
+  box.innerHTML =
+    '<div class="pro-top">' +
+      '<div class="pro-ava-wrap"><img class="pro-ava" id="pfAva" src="' + ava + '">' +
+      '<button class="pro-add" id="pfAvaBtn">+</button></div>' +
+      '<div style="flex:1;">' +
+        '<div style="font-size:17px;font-weight:800;">' + esc(u.name || 'Ismingizni kiriting') + '</div>' +
+        '<div style="font-size:13px;color:var(--muted);margin-top:3px;">' +
+          (u.nickname ? '@' + esc(u.nickname) : 'nik nomi belgilanmagan') + '</div>' +
+      '</div>' +
+    '</div>' +
+
+    '<div class="pro-btns"><button id="pfEdit">Profilni tahrirlash</button></div>' +
+
+    '<div class="wrap" style="padding-top:6px;">' +
+      '<label class="label">Telefon</label>' +
+      '<div class="inp" style="color:#2ECC71;">&#10003; ' + esc(u.phone || '-') + '</div>' +
+      '<label class="label">Instagram</label>' +
+      '<div class="inp">' + esc(u.instagram || '-') + '</div>' +
+      '<label class="label">WhatsApp</label>' +
+      '<div class="inp">' + esc(u.whatsapp || '-') + '</div>' +
+    '</div>' +
+
+    '<div class="pm-list">' +
+      '<div class="pm" data-go="referal"><span class="e">&#127873;</span>' +
+      '<span class="t">Referal dastur</span><span class="ar">&rsaquo;</span></div>' +
+
+      '<div class="pm" data-go="valyuta"><span class="e">&#128176;</span>' +
+      '<span class="t">Valyuta kursi</span><span class="ar">&rsaquo;</span></div>' +
+
+      '<div class="pm" data-go="obhavo"><span class="e">&#127780;</span>' +
+      '<span class="t">Ob-havo</span><span class="ar">&rsaquo;</span></div>' +
+
+      '<div class="pm" data-go="lang"><span class="e">&#127760;</span>' +
+      '<span class="t">' + (typeof t === 'function' ? t('language') : 'Til') + '</span>' +
+      '<span class="v">' + (typeof langFlag === 'function' ? langFlag(LANG) + ' ' + langName(LANG) : '') + '</span>' +
+      '<span class="ar">&rsaquo;</span></div>' +
+
+      (IS_ADMIN
+        ? '<div class="pm" data-go="panel" style="border-color:rgba(0,149,246,.4);">' +
+          '<span class="e">&#9881;&#65039;</span>' +
+          '<span class="t">Boshqaruv markazi</span><span class="ar">&rsaquo;</span></div>'
+        : '') +
+    '</div>';
+
+  el('pfAvaBtn').addEventListener('click', pickProfAva);
+
+  document.querySelectorAll('.pm[data-go]').forEach(function(m){
+    m.addEventListener('click', function(){
+      const g = m.dataset.go;
+      haptic('light');
+      if(g === 'lang'){ if(typeof openLangPicker === 'function') openLangPicker(); return; }
+      if(g === 'panel'){ location.href = 'zaxira.html'; return; }
+      location.href = g + '.html';
+    });
+  });
+  const lg = el('pfLang');
+  if(lg) lg.addEventListener('click', function(){
+    if(typeof openLangPicker === 'function') openLangPicker();
+  });
+  el('pfEdit').addEventListener('click', openEditProfile);
+}
+
+function openEditProfileOld(){
+  const u = USER || {};
+
+  if(u.can_edit === false){
+    const bg = document.createElement('div');
+    bg.className = 'sheet-bg';
+    bg.innerHTML = '<div class="sheet" id="lkSheet"><div class="sheet-bar"></div>' +
+      '<div class="empty" style="padding:44px 26px;">' +
+      '<div class="ic">&#128274;</div>' +
+      '<p>Tahrirlash vaqtincha yopiq</p>' +
+      '<span>Profil maʼlumotlari oyiga bir marta yangilanadi.<br><br>' +
+      '<b style="color:#fff;">' + (u.edit_days || 0) + ' kundan keyin</b> qayta ochiladi.</span>' +
+      '</div></div>';
+    document.body.appendChild(bg);
+    bg.addEventListener('click', function(e){ if(e.target === bg) bg.remove(); });
+    el('lkSheet').addEventListener('click', function(e){ e.stopPropagation(); });
+    return;
+  }
+
+  const bg = document.createElement('div');
+  bg.className = 'sheet-bg';
+  bg.innerHTML = '<div class="sheet" id="epSheet" style="max-height:80vh;">' +
+    '<div class="sheet-bar"></div>' +
+    '<div class="sheet-title">Profilni tahrirlash</div>' +
+    '<div class="wrap">' +
+      '<div style="background:rgba(255,193,7,.1);border:1px solid rgba(255,193,7,.35);' +
+      'border-radius:12px;padding:13px;margin-bottom:20px;font-size:12.5px;color:#FFC107;' +
+      'line-height:1.5;">&#9888;&#65039; Eslatma: profil maʼlumotlari <b>oyiga bir marta</b> yangilanadi.</div>' +
+      '<label class="label">Ism familiya</label>' +
+      '<input class="inp" id="epName" value="' + esc(u.name || '') + '" placeholder="Ism va familiyangiz">' +
+      '<label class="label">Nik nomi</label>' +
+      '<input class="inp" id="epNick" value="' + esc(u.nickname || '') + '" placeholder="bahromjon">' +
+      '<button class="btn" id="epSave">Saqlash</button>' +
+      '<button class="btn ghost" id="epCancel" style="margin-top:9px;">Bekor qilish</button>' +
+    '</div></div>';
+
+  document.body.appendChild(bg);
+  bg.addEventListener('click', function(e){ if(e.target === bg) bg.remove(); });
+  el('epSheet').addEventListener('click', function(e){ e.stopPropagation(); });
+  el('epCancel').addEventListener('click', function(){ bg.remove(); });
+
+  el('epSave').addEventListener('click', function(){
+    const n = el('epName').value.trim();
+    const nk = el('epNick').value.trim().replace(/^@/, '');
+    if(n.length < 2){ toast('Ismni kiriting'); return; }
+    if(!confirm('Saqlaysizmi?\n\nKeyingi ozgartirish 30 kundan keyin mumkin boladi.')) return;
+
+    const b = el('epSave');
+    b.disabled = true;
+    b.textContent = 'Saqlanmoqda...';
+
+    apiPost('/api/profil-saqlash', { name: n, nickname: nk })
+      .then(function(d){
+        if(d.ok){
+          haptic('medium');
+          USER.name = n; USER.nickname = nk;
+          USER.can_edit = false; USER.edit_days = 30;
+          toast('Saqlandi');
+          bg.remove();
+          drawProfile();
+        } else if(d.error === 'locked'){
+          toast((d.days || 0) + ' kundan keyin ozgartirasiz');
+          b.disabled = false;
+          b.textContent = 'Saqlash';
+        } else {
+          toast('Xato');
+          b.disabled = false;
+          b.textContent = 'Saqlash';
+        }
+      }).catch(function(){
+        toast('Server xatosi');
+        b.disabled = false;
+        b.textContent = 'Saqlash';
+      });
+  });
+}
+
+function pickProfAvaOld(){
+  pickFiles(false, function(items){
+    if(!items.length || items[0].is_video){ toast('Faqat rasm'); return; }
+    toast('Yuklanmoqda...');
+    apiPost('/api/profil-avatar', { media: items[0].media })
+      .then(function(d){
+        if(d.ok){
+          haptic('medium');
+          USER.avatar = d.file_id;
+          toast('Rasm yangilandi');
+          drawProfile();
+        } else toast('Xato');
+      }).catch(function(){ toast('Server xatosi'); });
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  const db_ = el('dmBtn');
+  if(db_) db_.addEventListener('click', openChats);
+  setTimeout(function(){ dmUnreadCheck('dmBtn'); }, 2000);
+  setInterval(function(){ dmUnreadCheck('dmBtn'); }, 25000);
+});
+
+document.addEventListener('DOMContentLoaded', function(){
+  const wb = el('wxBtn');
+  if(wb) wb.addEventListener('click', function(){
+    const u = 'https://aloranamangan.github.io/namangan-webapp/obhavo.html';
+    if(TG && TG.openLink) TG.openLink(u); else window.open(u, '_blank');
+  });
+});
+
+document.addEventListener('DOMContentLoaded', function(){
+  const cb = el('cvBtn');
+  if(cb) cb.addEventListener('click', function(){
+    const u = 'https://aloranamangan.github.io/namangan-webapp/valyuta.html';
+    if(TG && TG.openLink) TG.openLink(u); else window.open(u, '_blank');
+  });
+});
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('sw.js').catch(function(){});
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  const mb = el('mapBtn');
+  if(mb) mb.addEventListener('click', function(){
+    location.href = 'xarita.html';
+  });
+});
+
+document.addEventListener('DOMContentLoaded', function(){
+  const rb = el('refBtn');
+  if(rb) rb.addEventListener('click', function(){ location.href = 'referal.html'; });
+});
+
+document.addEventListener('DOMContentLoaded', function(){
+  setTimeout(function(){
+    if(typeof myId !== 'function' || !IS_ADMIN) return;
+
+    const hh = document.querySelector('.topbar h1');
+    if(!hh || hh.querySelector('.pro-switch')) return;
+
+    const txt = hh.innerHTML;
+    hh.innerHTML = '';
+    const b = document.createElement('button');
+    b.className = 'pro-switch';
+    b.innerHTML = '<span>' + txt + '</span><span class="cv">&#9660;</span>';
+    hh.appendChild(b);
+
+    b.addEventListener('click', function(){
+      if(typeof haptic === 'function') haptic('light');
+      if(typeof showAdminPanels === 'function') showAdminPanels(null, true);
+    });
+  }, 1000);
+});
+
+
+let spMode = 'kunlik';
+
+function drawSpecial(mode){
+  spMode = mode || spMode;
+  const box = el('spBody');
+  if(!box) return;
+
+  document.querySelectorAll('.sp-tab').forEach(function(t){
+    t.classList.toggle('on', t.dataset.s === spMode);
+  });
+
+  const key = spMode === 'kunlik' ? 'Kunlik ijara' : 'Studentlar uchun';
+  const list = POSTS.filter(function(p){
+    return String(p.desc || '').indexOf(key) === 0 ||
+           String(p.head || '') === key;
+  });
+
+  if(!list.length){
+    box.innerHTML = '<div class="empty" style="padding:60px 20px;">' +
+      '<div class="ic">' + (spMode === 'kunlik' ? '&#128197;' : '&#127891;') + '</div>' +
+      '<p>Hozircha elon yoq</p>' +
+      '<span>' + (spMode === 'kunlik'
+        ? 'Kunlik ijara elonlari shu yerda chiqadi'
+        : 'Studentlar uchun elonlar shu yerda chiqadi') + '</span></div>';
+    return;
+  }
+
+  box.innerHTML = '<div class="grid">' + list.map(function(p){
+    const f = (p.media && p.media[0]) ? p.media[0] : null;
+    if(!f) return '';
+    const inner = f.video
+      ? '<video src="' + f.url + '" muted></video>'
+      : '<img src="' + f.url + '">';
+    return '<div class="cell" data-id="' + p.id + '">' + inner +
+      (p.media.length > 1 ? '<span class="multi">&#9673;</span>' : '') + '</div>';
+  }).join('') + '</div>';
+
+  box.querySelectorAll('.cell').forEach(function(c){
+    c.addEventListener('click', function(){
+      const p = POSTS.filter(function(x){ return String(x.id) === c.dataset.id; })[0];
+      if(p) openPostFull(p);
+    });
+  });
+}
+
+function scrollToPost(p){
+  go('vHome');
+  setTimeout(function(){
+    const a = document.querySelector('.post[data-id="' + p.id + '"]');
+    if(a) a.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 300);
+}
+
+
+let qMode = 'posts';
+
+function initSearchTabs(){
+  document.querySelectorAll('.sp-tab[data-q]').forEach(function(t){
+    t.addEventListener('click', function(){
+      document.querySelectorAll('.sp-tab[data-q]').forEach(function(x){ x.classList.remove('on'); });
+      t.classList.add('on');
+      qMode = t.dataset.q;
+      haptic('light');
+      const inp = el('q');
+      if(inp){
+        inp.placeholder = qMode === 'users'
+          ? 'Ism yoki @username boyicha qidiring'
+          : 'Qidirish: kvartira, hovli, @username';
+        doSearch(inp.value);
+      }
+    });
+  });
+}
+
+function doSearch(q){
+  q = (q || '').trim().toLowerCase();
+  const box = el('results');
+  if(!box) return;
+
+  if(qMode === 'users'){
+    const list = SELLERS.filter(function(s){
+      if(!q) return true;
+      return (s.name || '').toLowerCase().indexOf(q) !== -1 ||
+             (s.username || '').toLowerCase().indexOf(q) !== -1;
+    });
+
+    if(!list.length){
+      box.innerHTML = '<div class="empty" style="padding:60px 20px;">' +
+        '<div class="ic">&#128100;</div><p>Topilmadi</p></div>';
+      return;
+    }
+
+    box.innerHTML = list.map(function(s){
+      const ava = s.avatar
+        ? mediaUrl(s.avatar)
+        : 'https://api.dicebear.com/7.x/initials/svg?seed=' + encodeURIComponent(s.name);
+      return '<div class="chat-row" data-u="' + esc(s.username) + '" style="cursor:pointer;">' +
+        '<div class="chat-ava"><img src="' + ava + '"></div>' +
+        '<div class="ci"><b>' + esc(s.name) + vBadge(s) + '</b>' +
+        '<span>@' + esc(s.username) + ' &middot; ' + fmt(s.followers) + ' obunachi</span></div>' +
+        '<span style="color:#555;font-size:17px;">&rsaquo;</span></div>';
+    }).join('');
+
+    box.querySelectorAll('.chat-row[data-u]').forEach(function(r){
+      r.addEventListener('click', function(){
+        openUserProfile(null, r.dataset.u);
+      });
+    });
+    return;
+  }
+
+  // E'lonlar
+  const list = POSTS.filter(function(p){
+    if(!q) return true;
+    return String(p.desc || '').toLowerCase().indexOf(q) !== -1 ||
+           String(p.price || '').toLowerCase().indexOf(q) !== -1 ||
+           String(p.username || '').toLowerCase().indexOf(q) !== -1;
+  });
+
+  if(!list.length){
+    box.innerHTML = '<div class="empty" style="padding:60px 20px;">' +
+      '<div class="ic">&#128269;</div><p>Topilmadi</p></div>';
+    return;
+  }
+
+  box.innerHTML = '<div class="grid">' + list.map(function(p){
+    const f = (p.media && p.media[0]) ? p.media[0] : null;
+    if(!f) return '';
+    return '<div class="cell" data-id="' + p.id + '">' +
+      (f.video ? '<video src="' + f.url + '" muted></video>' : '<img src="' + f.url + '">') +
+      (p.media.length > 1 ? '<span class="multi">&#9673;</span>' : '') + '</div>';
+  }).join('') + '</div>';
+
+  box.querySelectorAll('.cell[data-id]').forEach(function(c){
+    c.addEventListener('click', function(){
+      const p = POSTS.filter(function(x){ return String(x.id) === c.dataset.id; })[0];
+      if(!p) return;
+      openUserProfile(null, p.username);
+    });
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  setTimeout(function(){
+    if(typeof loadAdminState === 'function') loadAdminState();
+  }, 500);
+});
+
+document.addEventListener('DOMContentLoaded', function(){
+  setTimeout(function(){
+    const cam = el('tbCam');
+    if(cam) cam.addEventListener('click', function(){
+      haptic('light');
+      if(typeof addStoryU === 'function') addStoryU();
+      else toast('Storiy qoshish');
+    });
+
+    const hb = el('tbHeart');
+    if(hb) hb.addEventListener('click', function(){
+      haptic('light');
+      if(typeof openNotifs === 'function') openNotifs();
+      else toast('Bildirishnomalar');
+    });
+
+    const db_ = el('tbDm');
+    if(db_) db_.addEventListener('click', function(){
+      haptic('light');
+      if(typeof openChats === 'function') openChats();
+    });
+  }, 600);
+});
+
+function menyuOch(){
+  const bg = el('smBg'), m = el('smMenu');
+  if(!bg || !m) return;
+
+  const u = (typeof PF !== 'undefined' && PF) ? PF : (USER || {});
+  const nm = u.name || 'Foydalanuvchi';
+  const av = u.avatar ? mediaUrl(u.avatar)
+    : 'https://api.dicebear.com/7.x/initials/svg?seed=' + encodeURIComponent(nm);
+
+  el('smAva').src = av;
+  el('smNom').textContent = nm;
+  el('smSub').textContent = u.username ? ('@' + u.username) : (u.nickname ? '@' + u.nickname : '');
+
+  const ad = el('smAdmin');
+  if(ad) ad.style.display = (typeof IS_ADMIN !== 'undefined' && IS_ADMIN) ? '' : 'none';
+
+  bg.classList.add('ochiq');
+  m.classList.add('ochiq');
+  haptic('light');
+}
+
+function menyuYop(){
+  const bg = el('smBg'), m = el('smMenu');
+  if(bg) bg.classList.remove('ochiq');
+  if(m) m.classList.remove('ochiq');
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  setTimeout(function(){
+    const fb = el('fermaBtn');
+    if(fb) fb.addEventListener('click', function(){
+      haptic('light');
+      location.href = 'ferma.html';
+    });
+
+    const mb = el('tbMenu');
+    if(mb) mb.addEventListener('click', menyuOch);
+
+    const bg = el('smBg');
+    if(bg) bg.addEventListener('click', menyuYop);
+
+    document.querySelectorAll('.sm-item').forEach(function(b){
+      b.addEventListener('click', function(){
+        const a = b.dataset.a;
+        menyuYop();
+        haptic('light');
+
+        if(a === 'arxiv'){ location.href = 'arxiv.html'; return; }
+        if(a === 'profil'){ go('vProfile'); if(typeof drawProfile === 'function') drawProfile(); return; }
+        if(a === 'saqlangan'){ go('vProfile'); setTimeout(function(){
+          const t = document.querySelector('.pf-tab[data-tb="saved"]');
+          if(t) t.click();
+        }, 400); return; }
+        if(a === 'lang'){ if(typeof openLangPicker === 'function') openLangPicker(); return; }
+        if(a === 'panel'){ location.href = 'zaxira.html'; return; }
+        if(a === 'chiqish'){ chiqish(); return; }
+        location.href = a + '.html';
+      });
+    });
+  }, 700);
+});
+
+function chiqish(){
+  if(!confirm('Hisobdan chiqasizmi?\n\nQayta kirish uchun Telegram yoki Google kerak boladi.')) return;
+
+  try {
+    localStorage.removeItem('ni_token');
+    localStorage.removeItem('ni_uid');
+    localStorage.removeItem('ni_admin_panel');
+    localStorage.removeItem('ni_role');
+    sessionStorage.clear();
+    localStorage.setItem('ni_logout', '1');
+  } catch(e){}
+
+  toast('Chiqildi');
+  setTimeout(function(){ location.reload(); }, 600);
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  setTimeout(function(){
+    if(typeof initSearchTabs === 'function') initSearchTabs();
+    const qi = el('q');
+    if(qi && typeof doSearch === 'function'){
+      qi.oninput = function(e){ doSearch(e.target.value); };
+    }
+  }, 800);
+});
 </script>
-<script src="script.js"></script>
-<script src="sellers.js"></script>
 </body>
 </html>
