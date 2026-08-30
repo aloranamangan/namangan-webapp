@@ -1,6 +1,6 @@
 (function(){
   'use strict';
-  var SAPI = (typeof API !== 'undefined' && API) ? API : 'https://namangan-ijara-bot.onrender.com';
+  var SAPI = (typeof API !== 'undefined' && API) ? API : 'https://api.namangan-ijara.uz';
 
   function sAuth(){
     var p = [];
@@ -48,7 +48,7 @@
 // ---- Jamoa ulushi ----
 (function(){
   'use strict';
-  var JAPI = (typeof API !== 'undefined' && API) ? API : 'https://namangan-ijara-bot.onrender.com';
+  var JAPI = (typeof API !== 'undefined' && API) ? API : 'https://api.namangan-ijara.uz';
 
   function jFmt(n){ return String(n || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
 

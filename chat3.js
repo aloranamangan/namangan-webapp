@@ -40,7 +40,7 @@
     return b;
   }
 
-  var CAPI = (typeof API !== 'undefined' && API) ? API : 'https://namangan-ijara-bot.onrender.com';
+  var CAPI = (typeof API !== 'undefined' && API) ? API : 'https://api.namangan-ijara.uz';
 
   function cGet(path){
     return fetch(CAPI + path + (path.indexOf('?') === -1 ? '?' : '&') + cAuth())

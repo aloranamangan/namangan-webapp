@@ -1,4 +1,4 @@
-const API = 'https://namangan-ijara-bot.onrender.com';
+const API = 'https://api.namangan-ijara.uz';
 const TG = (window.Telegram && window.Telegram.WebApp) ? window.Telegram.WebApp : null;
 
 function tgReady(){
@@ -27,7 +27,7 @@ function loginTozala(){
 
 function goLogin(){
   loginTozala();
-  location.href = 'https://namangan-ijara-bot.onrender.com/login';
+  location.href = 'https://api.namangan-ijara.uz/login';
 }
 
 function myId(){
@@ -841,7 +841,7 @@ function igLoginScreen(){
 
   document.getElementById('socGg').addEventListener('click', function(){
     loginTozala();
-    location.href = 'https://namangan-ijara-bot.onrender.com/google-login';
+    location.href = 'https://api.namangan-ijara.uz/google-login';
   });
 
   document.getElementById('igTeam').addEventListener('click', function(){

@@ -1162,7 +1162,7 @@ function openPostFull(p){
     return String(n || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
   };
   const U = function(fid){
-    return 'https://namangan-ijara-bot.onrender.com/media/' + fid;
+    return 'https://api.namangan-ijara.uz/media/' + fid;
   };
 
   const media = (p.media && p.media.length) ? p.media

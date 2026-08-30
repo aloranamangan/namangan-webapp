@@ -50,7 +50,7 @@ let svPickerMode = false;
 let svSelectedTarget = null;
 
 function svLoadSellersFromServer(cb){
-  fetch('https://namangan-ijara-bot.onrender.com/api/maklerlar')
+  fetch('https://api.namangan-ijara.uz/api/maklerlar')
     .then(r => r.json())
     .then(d => {
       if(d.ok && Array.isArray(d.maklers)){
@@ -557,7 +557,7 @@ function svMergeMyProfile(){
 
 function svCheckMaklerStatus(){
   if(!svMyProfile || svMyProfile.approved) return;
-  fetch('https://namangan-ijara-bot.onrender.com/api/makler-holat?username=' + encodeURIComponent(svMyProfile.username))
+  fetch('https://api.namangan-ijara.uz/api/makler-holat?username=' + encodeURIComponent(svMyProfile.username))
     .then(r => r.json())
     .then(d => {
       if(d.status === 'approved'){
@@ -757,7 +757,7 @@ function svSubmitRegistration(e){
 
   console.log("Yangi makler arizasi:", svMyProfile);
 
-  fetch('https://namangan-ijara-bot.onrender.com/api/makler-ariza', {
+  fetch('https://api.namangan-ijara.uz/api/makler-ariza', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -858,7 +858,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
 });
 
 // ---------- Obuna tizimi ----------
-const SV_API = 'https://namangan-ijara-bot.onrender.com';
+const SV_API = 'https://api.namangan-ijara.uz';
 let svSubStates = {};
 
 function svMyTgId(){

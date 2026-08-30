@@ -1,6 +1,6 @@
 (function(){
   'use strict';
-  var XAPI = (typeof API !== 'undefined' && API) ? API : 'https://namangan-ijara-bot.onrender.com';
+  var XAPI = (typeof API !== 'undefined' && API) ? API : 'https://api.namangan-ijara.uz';
   var XZ_OCHILGAN = false;
   var XZ_BUSY = false;
 
