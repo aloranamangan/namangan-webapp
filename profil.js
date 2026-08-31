@@ -716,6 +716,19 @@ function showGeo(cb){
 
 // ---------- E'lon qo'shish (hamma uchun) ----------
 function openUploadU(){
+  // Obuna tekshiruvi
+  if(!window._obunaTekshirildi && typeof showObunaTanlash === 'function'){
+    try {
+      var mk = localStorage.getItem('ni_makler_ok');
+      if(!mk){
+        window._obunaTekshirildi = true;
+        localStorage.setItem('ni_makler_ok', '1');
+        showObunaTanlash();
+        return;
+      }
+    } catch(e){}
+  }
+
   pickFiles(true, function(items){
     if(!items.length) return;
     const picked = items.slice(0, 10);
