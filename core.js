@@ -154,12 +154,19 @@ function pickFiles(multiple, cb){
     function check(){ if(done === files.length){ inp.remove(); cb(out); } }
 
     files.forEach(function(f){
-      if(f.size > 20 * 1024 * 1024){ done++; check(); return; }
+      if(f.size > 20 * 1024 * 1024 && f.type.indexOf("video") !== 0){ done++; check(); return; }
       const isVid = f.type.indexOf('video') === 0;
+
+      // Katta video: base64 o'qimaymiz, to'g'ridan R2 ga yuklanadi
+      if(isVid && f.size > 15 * 1024 * 1024){
+        out.push({ media: '', is_video: true, _file: f });
+        done++; check(); return;
+      }
+
       const r = new FileReader();
       r.onload = function(){
         if(isVid){
-          out.push({ media: r.result, is_video: true });
+          out.push({ media: r.result, is_video: true, _file: f });
           done++; check();
         } else {
           shrink(r.result, function(sm){

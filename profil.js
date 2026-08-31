@@ -615,10 +615,25 @@ function openUploadU(){
       gb.disabled = true;
       gb.textContent = 'Yuklanmoqda...';
 
-      apiPost('/api/post-qoshish', {
+      var _pre = Promise.resolve();
+      if(typeof uploadBigVideo === 'function'){
+        _pre = Promise.all(picked.map(function(it, i){
+          if(!it.is_video || !it._file) return Promise.resolve();
+          return uploadBigVideo(it._file, function(pc){
+            gb.textContent = 'Video ' + pc + '%';
+          }).then(function(url){
+            it.media = url;
+            it.r2 = true;
+            delete it._file;
+          }).catch(function(){});
+        }));
+      }
+
+      _pre.then(function(){
+      return apiPost('/api/post-qoshish', {
         items: picked, price: price, description: full,
         lat: geoLat, lng: geoLng
-      }).then(function(d){
+      }); }).then(function(d){
         if(d.ok && tagged.length){
           setTimeout(function(){
             api('/api/mening-postlarim?tg_id=' + myId()).then(function(r){
