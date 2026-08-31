@@ -1,0 +1,92 @@
+.ob-bg{
+  position:fixed;inset:0;z-index:9500;
+  background:rgba(0,0,0,.75);backdrop-filter:blur(6px);
+  display:flex;align-items:flex-end;justify-content:center;
+  font-family:'Manrope',sans-serif;
+  animation:obFade .2s ease;
+}
+@keyframes obFade{from{opacity:0}to{opacity:1}}
+
+.ob-sheet{
+  width:100%;max-width:520px;
+  background:#141414;color:#F5F5F0;
+  border-radius:22px 22px 0 0;
+  border-top:1px solid rgba(212,175,55,.3);
+  padding:26px 22px calc(26px + env(safe-area-inset-bottom));
+  position:relative;
+  animation:obUp .28s cubic-bezier(.2,.8,.3,1);
+  max-height:92vh;overflow-y:auto;
+}
+@keyframes obUp{from{transform:translateY(60px);opacity:.5}to{transform:none;opacity:1}}
+
+.ob-x{
+  position:absolute;top:16px;right:16px;
+  width:32px;height:32px;border-radius:50%;border:none;
+  background:rgba(255,255,255,.08);color:#fff;font-size:19px;cursor:pointer;
+}
+.ob-sheet h2{font-size:20px;font-weight:800;margin:0 0 5px;}
+.ob-s{font-size:13px;color:#9A9A90;margin:0 0 20px;line-height:1.55;}
+
+.ob-card{
+  display:flex;align-items:center;gap:13px;
+  padding:15px;border-radius:16px;margin-bottom:11px;cursor:pointer;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.1);
+  transition:transform .15s;
+}
+.ob-card:active{transform:scale(.98);}
+.ob-card.gold{
+  background:linear-gradient(135deg,rgba(212,175,55,.16),rgba(212,175,55,.05));
+  border-color:rgba(212,175,55,.45);
+}
+.ob-ic{font-size:30px;}
+.ob-tx{flex:1;}
+.ob-tx b{display:block;font-size:15.5px;margin-bottom:2px;}
+.ob-tx span{font-size:11.5px;color:#9A9A90;}
+.ob-p{
+  font-size:15px;font-weight:800;color:#F0C868;text-align:right;
+  white-space:nowrap;
+}
+.ob-p small{display:block;font-size:10px;color:#9A9A90;font-weight:600;}
+
+.ob-timer{
+  font-size:38px;font-weight:800;color:#F0C868;
+  text-align:center;margin:6px 0 4px;letter-spacing:1px;
+}
+.ob-timer.red{color:#E8433D;}
+
+.ob-karta{
+  background:linear-gradient(135deg,#1E1E1E,#161616);
+  border:1px solid rgba(212,175,55,.3);
+  border-radius:16px;padding:18px;text-align:center;margin-bottom:14px;
+}
+.ob-num{font-size:20px;font-weight:800;letter-spacing:1.5px;margin-bottom:5px;}
+.ob-eg{font-size:12.5px;color:#9A9A90;margin-bottom:12px;}
+.ob-copy{
+  padding:8px 18px;border-radius:9px;border:1px solid rgba(212,175,55,.4);
+  background:rgba(212,175,55,.1);color:#F0C868;
+  font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer;
+}
+.ob-sum{
+  text-align:center;font-size:23px;font-weight:800;
+  color:#F0C868;margin-bottom:18px;
+}
+.ob-btn{
+  width:100%;padding:15px;border-radius:14px;border:none;
+  background:linear-gradient(135deg,#F0C868,#D4AF37);color:#12100A;
+  font-family:inherit;font-weight:800;font-size:15.5px;cursor:pointer;
+}
+.ob-btn:disabled{opacity:.55;}
+.ob-ok{text-align:center;}
+.ob-big{font-size:56px;margin-bottom:12px;}
+.ob-prev{width:100%;border-radius:12px;margin-top:14px;}
+
+/* VIP oltin belgi */
+.vip-badge{
+  display:inline-flex;align-items:center;gap:3px;
+  padding:2px 9px;border-radius:20px;margin-left:6px;
+  background:linear-gradient(135deg,#F0C868,#D4AF37,#F5D98A);
+  color:#12100A;font-size:10.5px;font-weight:800;
+  box-shadow:0 2px 10px rgba(212,175,55,.5);
+  vertical-align:middle;
+}
