@@ -1135,6 +1135,14 @@ function scrollToPost(p){
 let qMode = 'posts';
 
 function initSearchTabs(){
+  document.querySelectorAll('.sp-tab[data-s]').forEach(function(t){
+    t.addEventListener('click', function(){
+      spMode = t.dataset.s;
+      if(typeof haptic === 'function') haptic('light');
+      if(typeof drawSpecial === 'function') drawSpecial();
+    });
+  });
+
   document.querySelectorAll('.sp-tab[data-q]').forEach(function(t){
     t.addEventListener('click', function(){
       document.querySelectorAll('.sp-tab[data-q]').forEach(function(x){ x.classList.remove('on'); });
