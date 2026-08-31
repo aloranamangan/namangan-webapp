@@ -32,6 +32,8 @@ function render(){
       '<path d="M10.5 15.2l-3-3 1.2-1.2 1.8 1.8 4.3-4.3 1.2 1.2z" fill="#000"/></svg>'
     : '';
 
+  const vip = d.vip ? '<span class="vip-badge">\uD83D\uDC51 VIP</span>' : '';
+
   const hasStory = MY_STORIES.length > 0;
   const allSeen = hasStory && MY_STORIES.every(function(s){
     return typeof isStorySeen === 'function' && isStorySeen(s.id);
@@ -51,7 +53,7 @@ function render(){
     '</div>' +
 
     '<div class="pf-bio">' +
-      '<div class="nm">' + esc(d.name || 'Ismingiz') + vb + '</div>' +
+      '<div class="nm">' + esc(d.name || 'Ismingiz') + vb + vip + '</div>' +
       (isMak ? '<div class="un">@' + esc(d.username || '') + '</div>' : '') +
       '<div id="pfXn"></div>' +
       (d.bio ? '<div class="tx">' + esc(d.bio) + '</div>' : '') +
