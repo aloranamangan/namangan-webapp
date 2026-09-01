@@ -1385,5 +1385,25 @@ function go(v){
   try { window.scrollTo(0,0); } catch(e){}
 }
 </script>
+<script>
+(function(){
+  function box(t){
+    var d = document.getElementById('__err');
+    if(!d){
+      d = document.createElement('div');
+      d.id = '__err';
+      d.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:999999;background:#c00;color:#fff;padding:10px;font:11px monospace;max-height:50vh;overflow:auto;white-space:pre-wrap;';
+      document.body.appendChild(d);
+    }
+    d.textContent += t + '\n';
+  }
+  window.addEventListener('error', function(e){
+    box('XATO: ' + e.message + ' @ ' + (e.filename||'').split('/').pop() + ':' + e.lineno);
+  });
+  window.addEventListener('unhandledrejection', function(e){
+    box('PROMISE: ' + (e.reason && e.reason.message ? e.reason.message : e.reason));
+  });
+})();
+</script>
 </body>
 </html>
