@@ -1189,38 +1189,4 @@ function tolovOyna(r){
   });
 }
 
-async function uploadBigVideo(file, onProgress){
-  const r = await fetch(API + '/api/video-url', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      init_data: initData(),
-      token: (typeof APP_TOKEN !== 'undefined' ? APP_TOKEN : null),
-      nom: file.name || 'video.mp4',
-      tur: file.type || 'video/mp4',
-      hajm: file.size
-    })
-  });
 
-  const d = await r.json();
-  if(!d.ok || !d.url) throw new Error(d.error || 'URL olinmadi');
-
-  await new Promise(function(resolve, reject){
-    const xhr = new XMLHttpRequest();
-    xhr.open('PUT', d.url, true);
-    xhr.setRequestHeader('Content-Type', file.type || 'video/mp4');
-    xhr.upload.onprogress = function(e){
-      if(e.lengthComputable && onProgress){
-        onProgress(Math.round(e.loaded / e.total * 100));
-      }
-    };
-    xhr.onload = function(){
-      if(xhr.status >= 200 && xhr.status < 300) resolve();
-      else reject(new Error('Yuklanmadi: ' + xhr.status));
-    };
-    xhr.onerror = function(){ reject(new Error('Tarmoq xatosi')); };
-    xhr.send(file);
-  });
-
-  return d.public || d.kalit;
-}
