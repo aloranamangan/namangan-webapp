@@ -498,6 +498,7 @@ function addHighlightU(){
 
 // ---------- E'lon qo'shish (hamma uchun) ----------
 function openUploadU(){
+  toast('Forma ochildi');
   pickFiles(true, function(items){
     if(!items.length) return;
     const picked = items.slice(0, 10);
