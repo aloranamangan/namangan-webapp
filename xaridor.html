@@ -139,7 +139,7 @@
 
 <script src="i18n.js?v=1786726305"></script>
 <script src="intro.js?v=1787312621"></script>
-<script src="core.js?v=1788271435"></script>
+<script src="core.js?v=1788271820"></script>
 <script src="profil.js?v=1788254907"></script>
 <script src="splash.js"></script>
 <script src="reg.js"></script>
@@ -1339,6 +1339,23 @@ document.addEventListener('DOMContentLoaded', function(){
     }
   }, 800);
 });
+
+// Qora ekran himoyasi
+setInterval(function(){
+  try {
+    if(document.querySelector('.view.on')) return;
+    if(document.querySelector('.pf-full')) return;
+    if(document.querySelector('.sheet-bg')) return;
+
+    const feed = document.getElementById('vFeed') || document.querySelector('.view');
+    if(feed){
+      feed.classList.add('on');
+      document.querySelectorAll('.nav button').forEach(function(x){ x.classList.remove('on'); });
+      const btn = document.querySelector('.nav button[data-v="vFeed"]');
+      if(btn) btn.classList.add('on');
+    }
+  } catch(e){}
+}, 400);
 </script>
 </body>
 </html>
