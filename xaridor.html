@@ -139,7 +139,7 @@
 
 <script src="i18n.js?v=1786726305"></script>
 <script src="intro.js?v=1787312621"></script>
-<script src="core.js?v=1788265829"></script>
+<script src="core.js?v=1788271435"></script>
 <script src="profil.js?v=1788254907"></script>
 <script src="splash.js"></script>
 <script src="reg.js"></script>
@@ -833,13 +833,15 @@ document.addEventListener('DOMContentLoaded', function(){
     hb.addEventListener('touchmove', function(){ if(ht) clearTimeout(ht); }, { passive: true });
   }
 
-  document.querySelectorAll('.nav button').forEach(function(b){
+  document.querySelectorAll('.nav button[data-v]').forEach(function(b){
     b.addEventListener('click', function(){
-      document.querySelectorAll('.nav button').forEach(function(x){ x.classList.remove('on'); });
-      document.querySelectorAll('.view').forEach(function(v){ v.classList.remove('on'); });
-      b.classList.add('on');
       const v = el(b.dataset.v);
-      if(v) v.classList.add('on');
+      if(!v) return;
+
+      document.querySelectorAll('.nav button').forEach(function(x){ x.classList.remove('on'); });
+      document.querySelectorAll('.view').forEach(function(x){ x.classList.remove('on'); });
+      b.classList.add('on');
+      v.classList.add('on');
       if(b.dataset.v === 'vSaved') drawSaved();
       if(b.dataset.v === 'vProfile') drawProfile();
       if(b.dataset.v === 'vSpecial') drawSpecial('kunlik');
