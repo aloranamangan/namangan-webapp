@@ -9,6 +9,16 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="stylesheet" href="style.css?v=1788109748">
 <script>
+window.onerror = function(msg, url, line){
+  try {
+    var d = document.createElement('div');
+    d.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99999;background:#c00;color:#fff;padding:12px;font-size:12px;font-family:monospace;';
+    d.textContent = 'XATO: ' + msg + ' | ' + (url||'').split('/').pop() + ':' + line;
+    document.body.appendChild(d);
+  } catch(e){}
+};
+</script>
+<script>
 (function(){
   var inTG = false;
   try { inTG = /Telegram/i.test(navigator.userAgent) || !!window.TelegramWebviewProxy; } catch(e){}
