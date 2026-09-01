@@ -1368,5 +1368,20 @@ document.addEventListener('DOMContentLoaded', function(){
 </script>
 <script src="bigvideo.js"></script>
 <script src="obuna.js?v=1788253388"></script>
+<script>
+function go(v){
+  var vs = document.querySelectorAll('.view');
+  for(var i=0;i<vs.length;i++){
+    if(vs[i].id === v) vs[i].classList.add('on');
+    else vs[i].classList.remove('on');
+  }
+  var bs = document.querySelectorAll('.nav button[data-v]');
+  for(var j=0;j<bs.length;j++){
+    if(bs[j].dataset.v === v) bs[j].classList.add('on');
+    else bs[j].classList.remove('on');
+  }
+  try { window.scrollTo(0,0); } catch(e){}
+}
+</script>
 </body>
 </html>
