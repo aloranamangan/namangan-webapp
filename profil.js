@@ -380,7 +380,7 @@ function changeAvatarU(){
   pickFiles(false, function(items){
     if(!items.length || items[0].is_video){ toast('Faqat rasm'); return; }
     toast('Yuklanmoqda...');
-    apiPost('/api/profil-avatar', { media: items[0].media }).then(function(d){
+    apiPost('/api/profil-avatar', { media: String(items[0].media || '') }).then(function(d){
       if(d.ok){
         haptic('medium');
         PF.avatar = d.file_id;
