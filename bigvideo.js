@@ -18,22 +18,27 @@
 
   window.uploadBigVideo = function(file, onProgress){
     return new Promise(function(resolve, reject){
-      if(!file){ reject('fayl yoq'); return; }
+      if(!file){ reject('fayl yo\'q'); return; }
       if(file.size > window.MAX_VIDEO_MB * 1024 * 1024){
         reject('Video ' + window.MAX_VIDEO_MB + ' MB dan katta');
         return;
       }
+
       fetch(VAPI + '/api/video-url', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(vBody())
       }).then(function(r){ return r.json(); }).then(function(d){
         if(!d || !d.ok || !d.url){ reject('URL olinmadi'); return; }
+
         var xhr = new XMLHttpRequest();
         xhr.open('PUT', d.url, true);
         xhr.setRequestHeader('Content-Type', 'video/mp4');
+
         xhr.upload.onprogress = function(e){
-          if(e.lengthComputable && onProgress) onProgress(Math.round(e.loaded / e.total * 100));
+          if(e.lengthComputable && onProgress){
+            onProgress(Math.round(e.loaded / e.total * 100));
+          }
         };
         xhr.onload = function(){
           if(xhr.status >= 200 && xhr.status < 300) resolve(d.public);
