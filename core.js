@@ -300,36 +300,30 @@ function checkSession(cb){
 
 function requireAuth(cb){
   try {
-    var _tgu = window.Telegram && window.Telegram.WebApp
+    var u = window.Telegram && window.Telegram.WebApp
       && window.Telegram.WebApp.initDataUnsafe
       && window.Telegram.WebApp.initDataUnsafe.user;
-    if(_tgu && _tgu.id){
-      APP_ID = _tgu.id;
-      try { localStorage.setItem('ni_uid', String(_tgu.id)); } catch(e){}
-      cb();
-      return;
+    if(u && u.id){
+      APP_ID = u.id;
+      try { localStorage.setItem('ni_uid', String(u.id)); } catch(e){}
+      cb(); return;
     }
   } catch(e){}
 
-  // Chiqib ketganmi?
-  let chiqqan = false;
-  try { chiqqan = localStorage.getItem('ni_logout') === '1'; } catch(e){}
-
-  if(chiqqan){
-    igLoginScreen();
-    return;
-  }
+  try {
+    var s = localStorage.getItem('ni_uid');
+    if(s && s !== 'null' && s !== '0'){
+      APP_ID = parseInt(s);
+      cb(); return;
+    }
+  } catch(e){}
 
   checkSession(function(ok){
     if(ok){ cb(); return; }
-
- 
-
     igLoginScreen();
   });
 }
 
-// ---------- APK: rol tanlash ----------
 function askRole(cb){
   if(!isApk()){ cb(); return; }
 
