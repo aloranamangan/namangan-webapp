@@ -107,7 +107,7 @@
 </div>
 
 <nav class="nav">
-  <button class="on" data-v="vHome">
+  <button class="on" data-v="vFeed">
     <svg class="fillable" viewBox="0 0 24 24"><path d="M3 10l9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
     <span data-t="navHome">Asosiy</span>
   </button>
@@ -139,7 +139,7 @@
 
 <script src="i18n.js?v=1786726305"></script>
 <script src="intro.js?v=1787312621"></script>
-<script src="core.js?v=1788272117"></script>
+<script src="core.js?v=1788272477"></script>
 <script src="profil.js?v=1788254907"></script>
 <script src="splash.js"></script>
 <script src="reg.js"></script>
@@ -819,7 +819,7 @@ function showUserList(title, path){
 }
 
 document.addEventListener('DOMContentLoaded', function(){
-  const hb = document.querySelector('.nav button[data-v="vHome"]');
+  const hb = document.querySelector('.nav button[data-v="vFeed"]');
   if(hb && IS_ADMIN && typeof isApk === 'function' && isApk()){
     let ht = null;
     hb.addEventListener('touchstart', function(){
