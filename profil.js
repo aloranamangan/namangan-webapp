@@ -153,7 +153,7 @@ function bindProfile(isMak){
   if(pc && myId()){
     api('/api/wallet?tg_id=' + myId()).then(function(w){
       if(w.ok) pc.textContent = (w.coin || 0).toFixed(2) + ' UYcoin';
-    }).catch(function(er){ toast("Video xato: " + (er.message || er)); });
+    }).catch(function(er){ if(typeof upProgYop==="function") upProgYop(); alert("VIDEO XATO: " + (er && er.message ? er.message : er)); });
   }
 
   document.querySelectorAll('.pm[data-go]').forEach(function(m){
@@ -258,7 +258,7 @@ function loadXn(){
     box.innerHTML = list.map(function(n){
       return '<span class="xn">@' + esc(n.uname) + '</span>';
     }).join('');
-  }).catch(function(er){ toast("Video xato: " + (er.message || er)); });
+  }).catch(function(er){ if(typeof upProgYop==="function") upProgYop(); alert("VIDEO XATO: " + (er && er.message ? er.message : er)); });
 }
 
 function loadHl(){
@@ -290,7 +290,7 @@ function loadHl(){
           openGallery([{ url: b.dataset.u, video: b.dataset.v === '1' }], 0, false, null);
       });
     });
-  }).catch(function(er){ toast("Video xato: " + (er.message || er)); });
+  }).catch(function(er){ if(typeof upProgYop==="function") upProgYop(); alert("VIDEO XATO: " + (er && er.message ? er.message : er)); });
 }
 
 function editProfileU(){
@@ -416,7 +416,7 @@ function loadMyStories(){
   api('/api/mening-storylarim?tg_id=' + myId()).then(function(d){
     MY_STORIES = d.stories || [];
     if(PF) render();
-  }).catch(function(er){ toast("Video xato: " + (er.message || er)); });
+  }).catch(function(er){ if(typeof upProgYop==="function") upProgYop(); alert("VIDEO XATO: " + (er && er.message ? er.message : er)); });
 }
 
 function showFollowersU(){
@@ -455,7 +455,7 @@ function showFollowersU(){
         if(typeof openUserProfile === 'function') openUserProfile(parseInt(t), null);
       });
     });
-  }).catch(function(er){ toast("Video xato: " + (er.message || er)); });
+  }).catch(function(er){ if(typeof upProgYop==="function") upProgYop(); alert("VIDEO XATO: " + (er && er.message ? er.message : er)); });
 }
 
 function addHighlightU(){
@@ -498,7 +498,6 @@ function addHighlightU(){
 
 // ---------- E'lon qo'shish (hamma uchun) ----------
 function openUploadU(){
-  toast('Forma ochildi');
   pickFiles(true, function(items){
     if(!items.length) return;
     const picked = items.slice(0, 10);
@@ -619,8 +618,6 @@ function openUploadU(){
       gb.textContent = 'Yuklanmoqda...';
 
       var _pre = Promise.resolve();
-      toast('Katta video: ' + picked.filter(function(x){return x.is_video && x._file;}).length + ' ta');
-      toast(typeof uploadBigVideo);
       if(typeof uploadBigVideo === 'function'){
         const kattalar = picked.filter(function(x){ return x.is_video && x._file; });
 
@@ -641,7 +638,7 @@ function openUploadU(){
             it.media = url;
             it.r2 = true;
             delete it._file;
-          }).catch(function(er){ toast("Video xato: " + (er.message || er)); });
+          }).catch(function(er){ if(typeof upProgYop==="function") upProgYop(); alert("VIDEO XATO: " + (er && er.message ? er.message : er)); });
         })).then(function(){
           if(kattalar.length) upProgYop();
         });
@@ -658,7 +655,7 @@ function openUploadU(){
               const last = (r.posts || [])[0];
               if(last) apiPost('/api/belgilash', {
                 post_id: last.id, tagged: tagged
-              }).catch(function(er){ toast("Video xato: " + (er.message || er)); });
+              }).catch(function(er){ if(typeof upProgYop==="function") upProgYop(); alert("VIDEO XATO: " + (er && er.message ? er.message : er)); });
             });
           }, 2500);
         }
@@ -666,7 +663,7 @@ function openUploadU(){
           apiPost('/api/pano-qoshish', {
             media: panoData, price: price,
             description: '360 panorama\n' + title
-          }).catch(function(er){ toast("Video xato: " + (er.message || er)); });
+          }).catch(function(er){ if(typeof upProgYop==="function") upProgYop(); alert("VIDEO XATO: " + (er && er.message ? er.message : er)); });
         }
         if(d.ok){
           haptic('medium');
