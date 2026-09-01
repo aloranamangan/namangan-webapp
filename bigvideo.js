@@ -45,3 +45,34 @@
     });
   };
 })();
+
+// Post yuborishdan oldin videolarni R2 ga yuklaydi
+(function(){
+  var _orig = null;
+  function hook(){
+    if(typeof apiPost !== 'function'){ setTimeout(hook, 300); return; }
+    if(_orig) return;
+    _orig = apiPost;
+    window.apiPost = function(path, body){
+      if(path !== '/api/post-qoshish' || !body || !body.items){
+        return _orig(path, body);
+      }
+      var vids = body.items.filter(function(it){ return it.is_video && it._file; });
+      if(!vids.length) return _orig(path, body);
+
+      return Promise.all(vids.map(function(it){
+        return uploadBigVideo(it._file, function(pc){
+          try {
+            var b = document.getElementById('upGo');
+            if(b) b.textContent = 'Video ' + pc + '%';
+          } catch(e){}
+        }).then(function(url){
+          it.media = url; it.r2 = true; delete it._file;
+        }).catch(function(){ delete it._file; });
+      })).then(function(){
+        return _orig(path, body);
+      });
+    };
+  }
+  hook();
+})();
