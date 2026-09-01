@@ -618,6 +618,7 @@ function openUploadU(){
       gb.textContent = 'Yuklanmoqda...';
 
       var _pre = Promise.resolve();
+      toast('Katta video: ' + picked.filter(function(x){return x.is_video && x._file;}).length + ' ta');
       if(typeof uploadBigVideo === 'function'){
         const kattalar = picked.filter(function(x){ return x.is_video && x._file; });
 
