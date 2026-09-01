@@ -638,7 +638,7 @@ function openUploadU(){
             it.media = url;
             it.r2 = true;
             delete it._file;
-          }).catch(function(er){ if(typeof upProgYop==="function") upProgYop(); alert("VIDEO XATO: " + (er && er.message ? er.message : er)); });
+          });
         })).then(function(){
           if(kattalar.length) upProgYop();
         });
