@@ -866,17 +866,6 @@ document.addEventListener('DOMContentLoaded', function(){
       if(b.dataset.v === 'vSpecial') drawSpecial('kunlik');
       if(b.dataset.v === 'vSearch') doSearch(el('q').value);
       window.scrollTo(0, 0);
-      try {
-        var on = document.querySelector('.view.on');
-        var d = document.getElementById('__err');
-        if(!d){
-          d = document.createElement('div');
-          d.id = '__err';
-          d.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:999999;background:#06c;color:#fff;padding:8px;font:11px monospace;';
-          document.body.appendChild(d);
-        }
-        d.textContent = 'bosildi=' + b.dataset.v + ' | faol=' + (on ? on.id : 'YOQ');
-      } catch(e){}
     });
   });
   el('q').addEventListener('input', function(e){ doSearch(e.target.value); });
