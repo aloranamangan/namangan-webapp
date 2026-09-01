@@ -43,8 +43,14 @@
         '<div class="ob-card gold" data-t="vip">' +
           '<div class="ob-ic">\uD83D\uDC51</div>' +
           '<div class="ob-tx"><b>Makler + VIP</b>' +
-          '<span>360\u00B0 panorama, oltin belgi</span></div>' +
+          '<span>Barcha imkoniyatlar</span></div>' +
           '<div class="ob-p">250 000<small>so\'m/oy</small></div>' +
+        '</div>' +
+        '<div class="ob-gift">' +
+          '<div class="ob-gift-t">\uD83C\uDF81 VIP bilan sovg\'a:</div>' +
+          '<div class="ob-gift-i">\uD83D\uDC51 Profilda oltin VIP belgi</div>' +
+          '<div class="ob-gift-i">\u2705 Tasdiqlangan galochka</div>' +
+          '<div class="ob-gift-i">\uD83C\uDF10 360\u00B0 panorama yuklash</div>' +
         '</div>' +
       '</div>';
     document.body.appendChild(bg);
