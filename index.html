@@ -860,6 +860,7 @@ document.addEventListener('DOMContentLoaded', function(){
       b.classList.add('on');
       const v = el(b.dataset.v === 'vHome' ? 'vFeed' : b.dataset.v);
       if(v) v.classList.add('on');
+      if(b.dataset.v === 'vHome' && typeof drawFeed === 'function') drawFeed();
       if(b.dataset.v === 'vSaved') drawSaved();
       if(b.dataset.v === 'vProfile') drawProfile();
       if(b.dataset.v === 'vSpecial') drawSpecial('kunlik');
