@@ -169,7 +169,7 @@ function pickFiles(multiple, cb){
       }
 
       // Katta video: base64 o'qimaymiz, to'g'ridan R2 ga yuklanadi
-      if(isVid && f.size > 15 * 1024 * 1024){
+      if(isVid && f.size > 2 * 1024 * 1024){
         out.push({ media: '', is_video: true, _file: f });
         done++; check(); return;
       }
