@@ -299,18 +299,6 @@ function checkSession(cb){
 }
 
 function requireAuth(cb){
-  try {
-    var _tgu = window.Telegram && window.Telegram.WebApp
-      && window.Telegram.WebApp.initDataUnsafe
-      && window.Telegram.WebApp.initDataUnsafe.user;
-    if(_tgu && _tgu.id){
-      APP_ID = _tgu.id;
-      try { localStorage.setItem('ni_uid', String(_tgu.id)); } catch(e){}
-      cb();
-      return;
-    }
-  } catch(e){}
-
   // Chiqib ketganmi?
   let chiqqan = false;
   try { chiqqan = localStorage.getItem('ni_logout') === '1'; } catch(e){}
