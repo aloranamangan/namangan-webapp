@@ -1370,6 +1370,7 @@ document.addEventListener('DOMContentLoaded', function(){
 <script src="obuna.js?v=1788253388"></script>
 <script>
 function go(v){
+  if(v === 'vHome') v = 'vFeed';
   var vs = document.querySelectorAll('.view');
   for(var i=0;i<vs.length;i++){
     if(vs[i].id === v) vs[i].classList.add('on');
