@@ -154,8 +154,19 @@ function pickFiles(multiple, cb){
     function check(){ if(done === files.length){ inp.remove(); cb(out); } }
 
     files.forEach(function(f){
-      if(f.size > 20 * 1024 * 1024 && f.type.indexOf("video") !== 0){ done++; check(); return; }
       const isVid = f.type.indexOf('video') === 0;
+
+      // Rasm: 20 MB
+      if(!isVid && f.size > 20 * 1024 * 1024){
+        if(typeof toast === 'function') toast('Rasm juda katta (max 20 MB)');
+        done++; check(); return;
+      }
+
+      // Video: 1 GB
+      if(isVid && f.size > 1024 * 1024 * 1024){
+        if(typeof toast === 'function') toast('Video juda katta (max 1 GB)');
+        done++; check(); return;
+      }
 
       // Katta video: base64 o'qimaymiz, to'g'ridan R2 ga yuklanadi
       if(isVid && f.size > 15 * 1024 * 1024){
