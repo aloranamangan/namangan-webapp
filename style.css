@@ -3057,3 +3057,56 @@ body{padding-bottom:80px !important;}
   font-size:11px;color:#C9C9C0;font-family:'Manrope',sans-serif;
   max-width:68px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
 }
+
+/* Video yuklash progressi */
+.up-prog{
+  position:fixed;inset:0;z-index:9600;
+  background:rgba(0,0,0,.92);backdrop-filter:blur(8px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:40px 32px;text-align:center;
+}
+.up-prog .ic{
+  font-size:54px;margin-bottom:22px;
+  animation:upFloat 2.2s ease-in-out infinite;
+}
+@keyframes upFloat{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-10px)}
+}
+.up-prog h3{
+  font-size:19px;font-weight:800;color:#fff;margin-bottom:8px;
+}
+.up-prog .sub{
+  font-size:13px;color:rgba(255,255,255,.5);margin-bottom:28px;
+}
+.up-ring{
+  position:relative;width:150px;height:150px;margin-bottom:24px;
+}
+.up-ring svg{width:100%;height:100%;transform:rotate(-90deg);}
+.up-ring circle{fill:none;stroke-width:9;stroke-linecap:round;}
+.up-ring .bg{stroke:rgba(255,255,255,.1);}
+.up-ring .fg{
+  stroke:url(#upGrad);
+  transition:stroke-dashoffset .3s ease;
+}
+.up-ring .pc{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+}
+.up-ring .pc b{
+  font-size:34px;font-weight:800;color:#fff;
+  font-variant-numeric:tabular-nums;line-height:1;
+}
+.up-ring .pc span{font-size:11px;color:rgba(255,255,255,.45);margin-top:3px;}
+
+.up-info{
+  display:flex;gap:26px;margin-bottom:8px;
+}
+.up-info div{text-align:center;}
+.up-info b{display:block;font-size:15px;font-weight:700;color:#0095F6;}
+.up-info span{font-size:10.5px;color:rgba(255,255,255,.4);}
+
+.up-hint{
+  font-size:11.5px;color:rgba(255,255,255,.35);
+  margin-top:16px;line-height:1.5;
+}

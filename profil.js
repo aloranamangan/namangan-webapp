@@ -619,16 +619,29 @@ function openUploadU(){
 
       var _pre = Promise.resolve();
       if(typeof uploadBigVideo === 'function'){
+        const kattalar = picked.filter(function(x){ return x.is_video && x._file; });
+
+        if(kattalar.length){
+          const hajm = kattalar.reduce(function(s, x){
+            return s + (x._file.size || 0);
+          }, 0) / (1024 * 1024);
+          upProgOch(hajm);
+        }
+
         _pre = Promise.all(picked.map(function(it, i){
           if(!it.is_video || !it._file) return Promise.resolve();
+          const mb = (it._file.size || 0) / (1024 * 1024);
           return uploadBigVideo(it._file, function(pc){
-            gb.textContent = 'Video ' + pc + '%';
+            upProgYangila(pc, mb);
+            gb.textContent = 'Yuklanmoqda ' + pc + '%';
           }).then(function(url){
             it.media = url;
             it.r2 = true;
             delete it._file;
           }).catch(function(){});
-        }));
+        })).then(function(){
+          if(kattalar.length) upProgYop();
+        });
       }
 
       _pre.then(function(){
@@ -1415,4 +1428,81 @@ function editPost(p){
       toast('Server xatosi'); b.disabled = false; b.textContent = 'Saqlash';
     });
   });
+}
+
+// ---------- Video yuklash progressi ----------
+let UP_OV = null, UP_T0 = 0;
+
+function upProgOch(hajmMB){
+  if(UP_OV) UP_OV.remove();
+
+  UP_T0 = Date.now();
+
+  const ov = document.createElement('div');
+  ov.className = 'up-prog';
+  ov.innerHTML =
+    '<div class="ic">\u{1F4F9}</div>' +
+    '<h3>Video yuklanmoqda</h3>' +
+    '<div class="sub">Ilovani yopmang</div>' +
+
+    '<div class="up-ring">' +
+      '<svg viewBox="0 0 100 100">' +
+        '<defs><linearGradient id="upGrad" x1="0" y1="0" x2="1" y2="1">' +
+        '<stop offset="0%" stop-color="#0095F6"/>' +
+        '<stop offset="100%" stop-color="#8BC34A"/></linearGradient></defs>' +
+        '<circle class="bg" cx="50" cy="50" r="42"/>' +
+        '<circle class="fg" id="upFg" cx="50" cy="50" r="42" ' +
+        'stroke-dasharray="264" stroke-dashoffset="264"/>' +
+      '</svg>' +
+      '<div class="pc"><b id="upPc">0</b><span>foiz</span></div>' +
+    '</div>' +
+
+    '<div class="up-info">' +
+      '<div><b id="upSpeed">\u2014</b><span>tezlik</span></div>' +
+      '<div><b id="upLeft">\u2014</b><span>qoldi</span></div>' +
+      '<div><b id="upSize">' + (hajmMB || 0).toFixed(0) + ' MB</b><span>hajm</span></div>' +
+    '</div>' +
+
+    '<div class="up-hint">Katta videolar 1-5 daqiqa olishi mumkin</div>';
+
+  document.body.appendChild(ov);
+  UP_OV = ov;
+}
+
+function upProgYangila(pc, hajmMB){
+  if(!UP_OV) return;
+
+  const fg = UP_OV.querySelector('#upFg');
+  const el_pc = UP_OV.querySelector('#upPc');
+  const el_sp = UP_OV.querySelector('#upSpeed');
+  const el_lf = UP_OV.querySelector('#upLeft');
+
+  if(fg) fg.style.strokeDashoffset = String(264 - (264 * pc / 100));
+  if(el_pc) el_pc.textContent = pc;
+
+  const sek = (Date.now() - UP_T0) / 1000;
+  if(sek > 1 && pc > 0){
+    const yuklangan = (hajmMB || 0) * pc / 100;
+    const tez = yuklangan / sek;
+    if(el_sp) el_sp.textContent = tez.toFixed(1) + ' MB/s';
+
+    const qolgan = ((hajmMB || 0) - yuklangan) / (tez || 0.1);
+    if(el_lf){
+      el_lf.textContent = qolgan > 60
+        ? Math.ceil(qolgan / 60) + ' daq'
+        : Math.ceil(qolgan) + ' sek';
+    }
+  }
+}
+
+function upProgYop(){
+  if(!UP_OV) return;
+  const ov = UP_OV;
+  UP_OV = null;
+
+  ov.querySelector('h3').textContent = 'Tayyor!';
+  ov.querySelector('.ic').textContent = '\u2705';
+  ov.querySelector('.sub').textContent = 'Video yuklandi';
+
+  setTimeout(function(){ ov.remove(); }, 900);
 }
