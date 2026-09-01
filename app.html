@@ -858,7 +858,7 @@ document.addEventListener('DOMContentLoaded', function(){
       document.querySelectorAll('.nav button').forEach(function(x){ x.classList.remove('on'); });
       document.querySelectorAll('.view').forEach(function(v){ v.classList.remove('on'); });
       b.classList.add('on');
-      const v = el(b.dataset.v);
+      const v = el(b.dataset.v === 'vHome' ? 'vFeed' : b.dataset.v);
       if(v) v.classList.add('on');
       if(b.dataset.v === 'vSaved') drawSaved();
       if(b.dataset.v === 'vProfile') drawProfile();
