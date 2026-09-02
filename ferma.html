@@ -773,5 +773,28 @@ document.addEventListener('DOMContentLoaded', function(){
 <script src="chat3.js"></script>
 <script src="coinstat.js"></script>
 <script src="xazina.js"></script>
+<script>
+(function(){
+  var MAP = {
+    ferma: '[data-t="hayvon"]',
+    gildirak: '[data-t="wheel"]',
+    gildirak2: '[data-t="wheel2"]',
+    mayning: '#mnTab',
+    xazina: '#xazinaTab',
+    chat: '#chatTab'
+  };
+  fetch('https://api.namangan-ijara.uz/api/oyinlar')
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(!d || !d.ok || !d.oyinlar) return;
+      Object.keys(MAP).forEach(function(k){
+        if(d.oyinlar[k] === false){
+          var e = document.querySelector(MAP[k]);
+          if(e) e.style.display = 'none';
+        }
+      });
+    }).catch(function(){});
+})();
+</script>
 </body>
 </html>
