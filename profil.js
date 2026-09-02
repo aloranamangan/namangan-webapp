@@ -1081,7 +1081,9 @@ function openPostFull(p){
     return String(n || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
   };
   const U = function(fid){
-    return 'https://api.namangan-ijara.uz/media/' + fid;
+    var s = String(fid || '');
+    if(s.indexOf('http://') === 0 || s.indexOf('https://') === 0) return s;
+    return 'https://api.namangan-ijara.uz/media/' + s;
   };
 
   const media = (p.media && p.media.length) ? p.media
