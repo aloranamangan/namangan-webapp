@@ -774,8 +774,7 @@ function igLoginScreen(){
   document.body.innerHTML =
     '<div class="ig-login">' +
       '<div class="ig-top">' +
-        '<div class="ig-logo"><span class="uy">UY</span><span class="gram">gram</span></div>' +
-        '<div class="ig-slogan">Zamonaviy uylar bizda</div>' +
+        '<div class="ig-icon-w"><img class="ig-icon" src="icon-192.png" alt="UYgram"></div>' +
 
         '<input class="ig-inp" id="igUser" placeholder="Login yoki telefon" autocomplete="username">' +
         '<input class="ig-inp" id="igPass" type="password" placeholder="Parol" autocomplete="current-password">' +
@@ -799,12 +798,7 @@ function igLoginScreen(){
 
         '</div>' +
 
-        '<div class="ig-team" id="igTeam">' +
-          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' +
-          '<rect x="2" y="2" width="20" height="20" rx="5"/>' +
-          '<circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>' +
-          'DIKKIYLORD JAMOASI' +
-        '</div>' +
+        
       '</div>' +
 
       '<div class="ig-bottom">Hisobingiz yoqmi? <b id="igReg">Royxatdan oting</b></div>' +

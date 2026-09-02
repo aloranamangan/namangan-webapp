@@ -3123,3 +3123,31 @@ body{padding-bottom:80px !important;}
   flex-direction:column;
   overflow-y:auto;
 }
+
+/* ---- Kirish ekrani ikonkasi ---- */
+.ig-icon-w{
+  position:relative;
+  width:104px;height:104px;
+  margin:0 auto 34px;
+  display:flex;align-items:center;justify-content:center;
+}
+.ig-icon-w::before{
+  content:'';position:absolute;inset:-14px;border-radius:32px;
+  background:radial-gradient(circle,rgba(212,175,55,.28),transparent 68%);
+  animation:igGlow 3.4s ease-in-out infinite;
+}
+.ig-icon{
+  position:relative;z-index:1;
+  width:104px;height:104px;border-radius:26px;
+  object-fit:cover;
+  box-shadow:0 12px 34px rgba(0,0,0,.55),0 0 0 1px rgba(212,175,55,.22);
+  animation:igFloat 4.6s ease-in-out infinite;
+}
+@keyframes igGlow{
+  0%,100%{opacity:.45;transform:scale(.94);}
+  50%{opacity:1;transform:scale(1.06);}
+}
+@keyframes igFloat{
+  0%,100%{transform:translateY(0) scale(1);}
+  50%{transform:translateY(-7px) scale(1.02);}
+}
