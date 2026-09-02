@@ -50,6 +50,9 @@ function openStory(group, startIdx){
         '<img src="https://api.dicebear.com/7.x/initials/svg?seed=' + encodeURIComponent(group.name) + '">' +
         '<b>' + esc(group.name) + '</b>' +
         '<button id="svX">&times;</button>' +
+        (String(group.id) === String(typeof myId === 'function' ? myId() : '')
+          ? '<button id="svHl" style="position:absolute;top:calc(14px + env(safe-area-inset-top));right:56px;width:34px;height:34px;border-radius:50%;border:none;background:rgba(255,255,255,.18);color:#fff;font-size:17px;cursor:pointer;z-index:3;">&#10022;</button>'
+          : '') +
       '</div>' +
       '<div class="sv-media" id="svM">' +
         (it.is_video
