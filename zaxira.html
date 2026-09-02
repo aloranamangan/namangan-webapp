@@ -134,5 +134,59 @@ document.addEventListener('DOMContentLoaded', function(){
   }, 500);
 });
 </script>
+<div id="oyinBox" style="margin:18px 14px;padding:16px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid rgba(212,175,55,.25);">
+  <div style="font-size:14px;font-weight:800;color:#F0C868;margin-bottom:4px;">O'yinlarni boshqarish</div>
+  <div style="font-size:11.5px;color:#9A9A90;margin-bottom:14px;">O'chirilgan o'yin ro'yxatdan yo'qoladi</div>
+  <div id="oyinList" style="font-size:13px;color:#9A9A90;">Yuklanmoqda...</div>
+</div>
+<script>
+(function(){
+  var OA = 'https://api.namangan-ijara.uz';
+  var NOM = {
+    ferma:'\uD83C\uDF3E Ferma', gildirak:'\uD83C\uDFA1 G\'ildirak',
+    gildirak2:'\uD83C\uDFA1 G\'ildirak 2', mayning:'\u26CF Mayning',
+    xazina:'\uD83C\uDF81 Xazina', chat:'\uD83D\uDCAC Chat'
+  };
+  function idata(){
+    try { return (window.Telegram&&Telegram.WebApp&&Telegram.WebApp.initData)||''; } catch(e){ return ''; }
+  }
+  function tok(){
+    try { return localStorage.getItem('ni_token')||''; } catch(e){ return ''; }
+  }
+  function chiz(o){
+    var h = '';
+    Object.keys(o).forEach(function(k){
+      var on = o[k];
+      h += '<div style="display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.06);">' +
+        '<span style="color:#F5F5F0;font-size:13.5px;">' + (NOM[k]||k) + '</span>' +
+        '<button data-o="' + k + '" data-h="' + (on?'1':'0') + '" style="width:52px;height:29px;border-radius:15px;border:none;cursor:pointer;position:relative;background:' +
+        (on ? '#D4AF37' : 'rgba(255,255,255,.15)') + ';transition:.2s;">' +
+        '<i style="position:absolute;top:3px;left:' + (on?'26px':'3px') +
+        ';width:23px;height:23px;border-radius:50%;background:#fff;transition:.2s;"></i></button></div>';
+    });
+    var L = document.getElementById('oyinList');
+    L.innerHTML = h;
+    L.querySelectorAll('button[data-o]').forEach(function(b){
+      b.onclick = function(){
+        var yangi = b.dataset.h !== '1';
+        b.disabled = true;
+        fetch(OA + '/api/oyin-toggle', {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ oyin: b.dataset.o, holat: yangi, init_data: idata(), token: tok() })
+        }).then(function(r){ return r.json(); }).then(function(d){
+          b.disabled = false;
+          if(d && d.ok) yukla();
+        }).catch(function(){ b.disabled = false; });
+      };
+    });
+  }
+  function yukla(){
+    fetch(OA + '/api/oyinlar').then(function(r){ return r.json(); })
+      .then(function(d){ if(d && d.ok) chiz(d.oyinlar||{}); })
+      .catch(function(){ document.getElementById('oyinList').textContent = 'Xato'; });
+  }
+  yukla();
+})();
+</script>
 </body>
 </html>
