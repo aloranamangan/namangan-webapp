@@ -170,7 +170,7 @@ function ochish(fid, video){
 }
 
 document.addEventListener('DOMContentLoaded', function(){
-  el('axBack').addEventListener('click', function(){ location.href = 'xaridor.html'; });
+  el('axBack').addEventListener('click', function(){ history.length > 1 ? history.back() : (location.href = 'index.html'); });
   setTimeout(boot, 400);
 });
 </script>
