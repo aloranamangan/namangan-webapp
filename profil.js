@@ -1104,7 +1104,7 @@ function openPostFull(p){
 
       '<div class="pf-media">' +
         (m.is_video
-          ? '<video src="' + u + '" controls autoplay playsinline></video>'
+          ? '<video src="' + u + '" controls playsinline preload="metadata"></video>'
           : '<img src="' + u + '">') +
         (media.length > 1
           ? '<div class="pf-dots">' + media.map(function(_, i){
