@@ -1190,3 +1190,29 @@ function tolovOyna(r){
 }
 
 
+
+// Lentadagi videoga bosilsa - to'liq ekran + ovoz
+document.addEventListener('click', function(e){
+  const v = e.target;
+  if(!v || v.tagName !== 'VIDEO') return;
+  if(!v.hasAttribute('data-vid')) return;
+
+  e.preventDefault();
+  e.stopPropagation();
+
+  const ov = document.createElement('div');
+  ov.style.cssText = 'position:fixed;inset:0;z-index:9800;background:#000;' +
+    'display:flex;align-items:center;justify-content:center;';
+
+  ov.innerHTML =
+    '<video src="' + v.src + '" controls autoplay playsinline ' +
+    'style="max-width:100%;max-height:100%;"></video>' +
+    '<button style="position:absolute;top:calc(14px + env(safe-area-inset-top));' +
+    'right:16px;width:38px;height:38px;border-radius:50%;border:none;' +
+    'background:rgba(0,0,0,.6);color:#fff;font-size:22px;cursor:pointer;z-index:5;">&times;</button>';
+
+  document.body.appendChild(ov);
+
+  ov.querySelector('button').addEventListener('click', function(){ ov.remove(); });
+  ov.addEventListener('click', function(ev){ if(ev.target === ov) ov.remove(); });
+}, true);

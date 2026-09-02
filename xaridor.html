@@ -139,7 +139,7 @@
 
 <script src="i18n.js?v=1786726305"></script>
 <script src="intro.js?v=1787312621"></script>
-<script src="core.js?v=1788286489"></script>
+<script src="core.js?v=1788309190"></script>
 <script src="bigvideo.js?v=1"></script>
 <script src="profil.js?v=1788284648"></script>
 <script src="splash.js"></script>
@@ -349,7 +349,7 @@ function postHTML(p){
   const s = sellerOf(p.username);
   const slides = p.media.map(function(m){
     return '<div class="slide">' + (m.video
-      ? '<video src="' + m.url + '" muted loop playsinline preload="metadata"></video>'
+      ? '<video src="' + m.url + '" muted loop playsinline preload="none" data-vid="1"></video>'
       : '<img src="' + m.url + '" loading="lazy">') + '</div>';
   }).join('');
 
