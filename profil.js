@@ -199,7 +199,7 @@ function loadTab(tab){
       if(!m.file_id) return '';
       const u = mediaUrl(m.file_id);
       return '<div class="cell" data-id="' + p.id + '">' +
-        (m.is_video ? '<video src="' + u + '" muted></video>' : '<img src="' + u + '">') +
+        (m.is_video ? '<video src="' + u + '" muted preload="none"></video>' : '<img src="' + u + '">') +
         ((p.media && p.media.length > 1) ? '<span class="multi">&#9673;</span>' : '') +
         (p.pinned ? '<span class="pinned">&#128204;</span>' : '') +
         (tab === 'posts' ? '<button class="cell-menu" data-m="' + p.id + '">&#8942;</button>' : '') +
@@ -273,7 +273,7 @@ function loadHl(){
         const u = mediaUrl(x.file_id);
         return '<button class="hl" data-u="' + u + '" data-v="' + (x.is_video ? '1' : '0') + '">' +
           '<div class="hl-c">' + (x.is_video
-            ? '<video src="' + u + '" muted></video>'
+            ? '<video src="' + u + '" muted preload="none"></video>'
             : '<img src="' + u + '">') + '</div>' +
           '<span>' + esc(x.title) + '</span></button>';
       }).join('');
