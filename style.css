@@ -3113,3 +3113,13 @@ body{padding-bottom:80px !important;}
 
 /* Profil grid: video bosishni to'smasin */
 #pfGrid .cell video,#pfGrid .cell img{pointer-events:none !important;}
+
+/* E'lon to'liq ekran - asosiy */
+.pf-full{
+  position:fixed !important;
+  top:0;left:0;right:0;bottom:0;
+  z-index:9000 !important;
+  background:#000 !important;
+  flex-direction:column;
+  overflow-y:auto;
+}
