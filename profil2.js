@@ -2,6 +2,7 @@
 let PF = null, PF_TAB = 'posts', PF_POSTS = [], MY_STORIES = [];
 
 function drawProfile(){
+  if(typeof loadMyStories === 'function' && (!MY_STORIES || !MY_STORIES.length)) loadMyStories();
   const box = el('profBody');
   if(!box) return;
 
