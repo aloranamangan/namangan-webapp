@@ -3110,3 +3110,6 @@ body{padding-bottom:80px !important;}
   font-size:11.5px;color:rgba(255,255,255,.35);
   margin-top:16px;line-height:1.5;
 }
+
+/* Profil grid: video bosishni to'smasin */
+#pfGrid .cell video,#pfGrid .cell img{pointer-events:none !important;}
