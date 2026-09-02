@@ -135,6 +135,8 @@ function openUserMenu(u){
     '<div class="sheet-bar"></div>' +
     '<div class="sheet-title">' + esc(nm) + '</div>' +
     '<button class="sheet-item" data-a="edit">&#9999;&#65039;&nbsp;&nbsp;Maʼlumotlarni tahrirlash</button>' +
+    '<button class="sheet-item" data-a="' + (u.vip ? 'vipol' : 'vipber') + '">' +
+      (u.vip ? '&#128081;&nbsp;&nbsp;VIP ni olib tashlash' : '&#128081;&nbsp;&nbsp;VIP berish (30 kun)') + '</button>' +
     '<button class="sheet-item" data-a="' + (u.verified ? 'unverify' : 'verify') + '">' +
       (u.verified ? '&#10060;&nbsp;&nbsp;Tasdiqni bekor qilish' : '&#9989;&nbsp;&nbsp;Tasdiqlangan belgisini berish') + '</button>' +
     '<button class="sheet-item" data-a="' + (u.paused ? 'unpause' : 'pause') + '">' +
