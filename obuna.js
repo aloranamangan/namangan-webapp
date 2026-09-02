@@ -27,6 +27,13 @@
   function fmt(n){ return String(n||0).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
 
   window.showObunaTanlash = function(){
+    // Xizmat yoqilganmi?
+    fetch(OAPI + '/api/moliya-holat').then(function(r){ return r.json(); })
+      .then(function(d){ if(d && d.ok && d.xizmat) _korsat(); })
+      .catch(function(){});
+  };
+
+  function _korsat(){
     var bg = document.createElement('div');
     bg.className = 'ob-bg';
     bg.innerHTML =
