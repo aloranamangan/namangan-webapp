@@ -160,5 +160,86 @@ document.addEventListener('DOMContentLoaded', function(){
   }, 400);
 });
 </script>
+<div id="obBox" style="margin:18px 14px;padding:16px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid rgba(212,175,55,.25);">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+    <div style="font-size:14px;font-weight:800;color:#F0C868;">Makler xizmati</div>
+    <button id="mxBtn" style="width:52px;height:29px;border-radius:15px;border:none;cursor:pointer;position:relative;background:rgba(255,255,255,.15);transition:.2s;">
+      <i style="position:absolute;top:3px;left:3px;width:23px;height:23px;border-radius:50%;background:#fff;transition:.2s;"></i></button>
+  </div>
+  <div style="font-size:11.5px;color:#9A9A90;margin-bottom:16px;">Yoqilganda e'lon joylashda tarif tanlash oynasi chiqadi</div>
+
+  <div style="font-size:13px;font-weight:800;color:#F5F5F0;margin-bottom:10px;">Tariflar</div>
+  <div style="display:flex;gap:9px;margin-bottom:18px;">
+    <div style="flex:1;padding:12px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);">
+      <div style="font-size:12px;color:#F5F5F0;font-weight:700;">Makler</div>
+      <div style="font-size:15px;color:#F0C868;font-weight:800;margin:3px 0;">100 000</div>
+      <div style="font-size:10px;color:#9A9A90;">15 kun bepul</div>
+    </div>
+    <div style="flex:1;padding:12px;border-radius:12px;background:linear-gradient(135deg,rgba(212,175,55,.16),rgba(212,175,55,.04));border:1px solid rgba(212,175,55,.45);">
+      <div style="font-size:12px;color:#F5F5F0;font-weight:700;">Makler + VIP</div>
+      <div style="font-size:15px;color:#F0C868;font-weight:800;margin:3px 0;">250 000</div>
+      <div style="font-size:10px;color:#9A9A90;">Galochka · VIP · 360&deg;</div>
+    </div>
+  </div>
+
+  <div style="font-size:13px;font-weight:800;color:#F5F5F0;margin-bottom:8px;">Obunachilar</div>
+  <div id="obList" style="font-size:12.5px;color:#9A9A90;">Yuklanmoqda...</div>
+</div>
+<script>
+(function(){
+  var MA = 'https://api.namangan-ijara.uz';
+  function idata(){ try { return (window.Telegram&&Telegram.WebApp&&Telegram.WebApp.initData)||''; } catch(e){ return ''; } }
+  function tok(){ try { return localStorage.getItem('ni_token')||''; } catch(e){ return ''; } }
+
+  function kunQoldi(s){
+    if(!s) return null;
+    var t = new Date(String(s).replace(' ', 'T'));
+    if(isNaN(t)) return null;
+    return Math.ceil((t - new Date()) / 86400000);
+  }
+
+  function chiz(d){
+    var mx = document.getElementById('mxBtn');
+    if(mx){
+      mx.style.background = d.xizmat ? '#D4AF37' : 'rgba(255,255,255,.15)';
+      mx.querySelector('i').style.left = d.xizmat ? '26px' : '3px';
+      mx.dataset.h = d.xizmat ? '1' : '0';
+    }
+    var L = document.getElementById('obList');
+    var r = d.royxat || [];
+    if(!r.length){ L.textContent = 'Hozircha obunachi yoq'; return; }
+    L.innerHTML = r.map(function(x){
+      var k = kunQoldi(x.tugash);
+      var rang = k === null ? '#9A9A90' : (k < 0 ? '#E8433D' : (k <= 3 ? '#F0A868' : '#5BBF6A'));
+      var matn = k === null ? '-' : (k < 0 ? 'Tugagan' : k + ' kun');
+      return '<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.06);">' +
+        '<div><span style="color:#F5F5F0;">@' + x.username + '</span>' +
+        (x.vip ? ' <span style="color:#F0C868;font-size:10px;font-weight:800;">VIP</span>' : '') +
+        (x.verified ? ' <span style="color:#0095F6;font-size:10px;">&#10003;</span>' : '') +
+        '</div><span style="color:' + rang + ';font-weight:700;font-size:11.5px;">' + matn + '</span></div>';
+    }).join('');
+  }
+
+  function yukla(){
+    fetch(MA + '/api/moliya?init_data=' + encodeURIComponent(idata()) + '&token=' + encodeURIComponent(tok()))
+      .then(function(r){ return r.json(); })
+      .then(function(d){ if(d && d.ok) chiz(d); else document.getElementById('obList').textContent = 'Kirish cheklangan'; })
+      .catch(function(){ document.getElementById('obList').textContent = 'Xato'; });
+  }
+
+  var mx = document.getElementById('mxBtn');
+  if(mx) mx.onclick = function(){
+    var yangi = mx.dataset.h !== '1';
+    mx.disabled = true;
+    fetch(MA + '/api/makler-xizmat', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ holat: yangi, init_data: idata(), token: tok() })
+    }).then(function(r){ return r.json(); }).then(function(){ mx.disabled = false; yukla(); })
+      .catch(function(){ mx.disabled = false; });
+  };
+
+  yukla();
+})();
+</script>
 </body>
 </html>
