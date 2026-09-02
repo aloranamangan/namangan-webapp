@@ -1105,7 +1105,15 @@ function openPostFull(p){
     v.addEventListener('touchend', function(e){
       var dy = e.changedTouches[0].clientY - y0;
       var dx = e.changedTouches[0].clientX - x0;
-      if(Math.abs(dy) < 70 || Math.abs(dx) > Math.abs(dy)) return;
+      // Chap/o'ng surish - media almashish
+      if(Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 60){
+        if(media.length > 1){
+          if(dx < 0 && idx < media.length - 1){ idx++; chiz(); }
+          else if(dx > 0 && idx > 0){ idx--; chiz(); }
+        }
+        return;
+      }
+      if(Math.abs(dy) < 70) return;
       if(typeof PF_POSTS === 'undefined' || !PF_POSTS.length) return;
       var i = -1;
       for(var k = 0; k < PF_POSTS.length; k++){
