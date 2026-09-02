@@ -220,7 +220,6 @@ function loadTab(tab){
       c.addEventListener('click', function(ev){
         ev.preventDefault();
         ev.stopPropagation();
-        toast('Bosildi: ' + c.dataset.id);
         const p = list.filter(function(x){ return String(x.id) === c.dataset.id; })[0];
         if(!p){ toast('Post topilmadi'); return; }
         if(typeof openPostFull !== 'function'){ toast('Funksiya yoq'); return; }
