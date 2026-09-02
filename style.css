@@ -1654,11 +1654,11 @@ body{padding-bottom:80px !important;}
 .pf-top{display:flex;align-items:center;gap:22px;padding:20px 18px 14px;}
 .pf-ava-w{position:relative;flex-shrink:0;}
 .pf-ava{
-  width:88px;height:88px;border-radius:50%;object-fit:cover;
-  border:2px solid #000;position:relative;z-index:2;
+  width:104px;height:104px;border-radius:50%;object-fit:cover;
+  border:3px solid #000;position:relative;z-index:2;
 }
 .pf-ava-w.story::before{
-  content:'';position:absolute;inset:-4px;border-radius:50%;z-index:0;
+  content:'';position:absolute;inset:-5px;border-radius:50%;z-index:0;
   background:linear-gradient(45deg,#F58529,#FEDA77,#DD2A7B,#8134AF,#515BD4);
 }
 .pf-ava-w.story.seen::before{background:#3a3a3a;}

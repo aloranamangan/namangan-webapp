@@ -106,6 +106,11 @@ function render(){
 function bindProfile(isMak){
   const av = el('pfAva');
   if(av) av.addEventListener('click', function(){
+    // Story bo'lsa - story ochiladi
+    if(MY_STORIES && MY_STORIES.length && typeof openStory === 'function'){
+      openStory({ id: myId(), name: (PF && PF.name) || '', items: MY_STORIES }, 0);
+      return;
+    }
     if(typeof avatarMenuU === 'function') avatarMenuU();
   });
 
