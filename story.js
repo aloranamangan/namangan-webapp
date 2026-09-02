@@ -69,6 +69,20 @@ function openStory(group, startIdx){
             '<button id="svSend"><svg viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg></button>' +
           '</div>');
 
+    var _hl = document.getElementById('svHl');
+    if(_hl) _hl.addEventListener('click', function(e){
+      e.stopPropagation();
+      var it = (group.items && group.items[idx]) ? group.items[idx] : null;
+      if(!it){ toast('Topilmadi'); return; }
+      var nom = prompt('Aktual nomi:', 'Aktual');
+      if(!nom) return;
+      apiPost('/api/aktual-qoshish', {
+        file_id: it.file_id, is_video: !!it.is_video, title: nom.slice(0, 20)
+      }).then(function(d){
+        toast(d && d.ok ? 'Aktualga qoshildi' : 'Xato');
+      }).catch(function(){ toast('Server xatosi'); });
+    });
+
     el('svX').addEventListener('click', close);
 
     // Ko'rildi
