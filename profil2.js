@@ -127,6 +127,7 @@ function bindProfile(isMak){
   const stb = el('pfStat');
   if(stb) stb.addEventListener('click', function(){
     if(typeof showProfilStat === 'function') showProfilStat();
+    else toast('stat.js yuklanmadi');
   });
 
   const nw = el('pfNew');
