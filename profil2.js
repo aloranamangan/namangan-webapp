@@ -66,7 +66,7 @@ function render(){
       '<button id="pfShare">Ulashish</button>' +
     '</div>' +
     '<div class="pf-btns" style="margin-top:8px;">' +
-      '<button id="pfStat" class="pf-stat-btn" style="flex:1;">\uD83D\uDCCA Statistika</button>' +
+      '<button id="pfStat" class="pf-stat-btn" style="flex:1;" onclick="showProfilStat && showProfilStat()">\uD83D\uDCCA Statistika</button>' +
     '</div>' +
 
     '<div class="hl-row" id="pfHl"></div>' +
