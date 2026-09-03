@@ -63,6 +63,7 @@ function render(){
     '<div class="pf-btns">' +
       '<button id="pfEdit">Profilni tahrirlash</button>' +
       '<button id="pfNew" class="blue">Elon qoshish</button>' +
+      '<button id="pfStat" class="pf-stat-btn">\uD83D\uDCCA Statistika</button>' +
       '<button id="pfShare">Ulashish</button>' +
     '</div>' +
 
@@ -122,6 +123,11 @@ function bindProfile(isMak){
 
   const ed = el('pfEdit');
   if(ed) ed.addEventListener('click', editProfileU);
+
+  const stb = el('pfStat');
+  if(stb) stb.addEventListener('click', function(){
+    if(typeof showProfilStat === 'function') showProfilStat();
+  });
 
   const nw = el('pfNew');
   if(nw) nw.addEventListener('click', function(){

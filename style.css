@@ -3151,3 +3151,53 @@ body{padding-bottom:80px !important;}
   0%,100%{transform:translateY(0) scale(1);}
   50%{transform:translateY(-7px) scale(1.02);}
 }
+
+/* ---- Profil statistikasi ---- */
+.pf-stat-btn{
+  padding:7px 14px;border-radius:9px;border:none;cursor:pointer;
+  background:rgba(255,255,255,.1);color:#F5F5F0;
+  font-family:inherit;font-size:12.5px;font-weight:700;
+}
+.st-bg{
+  position:fixed;inset:0;z-index:9400;background:rgba(0,0,0,.7);
+  backdrop-filter:blur(5px);display:flex;align-items:flex-end;
+  animation:stF .2s ease;
+}
+@keyframes stF{from{opacity:0}to{opacity:1}}
+.st-sheet{
+  width:100%;background:#141414;color:#F5F5F0;
+  border-radius:20px 20px 0 0;
+  padding:10px 20px calc(26px + env(safe-area-inset-bottom));
+  max-height:88vh;overflow-y:auto;
+  animation:stU .3s cubic-bezier(.2,.8,.3,1);
+  font-family:'Manrope',sans-serif;
+}
+@keyframes stU{from{transform:translateY(50px)}to{transform:none}}
+.st-grip{width:38px;height:4px;border-radius:2px;background:rgba(255,255,255,.2);margin:0 auto 16px;}
+.st-head{margin-bottom:20px;}
+.st-head b{display:block;font-size:18px;font-weight:800;}
+.st-head span{font-size:12px;color:#9A9A90;}
+.st-load{padding:40px 0;text-align:center;color:#9A9A90;font-size:13px;}
+.st-hero{text-align:center;padding:6px 0 20px;}
+.st-big{
+  font-size:46px;font-weight:800;line-height:1;
+  background:linear-gradient(135deg,#F0C868,#D4AF37);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.st-lbl{font-size:12px;color:#9A9A90;margin-top:5px;}
+.st-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:22px;}
+.st-c{
+  padding:13px 8px;border-radius:13px;text-align:center;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);
+}
+.st-c b{display:block;font-size:19px;font-weight:800;margin-bottom:2px;}
+.st-c span{font-size:10px;color:#9A9A90;}
+.st-sec{font-size:13px;font-weight:800;margin-bottom:9px;}
+.st-row{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:11px 0;border-bottom:1px solid rgba(255,255,255,.06);
+}
+.st-t{font-size:12.5px;color:#C9C9C0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.st-row b{font-size:13px;color:#F0C868;flex-shrink:0;}
+.st-empty{padding:22px 0;text-align:center;color:#9A9A90;font-size:12.5px;}
