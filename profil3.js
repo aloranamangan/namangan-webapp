@@ -67,6 +67,7 @@ function render(){
     '</div>' +
     '<div class="pf-btns" style="margin-top:8px;">' +
       '<button id="pfStat" class="pf-stat-btn" style="flex:1;" onclick="window.showProfilStat && window.showProfilStat()">\uD83D\uDCCA Statistika</button>' +
+      '<button id="pfAi" class="pf-ai-btn" style="flex:1;" onclick="window.showAiChat && window.showAiChat()">\u2728 AI yordamchi</button>' +
     '</div>' +
 
     '<div class="hl-row" id="pfHl"></div>' +
@@ -1490,5 +1491,101 @@ function upProgYop(){
           top +
         '</div>';
     }
+  };
+})();
+
+// ---------- AI yordamchi ----------
+(function(){
+  'use strict';
+  var AA = 'https://api.namangan-ijara.uz';
+
+  function aBody(x){
+    var b = x || {};
+    try {
+      var tg = window.Telegram && window.Telegram.WebApp;
+      if(tg && tg.initData) b.init_data = tg.initData;
+    } catch(e){}
+    try {
+      var t = localStorage.getItem('ni_token');
+      if(t) b.token = t;
+    } catch(e){}
+    return b;
+  }
+
+  function esc2(s){
+    return String(s || '').replace(/[<>&]/g, function(m){
+      return { '<':'&lt;', '>':'&gt;', '&':'&amp;' }[m];
+    });
+  }
+
+  function md(s){
+    return esc2(s)
+      .replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')
+      .replace(/\n/g, '<br>');
+  }
+
+  window.showAiChat = function(){
+    var bg = document.createElement('div');
+    bg.className = 'ai-bg';
+    bg.innerHTML =
+      '<div class="ai-sheet">' +
+        '<div class="ai-top">' +
+          '<div class="ai-ttl"><b>\u2728 AI yordamchi</b>' +
+          '<span>Uy, narx, hujjatlar - so\'rang</span></div>' +
+          '<button class="ai-x">&times;</button>' +
+        '</div>' +
+        '<div class="ai-body" id="aiBody">' +
+          '<div class="ai-msg bot">Salom! Men UYgram yordamchisiman.<br>' +
+          'Uy sotish, sotib olish, ijara, narx yoki hujjatlar bo\'yicha savolingiz bo\'lsa - yozing.</div>' +
+        '</div>' +
+        '<div class="ai-bar">' +
+          '<input id="aiInp" placeholder="Savolingizni yozing..." autocomplete="off">' +
+          '<button id="aiGo">\u2191</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(bg);
+
+    bg.querySelector('.ai-x').onclick = function(){ bg.remove(); };
+    bg.onclick = function(e){ if(e.target === bg) bg.remove(); };
+
+    var body = bg.querySelector('#aiBody');
+    var inp = bg.querySelector('#aiInp');
+    var go = bg.querySelector('#aiGo');
+
+    function qosh(matn, kim){
+      var d = document.createElement('div');
+      d.className = 'ai-msg ' + kim;
+      d.innerHTML = kim === 'bot' ? md(matn) : esc2(matn);
+      body.appendChild(d);
+      body.scrollTop = body.scrollHeight;
+      return d;
+    }
+
+    function yubor(){
+      var t = inp.value.trim();
+      if(!t) return;
+      inp.value = '';
+      qosh(t, 'me');
+      var kut = qosh('<i class="ai-dots"><i></i><i></i><i></i></i>', 'bot');
+
+      fetch(AA + '/api/ai', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(aBody({ matn: t }))
+      }).then(function(r){ return r.json(); }).then(function(d){
+        kut.innerHTML = (d && d.ok && d.javob)
+          ? md(d.javob)
+          : 'Kechirasiz, hozir javob bera olmayman.';
+        body.scrollTop = body.scrollHeight;
+      }).catch(function(){
+        kut.textContent = 'Server bilan aloqa yo\'q.';
+      });
+    }
+
+    go.onclick = yubor;
+    inp.addEventListener('keydown', function(e){
+      if(e.key === 'Enter') yubor();
+    });
+    setTimeout(function(){ try { inp.focus(); } catch(e){} }, 300);
   };
 })();
