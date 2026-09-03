@@ -3201,3 +3201,17 @@ body{padding-bottom:80px !important;}
 .st-t{font-size:12.5px;color:#C9C9C0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .st-row b{font-size:13px;color:#F0C868;flex-shrink:0;}
 .st-empty{padding:22px 0;text-align:center;color:#9A9A90;font-size:12.5px;}
+
+/* Profil statistikasi */
+.st-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.st-card{
+  padding:16px 12px;border-radius:16px;text-align:center;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.1);
+}
+.st-card .e{font-size:24px;display:block;margin-bottom:6px;}
+.st-card b{
+  display:block;font-size:22px;font-weight:800;color:#fff;
+  font-variant-numeric:tabular-nums;
+}
+.st-card span{font-size:11px;color:rgba(255,255,255,.45);}

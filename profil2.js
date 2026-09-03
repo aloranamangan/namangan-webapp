@@ -1492,3 +1492,61 @@ function upProgYop(){
     }
   };
 })();
+
+// ---------- Profil statistikasi ----------
+window.showProfilStat = function(){
+  if(typeof haptic === 'function') haptic('light');
+
+  const bg = document.createElement('div');
+  bg.className = 'sheet-bg';
+  bg.style.zIndex = '9100';
+  bg.innerHTML = '<div class="sheet" id="stS" style="max-height:85vh;overflow-y:auto;">' +
+    '<div class="sheet-bar"></div>' +
+    '<div class="sheet-title">\u{1F4CA} Statistika</div>' +
+    '<div id="stBody"><div class="load">Yuklanmoqda...</div></div></div>';
+
+  document.body.appendChild(bg);
+  bg.addEventListener('click', function(e){ if(e.target === bg) bg.remove(); });
+  bg.querySelector('#stS').addEventListener('click', function(e){ e.stopPropagation(); });
+
+  const u = (typeof PF !== 'undefined' && PF && PF.username) ? PF.username : '';
+  if(!u){
+    bg.querySelector('#stBody').innerHTML =
+      '<div class="empty" style="padding:44px 20px;"><span>Statistika yoq</span></div>';
+    return;
+  }
+
+  api('/api/statistika?username=' + encodeURIComponent(u) + '&t=' + Date.now())
+    .then(function(d){
+      const box = bg.querySelector('#stBody');
+      if(!box) return;
+
+      const kor = d.views || d.korish || 0;
+      const lay = d.likes || d.layk || 0;
+      const kom = d.comments || d.koment || 0;
+      const obu = d.followers || d.obunachi || 0;
+      const pst = d.posts || d.elon || 0;
+
+      box.innerHTML =
+        '<div class="wrap">' +
+          '<div class="st-grid">' +
+            '<div class="st-card"><span class="e">\u{1F441}</span>' +
+            '<b>' + fmt(kor) + '</b><span>korish</span></div>' +
+            '<div class="st-card"><span class="e">\u2764\uFE0F</span>' +
+            '<b>' + fmt(lay) + '</b><span>layk</span></div>' +
+            '<div class="st-card"><span class="e">\u{1F4AC}</span>' +
+            '<b>' + fmt(kom) + '</b><span>komentariya</span></div>' +
+            '<div class="st-card"><span class="e">\u{1F465}</span>' +
+            '<b>' + fmt(obu) + '</b><span>obunachi</span></div>' +
+            '<div class="st-card"><span class="e">\u{1F3E0}</span>' +
+            '<b>' + fmt(pst) + '</b><span>elon</span></div>' +
+            '<div class="st-card"><span class="e">\u{1F4C8}</span>' +
+            '<b>' + (pst ? Math.round(kor / pst) : 0) + '</b><span>ortacha korish</span></div>' +
+          '</div>' +
+        '</div>';
+    })
+    .catch(function(){
+      const box = bg.querySelector('#stBody');
+      if(box) box.innerHTML = '<div class="load">Xato yuz berdi</div>';
+    });
+};
