@@ -3310,3 +3310,15 @@ body{padding-bottom:80px !important;}
   transition:transform .15s;
 }
 .vol-btn:active{transform:scale(.9);}
+
+/* Lentada video ovoz tugmasi */
+.vol-btn{
+  position:absolute;bottom:12px;right:12px;z-index:9;
+  width:36px;height:36px;border-radius:50%;border:none;
+  background:rgba(0,0,0,.6);backdrop-filter:blur(10px);
+  color:#fff;font-size:16px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  pointer-events:auto;
+}
+.vol-btn:active{transform:scale(.9);background:rgba(0,0,0,.85);}
+.slide,.post-media{position:relative;}
