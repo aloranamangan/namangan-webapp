@@ -63,8 +63,10 @@ function render(){
     '<div class="pf-btns">' +
       '<button id="pfEdit">Profilni tahrirlash</button>' +
       '<button id="pfNew" class="blue">Elon qoshish</button>' +
-      '<button id="pfStat" class="pf-stat-btn">\uD83D\uDCCA Statistika</button>' +
       '<button id="pfShare">Ulashish</button>' +
+    '</div>' +
+    '<div class="pf-btns" style="margin-top:8px;">' +
+      '<button id="pfStat" class="pf-stat-btn" style="flex:1;">\uD83D\uDCCA Statistika</button>' +
     '</div>' +
 
     '<div class="hl-row" id="pfHl"></div>' +
