@@ -3338,3 +3338,32 @@ body{padding-bottom:80px !important;}
   cursor:pointer;font-family:inherit;
 }
 .pf-stat-btn:active{transform:scale(.97);}
+
+/* AI chat */
+.ai-msg{
+  max-width:82%;padding:11px 14px;border-radius:16px;
+  font-size:14px;line-height:1.5;margin-bottom:10px;
+}
+.ai-msg.bot{
+  background:rgba(139,92,246,.14);
+  border:1px solid rgba(139,92,246,.25);
+  color:#fff;border-bottom-left-radius:5px;
+}
+.ai-msg.me{
+  background:#0095F6;color:#fff;margin-left:auto;
+  border-bottom-right-radius:5px;
+}
+.ai-input{
+  display:flex;gap:9px;padding:12px 16px calc(18px + env(safe-area-inset-bottom));
+  border-top:1px solid var(--line);
+}
+.ai-input input{
+  flex:1;padding:12px 15px;border-radius:22px;
+  background:#141414;border:1px solid #262626;
+  color:#fff;font-size:14px;font-family:inherit;outline:none;
+}
+.ai-input button{
+  width:44px;height:44px;border-radius:50%;border:none;
+  background:linear-gradient(135deg,#8B5CF6,#6366F1);
+  color:#fff;font-size:18px;cursor:pointer;flex-shrink:0;
+}

@@ -1589,3 +1589,64 @@ function upProgYop(){
     setTimeout(function(){ try { inp.focus(); } catch(e){} }, 300);
   };
 })();
+
+// ---------- AI yordamchi ----------
+window.showAiChat = function(){
+  if(typeof haptic === 'function') haptic('light');
+
+  const bg = document.createElement('div');
+  bg.className = 'sheet-bg';
+  bg.style.zIndex = '9200';
+  bg.innerHTML = '<div class="sheet" id="aiS" style="max-height:88vh;display:flex;flex-direction:column;">' +
+    '<div class="sheet-bar"></div>' +
+    '<div class="sheet-title">\u2728 AI yordamchi</div>' +
+    '<div id="aiBody" style="flex:1;overflow-y:auto;padding:0 16px;min-height:220px;">' +
+      '<div class="ai-msg bot">Salom! Men UYgram yordamchisiman.<br><br>' +
+      'Elon matni yozib beraman, narx maslahati beraman yoki savolingizga javob beraman.</div>' +
+    '</div>' +
+    '<div class="ai-input">' +
+      '<input id="aiInp" placeholder="Savolingizni yozing...">' +
+      '<button id="aiGo">\u27A4</button>' +
+    '</div></div>';
+
+  document.body.appendChild(bg);
+  bg.addEventListener('click', function(e){ if(e.target === bg) bg.remove(); });
+  bg.querySelector('#aiS').addEventListener('click', function(e){ e.stopPropagation(); });
+
+  const body = bg.querySelector('#aiBody');
+  const inp = bg.querySelector('#aiInp');
+  const go = bg.querySelector('#aiGo');
+
+  function qosh(matn, kim){
+    const d = document.createElement('div');
+    d.className = 'ai-msg ' + kim;
+    d.innerHTML = matn;
+    body.appendChild(d);
+    body.scrollTop = body.scrollHeight;
+    return d;
+  }
+
+  function yubor(){
+    const t = inp.value.trim();
+    if(!t) return;
+
+    qosh(esc(t), 'me');
+    inp.value = '';
+
+    const kut = qosh('<i>Yozmoqda...</i>', 'bot');
+
+    apiPost('/api/ai', { savol: t }).then(function(d){
+      kut.remove();
+      if(d.ok && d.javob) qosh(esc(d.javob).replace(/\n/g, '<br>'), 'bot');
+      else qosh('AI hozircha ishlamayapti. Keyinroq urinib koring.', 'bot');
+    }).catch(function(){
+      kut.remove();
+      qosh('Server xatosi', 'bot');
+    });
+  }
+
+  go.addEventListener('click', yubor);
+  inp.addEventListener('keypress', function(e){
+    if(e.key === 'Enter') yubor();
+  });
+};
