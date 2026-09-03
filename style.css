@@ -3322,3 +3322,19 @@ body{padding-bottom:80px !important;}
 }
 .vol-btn:active{transform:scale(.9);background:rgba(0,0,0,.85);}
 .slide,.post-media{position:relative;}
+
+/* AI yordamchi tugmasi */
+.pf-ai-btn{
+  padding:9px 0;border:none;border-radius:9px;
+  background:linear-gradient(135deg,#8B5CF6,#6366F1);
+  color:#fff;font-size:13px;font-weight:700;
+  cursor:pointer;font-family:inherit;
+  box-shadow:0 4px 14px rgba(139,92,246,.35);
+}
+.pf-ai-btn:active{transform:scale(.97);}
+.pf-stat-btn{
+  padding:9px 0;border:none;border-radius:9px;
+  background:#262626;color:#fff;font-size:13px;font-weight:700;
+  cursor:pointer;font-family:inherit;
+}
+.pf-stat-btn:active{transform:scale(.97);}
