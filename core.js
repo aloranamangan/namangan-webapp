@@ -1210,3 +1210,33 @@ document.addEventListener('click', function(e){
   ov.querySelector('button').addEventListener('click', function(){ ov.remove(); });
   ov.addEventListener('click', function(ev){ if(ev.target === ov) ov.remove(); });
 }, true);
+
+// Lentadagi video: ovoz tugmasi
+document.addEventListener('DOMContentLoaded', function(){
+  setInterval(function(){
+    document.querySelectorAll('video[data-vid]').forEach(function(v){
+      if(v.dataset.snd) return;
+      v.dataset.snd = '1';
+
+      const w = v.parentElement;
+      if(!w) return;
+      if(getComputedStyle(w).position === 'static') w.style.position = 'relative';
+
+      const b = document.createElement('button');
+      b.className = 'vid-snd';
+      b.innerHTML = '\u{1F507}';
+      w.appendChild(b);
+
+      b.addEventListener('click', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        v.muted = !v.muted;
+        b.innerHTML = v.muted ? '\u{1F507}' : '\u{1F50A}';
+        if(!v.muted){
+          try { v.play(); } catch(er){}
+        }
+        if(typeof haptic === 'function') haptic('light');
+      });
+    });
+  }, 1200);
+});
