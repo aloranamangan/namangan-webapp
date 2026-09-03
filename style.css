@@ -3299,3 +3299,14 @@ body{padding-bottom:80px !important;}
   background:linear-gradient(135deg,#F0C868,#D4AF37);
   color:#12100A;font-size:19px;font-weight:800;flex-shrink:0;
 }
+
+/* ---- Video ovoz tugmasi ---- */
+.vol-btn{
+  position:absolute;right:12px;bottom:12px;z-index:5;
+  width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;
+  background:rgba(0,0,0,.55);backdrop-filter:blur(6px);
+  color:#fff;font-size:16px;
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .15s;
+}
+.vol-btn:active{transform:scale(.9);}

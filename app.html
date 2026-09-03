@@ -7,7 +7,7 @@
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#000000">
 <link rel="apple-touch-icon" href="icon-192.png">
-<link rel="stylesheet" href="style.css?v=1788427035">
+<link rel="stylesheet" href="style.css?v=1788428213">
 <script>
 (function(){
   var inTG = false;
@@ -369,7 +369,7 @@ function postHTML(p){
   const s = sellerOf(p.username);
   const slides = p.media.map(function(m){
     return '<div class="slide">' + (m.video
-      ? '<video src="' + m.url + '" muted loop playsinline preload="metadata"></video>'
+      ? '<video src="' + m.url + '" muted loop playsinline preload="metadata"></video><button class="vol-btn" onclick="window.tglVol && window.tglVol(this,event)">&#128263;</button>'
       : '<img src="' + m.url + '" loading="lazy">') + '</div>';
   }).join('');
 
@@ -1406,5 +1406,23 @@ function go(v){
 })();
 </script>
 <script src="stat.js?v=1788415209"></script>
+<script>
+window.tglVol = function(btn, e){
+  if(e){ e.stopPropagation(); e.preventDefault(); }
+  var v = btn.parentNode.querySelector('video');
+  if(!v) return;
+  v.muted = !v.muted;
+  btn.innerHTML = v.muted ? '&#128263;' : '&#128266;';
+  if(!v.muted){
+    try { v.play(); } catch(er){}
+    document.querySelectorAll('video').forEach(function(x){
+      if(x !== v) x.muted = true;
+    });
+    document.querySelectorAll('.vol-btn').forEach(function(b){
+      if(b !== btn) b.innerHTML = '&#128263;';
+    });
+  }
+};
+</script>
 </body>
 </html>
