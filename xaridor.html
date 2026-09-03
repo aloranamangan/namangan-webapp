@@ -1345,3 +1345,19 @@ document.addEventListener('DOMContentLoaded', function(){
 </script>
 </body>
 </html>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  setTimeout(function(){
+    document.querySelectorAll('.sp-tab[data-s]').forEach(function(t){
+      t.addEventListener('click', function(){
+        document.querySelectorAll('.sp-tab[data-s]').forEach(function(x){
+          x.classList.remove('on');
+        });
+        t.classList.add('on');
+        if(typeof haptic === 'function') haptic('light');
+        if(typeof drawSpecial === 'function') drawSpecial(t.dataset.s);
+      });
+    });
+  }, 700);
+});
+</script>
