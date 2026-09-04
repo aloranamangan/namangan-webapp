@@ -103,6 +103,9 @@ function showReg(role, onDone){
   window._qoldaYoz = qoldaYoz;
 
   function askPhone(){
+    try {
+      toast('TG=' + (!!TG) + ' rc=' + (TG && !!TG.requestContact) + ' v=' + (TG && TG.version));
+    } catch(e){}
     if(!TG || !TG.requestContact){
       var p = prompt('Telefon raqamingiz (davlat kodi bilan):', '+998');
       if(!p) return;
