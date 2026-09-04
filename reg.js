@@ -85,7 +85,7 @@ function showReg(role, onDone){
       p = String(p).trim();
       if(p.replace(/[^0-9]/g, '').length < 7){ toast('Raqam juda qisqa'); return; }
       toast('Saqlanmoqda...');
-      apiPost('/api/save-user', { phone: p })
+      apiPost('/api/user-saqlash', { phone: p })
         .then(function(d){
           if(d && d.ok){ haptic('medium'); showReg(role, onDone); }
           else toast('Saqlanmadi');
