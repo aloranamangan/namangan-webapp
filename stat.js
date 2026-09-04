@@ -59,3 +59,31 @@
     }
   };
 })();
+
+// AI tugmasini majburan qo'shish
+setInterval(function(){
+  try {
+    var v = document.getElementById('vProfile');
+    if(!v || !v.classList.contains('on')) return;
+    if(document.getElementById('aiBtnX')) return;
+
+    var rows = document.querySelectorAll('.pf-btns');
+    if(!rows.length) return;
+
+    var row = document.createElement('div');
+    row.className = 'pf-btns';
+    row.style.marginTop = '8px';
+    row.innerHTML =
+      '<button id="statBtnX" style="flex:1;background:#262626;">\uD83D\uDCCA Statistika</button>' +
+      '<button id="aiBtnX" style="flex:1;background:linear-gradient(135deg,#8B5CF6,#6366F1);">\u2728 AI yordamchi</button>';
+
+    rows[rows.length - 1].insertAdjacentElement('afterend', row);
+
+    document.getElementById('statBtnX').onclick = function(){
+      if(window.showProfilStat) window.showProfilStat();
+    };
+    document.getElementById('aiBtnX').onclick = function(){
+      if(window.showAiChat) window.showAiChat();
+    };
+  } catch(e){}
+}, 1000);
