@@ -80,7 +80,7 @@ function showReg(role, onDone){
 
   function askPhone(){
     if(!TG || !TG.requestContact){
-      toast('Telegram ilovasini yangilang');
+      var p = prompt('Telefon raqamingiz:', '+998'); if(p) finish(p); return;
       return;
     }
     TG.requestContact(function(ok){
