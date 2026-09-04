@@ -13,9 +13,7 @@
   var inTG = false;
   try { inTG = /Telegram/i.test(navigator.userAgent) || !!window.TelegramWebviewProxy; } catch(e){}
   if(inTG){
-    var s = document.createElement('script');
-    s.src = 'https://telegram.org/js/telegram-web-app.js';
-    document.head.appendChild(s);
+    document.write('<scr' + 'ipt src="https://telegram.org/js/telegram-web-app.js"></scr' + 'ipt>');
   } else {
     window.Telegram = { WebApp: {
       initData:'', initDataUnsafe:{}, ready:function(){}, expand:function(){},
