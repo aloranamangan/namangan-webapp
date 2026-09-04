@@ -98,7 +98,21 @@ function showReg(role, onDone){
         .catch(function(){ toast('Server xatosi'); });
       return;
     }
-    TG.requestContact(function(ok){
+    TG.requestContact(function(ok, res){
+      // Telegram raqamni to'g'ridan bergan bo'lsa - darhol saqlaymiz
+      try {
+        var ph = res && res.responseUnsafe && res.responseUnsafe.contact
+                 && res.responseUnsafe.contact.phone_number;
+        if(ph){
+          toast('Saqlanmoqda...');
+          apiPost('/api/user-saqlash', { phone: ph }).then(function(d){
+            if(d && d.ok){ haptic('medium'); showReg(role, onDone); }
+            else toast('Saqlanmadi');
+          }).catch(function(){ toast('Server xatosi'); });
+          return;
+        }
+      } catch(e){}
+
       if(!ok){ toast('Raqam ulashilmadi'); return; }
       toast('Tekshirilmoqda...');
       let n = 0;
