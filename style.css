@@ -3367,3 +3367,14 @@ body{padding-bottom:80px !important;}
   background:linear-gradient(135deg,#8B5CF6,#6366F1);
   color:#fff;font-size:18px;cursor:pointer;flex-shrink:0;
 }
+
+#pfStat,#pfAi{
+  display:flex !important;
+  align-items:center;justify-content:center;
+  visibility:visible !important;
+  opacity:1 !important;
+  min-height:38px;
+  font-size:12.5px !important;
+}
+#pfAi{background:linear-gradient(135deg,#8B5CF6,#6366F1) !important;color:#fff !important;}
+#pfStat{background:#262626 !important;color:#fff !important;}
