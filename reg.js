@@ -57,7 +57,12 @@ function showReg(role, onDone){
     b.disabled = true;
     b.textContent = 'Saqlanmoqda...';
 
-    apiPost('/api/user-saqlash', { instagram: ig, whatsapp: wa, role: role })
+    var _rb = { instagram: ig, whatsapp: wa, role: role };
+    try {
+      var _ru = localStorage.getItem('ni_uid');
+      if(_ru) _rb.tg_id = parseInt(_ru);
+    } catch(e){}
+    apiPost('/api/user-saqlash', _rb)
       .then(function(d){
         if(d.ok){
           haptic('medium');
