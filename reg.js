@@ -80,7 +80,17 @@ function showReg(role, onDone){
 
   function askPhone(){
     if(!TG || !TG.requestContact){
-      var p = prompt('Telefon raqamingiz:', '+998'); if(p) finish(p); return;
+      var p = prompt('Telefon raqamingiz (davlat kodi bilan):', '+998');
+      if(!p) return;
+      p = String(p).trim();
+      if(p.replace(/[^0-9]/g, '').length < 7){ toast('Raqam juda qisqa'); return; }
+      toast('Saqlanmoqda...');
+      apiPost('/api/save-user', { phone: p })
+        .then(function(d){
+          if(d && d.ok){ haptic('medium'); showReg(role, onDone); }
+          else toast('Saqlanmadi');
+        })
+        .catch(function(){ toast('Server xatosi'); });
       return;
     }
     TG.requestContact(function(ok){
