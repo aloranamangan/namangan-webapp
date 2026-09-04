@@ -85,7 +85,12 @@ function showReg(role, onDone){
       p = String(p).trim();
       if(p.replace(/[^0-9]/g, '').length < 7){ toast('Raqam juda qisqa'); return; }
       toast('Saqlanmoqda...');
-      apiPost('/api/user-saqlash', { phone: p })
+      var _b = { phone: p };
+      try {
+        var _u = localStorage.getItem('ni_uid');
+        if(_u) _b.tg_id = parseInt(_u);
+      } catch(e){}
+      apiPost('/api/user-saqlash', _b)
         .then(function(d){
           if(d && d.ok){ haptic('medium'); showReg(role, onDone); }
           else toast('Saqlanmadi');
