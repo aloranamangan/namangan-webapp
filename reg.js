@@ -105,7 +105,12 @@ function showReg(role, onDone){
                  && res.responseUnsafe.contact.phone_number;
         if(ph){
           toast('Saqlanmoqda...');
-          apiPost('/api/user-saqlash', { phone: ph }).then(function(d){
+          var _bb = { phone: ph };
+          try {
+            var _uu = localStorage.getItem('ni_uid');
+            if(_uu) _bb.tg_id = parseInt(_uu);
+          } catch(e){}
+          apiPost('/api/user-saqlash', _bb).then(function(d){
             if(d && d.ok){ haptic('medium'); showReg(role, onDone); }
             else toast('Saqlanmadi');
           }).catch(function(){ toast('Server xatosi'); });
