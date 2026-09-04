@@ -30,7 +30,8 @@ function showReg(role, onDone){
       '<label class="label">Telefon raqam</label>' +
       (has
         ? '<div class="inp" style="color:#2ECC71;">&#10003; ' + esc(USER.phone) + '</div>'
-        : '<button class="btn ghost" id="phBtn" style="margin-bottom:18px;">&#128241; Raqamni ulashish</button>') +
+        : '<button class="btn ghost" id="phBtn" style="margin-bottom:8px;">&#128241; Raqamni ulashish</button>' +
+          '<button class="btn ghost" style="margin-bottom:18px;font-size:12.5px;opacity:.85;" onclick="window._qoldaYoz && window._qoldaYoz()">&#9997; Qo\'lda yozish</button>') +
 
       '<label class="label">Instagram</label>' +
       '<input class="inp" id="rIg" placeholder="@username" value="' + esc(USER ? USER.instagram : '') + '">' +
@@ -82,6 +83,24 @@ function showReg(role, onDone){
         b.textContent = 'Saqlash va davom etish';
       });
   });
+
+  function qoldaYoz(){
+    var p = prompt('Telefon raqamingiz (davlat kodi bilan):', '+998');
+    if(!p) return;
+    p = String(p).trim();
+    if(p.replace(/[^0-9]/g, '').length < 7){ toast('Raqam juda qisqa'); return; }
+    toast('Saqlanmoqda...');
+    var b = { phone: p };
+    try {
+      var u = localStorage.getItem('ni_uid');
+      if(u) b.tg_id = parseInt(u);
+    } catch(e){}
+    apiPost('/api/user-saqlash', b).then(function(d){
+      if(d && d.ok){ haptic('medium'); showReg(role, onDone); }
+      else toast('Saqlanmadi');
+    }).catch(function(){ toast('Server xatosi'); });
+  }
+  window._qoldaYoz = qoldaYoz;
 
   function askPhone(){
     if(!TG || !TG.requestContact){
