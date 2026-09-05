@@ -7,7 +7,7 @@
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#000000">
 <link rel="apple-touch-icon" href="icon-192.png">
-<link rel="stylesheet" href="style.css?v=1788492203">
+<link rel="stylesheet" href="style.css?v=1788595370">
 <script>
 (function(){
   var inTG = false;
@@ -577,10 +577,20 @@ function openComments(p){
     if(!t) return;
     let nm = 'Siz';
     try { nm = TG.initDataUnsafe.user.first_name || 'Siz'; } catch(e){}
-    p.comments.push({ name: nm, text: t });
+    var rp = window._cmReply || null;
+    var txt = t;
+    if(rp && txt.indexOf('@' + rp.name) === 0){
+      txt = txt.slice(('@' + rp.name).length).trim();
+    }
+    p.comments.push({ name: nm, text: txt, reply_name: rp ? rp.name : null });
     inp.value = '';
     draw();
-    apiPost('/api/koment', { post_id: p.id, text: t }).catch(function(){});
+    apiPost('/api/koment', {
+      post_id: p.id, text: txt,
+      reply_to: rp ? rp.id : null,
+      reply_name: rp ? rp.name : null
+    }).catch(function(){});
+    window._cmReply = null;
     haptic('light');
 
     const art = document.querySelector('.post[data-id="' + p.id + '"]');
@@ -599,10 +609,24 @@ function openComments(p){
       return;
     }
     box.innerHTML = p.comments.map(function(c){
+      var rp = c.reply_name
+        ? '<span class="cm-rp">@' + esc(c.reply_name) + '</span> ' : '';
       return '<div class="cm"><img src="https://api.dicebear.com/7.x/initials/svg?seed=' +
         encodeURIComponent(c.name) + '"><div class="cm-txt"><b>' + esc(c.name) +
-        '</b><p>' + esc(c.text) + '</p></div></div>';
+        '</b><p>' + rp + esc(c.text) + '</p>' +
+        '<button class="cm-reply" data-n="' + esc(c.name) + '" data-i="' +
+        (c.id || '') + '">Javob berish</button></div></div>';
     }).join('');
+
+    box.querySelectorAll('.cm-reply').forEach(function(b){
+      b.addEventListener('click', function(){
+        var inp = el('cmInp');
+        if(!inp) return;
+        window._cmReply = { id: b.dataset.i, name: b.dataset.n };
+        inp.value = '@' + b.dataset.n + ' ';
+        inp.focus();
+      });
+    });
   }
 }
 

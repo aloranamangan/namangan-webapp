@@ -3378,3 +3378,11 @@ body{padding-bottom:80px !important;}
 }
 #pfAi{background:linear-gradient(135deg,#8B5CF6,#6366F1) !important;color:#fff !important;}
 #pfStat{background:#262626 !important;color:#fff !important;}
+
+/* ---- Komentariyaga javob ---- */
+.cm-reply{
+  background:none;border:none;padding:4px 0 0;cursor:pointer;
+  color:#9A9A90;font-family:inherit;font-size:11.5px;font-weight:700;
+}
+.cm-reply:active{opacity:.6;}
+.cm-rp{color:#4A9EE8;font-weight:700;}
