@@ -137,7 +137,7 @@ function showReg(role, onDone){
           apiPost('/api/user-saqlash', _bb).then(function(d){
             if(d && d.ok){
               haptic('medium');
-              setTimeout(function(){ location.reload(); }, 300);
+              setTimeout(function(){ try{ localStorage.setItem("ni_yangi","1"); }catch(e){} location.reload(); }, 300);
             }
             else toast('Saqlanmadi: ' + JSON.stringify(d).slice(0, 60));
           }).catch(function(){ toast('Server xatosi'); });
@@ -164,3 +164,62 @@ function showReg(role, onDone){
     });
   }
 }
+
+window.obunaTaklif = function(){
+  try {
+    if(localStorage.getItem('ni_obuna_taklif')) return;
+  } catch(e){}
+
+  var bg = document.createElement('div');
+  bg.className = 'sheet-bg';
+  bg.style.zIndex = '9300';
+  bg.innerHTML = '<div class="sheet" id="obS">' +
+    '<div class="sheet-bar"></div>' +
+    '<div class="wrap" style="text-align:center;padding-top:8px;">' +
+      '<div style="font-size:52px;margin-bottom:14px;">\uD83D\uDD14</div>' +
+      '<div style="font-size:19px;font-weight:800;color:#fff;margin-bottom:8px;">UYgram rasmiy profili</div>' +
+      '<div style="font-size:14px;color:#8e8e8e;line-height:1.6;margin-bottom:24px;">Obuna boling \u2014 yangi elonlar va sovgalardan<br>birinchi bolib xabardor boling</div>' +
+      '<button class="btn" id="obYes" style="margin-bottom:10px;">Obuna bolish</button>' +
+      '<button class="btn" id="obNo" style="background:#262626;">Keyinroq</button>' +
+    '</div></div>';
+
+  document.body.appendChild(bg);
+
+  function yop(){
+    try { localStorage.setItem('ni_obuna_taklif', '1'); } catch(e){}
+    bg.remove();
+  }
+
+  var no = bg.querySelector('#obNo');
+  var yes = bg.querySelector('#obYes');
+
+  if(no) no.onclick = yop;
+
+  if(yes) yes.onclick = function(){
+    yes.disabled = true;
+    yes.textContent = 'Obuna bolinmoqda...';
+
+    apiPost('/api/obuna', { username: 'dikkiylord', on: true })
+      .then(function(){
+        if(typeof haptic === 'function') haptic('medium');
+        if(typeof toast === 'function') toast('Obuna bolindi');
+        yop();
+      })
+      .catch(function(){
+        if(typeof toast === 'function') toast('Xato yuz berdi');
+        yes.disabled = false;
+        yes.textContent = 'Obuna bolish';
+      });
+  };
+};
+
+document.addEventListener('DOMContentLoaded', function(){
+  setTimeout(function(){
+    try {
+      if(localStorage.getItem('ni_yangi') === '1'){
+        localStorage.removeItem('ni_yangi');
+        if(window.obunaTaklif) window.obunaTaklif();
+      }
+    } catch(e){}
+  }, 2500);
+});
