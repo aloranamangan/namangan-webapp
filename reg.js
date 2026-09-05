@@ -138,7 +138,7 @@ function showReg(role, onDone){
             if(d && d.ok){
               haptic('medium');
               try { showReg(role, onDone); }
-              catch(er){ toast('XATO: ' + (er && er.message ? er.message : er)); }
+              catch(er){ setTimeout(function(){ location.reload(); }, 400); }
             }
             else toast('Saqlanmadi: ' + JSON.stringify(d).slice(0, 60));
           }).catch(function(){ toast('Server xatosi'); });
