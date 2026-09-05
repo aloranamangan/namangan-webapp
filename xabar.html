@@ -96,17 +96,32 @@ document.addEventListener('DOMContentLoaded', function(){
   });
 
   el('mf').addEventListener('click', function(){
-    pickFiles(false, function(items){
-      if(!items.length) return;
-      const it = items[0];
-      mediaData = it.media;
-      mediaVideo = it.is_video;
-      el('mf').classList.add('on');
-      el('mfName').textContent = it.is_video ? 'Video tanlandi' : 'Rasm tanlandi';
-      el('prevBox').innerHTML = it.is_video
-        ? '<video class="prev" src="' + it.media + '" controls></video>'
-        : '<img class="prev" src="' + it.media + '">';
-    });
+    var inp = document.createElement('input');
+    inp.type = 'file';
+    inp.accept = 'image/*,video/*';
+    inp.onchange = function(){
+      var f = inp.files[0];
+      if(!f) return;
+      if(f.size > 20 * 1024 * 1024){
+        toast('Fayl 20 MB dan katta');
+        return;
+      }
+      var isVid = f.type.indexOf('video') === 0;
+      el('mfName').textContent = 'Yuklanmoqda...';
+      var r = new FileReader();
+      r.onload = function(){
+        mediaData = r.result;
+        mediaVideo = isVid;
+        el('mf').classList.add('on');
+        el('mfName').textContent = isVid ? 'Video tanlandi' : 'Rasm tanlandi';
+        el('prevBox').innerHTML = isVid
+          ? '<video class="prev" src="' + r.result + '" controls></video>'
+          : '<img class="prev" src="' + r.result + '">';
+      };
+      r.onerror = function(){ el('mfName').textContent = 'Xato'; };
+      r.readAsDataURL(f);
+    };
+    inp.click();
   });
 
   el('go').addEventListener('click', function(){
