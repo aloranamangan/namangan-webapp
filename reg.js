@@ -96,7 +96,7 @@ function showReg(role, onDone){
       if(u) b.tg_id = parseInt(u);
     } catch(e){}
     apiPost('/api/user-saqlash', b).then(function(d){
-      if(d && d.ok){ haptic('medium'); showReg(role, onDone); }
+      if(d && d.ok){ haptic('medium'); setTimeout(function(){ location.reload(); }, 300); }
       else toast('Saqlanmadi');
     }).catch(function(){ toast('Server xatosi'); });
   }
@@ -116,7 +116,7 @@ function showReg(role, onDone){
       } catch(e){}
       apiPost('/api/user-saqlash', _b)
         .then(function(d){
-          if(d && d.ok){ haptic('medium'); showReg(role, onDone); }
+          if(d && d.ok){ haptic('medium'); setTimeout(function(){ location.reload(); }, 300); }
           else toast('Saqlanmadi');
         })
         .catch(function(){ toast('Server xatosi'); });
