@@ -51,17 +51,20 @@
     document.body.appendChild(bg);
     bg.onclick = function(e){ if(e.target === bg) bg.remove(); };
 
-    var uid = '';
-    try { uid = (typeof myId === 'function' ? myId() : '') || localStorage.getItem('ni_uid') || ''; } catch(e){}
+    var un = '';
+    try {
+      un = (typeof PF !== 'undefined' && PF && PF.username) ? PF.username : '';
+      if(!un && typeof USER !== 'undefined' && USER) un = USER.username || USER.nickname || '';
+    } catch(e){}
 
-    fetch(NA + '/api/bildirishnomalar?tg_id=' + encodeURIComponent(uid) +
+    fetch(NA + '/api/bildirishnomalar?username=' + encodeURIComponent(un) +
           '&init_data=' + encodeURIComponent(idata()) +
           '&token=' + encodeURIComponent(tok()))
       .then(function(r){ return r.json(); })
       .then(function(d){
         var box = document.getElementById('ntBody');
         if(!d || !d.ok){ box.innerHTML = '<div class="nt-empty">Xato</div>'; return; }
-        var list = d.notifs || d.items || d.royxat || [];
+        var list = d.items || d.notifs || d.royxat || [];
         if(!list.length){
           box.innerHTML = '<div class="nt-empty">' +
             '<div class="nt-ic">\uD83D\uDD14</div>' +
@@ -69,7 +72,7 @@
           return;
         }
         box.innerHTML = list.map(function(n){
-          var tur = n.type || n.tur || 'like';
+          var tur = n.kind || n.type || n.tur || 'like';
           var ism = n.name || n.ism || 'Foydalanuvchi';
           return '<div class="nt-row">' +
             '<div class="nt-em">' + (IC[tur] || '\uD83D\uDD14') + '</div>' +
