@@ -1011,7 +1011,7 @@ function openEditProfileOld(){
     const n = el('epName').value.trim();
     const nk = el('epNick').value.trim().replace(/^@/, '');
     if(n.length < 2){ toast('Ismni kiriting'); return; }
-    if(!confirm('Saqlaysizmi?\n\nKeyingi ozgartirish 30 kundan keyin mumkin boladi.')) return;
+    // tasdiqlash olib tashlandi (Telegram Mini App'da confirm ishlamaydi)
 
     const b = el('epSave');
     b.disabled = true;
