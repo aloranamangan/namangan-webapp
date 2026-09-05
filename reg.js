@@ -135,8 +135,12 @@ function showReg(role, onDone){
             if(_uu) _bb.tg_id = parseInt(_uu);
           } catch(e){}
           apiPost('/api/user-saqlash', _bb).then(function(d){
-            if(d && d.ok){ haptic('medium'); showReg(role, onDone); }
-            else toast('Saqlanmadi');
+            if(d && d.ok){
+              haptic('medium');
+              try { showReg(role, onDone); }
+              catch(er){ toast('XATO: ' + (er && er.message ? er.message : er)); }
+            }
+            else toast('Saqlanmadi: ' + JSON.stringify(d).slice(0, 60));
           }).catch(function(){ toast('Server xatosi'); });
           return;
         }
