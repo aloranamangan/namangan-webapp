@@ -1290,8 +1290,8 @@ document.addEventListener('DOMContentLoaded', function(){
     const hb = el('tbHeart');
     if(hb) hb.addEventListener('click', function(){
       haptic('light');
-      if(typeof openNotifs === 'function') openNotifs();
-      else toast('Bildirishnomalar');
+      if(typeof window.openNotifs === 'function') window.openNotifs();
+      else toast('Bildirishnomalar yuklanmadi');
     });
 
     const db_ = el('tbDm');
