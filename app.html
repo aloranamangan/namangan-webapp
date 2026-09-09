@@ -7,7 +7,7 @@
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#000000">
 <link rel="apple-touch-icon" href="icon-192.png">
-<link rel="stylesheet" href="style.css?v=1788974701">
+<link rel="stylesheet" href="style.css?v=1788975326">
 <script>
 (function(){
   var inTG = false;
@@ -413,7 +413,7 @@ function postHTML(p){
     '</div>' +
     '<div class="post-body">' +
       (p.price ? '<div class="price">' + esc(p.price) + '</div>' : '') + tag +
-      (body ? '<div class="desc">' + esc(body) + '</div>' : '') +
+      (body ? '<div class="desc">' + hesh(esc(body)) + '</div>' : '') +
     '</div>' +
     (p.created ? '<div class="post-time">' + timeAgo(p.created) + '</div>' : '') +
     '</article>';
@@ -1470,5 +1470,51 @@ window.tglVol = function(btn, e){
 };
 </script>
 <script src="notif.js?v=1788600914"></script>
+<script>
+function hesh(s){
+  return String(s || '').replace(/#([\w\u0400-\u04FF']{2,30})/g,
+    '<b class="tg-lnk" onclick="window.tegQidir && window.tegQidir(\'$1\')">#$1</b>');
+}
+
+window.tegQidir = function(t){
+  try {
+    var q = document.getElementById('q');
+    if(q){
+      if(typeof go === 'function') go('vSearch');
+      q.value = '#' + t;
+      if(typeof doSearch === 'function') doSearch('#' + t);
+    }
+  } catch(e){}
+};
+
+// Tavsiya tartibi
+window.tavsiyaTartibla = function(list){
+  try {
+    if(!window._tartib || !window._tartib.length) return list;
+    var m = {};
+    window._tartib.forEach(function(id, i){ m[id] = i; });
+    return list.slice().sort(function(a, b){
+      var x = m[a.id], y = m[b.id];
+      if(x === undefined && y === undefined) return b.id - a.id;
+      if(x === undefined) return 1;
+      if(y === undefined) return -1;
+      return x - y;
+    });
+  } catch(e){ return list; }
+};
+
+(function(){
+  var uid = '';
+  try { uid = localStorage.getItem('ni_uid') || ''; } catch(e){}
+  fetch('https://api.namangan-ijara.uz/api/tavsiya?tg_id=' + encodeURIComponent(uid))
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(d && d.ok && d.tartib){
+        window._tartib = d.tartib;
+        if(typeof drawFeed === 'function') drawFeed();
+      }
+    }).catch(function(){});
+})();
+</script>
 </body>
 </html>

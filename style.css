@@ -3427,3 +3427,6 @@ body{padding-bottom:80px !important;}
 }
 .cm-like.on{color:#E8433D}
 .cm-like:active{opacity:.6}
+
+.tg-lnk{color:#4A9EE8;font-weight:700;cursor:pointer}
+.tg-lnk:active{opacity:.6}
