@@ -241,5 +241,81 @@ document.addEventListener('DOMContentLoaded', function(){
   yukla();
 })();
 </script>
+<div id="krBox" style="margin:18px 14px;padding:16px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid rgba(212,175,55,.25);">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+    <div style="font-size:14px;font-weight:800;color:#F0C868;">To'lov kartalari</div>
+    <button id="krAdd" style="padding:6px 13px;border-radius:9px;border:none;cursor:pointer;background:linear-gradient(135deg,#F0C868,#D4AF37);color:#12100A;font-family:inherit;font-size:11.5px;font-weight:800;">+ Qo'shish</button>
+  </div>
+  <div style="font-size:11.5px;color:#9A9A90;margin-bottom:14px;">Faol karta to'lov oynasida ko'rsatiladi</div>
+  <div id="krList" style="font-size:12.5px;color:#9A9A90;">Yuklanmoqda...</div>
+</div>
+<script>
+(function(){
+  var KA = 'https://api.namangan-ijara.uz';
+  var KART = [];
+  function idata(){ try { return (window.Telegram&&Telegram.WebApp&&Telegram.WebApp.initData)||''; } catch(e){ return ''; } }
+  function tok(){ try { return localStorage.getItem('ni_token')||''; } catch(e){ return ''; } }
+  function kEsc(s){ return String(s||'').replace(/[<>&"]/g, function(m){ return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[m]; }); }
+
+  function chiz(){
+    var L = document.getElementById('krList');
+    if(!KART.length){ L.textContent = 'Karta yoq'; return; }
+    L.innerHTML = KART.map(function(k, i){
+      return '<div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.06);">' +
+        '<button data-f="' + i + '" style="width:20px;height:20px;border-radius:50%;border:2px solid ' +
+        (k.faol ? '#D4AF37' : 'rgba(255,255,255,.2)') + ';background:' +
+        (k.faol ? '#D4AF37' : 'transparent') + ';cursor:pointer;flex-shrink:0;"></button>' +
+        '<div style="flex:1;"><div style="color:#F5F5F0;font-weight:700;letter-spacing:.5px;">' +
+        kEsc(k.raqam) + '</div><div style="font-size:11px;color:#9A9A90;">' + kEsc(k.egasi) + '</div></div>' +
+        '<button data-d="' + i + '" style="padding:5px 11px;border-radius:8px;border:1px solid rgba(232,67,61,.35);background:rgba(232,67,61,.1);color:#E8433D;font-family:inherit;font-size:11px;cursor:pointer;">O\'chirish</button>' +
+        '</div>';
+    }).join('');
+
+    L.querySelectorAll('button[data-f]').forEach(function(b){
+      b.onclick = function(){
+        var i = +b.dataset.f;
+        KART.forEach(function(k, j){ k.faol = (j === i); });
+        saqla();
+      };
+    });
+    L.querySelectorAll('button[data-d]').forEach(function(b){
+      b.onclick = function(){
+        var i = +b.dataset.d;
+        if(!confirm('Kartani ochirasizmi?')) return;
+        KART.splice(i, 1);
+        saqla();
+      };
+    });
+  }
+
+  function saqla(){
+    fetch(KA + '/api/karta-saqlash', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ kartalar: KART, init_data: idata(), token: tok() })
+    }).then(function(r){ return r.json(); }).then(function(d){
+      if(d && d.ok){ KART = d.kartalar || KART; chiz(); }
+      else alert('Saqlanmadi');
+    }).catch(function(){ alert('Server xatosi'); });
+  }
+
+  function yukla(){
+    fetch(KA + '/api/kartalar').then(function(r){ return r.json(); })
+      .then(function(d){ if(d && d.ok){ KART = d.kartalar || []; chiz(); } })
+      .catch(function(){ document.getElementById('krList').textContent = 'Xato'; });
+  }
+
+  var ab = document.getElementById('krAdd');
+  if(ab) ab.onclick = function(){
+    var r = prompt('Karta raqami:', '8600 ');
+    if(!r) return;
+    var e = prompt('Karta egasi:', '');
+    if(e === null) e = '';
+    KART.push({ raqam: r.trim(), egasi: e.trim(), faol: KART.length === 0 });
+    saqla();
+  };
+
+  yukla();
+})();
+</script>
 </body>
 </html>
