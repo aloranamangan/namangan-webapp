@@ -89,3 +89,71 @@
       });
   };
 })();
+
+// ---------- Hammualif takliflari ----------
+(function(){
+  var HA = 'https://api.namangan-ijara.uz';
+
+  function hIdata(){
+    try { return (window.Telegram && Telegram.WebApp && Telegram.WebApp.initData) || ''; }
+    catch(e){ return ''; }
+  }
+  function hTok(){
+    try { return localStorage.getItem('ni_token') || ''; } catch(e){ return ''; }
+  }
+  function hUid(){
+    try { return localStorage.getItem('ni_uid') || ''; } catch(e){ return ''; }
+  }
+
+  window.showHammualif = function(){
+    var bg = document.createElement('div');
+    bg.className = 'nt-bg';
+    bg.innerHTML =
+      '<div class="nt-sheet">' +
+        '<div class="nt-grip"></div>' +
+        '<div class="nt-head"><b>\uD83E\uDD1D Hammualif takliflari</b></div>' +
+        '<div class="nt-body" id="hmBody"><div class="nt-load">Yuklanmoqda...</div></div>' +
+      '</div>';
+    document.body.appendChild(bg);
+    bg.onclick = function(e){ if(e.target === bg) bg.remove(); };
+
+    function yukla(){
+      fetch(HA + '/api/hammualif-royxat?tg_id=' + encodeURIComponent(hUid()))
+        .then(function(r){ return r.json(); })
+        .then(function(d){
+          var box = document.getElementById('hmBody');
+          var t = (d && d.takliflar) || [];
+          if(!t.length){
+            box.innerHTML = '<div class="nt-empty"><div class="nt-ic">\uD83E\uDD1D</div>' +
+              '<p>Taklif yoq</p></div>';
+            return;
+          }
+          box.innerHTML = t.map(function(x){
+            return '<div class="hm-row" data-i="' + x.id + '">' +
+              '<div class="hm-tx">' + String(x.matn || 'Elon').replace(/[<>&]/g,'') + '</div>' +
+              '<div class="hm-b">' +
+              '<button class="hm-ok" data-i="' + x.id + '">Qabul</button>' +
+              '<button class="hm-no" data-i="' + x.id + '">Rad</button>' +
+              '</div></div>';
+          }).join('');
+
+          box.querySelectorAll('.hm-ok, .hm-no').forEach(function(b){
+            b.onclick = function(){
+              var qabul = b.classList.contains('hm-ok');
+              b.disabled = true;
+              fetch(HA + '/api/hammualif-javob', {
+                method:'POST', headers:{'Content-Type':'application/json'},
+                body: JSON.stringify({ id: b.dataset.i, qabul: qabul,
+                  tg_id: parseInt(hUid()) || 0, init_data: hIdata(), token: hTok() })
+              }).then(function(r){ return r.json(); }).then(function(){ yukla(); })
+                .catch(function(){ b.disabled = false; });
+            };
+          });
+        })
+        .catch(function(){
+          document.getElementById('hmBody').innerHTML = '<div class="nt-empty">Xato</div>';
+        });
+    }
+    yukla();
+  };
+})();
