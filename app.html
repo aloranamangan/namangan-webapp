@@ -7,7 +7,7 @@
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#000000">
 <link rel="apple-touch-icon" href="icon-192.png">
-<link rel="stylesheet" href="style.css?v=1788598587">
+<link rel="stylesheet" href="style.css?v=1788974701">
 <script>
 (function(){
   var inTG = false;
@@ -614,9 +614,33 @@ function openComments(p){
       return '<div class="cm"><img src="https://api.dicebear.com/7.x/initials/svg?seed=' +
         encodeURIComponent(c.name) + '"><div class="cm-txt"><b>' + esc(c.name) +
         '</b><p>' + rp + esc(c.text) + '</p>' +
+        '<div class="cm-acts">' +
         '<button class="cm-reply" data-n="' + esc(c.name) + '" data-i="' +
-        (c.id || '') + '">Javob berish</button></div></div>';
+        (c.id || '') + '">Javob berish</button>' +
+        '<button class="cm-like" data-l="' + (c.id || '') + '">' +
+        '\u2661 <span>' + (c.likes || 0) + '</span></button>' +
+        '</div></div></div>';
     }).join('');
+
+    box.querySelectorAll('.cm-like').forEach(function(b){
+      b.addEventListener('click', function(){
+        var sp = b.querySelector('span');
+        b.disabled = true;
+        var body = { comment_id: b.dataset.l };
+        try {
+          var u = localStorage.getItem('ni_uid');
+          if(u) body.tg_id = parseInt(u);
+        } catch(e){}
+        apiPost('/api/koment-layk', body).then(function(d){
+          b.disabled = false;
+          if(d && d.ok){
+            sp.textContent = d.likes;
+            b.classList.toggle('on', d.bosilgan);
+            haptic('light');
+          }
+        }).catch(function(){ b.disabled = false; });
+      });
+    });
 
     box.querySelectorAll('.cm-reply').forEach(function(b){
       b.addEventListener('click', function(){

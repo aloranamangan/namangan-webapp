@@ -3418,3 +3418,12 @@ body{padding-bottom:80px !important;}
 .nt-tx b{color:#F5F5F0;font-weight:700;}
 .nt-sub{display:block;font-size:11.5px;color:#7A7A72;margin-top:2px;}
 .nt-t{font-size:11px;color:#7A7A72;flex-shrink:0;}
+
+.cm-acts{display:flex;align-items:center;gap:14px;margin-top:4px}
+.cm-like{
+  background:none;border:none;padding:0;cursor:pointer;
+  color:#9A9A90;font-family:inherit;font-size:11.5px;font-weight:700;
+  display:flex;align-items:center;gap:3px;
+}
+.cm-like.on{color:#E8433D}
+.cm-like:active{opacity:.6}
