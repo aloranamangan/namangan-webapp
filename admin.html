@@ -76,11 +76,11 @@ function boot(){
 }
 
 function drawStats(){
-  const m = USERS.filter(function(u){ return u.role === 'makler'; }).length;
-  const x = USERS.filter(function(u){ return u.role === 'xaridor'; }).length;
+  const m = USERS.filter(function(u){ return u.status === 'approved'; }).length;
+  const x = USERS.length - m;
   el('stats').innerHTML =
     '<div class="box"><b>' + USERS.length + '</b><span>jami aʼzo</span></div>' +
-    '<div class="box"><b>' + m + '</b><span>sotuvchi</span></div>' +
+    '<div class="box"><b>' + m + '</b><span>makler</span></div>' +
     '<div class="box"><b>' + x + '</b><span>xaridor</span></div>';
 }
 
