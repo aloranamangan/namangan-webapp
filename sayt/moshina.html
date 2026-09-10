@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mashinalar</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0C0C0C;color:#F5F5F0;font-family:'Manrope',sans-serif;
+  padding:30px 16px;line-height:1.6}
+h1{font-size:20px;font-weight:800;margin-bottom:6px;text-align:center}
+.sub{font-size:12px;color:#8A8A82;text-align:center;margin-bottom:34px}
+.card{margin-bottom:34px;padding:26px 14px;border-radius:18px;
+  background:linear-gradient(160deg,#151515,#0E0E0E);
+  border:1px solid rgba(255,255,255,.07)}
+.nm{font-size:13px;font-weight:800;color:#F0C868;margin-bottom:16px;text-align:center}
+.stage{position:relative;height:110px;overflow:hidden}
+.road{position:absolute;bottom:14px;left:0;right:0;height:3px;
+  background:repeating-linear-gradient(90deg,#3A3A3A 0 22px,transparent 22px 42px)}
+.car{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);
+  animation:bob 1.4s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateX(-50%) translateY(0)}
+  50%{transform:translateX(-50%) translateY(-2px)}}
+.whl{animation:spin .55s linear infinite;transform-origin:center}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<h1>Mashinalar</h1>
+<div class="sub">Qaysi biri yoqdi?</div>
+
+<!-- LACETTI -->
+<div class="card">
+  <div class="nm">1. Lacetti</div>
+  <div class="stage">
+    <div class="road"></div>
+    <svg class="car" width="230" height="86" viewBox="0 0 230 86">
+      <defs>
+        <linearGradient id="l1" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#F2F2F2"/><stop offset="1" stop-color="#C4C4C4"/>
+        </linearGradient>
+        <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#3E5C74"/><stop offset="1" stop-color="#1E3242"/>
+        </linearGradient>
+      </defs>
+      <!-- kuzov -->
+      <path d="M16 58 L20 44 Q24 36 36 34 L74 30 Q86 20 106 19 L140 19 Q158 20 168 31 L196 36 Q210 39 212 48 L213 58 Q213 63 206 63 L23 63 Q16 63 16 58 Z"
+            fill="url(#l1)" stroke="#9A9A9A" stroke-width="1"/>
+      <!-- oynalar -->
+      <path d="M80 31 Q90 23 107 22 L125 22 L125 31 Z" fill="url(#g1)"/>
+      <path d="M131 22 L140 22 Q154 23 162 31 L131 31 Z" fill="url(#g1)"/>
+      <!-- eshik chizigi -->
+      <path d="M126 32 L126 60" stroke="#A8A8A8" stroke-width="1.2"/>
+      <!-- UYgram belgi -->
+      <circle cx="106" cy="47" r="13" fill="#12100A" stroke="#D4AF37" stroke-width="1.6"/>
+      <text x="106" y="51" font-size="10" font-weight="800" fill="#F0C868"
+            text-anchor="middle" font-family="Manrope,sans-serif">UY</text>
+      <!-- chiroqlar -->
+      <rect x="205" y="43" width="8" height="6" rx="2" fill="#FFE9A8"/>
+      <rect x="17" y="45" width="7" height="5" rx="2" fill="#E8433D"/>
+      <!-- gildiraklar -->
+      <circle cx="60" cy="63" r="13" fill="#141414"/>
+      <circle cx="172" cy="63" r="13" fill="#141414"/>
+      <g class="whl" style="transform-box:fill-box">
+        <circle cx="60" cy="63" r="7" fill="#8A8A8A"/>
+        <path d="M60 57 L60 69 M54 63 L66 63" stroke="#4A4A4A" stroke-width="1.6"/>
+      </g>
+      <g class="whl" style="transform-box:fill-box">
+        <circle cx="172" cy="63" r="7" fill="#8A8A8A"/>
+        <path d="M172 57 L172 69 M166 63 L178 63" stroke="#4A4A4A" stroke-width="1.6"/>
+      </g>
+    </svg>
+  </div>
+</div>
+
+<!-- MALIBU -->
+<div class="card">
+  <div class="nm">2. Malibu</div>
+  <div class="stage">
+    <div class="road"></div>
+    <svg class="car" width="240" height="86" viewBox="0 0 240 86">
+      <defs>
+        <linearGradient id="l2" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#2B2B2B"/><stop offset="1" stop-color="#0E0E0E"/>
+        </linearGradient>
+        <linearGradient id="g2" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#4A6478"/><stop offset="1" stop-color="#1A2A36"/>
+        </linearGradient>
+      </defs>
+      <path d="M14 58 L17 43 Q20 34 34 32 L70 27 Q84 16 108 15 L146 15 Q168 17 180 29 L206 34 Q220 37 222 47 L223 58 Q223 63 216 63 L21 63 Q14 63 14 58 Z"
+            fill="url(#l2)" stroke="#3A3A3A" stroke-width="1"/>
+      <path d="M78 29 Q88 20 108 19 L128 19 L128 29 Z" fill="url(#g2)"/>
+      <path d="M134 19 L146 19 Q164 21 174 29 L134 29 Z" fill="url(#g2)"/>
+      <path d="M130 30 L130 60" stroke="#4A4A4A" stroke-width="1.2"/>
+      <circle cx="108" cy="46" r="13" fill="#12100A" stroke="#D4AF37" stroke-width="1.6"/>
+      <text x="108" y="50" font-size="10" font-weight="800" fill="#F0C868"
+            text-anchor="middle" font-family="Manrope,sans-serif">UY</text>
+      <rect x="215" y="42" width="8" height="6" rx="2" fill="#FFF3CC"/>
+      <rect x="15" y="44" width="7" height="5" rx="2" fill="#E8433D"/>
+      <circle cx="60" cy="63" r="14" fill="#111"/>
+      <circle cx="180" cy="63" r="14" fill="#111"/>
+      <g class="whl" style="transform-box:fill-box">
+        <circle cx="60" cy="63" r="7.5" fill="#9A9A9A"/>
+        <path d="M60 56 L60 70 M53 63 L67 63" stroke="#3A3A3A" stroke-width="1.8"/>
+      </g>
+      <g class="whl" style="transform-box:fill-box">
+        <circle cx="180" cy="63" r="7.5" fill="#9A9A9A"/>
+        <path d="M180 56 L180 70 M173 63 L187 63" stroke="#3A3A3A" stroke-width="1.8"/>
+      </g>
+    </svg>
+  </div>
+</div>
+
+<!-- BMW -->
+<div class="card">
+  <div class="nm">3. BMW</div>
+  <div class="stage">
+    <div class="road"></div>
+    <svg class="car" width="248" height="86" viewBox="0 0 248 86">
+      <defs>
+        <linearGradient id="l3" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#1E3A5F"/><stop offset="1" stop-color="#0A1826"/>
+        </linearGradient>
+        <linearGradient id="g3" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#5A7A92"/><stop offset="1" stop-color="#1E3444"/>
+        </linearGradient>
+      </defs>
+      <path d="M12 57 L15 41 Q18 32 32 30 L66 24 Q82 13 110 12 L152 12 Q176 14 190 27 L214 32 Q228 35 230 46 L231 57 Q231 63 224 63 L19 63 Q12 63 12 57 Z"
+            fill="url(#l3)" stroke="#2A4A6A" stroke-width="1"/>
+      <path d="M74 27 Q86 17 110 16 L132 16 L132 27 Z" fill="url(#g3)"/>
+      <path d="M138 16 L152 16 Q172 18 184 27 L138 27 Z" fill="url(#g3)"/>
+      <path d="M134 28 L134 59" stroke="#3A5A78" stroke-width="1.2"/>
+      <circle cx="110" cy="45" r="14" fill="#12100A" stroke="#D4AF37" stroke-width="1.8"/>
+      <text x="110" y="49" font-size="10.5" font-weight="800" fill="#F0C868"
+            text-anchor="middle" font-family="Manrope,sans-serif">UY</text>
+      <rect x="223" y="41" width="8" height="6" rx="2" fill="#DCEEFF"/>
+      <rect x="13" y="43" width="7" height="5" rx="2" fill="#E8433D"/>
+      <circle cx="62" cy="63" r="15" fill="#0E0E0E"/>
+      <circle cx="188" cy="63" r="15" fill="#0E0E0E"/>
+      <g class="whl" style="transform-box:fill-box">
+        <circle cx="62" cy="63" r="8" fill="#AAA"/>
+        <path d="M62 55 L62 71 M54 63 L70 63 M56 57 L68 69 M68 57 L56 69"
+              stroke="#333" stroke-width="1.5"/>
+      </g>
+      <g class="whl" style="transform-box:fill-box">
+        <circle cx="188" cy="63" r="8" fill="#AAA"/>
+        <path d="M188 55 L188 71 M180 63 L196 63 M182 57 L194 69 M194 57 L182 69"
+              stroke="#333" stroke-width="1.5"/>
+      </g>
+    </svg>
+  </div>
+</div>
+
+</body>
+</html>
