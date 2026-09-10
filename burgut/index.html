@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>UyGram — Orzudagi uy endi yanada yaqin</title>
+<link rel="icon" href="../icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<canvas id="eagle-canvas" aria-hidden="true"></canvas>
+
+<header class="nav" id="nav">
+  <a class="brand" href="#top">
+    <span class="brand-mark"></span>
+    <span class="brand-name">UyGram</span>
+  </a>
+  <nav class="nav-links">
+    <a href="#top">Bosh sahifa</a>
+    <a href="#ijara">Ijaralar</a>
+    <a href="#sotuv">Sotuv</a>
+    <a href="#biz">Biz haqimizda</a>
+    <a href="#aloqa">Aloqa</a>
+  </nav>
+  <a class="nav-cta" href="#aloqa">Bog'lanish</a>
+  <button class="nav-burger" id="burger" aria-label="Menyu"><span></span><span></span></button>
+</header>
+
+<section class="hero" id="top">
+  <div class="hero-glow"></div>
+  <div class="hero-inner">
+    <p class="hero-kicker">Namangan &middot; ko'chmas mulk</p>
+    <h1>Orzudagi uy endi<br>yanada yaqin!</h1>
+    <p class="hero-sub">UyGram bilan oson, tez va ishonchli!</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="#qidiruv">Uy qidirish</a>
+      <a class="btn btn-ghost" href="#sotuv">E'lon joylash</a>
+    </div>
+    <dl class="hero-stats">
+      <div><dt>1 240</dt><dd>faol e'lon</dd></div>
+      <div><dt>5 800</dt><dd>foydalanuvchi</dd></div>
+      <div><dt>12</dt><dd>tuman qamrovi</dd></div>
+    </dl>
+  </div>
+  <figure class="hero-house">
+    <div class="ph ph-hero" data-ph="hero-house.jpg"></div>
+  </figure>
+</section>
+
+<section class="search" id="qidiruv">
+  <form class="search-card glass" onsubmit="return false;">
+    <div class="field"><label>Turi</label>
+      <select><option>Kvartira</option><option>Hovli</option><option>Ofis</option><option>Do'kon</option><option>Yer</option></select></div>
+    <div class="field"><label>Maqsad</label>
+      <select><option>Sotib olish</option><option>Ijaraga olish</option><option>Kunlik ijara</option></select></div>
+    <div class="field"><label>Hudud</label>
+      <select><option>Namangan shahri</option><option>Chorsu</option><option>Uychi</option><option>Chust</option><option>Pop</option></select></div>
+    <div class="field"><label>Byudjet</label>
+      <input type="text" inputmode="numeric" placeholder="420 000 000"></div>
+    <button class="btn btn-primary search-go">Qidirish</button>
+  </form>
+</section>
+
+<section class="featured" id="tanlangan">
+  <div class="sec-head">
+    <h2>Tanlangan uy</h2>
+    <p>Har hafta bitta uyni tanlab, to'liq tekshirib chiqamiz — hujjat, narx, holat.</p>
+  </div>
+  <figure class="featured-card">
+    <div class="ph ph-featured" id="perch-house" data-eagle-perch
+         data-perch-x="0.66" data-perch-y="18" data-ph="featured-house.jpg"></div>
+    <figcaption class="featured-meta glass">
+      <div>
+        <h3>Navoiy ko'chasi, 4 xonali</h3>
+        <p>142 m&sup2; &middot; 2 qavat &middot; ta'mirlangan &middot; hovli 6 sotix</p>
+      </div>
+      <strong class="price">1 420 000 000 so'm</strong>
+    </figcaption>
+  </figure>
+</section>
+
+<section class="listings" id="ijara">
+  <div class="sec-head"><h2>Ijaraga beriladi</h2>
+    <p>Oylik va kunlik ijara. Barcha e'lonlar egasi bilan tasdiqlangan.</p></div>
+  <div class="grid" id="grid-rent"></div>
+</section>
+
+<section class="listings" id="sotuv">
+  <div class="sec-head"><h2>Sotuvda</h2>
+    <p>Kvartira, hovli, ofis va yer maydonlari — to'g'ridan-to'g'ri egasidan.</p></div>
+  <div class="grid" id="grid-sale"></div>
+</section>
+
+<section class="why" id="biz">
+  <div class="sec-head"><h2>Nega UyGram</h2>
+    <p>Biz vositachi emasmiz. Sizni to'g'ridan-to'g'ri uy egasi bilan bog'laymiz.</p></div>
+  <ul class="why-list">
+    <li class="glass"><h3>Tekshirilgan e'lonlar</h3>
+      <p>Har bir e'lon egasi bilan telefon orqali tasdiqlanadi.</p></li>
+    <li class="glass"><h3>Video va 360&deg;</h3>
+      <p>Uyni kelmasdan ko'rasiz — 1 GB gacha video va panorama.</p></li>
+    <li class="glass"><h3>Xaritadan qidirish</h3>
+      <p>Qaysi mahalla, qaysi ko'cha — aniq joylashuv xaritada.</p></li>
+    <li class="glass"><h3>Komissiya yo'q</h3>
+      <p>Egasi bilan o'zingiz gaplashasiz. Kelishuvdan foiz olmaymiz.</p></li>
+  </ul>
+</section>
+
+<section class="contact" id="aloqa">
+  <div class="contact-card glass">
+    <h2>Uy topishni boshlaymizmi</h2>
+    <p>Qo'ng'iroq qiling yoki Telegramdan yozing — bir kun ichida javob beramiz.</p>
+    <div class="contact-rows">
+      <a class="crow" href="tel:+998945011818">
+        <span class="crow-k">Telefon</span><span class="crow-v">+998 94 501 18 18</span></a>
+      <a class="crow" href="https://t.me/uygram" target="_blank" rel="noopener">
+        <span class="crow-k">Telegram</span><span class="crow-v">@uygram</span></a>
+      <a class="crow" href="https://instagram.com/uygram_official" target="_blank" rel="noopener">
+        <span class="crow-k">Instagram</span><span class="crow-v">uygram_official</span></a>
+      <a class="crow" href="https://www.namangan-ijara.uz" target="_blank" rel="noopener">
+        <span class="crow-k">Sayt</span><span class="crow-v">www.namangan-ijara.uz</span></a>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="foot-brand"><span class="brand-mark"></span><span class="brand-name">UyGram</span></div>
+  <p class="foot-note">Namangan viloyati ko'chmas mulk platformasi</p>
+  <p class="foot-copy">&copy; 2026 UyGram</p>
+</footer>
+
+<aside class="eagle-test" id="eagle-test">
+  <button class="et-toggle" id="et-toggle">EAGLE TEST</button>
+  <div class="et-body" id="et-body">
+    <div class="et-btns">
+      <button data-et="play">Play</button>
+      <button data-et="pause">Pause</button>
+      <button data-et="reset">Reset</button>
+      <button data-et="land">Fly to Landing</button>
+      <button data-et="takeoff">Take Off</button>
+    </div>
+    <div class="et-read"><span>Scroll progress</span><b id="et-prog">0%</b></div>
+    <div class="et-read"><span>Eagle state</span><b id="et-state">Flying</b></div>
+    <div class="et-read"><span>Asset</span><b id="et-asset">placeholder</b></div>
+  </div>
+</aside>
+
+<script src="script.js"></script>
+</body>
+</html>
