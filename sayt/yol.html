@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>UYgram — Namangan bo'ylab sayohat</title>
+<link rel="icon" href="../icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--gold:#D4AF37;--gold2:#F0C868;--tx:#F5F5F0;--mut:#8A8A82}
+html{scroll-behavior:smooth}
+body{background:#080808;color:var(--tx);font-family:'Manrope',sans-serif;
+  overflow-x:hidden;line-height:1.6}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:14px 20px;
+  display:flex;align-items:center;justify-content:space-between;
+  backdrop-filter:blur(16px);background:rgba(8,8,8,.75)}
+.nl{display:flex;align-items:center;gap:9px}
+.nl img{width:32px;height:32px;border-radius:9px}
+.nl b{font-size:16px;font-weight:800}
+.nl b i{color:var(--gold);font-style:normal}
+.nb{padding:9px 17px;border-radius:22px;border:none;
+  background:linear-gradient(135deg,var(--gold2),var(--gold));color:#12100A;
+  font-family:inherit;font-size:12.5px;font-weight:800;text-decoration:none}
+
+header{min-height:88svh;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:100px 20px 40px;text-align:center}
+h1{font-size:clamp(32px,9vw,60px);font-weight:800;line-height:1.06;
+  letter-spacing:-1.6px;margin-bottom:16px}
+.gr{background:linear-gradient(115deg,var(--gold2),var(--gold),#F8E9B8,var(--gold2));
+  background-size:300% auto;-webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;animation:sh 6s linear infinite}
+@keyframes sh{to{background-position:300% center}}
+header p{font-size:14.5px;color:var(--mut);max-width:400px;margin-bottom:30px}
+.scr{width:21px;height:34px;border:2px solid rgba(255,255,255,.14);border-radius:12px}
+.scr i{display:block;width:3px;height:6px;border-radius:2px;background:var(--gold);
+  margin:6px auto;animation:wh 1.9s ease-in-out infinite}
+@keyframes wh{0%{opacity:0;transform:translateY(0)}40%{opacity:1}
+  80%{opacity:0;transform:translateY(11px)}100%{opacity:0}}
+
+/* SAYOHAT */
+#trip{position:relative;padding:40px 0 80px}
+#svgWrap{position:absolute;inset:0;z-index:0;pointer-events:none}
+#road{width:100%;height:100%}
+.rp{fill:none;stroke:#1E1E1E;stroke-width:26;stroke-linecap:round}
+.rd{fill:none;stroke:#3A3A3A;stroke-width:2.5;stroke-linecap:round;
+  stroke-dasharray:16 20}
+.rg{fill:none;stroke:var(--gold);stroke-width:3;stroke-linecap:round;opacity:.5}
+
+.car{position:fixed;z-index:40;width:132px;pointer-events:none;
+  left:50%;top:50%;transform:translate(-50%,-50%);
+  transition:opacity .3s;opacity:0}
+.car.on{opacity:1}
+.car img{width:100%;display:block;filter:drop-shadow(0 8px 18px rgba(0,0,0,.6))}
+.car-lg{position:absolute;top:38%;left:50%;transform:translate(-50%,-50%);
+  display:flex;flex-direction:column;align-items:center;gap:1px;
+  pointer-events:none}
+.car-lg img{width:17px;height:17px;border-radius:5px;
+  box-shadow:0 1px 4px rgba(0,0,0,.5)}
+.car-lg span{font-size:6px;font-weight:800;color:#fff;
+  text-shadow:0 1px 3px rgba(0,0,0,.9);letter-spacing:.2px}
+
+.stops{position:relative;z-index:2}
+.stop{min-height:78svh;display:flex;align-items:center;padding:30px 20px}
+.stop:nth-child(even){justify-content:flex-end}
+.sc{width:min(340px,88%);padding:0 0 18px;border-radius:20px;overflow:hidden;
+  background:linear-gradient(165deg,rgba(255,255,255,.055),rgba(255,255,255,.015));
+  border:1px solid rgba(255,255,255,.08);
+  opacity:0;transform:translateY(40px) scale(.96);
+  transition:.85s cubic-bezier(.2,.85,.3,1);
+  backdrop-filter:blur(6px)}
+.sc.in{opacity:1;transform:none}
+.sc-img{width:100%;height:170px;object-fit:cover;display:block}
+.sc-pin{display:inline-flex;align-items:center;gap:5px;margin:14px 18px 0;
+  padding:4px 11px;border-radius:14px;background:rgba(212,175,55,.13);
+  border:1px solid rgba(212,175,55,.3);
+  font-size:10.5px;font-weight:800;color:var(--gold2)}
+.sc h3{font-size:18px;font-weight:800;margin:11px 18px 5px;letter-spacing:-.4px}
+.sc p{font-size:12.8px;color:var(--mut);margin:0 18px}
+
+.fin{text-align:center;padding:70px 20px 90px;position:relative;z-index:2}
+.ofis{width:min(300px,84%);margin:0 auto 26px;border-radius:20px;overflow:hidden;
+  border:1px solid rgba(212,175,55,.3);
+  box-shadow:0 20px 50px rgba(0,0,0,.6)}
+.ofis img{width:100%;display:block}
+.fin h2{font-size:clamp(24px,6.5vw,38px);font-weight:800;
+  letter-spacing:-1px;margin-bottom:12px}
+.fin p{font-size:14px;color:var(--mut);margin-bottom:28px}
+.b1{padding:16px 34px;border-radius:32px;border:none;display:inline-block;
+  background:linear-gradient(135deg,var(--gold2),var(--gold));color:#12100A;
+  font-family:inherit;font-size:14.5px;font-weight:800;text-decoration:none;
+  box-shadow:0 12px 34px rgba(212,175,55,.32)}
+
+footer{padding:44px 20px 40px;border-top:1px solid rgba(255,255,255,.07);
+  text-align:center}
+.soc{display:flex;gap:11px;justify-content:center;flex-wrap:wrap;margin-bottom:22px}
+.soc a{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.08);color:var(--gold2);
+  text-decoration:none;font-size:17px}
+.ft{font-size:13px;margin-bottom:4px}
+.ft a{color:var(--gold2);text-decoration:none;font-weight:700}
+.fc{font-size:11px;color:#4F4F4A;margin-top:18px}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nl"><img src="../icon-192.png" alt=""><b>UY<i>gram</i></b></div>
+  <a href="https://t.me/Ijaraga_uybot" class="nb">Ilovaga kirish</a>
+</nav>
+
+<header>
+  <h1>Namangan bo'ylab<br><span class="gr">sayohat</span></h1>
+  <p>Pastga suring — biz sizni shahar bo'ylab olib o'tamiz va oxirida ofisimizga yetkazamiz.</p>
+  <div class="scr"><i></i></div>
+</header>
+
+<section id="trip">
+  <div id="svgWrap">
+    <svg id="road" preserveAspectRatio="none" viewBox="0 0 100 1000">
+      <path id="pth" class="rp" d="" />
+      <path id="pthG" class="rg" d="" />
+      <path id="pthD" class="rd" d="" />
+    </svg>
+  </div>
+
+  <div class="stops" id="stops"></div>
+</section>
+
+<div class="fin">
+  <div class="ofis"><img src="img/uzb4.png" alt="Ofis" id="ofisImg"></div>
+  <h2>Manzilga yetdik</h2>
+  <p>Ofisimiz sizni kutadi. Yoki ilovadan turib hammasini hal qilasiz.</p>
+  <a href="https://t.me/Ijaraga_uybot" class="b1">Ilovaga kirish</a>
+</div>
+
+<footer>
+  <div class="soc" id="soc"></div>
+  <div class="ft"><a href="tel:+998945011818">+998 94 501 18 18</a></div>
+  <div class="ft"><a href="tel:+998509777676">+998 50 977 76 76</a></div>
+  <div class="fc">DIKKIYLORD jamoasi &middot; Namangan</div>
+</footer>
+
+<div class="car" id="car">
+  <img src="img/uzb1.png" alt="" id="carImg">
+  <span class="car-lg"><img src="../icon-192.png" alt=""><span>UYgram</span></span>
+</div>
+
+<script>
+var JOYLAR = [
+  { rasm:'img/uzb1.png', joy:'Namangan markazi', nom:'Shahar yuragi',
+    matn:'Bosh ko\u2019chalar, savdo markazlari va eng qimmat kvartiralar shu yerda.' },
+  { rasm:'img/uzb2.png', joy:'Chorsu', nom:'Savdo mahallasi',
+    matn:'Bozorga yaqin, jonli hudud. Ijara talab yuqori, do\u2019konlar ko\u2019p.' },
+  { rasm:'img/uzb3.png', joy:'Uychi', nom:'Hovlilar hududi',
+    matn:'Keng hovlilar, uzumzorlar, tinch mahallalar. Katta oilalar uchun.' },
+  { rasm:'img/uzb4.png', joy:'Yangi tumanlar', nom:'Zamonaviy uylar',
+    matn:'Yangi qurilgan turar-joy majmualari. Arzon narx, yangi infratuzilma.' }
+];
+
+var MASHINALAR = ['img/uzb1.png','img/uzb2.png','img/uzb3.png'];
+
+/* Bekatlarni chizamiz */
+(function(){
+  var box = document.getElementById('stops');
+  box.innerHTML = JOYLAR.map(function(j){
+    return '<div class="stop"><div class="sc">' +
+      '<img class="sc-img" src="' + j.rasm + '" alt="">' +
+      '<span class="sc-pin">\uD83D\uDCCD ' + j.joy + '</span>' +
+      '<h3>' + j.nom + '</h3><p>' + j.matn + '</p>' +
+      '</div></div>';
+  }).join('');
+})();
+
+/* Yo'lni yasaymiz */
+function yolYasa(){
+  var trip = document.getElementById('trip');
+  var h = trip.offsetHeight;
+  var svg = document.getElementById('road');
+  svg.setAttribute('viewBox', '0 0 100 ' + h);
+  svg.setAttribute('height', h);
+
+  var n = JOYLAR.length + 1;
+  var d = 'M 50 0';
+  for(var i = 1; i <= n; i++){
+    var y = h * i / n;
+    var y0 = h * (i - 0.5) / n;
+    var x = (i % 2 === 1) ? 16 : 84;
+    d += ' Q ' + x + ' ' + y0 + ' 50 ' + y;
+  }
+  ['pth','pthG','pthD'].forEach(function(id){
+    document.getElementById(id).setAttribute('d', d);
+  });
+  return document.getElementById('pth');
+}
+
+var pth = null;
+var carEl = document.getElementById('car');
+var carImg = document.getElementById('carImg');
+var oxirgi = -1;
+
+function joyla(){
+  if(!pth) return;
+  var trip = document.getElementById('trip');
+  var r = trip.getBoundingClientRect();
+  var vh = innerHeight;
+
+  if(r.bottom < 60 || r.top > vh - 60){
+    carEl.classList.remove('on');
+    return;
+  }
+  carEl.classList.add('on');
+
+  var uz = pth.getTotalLength();
+  var ich = Math.min(Math.max((vh * 0.5 - r.top) / r.height, 0), 1);
+  var p = pth.getPointAtLength(uz * ich);
+
+  var p2 = pth.getPointAtLength(Math.min(uz * ich + 8, uz));
+  var burch = Math.atan2(p2.y - p.y, p2.x - p.x) * 180 / Math.PI;
+  var yoz = Math.max(-16, Math.min(16, burch * 0.35));
+
+  var sx = trip.offsetWidth / 100;
+  var eks = r.left + p.x * sx;
+  var yiy = r.top + p.y * (r.height / trip.offsetHeight);
+
+  carEl.style.left = eks + 'px';
+  carEl.style.top = yiy + 'px';
+  carEl.style.transform = 'translate(-50%,-50%) rotate(' + yoz + 'deg)' +
+    ((p2.x < p.x) ? ' scaleX(-1)' : '');
+
+  var idx = Math.min(Math.floor(ich * MASHINALAR.length), MASHINALAR.length - 1);
+  if(idx !== oxirgi){
+    oxirgi = idx;
+    carImg.src = MASHINALAR[idx];
+  }
+}
+
+/* Bekatlar chiqishi */
+(function(){
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(en){
+      if(en.isIntersecting) en.target.classList.add('in');
+    });
+  }, { threshold: .25 });
+  document.querySelectorAll('.sc').forEach(function(el){ io.observe(el); });
+})();
+
+addEventListener('load', function(){ pth = yolYasa(); joyla(); });
+addEventListener('resize', function(){ pth = yolYasa(); joyla(); });
+addEventListener('scroll', joyla, { passive: true });
+
+/* Ijtimoiy tarmoqlar */
+(function(){
+  var IC = { telegram:'\u2708', instagram:'\u25C9', youtube:'\u25B6',
+             tiktok:'\u266A', facebook:'f' };
+  fetch('https://api.namangan-ijara.uz/api/sayt')
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(!d || !d.ok) return;
+      var s = d.sozlama || {}, h = '';
+      Object.keys(IC).forEach(function(k){
+        if(s[k]) h += '<a href="' + s[k] + '" target="_blank" rel="noopener">' +
+          IC[k] + '</a>';
+      });
+      if(h) document.getElementById('soc').innerHTML = h;
+    }).catch(function(){});
+})();
+</script>
+</body>
+</html>
