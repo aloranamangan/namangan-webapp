@@ -6,6 +6,7 @@ const LANGS = {
     save: 'Saqlash', cancel: 'Bekor qilish', delete: 'Ochirish', edit: 'Tahrirlash',
     close: 'Yopish', back: 'Orqaga', next: 'Keyingisi', done: 'Tayyor',
     yes: 'Ha', no: 'Yoq', search: 'Qidirish', empty: 'Bosh',
+    people: 'Odamlar', trend: 'Trend', searchHint: 'Qidirish: kvartira, hovli, @username',
     // Navigatsiya
     navHome: 'Asosiy', navSearch: 'Qidiruv', navSellers: 'Sotuvchilar',
     navMessages: 'Xabarlar', navSpecial: 'Maxsus', navReferral: 'Referal',
@@ -71,6 +72,7 @@ const LANGS = {
     save: 'Сохранить', cancel: 'Отмена', delete: 'Удалить', edit: 'Изменить',
     close: 'Закрыть', back: 'Назад', next: 'Далее', done: 'Готово',
     yes: 'Да', no: 'Нет', search: 'Поиск', empty: 'Пусто',
+    people: 'Люди', trend: 'Тренд', searchHint: 'Поиск: квартира, дом, @username',
     navHome: 'Главная', navSearch: 'Поиск', navSellers: 'Продавцы',
     navMessages: 'Сообщения', navSpecial: 'Особое', navReferral: 'Рефералы',
     navMap: 'Карта', navCurrency: 'Валюта', navWeather: 'Погода',
@@ -130,6 +132,7 @@ const LANGS = {
     save: 'Save', cancel: 'Cancel', delete: 'Delete', edit: 'Edit',
     close: 'Close', back: 'Back', next: 'Next', done: 'Done',
     yes: 'Yes', no: 'No', search: 'Search', empty: 'Empty',
+    people: 'People', trend: 'Trending', searchHint: 'Search: apartment, house, @username',
     navHome: 'Home', navSearch: 'Search', navSellers: 'Sellers',
     navMessages: 'Messages', navSpecial: 'Special', navReferral: 'Referral',
     navMap: 'Map', navCurrency: 'Currency', navWeather: 'Weather',
