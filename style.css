@@ -3441,3 +3441,16 @@ body{padding-bottom:80px !important;}
 .hm-ok{background:linear-gradient(135deg,#F0C868,#D4AF37);color:#12100A}
 .hm-no{background:rgba(255,255,255,.08);color:#C9C9C0}
 .hm-ok:disabled,.hm-no:disabled{opacity:.5}
+
+.tr-cell{position:relative}
+.tr-num{
+  position:absolute;top:6px;left:6px;z-index:3;
+  min-width:22px;height:22px;padding:0 6px;border-radius:11px;
+  background:linear-gradient(135deg,#FF7A45,#FFC542);
+  color:#12100A;font-size:11px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;
+}
+.tr-st{
+  position:absolute;bottom:5px;left:6px;right:6px;z-index:3;
+  font-size:9.5px;color:#fff;text-shadow:0 1px 5px rgba(0,0,0,.7);
+}
