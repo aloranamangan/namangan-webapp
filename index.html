@@ -59,9 +59,9 @@
     <div class="i"><b id="smNom">—</b><span id="smSub">—</span></div>
   </div>
 
-  <button class="sm-item" data-a="arxiv"><span class="e">🗄</span>Arxiv</button>
+  <button class="sm-item" data-a="arxiv"><span class="e">🗄</span><span data-t="arxiv">Arxiv</span></button>
   <button class="sm-item" data-a="profil"><span class="e">👤</span>Profil</button>
-  <button class="sm-item" data-a="saqlangan"><span class="e">🔖</span>Saqlangan</button>
+  <button class="sm-item" data-a="saqlangan"><span class="e">🔖</span><span data-t="saved">Saqlangan</span></button>
   <button class="sm-item" data-a="referal"><span class="e">🎁</span>Referal dastur</button>
 
   <div class="sm-sep"></div>
@@ -72,13 +72,13 @@
 
   <div class="sm-sep"></div>
 
-  <button class="sm-item" data-a="lang"><span class="e">🌐</span>Til</button>
+  <button class="sm-item" data-a="lang"><span class="e">🌐</span><span data-t="lang">Til</span></button>
   <button class="sm-item" id="smAdmin" data-a="panel" style="display:none;">
-    <span class="e">⚙️</span>Boshqaruv markazi</button>
+    <span class="e">⚙️</span><span data-t="control">Boshqaruv markazi</span></button>
 
   <div class="sm-sep"></div>
 
-  <button class="sm-item danger" data-a="chiqish"><span class="e">🚪</span>Chiqish</button>
+  <button class="sm-item danger" data-a="chiqish"><span class="e">🚪</span><span data-t="logout">Chiqish</span></button>
 </div>
 
 
@@ -104,7 +104,7 @@
   </div>
   <div id="topList"></div>
   <div class="top-hd" style="padding-top:22px;">
-    <h2>Barcha mutaxassislar</h2>
+    <h2><span data-t="allSpec">Barcha mutaxassislar</span></h2>
   </div>
   <div id="sellers"><div class="load">Yuklanmoqda...</div></div>
 </div>
@@ -148,7 +148,7 @@
   </button>
   <button id="fermaBtn">
     <svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="3"/><path d="M7 12h3M8.5 10.5v3"/><circle cx="16" cy="11" r="1"/><circle cx="18" cy="14" r="1"/></svg>
-    <span>Oyinlar</span>
+    <span><span data-t="games">Oyinlar</span></span>
   </button>
   <button data-v="vProfile">
     <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -156,7 +156,7 @@
   </button>
 </nav>
 
-<script src="i18n.js?v=1789024256"></script>
+<script src="i18n.js?v=1789024475"></script>
 <script src="intro.js?v=1787312621"></script>
 <script src="core3.js"></script>
 <script src="bigvideo.js?v=1788284648"></script>
@@ -548,7 +548,7 @@ function openComments(p){
   const bg = document.createElement('div');
   bg.className = 'sheet-bg';
   bg.innerHTML = '<div class="sheet" id="cmSheet"><div class="sheet-bar"></div>' +
-    '<div class="sheet-title">Komentariyalar</div>' +
+    '<div class="sheet-title"><span data-t="commentsT">Komentariyalar</span></div>' +
     '<div class="cm-list" id="cmList"></div>' +
     '<div class="cm-bar"><input id="cmInp" placeholder="Komentariya yozing...">' +
     '<button id="cmSend">Yuborish</button></div></div>';
@@ -617,7 +617,7 @@ function openComments(p){
         '</b><p>' + rp + esc(c.text) + '</p>' +
         '<div class="cm-acts">' +
         '<button class="cm-reply" data-n="' + esc(c.name) + '" data-i="' +
-        (c.id || '') + '">Javob berish</button>' +
+        (c.id || '') + '"><span data-t="reply">Javob berish</span></button>' +
         '<button class="cm-like" data-l="' + (c.id || '') + '">' +
         '\u2661 <span>' + (c.likes || 0) + '</span></button>' +
         '</div></div></div>';
@@ -706,7 +706,7 @@ function drawSellers(){
   box.innerHTML = sorted.map(function(s){
     const roles = (s.roles || []).map(function(r){
       return r === 'sotuvchi' ? '<span class="role s">Sotuvchi</span>'
-                              : '<span class="role i">Ijarachi</span>';
+                              : '<span class="role i"><span data-t="tenant">Ijarachi</span></span>';
     }).join('');
     const on = SUBS[s.username] ? ' on' : '';
     const txt = SUBS[s.username] ? 'Obuna bolingan' : 'Obuna bolish';
@@ -940,7 +940,7 @@ function drawProfileOld(){
       '</div>' +
     '</div>' +
 
-    '<div class="pro-btns"><button id="pfEdit">Profilni tahrirlash</button></div>' +
+    '<div class="pro-btns"><button id="pfEdit"><span data-t="editProfile">Profilni tahrirlash</span></button></div>' +
 
     '<div class="wrap" style="padding-top:6px;">' +
       '<label class="label">Telefon</label>' +
@@ -969,7 +969,7 @@ function drawProfileOld(){
       (IS_ADMIN
         ? '<div class="pm" data-go="panel" style="border-color:rgba(0,149,246,.4);">' +
           '<span class="e">&#9881;&#65039;</span>' +
-          '<span class="t">Boshqaruv markazi</span><span class="ar">&rsaquo;</span></div>'
+          '<span class="t"><span data-t="control">Boshqaruv markazi</span></span><span class="ar">&rsaquo;</span></div>'
         : '') +
     '</div>';
 
@@ -1014,7 +1014,7 @@ function openEditProfileOld(){
   bg.className = 'sheet-bg';
   bg.innerHTML = '<div class="sheet" id="epSheet" style="max-height:80vh;">' +
     '<div class="sheet-bar"></div>' +
-    '<div class="sheet-title">Profilni tahrirlash</div>' +
+    '<div class="sheet-title"><span data-t="editProfile">Profilni tahrirlash</span></div>' +
     '<div class="wrap">' +
       '<div style="background:rgba(255,193,7,.1);border:1px solid rgba(255,193,7,.35);' +
       'border-radius:12px;padding:13px;margin-bottom:20px;font-size:12.5px;color:#FFC107;' +
