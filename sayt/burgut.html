@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Burgut</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:linear-gradient(180deg,#0A1420,#101E2E 55%,#0A1420);
+  color:#F5F5F0;font-family:'Manrope',sans-serif;
+  min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;padding:30px 16px;overflow:hidden}
+h1{font-size:18px;font-weight:800;margin-bottom:30px;opacity:.75}
+.sky{position:relative;width:100%;max-width:420px;height:280px}
+.eagle{position:absolute;left:50%;top:50%;
+  transform:translate(-50%,-50%);
+  animation:glide 5s ease-in-out infinite}
+@keyframes glide{
+  0%,100%{transform:translate(-50%,-50%) translateY(0) rotate(-2deg)}
+  50%{transform:translate(-50%,-50%) translateY(-22px) rotate(2deg)}
+}
+.wingL{transform-origin:76% 42%;animation:flapL 2.6s ease-in-out infinite}
+.wingR{transform-origin:24% 42%;animation:flapR 2.6s ease-in-out infinite}
+@keyframes flapL{
+  0%,100%{transform:rotate(0deg) skewY(0deg)}
+  50%{transform:rotate(-13deg) skewY(-4deg)}
+}
+@keyframes flapR{
+  0%,100%{transform:rotate(0deg) skewY(0deg)}
+  50%{transform:rotate(13deg) skewY(4deg)}
+}
+.cloud{position:absolute;border-radius:50%;
+  background:rgba(255,255,255,.045);filter:blur(14px)}
+.c1{width:150px;height:44px;top:18%;left:-8%;animation:drift 22s linear infinite}
+.c2{width:110px;height:34px;top:66%;left:60%;animation:drift 28s linear infinite reverse}
+@keyframes drift{to{transform:translateX(130%)}}
+.sub{font-size:12px;color:#7A8896;margin-top:26px;text-align:center}
+</style>
+</head>
+<body>
+
+<h1>Burgut</h1>
+
+<div class="sky">
+  <div class="cloud c1"></div>
+  <div class="cloud c2"></div>
+
+  <svg class="eagle" width="300" height="170" viewBox="0 0 300 170">
+    <defs>
+      <linearGradient id="bd" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#6B4A2A"/>
+        <stop offset="1" stop-color="#3A2716"/>
+      </linearGradient>
+      <linearGradient id="wg" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#7A5432"/>
+        <stop offset="0.55" stop-color="#4E351E"/>
+        <stop offset="1" stop-color="#2A1C10"/>
+      </linearGradient>
+      <linearGradient id="hd" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#FAFAF6"/>
+        <stop offset="1" stop-color="#D8D6CC"/>
+      </linearGradient>
+    </defs>
+
+    <!-- O'ng qanot -->
+    <g class="wingR">
+      <path d="M148 78 Q108 58 66 52 Q30 48 6 62 Q28 66 44 74
+               Q22 76 4 88 Q30 90 50 94 Q34 100 22 112
+               Q56 108 84 98 Q116 88 148 84 Z"
+            fill="url(#wg)" stroke="#241608" stroke-width="1.2"/>
+      <path d="M66 52 L60 66 M44 74 L40 86 M50 94 L46 106"
+            stroke="#241608" stroke-width="1" opacity=".55"/>
+    </g>
+
+    <!-- Chap qanot -->
+    <g class="wingL">
+      <path d="M152 78 Q192 58 234 52 Q270 48 294 62
+               Q272 66 256 74 Q278 76 296 88 Q270 90 250 94
+               Q266 100 278 112 Q244 108 216 98 Q184 88 152 84 Z"
+            fill="url(#wg)" stroke="#241608" stroke-width="1.2"/>
+      <path d="M234 52 L240 66 M256 74 L260 86 M250 94 L254 106"
+            stroke="#241608" stroke-width="1" opacity=".55"/>
+    </g>
+
+    <!-- Tana -->
+    <ellipse cx="150" cy="88" rx="17" ry="30" fill="url(#bd)"
+             stroke="#241608" stroke-width="1.2"/>
+
+    <!-- Dum -->
+    <path d="M138 114 L150 146 L162 114 Q150 120 138 114 Z"
+          fill="#5A3D22" stroke="#241608" stroke-width="1"/>
+    <path d="M150 118 L150 142" stroke="#241608" stroke-width="1" opacity=".5"/>
+
+    <!-- Bo'yin va bosh -->
+    <path d="M140 62 Q144 50 150 46 Q156 50 160 62 Z" fill="url(#hd)"/>
+    <circle cx="150" cy="44" r="13" fill="url(#hd)"
+            stroke="#C4C2B6" stroke-width=".8"/>
+
+    <!-- Ko'z -->
+    <circle cx="145" cy="41" r="2.6" fill="#1A1208"/>
+    <circle cx="144.2" cy="40.2" r=".9" fill="#fff" opacity=".85"/>
+    <path d="M140 37 Q145 34 150 36" stroke="#8A8878"
+          stroke-width="1.4" fill="none"/>
+
+    <!-- Tumshuq -->
+    <path d="M139 45 L124 49 Q128 53 133 52 L139 50 Z"
+          fill="#F0B429" stroke="#C08A10" stroke-width=".8"/>
+    <path d="M124 49 Q127 52 130 51" stroke="#A8760C" stroke-width=".9" fill="none"/>
+
+    <!-- Panjalar -->
+    <path d="M144 112 L140 124 M144 112 L146 125 M156 112 L160 124 M156 112 L154 125"
+          stroke="#F0B429" stroke-width="2.4" stroke-linecap="round"/>
+    <path d="M140 124 L137 128 M146 125 L145 130 M160 124 L163 128 M154 125 L155 130"
+          stroke="#D89A14" stroke-width="1.8" stroke-linecap="round"/>
+  </svg>
+</div>
+
+<div class="sub">Qanotlari qimirlaydi, tanasi havoda suziladi</div>
+
+</body>
+</html>
