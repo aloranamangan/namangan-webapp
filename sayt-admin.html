@@ -3,127 +3,293 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Sayt sozlamalari</title>
+<title>Sayt boshqaruvi</title>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#0A0A0A;color:#F5F5F0;font-family:'Manrope',sans-serif;
-  padding:0 0 40px;line-height:1.6}
+  padding:0 0 60px;line-height:1.6;font-size:15px}
 .top{position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:12px;
   padding:calc(14px + env(safe-area-inset-top)) 18px 14px;
-  background:linear-gradient(180deg,rgba(0,0,0,.96),transparent);
+  background:linear-gradient(180deg,rgba(0,0,0,.96),rgba(0,0,0,.85));
   backdrop-filter:blur(14px)}
 .top button{width:34px;height:34px;border-radius:50%;border:none;
   background:rgba(255,255,255,.12);color:#fff;font-size:19px;cursor:pointer}
-.top h1{font-size:18px;font-weight:800}
-.box{margin:8px 14px 18px;padding:18px;border-radius:16px;
+.top h1{font-size:17px;font-weight:800}
+.box{margin:8px 14px 16px;padding:17px;border-radius:16px;
   background:rgba(255,255,255,.04);border:1px solid rgba(212,175,55,.22)}
-.box h2{font-size:13.5px;font-weight:800;color:#F0C868;margin-bottom:4px}
-.box p{font-size:11.5px;color:#9A9A90;margin-bottom:16px}
+.box h2{font-size:13.5px;font-weight:800;color:#F0C868;margin-bottom:3px}
+.box p.izoh{font-size:11.5px;color:#9A9A90;margin-bottom:14px}
 label{display:block;font-size:11.5px;color:#9A9A90;margin:12px 0 5px;font-weight:700}
-input{width:100%;padding:12px 14px;border-radius:11px;
+input,textarea{width:100%;padding:11px 13px;border-radius:11px;
   border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);
   color:#F5F5F0;font-family:inherit;font-size:13px;outline:none}
-input:focus{border-color:rgba(212,175,55,.5)}
-.btn{width:100%;padding:14px;border-radius:13px;border:none;cursor:pointer;
+textarea{min-height:74px;resize:vertical}
+input:focus,textarea:focus{border-color:rgba(212,175,55,.5)}
+.btn{width:100%;padding:13px;border-radius:12px;border:none;cursor:pointer;
   background:linear-gradient(135deg,#F0C868,#D4AF37);color:#12100A;
-  font-family:inherit;font-size:14px;font-weight:800;margin-top:20px}
+  font-family:inherit;font-size:13.5px;font-weight:800;margin-top:18px}
 .btn:disabled{opacity:.55}
-.msg{text-align:center;font-size:12.5px;margin-top:12px;min-height:1.4em}
+.btn2{padding:9px 15px;border-radius:10px;border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.06);color:#F5F5F0;font-family:inherit;
+  font-size:12px;font-weight:700;cursor:pointer}
+.msg{text-align:center;font-size:12.5px;margin-top:11px;min-height:1.4em}
+.rasm-q{display:flex;align-items:center;gap:12px;padding:11px 0;
+  border-bottom:1px solid rgba(255,255,255,.06)}
+.rasm-q img{width:62px;height:46px;border-radius:9px;object-fit:cover;flex:none;
+  background:rgba(255,255,255,.06)}
+.rasm-q .nm{flex:1;min-width:0}
+.rasm-q .nm b{display:block;font-size:13px}
+.rasm-q .nm span{font-size:10.5px;color:#7A7A72}
+.tog{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:11px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.tog span{font-size:13px}
+.sw{width:50px;height:28px;border-radius:14px;border:none;cursor:pointer;
+  position:relative;background:rgba(255,255,255,.15);transition:.2s;flex:none}
+.sw.on{background:#D4AF37}
+.sw i{position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;
+  background:#fff;transition:.2s}
+.sw.on i{left:25px}
 </style>
 </head>
 <body>
 
 <div class="top">
-  <button onclick="history.length>1?history.back():location.href='zaxira.html'">&#8592;</button>
-  <h1>&#127760; Sayt sozlamalari</h1>
+  <button onclick="history.length>1?history.back():location.href='zaxira2.html'">&#8592;</button>
+  <h1>&#127760; Sayt boshqaruvi</h1>
+</div>
+
+<div class="box">
+  <h2>Rasmlar</h2>
+  <p class="izoh">Rasm tanlab yuklaysiz — saytda darhol almashadi.</p>
+  <div id="rasmlar"></div>
+</div>
+
+<div class="box">
+  <h2>Asosiy matnlar</h2>
+  <p class="izoh">Bosh ekranda ko'rinadigan yozuvlar.</p>
+  <label>Tepadagi yozuv</label>
+  <input id="m_nishon" placeholder="Namangandagi eng ishonchli...">
+  <label>Katta sarlavha</label>
+  <input id="m_h1" placeholder="O'zingizga mos uyga ega bo'ling!">
+  <label>Sarlavha ostidagi matn</label>
+  <input id="m_p1" placeholder="UyGram bilan oson, tez va ishonchli!">
+  <label>Iqtibos</label>
+  <textarea id="m_p2" placeholder="Ko'chmas mulk — bu faqat mulk emas..."></textarea>
+  <button class="btn" id="s1">Saqlash</button>
+  <div class="msg" id="g1"></div>
+</div>
+
+<div class="box">
+  <h2>Raqamlar</h2>
+  <p class="izoh">Bosh ekrandagi uch ko'rsatkich.</p>
+  <label>1-raqam / izoh</label>
+  <input id="m_st1" placeholder="1 240">
+  <input id="m_st1t" placeholder="faol e'lon" style="margin-top:6px">
+  <label>2-raqam / izoh</label>
+  <input id="m_st2" placeholder="5 800">
+  <input id="m_st2t" placeholder="foydalanuvchi" style="margin-top:6px">
+  <label>3-raqam / izoh</label>
+  <input id="m_st3" placeholder="12">
+  <input id="m_st3t" placeholder="tuman qamrovi" style="margin-top:6px">
+  <button class="btn" id="s2">Saqlash</button>
+  <div class="msg" id="g2"></div>
+</div>
+
+<div class="box">
+  <h2>Bo'limlar</h2>
+  <p class="izoh">O'chirilgan bo'lim saytda ko'rinmaydi.</p>
+  <div id="boshqa"></div>
+  <button class="btn" id="s3">Saqlash</button>
+  <div class="msg" id="g3"></div>
 </div>
 
 <div class="box">
   <h2>Ijtimoiy tarmoqlar</h2>
-  <p>To'liq havola yozing. Bo'sh qoldirilsa saytda ko'rinmaydi.</p>
-
-  <label>Telegram</label>
-  <input id="f_telegram" placeholder="https://t.me/ALORA_NAMANGAN">
-  <label>Instagram</label>
-  <input id="f_instagram" placeholder="https://instagram.com/...">
-  <label>YouTube</label>
-  <input id="f_youtube" placeholder="https://youtube.com/@...">
-  <label>TikTok</label>
-  <input id="f_tiktok" placeholder="https://tiktok.com/@...">
-  <label>Facebook</label>
-  <input id="f_facebook" placeholder="https://facebook.com/...">
-
-  <button class="btn" id="save">Saqlash</button>
-  <div class="msg" id="msg"></div>
-</div>
-
-<div class="box">
-  <h2>Aloqa</h2>
-  <p>Saytning pastida ko'rsatiladi.</p>
-  <label>Telefon 1</label>
-  <input id="f_tel1" placeholder="+998 94 501 18 18">
-  <label>Telefon 2</label>
-  <input id="f_tel2" placeholder="+998 50 977 76 76">
-  <label>Manzil</label>
-  <input id="f_manzil" placeholder="Namangan shahri">
-  <button class="btn" id="save2">Saqlash</button>
-  <div class="msg" id="msg2"></div>
+  <p class="izoh">To'liq havola yozing. Bo'sh qoldirilsa ko'rinmaydi.</p>
+  <label>Telegram</label><input id="f_telegram" placeholder="https://t.me/uygram">
+  <label>Instagram</label><input id="f_instagram" placeholder="https://instagram.com/...">
+  <label>YouTube</label><input id="f_youtube" placeholder="https://youtube.com/@...">
+  <label>TikTok</label><input id="f_tiktok" placeholder="https://tiktok.com/@...">
+  <label>Facebook</label><input id="f_facebook" placeholder="https://facebook.com/...">
+  <label>Telefon 1</label><input id="f_tel1" placeholder="+998 94 501 18 18">
+  <label>Telefon 2</label><input id="f_tel2" placeholder="+998 50 977 76 76">
+  <label>Manzil</label><input id="f_manzil" placeholder="Namangan shahri">
+  <button class="btn" id="s4">Saqlash</button>
+  <div class="msg" id="g4"></div>
 </div>
 
 <script>
-var API = 'https://api.namangan-ijara.uz';
-var KEYS = ['telegram','instagram','youtube','tiktok','facebook','tel1','tel2','manzil'];
+var API='https://api.namangan-ijara.uz';
+var MAZMUN={};
+
+var RASM=[
+  {k:'hero',   n:'Bosh ekran rasmi',  i:'Eng tepada katta ko\u2019rinadi'},
+  {k:'tanlangan',n:'Tanlangan uy',    i:'Burgut shu tomga qo\u2019nadi'},
+  {k:'biz',    n:'Biz haqimizda',     i:'Jamoa bo\u2019limi rasmi'},
+  {k:'gal1',   n:'Galereya 1',        i:''},
+  {k:'gal2',   n:'Galereya 2',        i:''},
+  {k:'gal3',   n:'Galereya 3',        i:''},
+  {k:'gal4',   n:'Galereya 4',        i:''}
+];
+
+var BOLIM=[
+  {k:'qidiruv',   n:'Qidiruv paneli'},
+  {k:'kategoriya',n:'Kategoriyalar'},
+  {k:'tanlangan', n:'Tanlangan uy'},
+  {k:'ijara',     n:'Ijaradagi uylar'},
+  {k:'sotuv',     n:'Sotuvdagi uylar'},
+  {k:'galereya',  n:'Galereya'},
+  {k:'nega',      n:'Nega aynan UyGram'},
+  {k:'bitim',     n:'Ishonchli bitimlar'},
+  {k:'biz',       n:'Biz haqimizda'},
+  {k:'burgutOn',  n:'Burgut animatsiyasi'}
+];
+
+var SOC=['telegram','instagram','youtube','tiktok','facebook','tel1','tel2','manzil'];
 
 function idata(){
-  try { return (window.Telegram && Telegram.WebApp && Telegram.WebApp.initData) || ''; }
+  try{ return (window.Telegram&&Telegram.WebApp&&Telegram.WebApp.initData)||''; }
   catch(e){ return ''; }
 }
-function tok(){
-  try { return localStorage.getItem('ni_token') || ''; } catch(e){ return ''; }
+function tok(){ try{ return localStorage.getItem('ni_token')||''; }catch(e){ return ''; } }
+
+function xabar(id,matn,rang){
+  var e=document.getElementById(id);
+  e.textContent=matn; e.style.color=rang||'#9A9A90';
 }
 
-fetch(API + '/api/sayt').then(function(r){ return r.json(); })
+/* ---- rasmlar ---- */
+function rasmChiz(){
+  document.getElementById('rasmlar').innerHTML=RASM.map(function(r){
+    var u=(MAZMUN.rasm&&MAZMUN.rasm[r.k])||'';
+    return '<div class="rasm-q">'+
+      (u?'<img src="'+u+'" alt="">':'<img alt="">')+
+      '<span class="nm"><b>'+r.n+'</b><span>'+(r.i||'')+'</span></span>'+
+      '<button class="btn2" data-r="'+r.k+'">Almashtirish</button></div>';
+  }).join('');
+}
+
+document.getElementById('rasmlar').addEventListener('click',function(e){
+  var b=e.target.closest('button[data-r]');
+  if(!b) return;
+  var inp=document.createElement('input');
+  inp.type='file'; inp.accept='image/*';
+  inp.onchange=function(){
+    var f=inp.files[0]; if(!f) return;
+    if(f.size>12*1024*1024){ alert('Rasm 12 MB dan katta'); return; }
+    b.disabled=true; b.textContent='Yuklanmoqda...';
+    var rd=new FileReader();
+    rd.onload=function(){
+      fetch(API+'/api/sayt-rasm',{
+        method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({media:rd.result,init_data:idata(),token:tok()})
+      }).then(function(r){return r.json();}).then(function(d){
+        b.disabled=false; b.textContent='Almashtirish';
+        if(d&&d.ok&&d.url){
+          MAZMUN.rasm=MAZMUN.rasm||{};
+          MAZMUN.rasm[b.dataset.r]=d.url;
+          rasmChiz();
+          saqla(null,null);
+        } else alert('Yuklanmadi');
+      }).catch(function(){
+        b.disabled=false; b.textContent='Almashtirish'; alert('Server xatosi');
+      });
+    };
+    rd.readAsDataURL(f);
+  };
+  inp.click();
+});
+
+/* ---- bo'limlar ---- */
+function bolimChiz(){
+  document.getElementById('boshqa').innerHTML=BOLIM.map(function(b){
+    var on=!(MAZMUN.bolim&&MAZMUN.bolim[b.k]===false);
+    return '<div class="tog"><span>'+b.n+'</span>'+
+      '<button class="sw'+(on?' on':'')+'" data-b="'+b.k+'"><i></i></button></div>';
+  }).join('');
+}
+document.getElementById('boshqa').addEventListener('click',function(e){
+  var b=e.target.closest('button[data-b]');
+  if(!b) return;
+  MAZMUN.bolim=MAZMUN.bolim||{};
+  var yangi=!b.classList.contains('on');
+  MAZMUN.bolim[b.dataset.b]=yangi;
+  b.classList.toggle('on',yangi);
+});
+
+/* ---- saqlash ---- */
+function saqla(btnId,msgId){
+  if(btnId) document.getElementById(btnId).disabled=true;
+  if(msgId) xabar(msgId,'Saqlanmoqda...');
+  fetch(API+'/api/sayt-mazmun',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({mazmun:MAZMUN,init_data:idata(),token:tok()})
+  }).then(function(r){return r.json();}).then(function(d){
+    if(btnId) document.getElementById(btnId).disabled=false;
+    if(msgId) xabar(msgId, d&&d.ok?'Saqlandi':'Kirish cheklangan',
+                    d&&d.ok?'#5BBF6A':'#E8433D');
+  }).catch(function(){
+    if(btnId) document.getElementById(btnId).disabled=false;
+    if(msgId) xabar(msgId,'Server xatosi','#E8433D');
+  });
+}
+
+function matnOl(){
+  MAZMUN.matn=MAZMUN.matn||{};
+  ['nishon','h1','p1','p2','st1','st1t','st2','st2t','st3','st3t'].forEach(function(k){
+    var e=document.getElementById('m_'+k);
+    if(e) MAZMUN.matn[k]=e.value.trim();
+  });
+}
+
+document.getElementById('s1').onclick=function(){ matnOl(); saqla('s1','g1'); };
+document.getElementById('s2').onclick=function(){ matnOl(); saqla('s2','g2'); };
+document.getElementById('s3').onclick=function(){ saqla('s3','g3'); };
+
+document.getElementById('s4').onclick=function(){
+  var b={init_data:idata(),token:tok()};
+  SOC.forEach(function(k){
+    var e=document.getElementById('f_'+k);
+    if(e) b[k]=e.value.trim();
+  });
+  var btn=document.getElementById('s4');
+  btn.disabled=true; xabar('g4','Saqlanmoqda...');
+  fetch(API+'/api/sayt-saqlash',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(b)
+  }).then(function(r){return r.json();}).then(function(d){
+    btn.disabled=false;
+    xabar('g4', d&&d.ok?'Saqlandi':'Kirish cheklangan',
+          d&&d.ok?'#5BBF6A':'#E8433D');
+  }).catch(function(){
+    btn.disabled=false; xabar('g4','Server xatosi','#E8433D');
+  });
+};
+
+/* ---- yuklash ---- */
+fetch(API+'/api/sayt-toliq').then(function(r){return r.json();})
   .then(function(d){
-    if(!d || !d.ok) return;
-    var s = d.sozlama || {};
-    KEYS.forEach(function(k){
-      var e = document.getElementById('f_' + k);
-      if(e && s[k]) e.value = s[k];
+    if(d&&d.ok) MAZMUN=d.mazmun||{};
+    rasmChiz(); bolimChiz();
+    var m=MAZMUN.matn||{};
+    Object.keys(m).forEach(function(k){
+      var e=document.getElementById('m_'+k);
+      if(e) e.value=m[k];
+    });
+  }).catch(function(){ rasmChiz(); bolimChiz(); });
+
+fetch(API+'/api/sayt').then(function(r){return r.json();})
+  .then(function(d){
+    if(!d||!d.ok) return;
+    var s=d.sozlama||{};
+    SOC.forEach(function(k){
+      var e=document.getElementById('f_'+k);
+      if(e&&s[k]) e.value=s[k];
     });
   }).catch(function(){});
 
-function saqla(btnId, msgId){
-  var b = document.getElementById(btnId);
-  var m = document.getElementById(msgId);
-  b.disabled = true;
-  m.textContent = 'Saqlanmoqda...';
-  m.style.color = '#9A9A90';
-
-  var body = { init_data: idata(), token: tok() };
-  KEYS.forEach(function(k){
-    var e = document.getElementById('f_' + k);
-    if(e) body[k] = e.value.trim();
-  });
-
-  fetch(API + '/api/sayt-saqlash', {
-    method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify(body)
-  }).then(function(r){ return r.json(); }).then(function(d){
-    b.disabled = false;
-    if(d && d.ok){ m.textContent = 'Saqlandi'; m.style.color = '#5BBF6A'; }
-    else { m.textContent = 'Kirish cheklangan'; m.style.color = '#E8433D'; }
-  }).catch(function(){
-    b.disabled = false;
-    m.textContent = 'Server xatosi';
-    m.style.color = '#E8433D';
-  });
-}
-
-document.getElementById('save').onclick = function(){ saqla('save','msg'); };
-document.getElementById('save2').onclick = function(){ saqla('save2','msg2'); };
-
-try { if(window.Telegram && Telegram.WebApp) Telegram.WebApp.expand(); } catch(e){}
+try{ if(window.Telegram&&Telegram.WebApp) Telegram.WebApp.expand(); }catch(e){}
 </script>
 </body>
 </html>
