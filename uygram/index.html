@@ -58,7 +58,7 @@ img{display:block;max-width:100%}
 .tug-1{background:var(--gradOltin);color:#1A1305;box-shadow:0 14px 38px rgba(232,196,104,.3)}
 .tug-2{background:rgba(255,255,255,.07);color:var(--oq);border:1px solid var(--chiziq)}
 .hero{position:relative;min-height:100svh;display:grid;
-  grid-template-columns:1.06fr .94fr;align-items:center;
+  grid-template-columns:1fr;align-items:center;
   gap:clamp(22px,4vw,56px);padding:130px var(--pad) 66px;overflow:hidden}
 .nur{position:absolute;pointer-events:none;filter:blur(34px)}
 .nur-1{width:min(720px,105vw);height:min(720px,105vw);top:-30%;right:-16%;
@@ -110,8 +110,8 @@ img{display:block;max-width:100%}
   display:flex;align-items:flex-end;padding:20px;
   border:1px solid var(--chiziq);transition:transform .35s,border-color .35s}
 .kat a:hover{transform:translateY(-7px);border-color:rgba(232,196,104,.4)}
-.kat-bg{position:absolute;inset:0;background-size:cover;background-position:center;
-  transition:transform .6s}
+.kat-bg{position:absolute;inset:0;transition:transform .6s;
+  background:linear-gradient(150deg,rgba(123,77,255,.22),rgba(255,77,157,.1))}
 .kat a:hover .kat-bg{transform:scale(1.09)}
 .kat a::after{content:'';position:absolute;inset:0;
   background:linear-gradient(180deg,rgba(7,11,26,.15),rgba(7,11,26,.88))}
@@ -122,7 +122,8 @@ img{display:block;max-width:100%}
 .tan-w{max-width:1020px;position:relative}
 .tan-rasm{width:100%;border-radius:26px;overflow:hidden;
   box-shadow:0 44px 94px rgba(0,0,0,.58),0 0 0 1px rgba(232,196,104,.16)}
-.tan-rasm img{width:100%;aspect-ratio:16/9.4;object-fit:cover}
+.tan-rasm{aspect-ratio:16/9.4;
+  background:linear-gradient(140deg,rgba(123,77,255,.18),rgba(232,196,104,.08))}
 .tan-meta{display:flex;align-items:center;justify-content:space-between;gap:20px;
   flex-wrap:wrap;margin:-40px 24px 0;position:relative;z-index:2;
   padding:20px 26px;border-radius:18px;box-shadow:0 22px 50px rgba(0,0,0,.45)}
@@ -137,7 +138,8 @@ img{display:block;max-width:100%}
 .karta{border-radius:20px;overflow:hidden;background:rgba(255,255,255,.04);
   border:1px solid var(--chiziq);transition:transform .35s,border-color .35s}
 .karta:hover{transform:translateY(-7px);border-color:rgba(232,196,104,.34)}
-.k-rasm{position:relative;overflow:hidden;aspect-ratio:4/3}
+.k-rasm{position:relative;overflow:hidden;height:64px;
+  background:linear-gradient(135deg,rgba(123,77,255,.16),rgba(232,196,104,.07))}
 .k-rasm img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
 .karta:hover .k-rasm img{transform:scale(1.08)}
 .k-belgi{position:absolute;top:11px;left:11px;padding:4px 11px;border-radius:12px;
@@ -196,7 +198,7 @@ img{display:block;max-width:100%}
   margin-bottom:5px;background:var(--grad);
   -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .bitim span{font-size:13px;color:var(--tuman)}
-.biz{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,4vw,52px);align-items:center}
+.biz{display:grid;grid-template-columns:1fr;gap:clamp(24px,4vw,52px);align-items:center;max-width:46rem}
 .biz-rasm{border-radius:24px;overflow:hidden;
   box-shadow:0 34px 74px rgba(0,0,0,.55),0 0 0 1px rgba(232,196,104,.14)}
 .biz-rasm img{width:100%;aspect-ratio:4/3;object-fit:cover}
@@ -284,7 +286,6 @@ img{display:block;max-width:100%}
     <a href="#kategoriya">Kategoriyalar</a>
     <a href="#ijara">Ijara</a>
     <a href="#sotuv">Sotuv</a>
-    <a href="#galereya">Galereya</a>
     <a href="#biz">Biz haqimizda</a>
     <a href="#aloqa">Aloqa</a>
   </nav>
@@ -310,9 +311,7 @@ img{display:block;max-width:100%}
       <div><dt>12</dt><dd>tuman qamrovi</dd></div>
     </dl>
   </div>
-  <figure class="hero-rasm">
-    <img src="../sayt/img/u1.png" alt="UyGram uy-joy">
-  </figure>
+
 </section>
 
 <section class="qidiruv" id="qidiruv">
@@ -341,15 +340,15 @@ img{display:block;max-width:100%}
     <p>Qaysi turdagi mulk kerak &mdash; shu bo'limdan boshlang.</p>
   </div>
   <div class="kat">
-    <a href="#sotuv"><span class="kat-bg" style="background-image:url('../sayt/img/u1.png')"></span>
+    <a href="#sotuv"><span class="kat-bg"></span>
       <span class="kat-tx"><h3>Yangi binolar</h3><span>184 e'lon</span></span></a>
-    <a href="#ijara"><span class="kat-bg" style="background-image:url('../sayt/img/u2.png')"></span>
+    <a href="#ijara"><span class="kat-bg"></span>
       <span class="kat-tx"><h3>Kvartiralar</h3><span>512 e'lon</span></span></a>
-    <a href="#sotuv"><span class="kat-bg" style="background-image:url('../sayt/img/u3.png')"></span>
+    <a href="#sotuv"><span class="kat-bg"></span>
       <span class="kat-tx"><h3>Uylar</h3><span>326 e'lon</span></span></a>
-    <a href="#sotuv"><span class="kat-bg" style="background-image:url('../sayt/img/u4.png')"></span>
+    <a href="#sotuv"><span class="kat-bg"></span>
       <span class="kat-tx"><h3>Dala hovlilar</h3><span>97 e'lon</span></span></a>
-    <a href="#sotuv"><span class="kat-bg" style="background-image:url('../sayt/img/u2.png')"></span>
+    <a href="#sotuv"><span class="kat-bg"></span>
       <span class="kat-tx"><h3>Bino va noturar joylar</h3><span>121 e'lon</span></span></a>
   </div>
 </section>
@@ -360,9 +359,7 @@ img{display:block;max-width:100%}
     <p>Har hafta bitta uyni tanlab, hujjatini, narxini va holatini to'liq tekshiramiz.</p>
   </div>
   <div class="tan-w">
-    <figure class="tan-rasm" id="qonishJoyi" data-perch-x="0.64" data-perch-y="26">
-      <img src="../sayt/img/u3.png" alt="Tanlangan uy">
-    </figure>
+    <figure class="tan-rasm" id="qonishJoyi" data-perch-x="0.64" data-perch-y="26"></figure>
     <figcaption class="tan-meta shisha">
       <div>
         <h3>Navoiy ko'chasi, 4 xonali uy</h3>
@@ -396,21 +393,7 @@ img{display:block;max-width:100%}
   <div class="setka" id="setkaSotuv"></div>
 </section>
 
-<section class="bolim kir" id="galereya">
-  <div class="sarlavha">
-    <h2>Galereya</h2>
-    <p>Rasmni bosib to'liq ekranda ko'ring. Chapga-o'ngga surib almashtirasiz.</p>
-  </div>
-  <div class="gal">
-    <div class="gal-katta" id="galKatta">
-      <img src="../sayt/img/u1.png" alt="Galereya" id="galRasm">
-      <button class="gal-nav chap" id="galChap" aria-label="Oldingi">&#8249;</button>
-      <button class="gal-nav ong" id="galOng" aria-label="Keyingi">&#8250;</button>
-      <button class="gal-zum" id="galZum">To'liq ekran</button>
-    </div>
-    <div class="gal-mini" id="galMini"></div>
-  </div>
-</section>
+
 
 <section class="bolim kir">
   <div class="sarlavha">
@@ -448,9 +431,7 @@ img{display:block;max-width:100%}
 
 <section class="bolim kir" id="biz">
   <div class="biz">
-    <figure class="biz-rasm">
-      <img src="../sayt/img/u4.png" alt="UyGram jamoasi">
-    </figure>
+
     <div class="biz-tx">
       <h2>Biz haqimizda</h2>
       <p>UyGram &mdash; Namangan viloyatida uy-joy sotib olish, sotish va ijaraga berishni
@@ -491,17 +472,13 @@ img{display:block;max-width:100%}
     <a href="#kategoriya">Kategoriyalar</a>
     <a href="#ijara">Ijara</a>
     <a href="#sotuv">Sotuv</a>
-    <a href="#galereya">Galereya</a>
     <a href="#biz">Biz haqimizda</a>
     <a href="#aloqa">Aloqa</a>
   </nav>
   <p class="f-copy">&copy; 2026 UyGram &middot; Barcha huquqlar himoyalangan</p>
 </footer>
 
-<div class="lightbox" id="lightbox">
-  <button class="lb-yop" id="lbYop" aria-label="Yopish">&times;</button>
-  <img src="" alt="" id="lbRasm">
-</div>
+
 
 <aside class="test" id="test">
   <button class="t-bosh" id="tBosh">BURGUT TESTI</button>
@@ -990,8 +967,7 @@ if(cv&&!kamHarakat){
   ];
   function karta(d){
     return '<article class="karta">'+
-      '<div class="k-rasm"><img src="'+R+d.r+'" alt="'+d.n+'" loading="lazy">'+
-      '<span class="k-belgi">'+d.b+'</span></div>'+
+      '<div class="k-rasm"><span class="k-belgi">'+d.b+'</span></div>'+
       '<div class="k-tana"><div class="k-top"><h3>'+d.n+'</h3>'+
       '<span class="k-narx">'+d.x+'</span></div>'+
       '<div class="k-spec"><span>'+d.j+'</span><span>'+d.m+'</span>'+
@@ -1008,75 +984,7 @@ if(cv&&!kamHarakat){
   });
 })();
 
-(function(){
-  var R='../sayt/img/';
-  var RASM=['u1.png','u2.png','u3.png','u4.png'];
-  var NOM=['Namangan markazi','Kvartiralar','Tanlangan uy','Dala hovlilar'];
-  var i=0;
-  var katta=document.getElementById('galRasm');
-  var mini=document.getElementById('galMini');
-  var lb=document.getElementById('lightbox');
-  var lbR=document.getElementById('lbRasm');
 
-  mini.innerHTML=RASM.map(function(r,k){
-    return '<button data-g="'+k+'"'+(k===0?' class="on"':'')+'>'+
-      '<img src="'+R+r+'" alt="'+NOM[k]+'" loading="lazy"></button>';
-  }).join('');
-
-  var TOLIQ=false;
-  function manba(r){
-    return (String(r).indexOf('http')===0)?r:R+r;
-  }
-  function korsat(k){
-    i=(k+RASM.length)%RASM.length;
-    katta.src=manba(RASM[i]); katta.alt=NOM[i];
-    mini.querySelectorAll('button').forEach(function(b,n){
-      b.classList.toggle('on',n===i); });
-  }
-  mini.addEventListener('click',function(e){
-    var b=e.target.closest('button[data-g]');
-    if(b) korsat(parseInt(b.dataset.g));
-  });
-  document.getElementById('galChap').addEventListener('click',function(){ korsat(i-1); });
-  document.getElementById('galOng').addEventListener('click',function(){ korsat(i+1); });
-
-  function toliq(){ lbR.src=manba(RASM[i]); lbR.alt=NOM[i]; lb.classList.add('ochiq'); }
-  document.getElementById('galZum').addEventListener('click',toliq);
-  katta.addEventListener('click',toliq);
-  document.getElementById('lbYop').addEventListener('click',function(){
-    lb.classList.remove('ochiq'); });
-  lb.addEventListener('click',function(e){
-    if(e.target===lb) lb.classList.remove('ochiq'); });
-  document.addEventListener('keydown',function(e){
-    if(e.key==='Escape') lb.classList.remove('ochiq');
-    if(e.key==='ArrowLeft') korsat(i-1);
-    if(e.key==='ArrowRight') korsat(i+1);
-  });
-
-  window.galYangila=function(yangi){
-    var ozg=false;
-    for(var z=0;z<4;z++){
-      if(yangi[z]){ RASM[z]=yangi[z]; ozg=true; }
-    }
-    if(!ozg) return;
-    TOLIQ=true;
-    mini.innerHTML=RASM.map(function(r,k){
-      return '<button data-g="'+k+'"'+(k===i?' class="on"':'')+'>'+
-        '<img src="'+manba(r)+'" alt="'+NOM[k]+'" loading="lazy"></button>';
-    }).join('');
-    korsat(i);
-  };
-
-  var x0=null;
-  var kt=document.getElementById('galKatta');
-  kt.addEventListener('touchstart',function(e){ x0=e.touches[0].clientX; },{passive:true});
-  kt.addEventListener('touchend',function(e){
-    if(x0===null) return;
-    var dx=e.changedTouches[0].clientX-x0;
-    if(Math.abs(dx)>44) korsat(dx<0?i+1:i-1);
-    x0=null;
-  },{passive:true});
-})();
 </script>
 
 <script>
@@ -1087,22 +995,6 @@ if(cv&&!kamHarakat){
     .then(function(d){
       if(!d || !d.ok) return;
       var M = d.mazmun || {};
-
-      /* rasmlar */
-      var R = M.rasm || {};
-      if(R.hero){
-        var h=document.querySelector('.hero-rasm img'); if(h) h.src=R.hero;
-        var k=document.querySelectorAll('.kat-bg')[0];
-        if(k) k.style.backgroundImage="url('"+R.hero+"')";
-      }
-      if(R.tanlangan){
-        var t=document.querySelector('#qonishJoyi img'); if(t) t.src=R.tanlangan;
-      }
-      if(R.biz){
-        var b=document.querySelector('.biz-rasm img'); if(b) b.src=R.biz;
-      }
-      var g=[R.gal1,R.gal2,R.gal3,R.gal4];
-      if(g.some(Boolean) && window.galYangila) window.galYangila(g);
 
       /* matnlar */
       var m = M.matn || {};
