@@ -1023,9 +1023,13 @@ if(cv&&!kamHarakat){
       '<img src="'+R+r+'" alt="'+NOM[k]+'" loading="lazy"></button>';
   }).join('');
 
+  var TOLIQ=false;
+  function manba(r){
+    return (String(r).indexOf('http')===0)?r:R+r;
+  }
   function korsat(k){
     i=(k+RASM.length)%RASM.length;
-    katta.src=R+RASM[i]; katta.alt=NOM[i];
+    katta.src=manba(RASM[i]); katta.alt=NOM[i];
     mini.querySelectorAll('button').forEach(function(b,n){
       b.classList.toggle('on',n===i); });
   }
@@ -1036,7 +1040,7 @@ if(cv&&!kamHarakat){
   document.getElementById('galChap').addEventListener('click',function(){ korsat(i-1); });
   document.getElementById('galOng').addEventListener('click',function(){ korsat(i+1); });
 
-  function toliq(){ lbR.src=R+RASM[i]; lbR.alt=NOM[i]; lb.classList.add('ochiq'); }
+  function toliq(){ lbR.src=manba(RASM[i]); lbR.alt=NOM[i]; lb.classList.add('ochiq'); }
   document.getElementById('galZum').addEventListener('click',toliq);
   katta.addEventListener('click',toliq);
   document.getElementById('lbYop').addEventListener('click',function(){
@@ -1048,6 +1052,20 @@ if(cv&&!kamHarakat){
     if(e.key==='ArrowLeft') korsat(i-1);
     if(e.key==='ArrowRight') korsat(i+1);
   });
+
+  window.galYangila=function(yangi){
+    var ozg=false;
+    for(var z=0;z<4;z++){
+      if(yangi[z]){ RASM[z]=yangi[z]; ozg=true; }
+    }
+    if(!ozg) return;
+    TOLIQ=true;
+    mini.innerHTML=RASM.map(function(r,k){
+      return '<button data-g="'+k+'"'+(k===i?' class="on"':'')+'>'+
+        '<img src="'+manba(r)+'" alt="'+NOM[k]+'" loading="lazy"></button>';
+    }).join('');
+    korsat(i);
+  };
 
   var x0=null;
   var kt=document.getElementById('galKatta');
