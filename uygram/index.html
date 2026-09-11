@@ -1060,5 +1060,80 @@ if(cv&&!kamHarakat){
   },{passive:true});
 })();
 </script>
+
+<script>
+/* ---- admin paneldan kelgan mazmun ---- */
+(function(){
+  fetch('https://api.namangan-ijara.uz/api/sayt-toliq')
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(!d || !d.ok) return;
+      var M = d.mazmun || {};
+
+      /* rasmlar */
+      var R = M.rasm || {};
+      if(R.hero){
+        var h=document.querySelector('.hero-rasm img'); if(h) h.src=R.hero;
+        var k=document.querySelectorAll('.kat-bg')[0];
+        if(k) k.style.backgroundImage="url('"+R.hero+"')";
+      }
+      if(R.tanlangan){
+        var t=document.querySelector('#qonishJoyi img'); if(t) t.src=R.tanlangan;
+      }
+      if(R.biz){
+        var b=document.querySelector('.biz-rasm img'); if(b) b.src=R.biz;
+      }
+      var g=[R.gal1,R.gal2,R.gal3,R.gal4];
+      if(g.some(Boolean) && window.galYangila) window.galYangila(g);
+
+      /* matnlar */
+      var m = M.matn || {};
+      function q(sel,v){ if(!v) return; var e=document.querySelector(sel); if(e) e.textContent=v; }
+      if(m.nishon){
+        var n=document.querySelector('.nishon');
+        if(n) n.innerHTML='<i class="nuqta"></i>'+m.nishon;
+      }
+      if(m.h1){
+        var h1=document.querySelector('.hero h1');
+        if(h1) h1.innerHTML=m.h1.replace(/\n/g,'<br>');
+      }
+      q('.hero .p1', m.p1);
+      q('.hero .p2', m.p2);
+      var st=document.querySelectorAll('.stat div');
+      [[m.st1,m.st1t],[m.st2,m.st2t],[m.st3,m.st3t]].forEach(function(p,i){
+        if(!st[i]) return;
+        if(p[0]) st[i].querySelector('dt').textContent=p[0];
+        if(p[1]) st[i].querySelector('dd').textContent=p[1];
+      });
+
+      /* bo'limlar */
+      var B = M.bolim || {};
+      var MAP = {
+        qidiruv:'#qidiruv', kategoriya:'#kategoriya', tanlangan:'#tanlangan',
+        ijara:'#ijara', sotuv:'#sotuv', galereya:'#galereya', biz:'#biz'
+      };
+      Object.keys(MAP).forEach(function(k){
+        if(B[k]===false){
+          var e=document.querySelector(MAP[k]);
+          if(e) e.style.display='none';
+        }
+      });
+      if(B.nega===false){
+        var ne=document.querySelector('.nega');
+        if(ne&&ne.closest('section')) ne.closest('section').style.display='none';
+      }
+      if(B.bitim===false){
+        var bi=document.querySelector('.bitim');
+        if(bi&&bi.closest('section')) bi.closest('section').style.display='none';
+      }
+      if(B.burgutOn===false){
+        var cvv=document.getElementById('burgut');
+        if(cvv) cvv.style.display='none';
+        var tst=document.getElementById('test');
+        if(tst) tst.style.display='none';
+      }
+    }).catch(function(){});
+})();
+</script>
 </body>
 </html>
