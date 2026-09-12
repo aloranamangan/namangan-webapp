@@ -330,10 +330,59 @@ img{display:block;max-width:100%}
 /* ---- tolqin ---- */
 .tolqin{display:block;width:100%;height:52px;margin-bottom:-2px}
 .tolqin path{fill:rgba(123,77,255,.055)}
+
+/* ---- sharshara ---- */
+.shar{position:fixed;top:0;bottom:0;left:0;right:0;z-index:1;pointer-events:none;
+  overflow:hidden;opacity:.55}
+.shar i{position:absolute;top:-30%;width:1px;border-radius:1px;
+  background:linear-gradient(180deg,transparent,rgba(160,200,255,.5),rgba(200,230,255,.75),transparent);
+  animation:oqim linear infinite}
+@keyframes oqim{to{transform:translateY(190vh)}}
+.shar-tuman{position:absolute;bottom:0;left:0;right:0;height:22vh;
+  background:linear-gradient(180deg,transparent,rgba(120,170,220,.11));
+  filter:blur(16px)}
+
+/* ---- dengiz ---- */
+.dengiz{position:fixed;bottom:0;left:0;right:0;height:34vh;z-index:1;
+  pointer-events:none;opacity:0;transition:opacity 1.4s ease;overflow:hidden}
+.dengiz.ko{opacity:1}
+.dengiz-suv{position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(30,90,150,.28),rgba(10,40,80,.6))}
+.dengiz svg{position:absolute;left:0;width:220%;height:64px}
+.dengiz .t1{bottom:22vh;animation:surish 17s linear infinite}
+.dengiz .t2{bottom:17vh;animation:surish 24s linear infinite reverse;opacity:.6}
+.dengiz .t3{bottom:11vh;animation:surish 31s linear infinite;opacity:.4}
+@keyframes surish{to{transform:translateX(-50%)}}
+
+/* ---- ovoz tugmasi ---- */
+.ovoz{position:fixed;left:15px;bottom:15px;z-index:70;
+  width:48px;height:48px;border-radius:50%;border:1px solid var(--chiziq);
+  background:rgba(7,11,26,.88);backdrop-filter:blur(14px);
+  color:var(--oltin);font-size:19px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:transform .2s}
+.ovoz:active{transform:scale(.9)}
+.ovoz.on{border-color:rgba(232,196,104,.5);box-shadow:0 0 22px rgba(232,196,104,.22)}
+@media(prefers-reduced-motion:reduce){.shar,.dengiz{display:none}}
 </style>
 </head>
 <body>
 
+<div class="shar" id="shar"><div class="shar-tuman"></div></div>
+
+<div class="dengiz" id="dengiz">
+  <div class="dengiz-suv"></div>
+  <svg class="t1" viewBox="0 0 1200 64" preserveAspectRatio="none">
+    <path d="M0 34 Q150 8 300 34 T600 34 T900 34 T1200 34 V64 H0 Z"
+          fill="rgba(120,190,255,.22)"/></svg>
+  <svg class="t2" viewBox="0 0 1200 64" preserveAspectRatio="none">
+    <path d="M0 30 Q150 54 300 30 T600 30 T900 30 T1200 30 V64 H0 Z"
+          fill="rgba(90,160,230,.2)"/></svg>
+  <svg class="t3" viewBox="0 0 1200 64" preserveAspectRatio="none">
+    <path d="M0 36 Q150 14 300 36 T600 36 T900 36 T1200 36 V64 H0 Z"
+          fill="rgba(60,130,200,.18)"/></svg>
+</div>
+
+<button class="ovoz" id="ovozTug" aria-label="Ovoz">&#128263;</button>
 <canvas id="zar" aria-hidden="true"></canvas>
 <div class="kursor" id="kursor"></div>
 <canvas id="burgut" aria-hidden="true"></canvas>
@@ -1138,6 +1187,76 @@ if(cv&&!kamHarakat){
   });
   var box=document.getElementById('katSetka');
   if(box) kuz.observe(box,{childList:true});
+})();
+</script>
+
+<script>
+/* ---- sharshara + dengiz + ovoz ---- */
+(function(){
+  var kam=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var sh=document.getElementById('shar');
+  var dn=document.getElementById('dengiz');
+  var tg=document.getElementById('ovozTug');
+
+  /* tomchi chiziqlari */
+  if(sh && !kam){
+    var n=innerWidth<700?34:70, h='';
+    for(var i=0;i<n;i++){
+      var l=Math.random()*100;
+      var uz=40+Math.random()*110;
+      var t=1.4+Math.random()*2.2;
+      var d=-Math.random()*4;
+      var o=0.2+Math.random()*0.6;
+      h+='<i style="left:'+l.toFixed(2)+'%;height:'+uz.toFixed(0)+'px;'+
+         'animation-duration:'+t.toFixed(2)+'s;animation-delay:'+d.toFixed(2)+'s;'+
+         'opacity:'+o.toFixed(2)+'"></i>';
+    }
+    sh.insertAdjacentHTML('afterbegin',h);
+  }
+
+  /* pastga tushganda dengiz chiqadi, sharshara yo'qoladi */
+  function holat(){
+    var max=Math.max(1,document.documentElement.scrollHeight-innerHeight);
+    var p=scrollY/max;
+    if(dn) dn.classList.toggle('ko', p>0.72);
+    if(sh) sh.style.opacity=String(Math.max(0,0.55*(1-p/0.8)));
+    ovozHolat(p);
+  }
+  addEventListener('scroll',holat,{passive:true});
+  addEventListener('resize',holat);
+  holat();
+
+  /* ---- ovoz ---- */
+  var A={ shar:null, deng:null }, yoq=false;
+
+  function yasa(){
+    if(A.shar) return;
+    A.shar=new Audio('ovoz/sharshara.mp3');
+    A.deng=new Audio('ovoz/dengiz.mp3');
+    [A.shar,A.deng].forEach(function(a){ a.loop=true; a.volume=0; });
+  }
+
+  function ovozHolat(p){
+    if(!yoq||!A.shar) return;
+    var sv=Math.max(0,Math.min(1,(1-p/0.78)))*0.55;
+    var dv=Math.max(0,Math.min(1,(p-0.6)/0.3))*0.6;
+    A.shar.volume=sv;
+    A.deng.volume=dv;
+  }
+
+  if(tg) tg.onclick=function(){
+    yasa();
+    yoq=!yoq;
+    tg.classList.toggle('on',yoq);
+    tg.innerHTML=yoq?'&#128266;':'&#128263;';
+    if(yoq){
+      A.shar.play().catch(function(){});
+      A.deng.play().catch(function(){});
+      holat();
+    } else {
+      A.shar.pause(); A.deng.pause();
+    }
+  };
 })();
 </script>
 </body>
