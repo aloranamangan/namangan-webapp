@@ -50,6 +50,8 @@ input:focus,textarea:focus{border-color:rgba(212,175,55,.5)}
 .sw i{position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;
   background:#fff;transition:.2s}
 .sw.on i{left:25px}
+.kv{padding:7px 10px;font-size:13px;line-height:1;flex:none}
+.btn2:disabled{opacity:.3}
 </style>
 </head>
 <body>
@@ -309,12 +311,16 @@ function katChiz(){
   var L=document.getElementById('katList');
   if(!KAT.length){ L.innerHTML='<p class="izoh">Kategoriya yoq</p>'; return; }
   L.innerHTML=KAT.map(function(k){
-    var uy=(k.uylar||[]).map(function(u){
+    var uy=(k.uylar||[]).map(function(u,ui,arr){
       return '<div class="rasm-q" style="padding:8px 0">'+
         '<span class="nm"><b>'+esc(u.nom)+'</b>'+
         '<span>'+esc(u.joy)+' \u00B7 '+esc(u.narx)+'</span></span>'+
-        '<button class="btn2" data-uo="'+u.id+'" '+
-        'style="border-color:rgba(232,67,61,.35);color:#E8433D">O\u2019chirish</button>'+
+        '<button class="btn2 kv" data-up="'+u.id+'" data-k="'+k.id+'" '+
+        (ui===0?'disabled ':'')+'>\u2191</button>'+
+        '<button class="btn2 kv" data-dn="'+u.id+'" data-k="'+k.id+'" '+
+        (ui===arr.length-1?'disabled ':'')+'>\u2193</button>'+
+        '<button class="btn2 kv" data-uo="'+u.id+'" '+
+        'style="border-color:rgba(232,67,61,.35);color:#E8433D">\u00D7</button>'+
         '</div>';
     }).join('') || '<p class="izoh" style="margin:6px 0 0">Uy yoq</p>';
 
@@ -322,8 +328,10 @@ function katChiz(){
       'background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08)">'+
       '<div style="display:flex;align-items:center;gap:9px;margin-bottom:8px">'+
       '<b style="flex:1;font-size:14px">'+esc(k.nom)+'</b>'+
+      '<button class="btn2 kv" data-kup="'+k.id+'">\u2191</button>'+
+      '<button class="btn2 kv" data-kdn="'+k.id+'">\u2193</button>'+
       '<button class="btn2" data-ku="'+k.id+'">+ Uy</button>'+
-      '<button class="btn2" data-ko="'+k.id+'" '+
+      '<button class="btn2 kv" data-ko="'+k.id+'" '+
       'style="border-color:rgba(232,67,61,.35);color:#E8433D">\u00D7</button>'+
       '</div>'+uy+'</div>';
   }).join('');
