@@ -363,6 +363,46 @@ img{display:block;max-width:100%}
 .ovoz:active{transform:scale(.9)}
 .ovoz.on{border-color:rgba(232,196,104,.5);box-shadow:0 0 22px rgba(232,196,104,.22)}
 @media(prefers-reduced-motion:reduce){.shar,.dengiz{display:none}}
+
+/* ---- yulduzli tun ---- */
+#yulduz{position:fixed;inset:0;z-index:0;pointer-events:none}
+body{background:radial-gradient(ellipse at 50% -10%,#101A3E 0%,#080D20 42%,#04060F 100%)}
+
+/* ---- oq bolimlar ---- */
+.oq-bolim{background:#F7F8FC;color:#141C33;border-radius:28px;
+  margin:0 var(--pad) 26px;padding:clamp(34px,5vw,60px) clamp(20px,4vw,48px);
+  box-shadow:0 26px 64px rgba(0,0,0,.4)}
+.oq-bolim .sarlavha h2{color:#141C33}
+.oq-bolim .sarlavha p{color:#5A6383}
+.oq-bolim .karta{background:#FFFFFF;border-color:rgba(20,28,51,.1);
+  box-shadow:0 6px 22px rgba(20,28,51,.09)}
+.oq-bolim .karta:hover{border-color:rgba(123,77,255,.4);
+  box-shadow:0 16px 40px rgba(20,28,51,.16)}
+.oq-bolim .k-tana h3{color:#141C33}
+.oq-bolim .k-spec span{color:#6B7391}
+.oq-bolim .k-rasm{background:linear-gradient(135deg,#EDE9FB,#FBEAF2)}
+.oq-bolim .k-narx{background:linear-gradient(120deg,#7B4DFF,#FF4D9D);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.oq-bolim .k-tug{background:rgba(123,77,255,.1);
+  border-color:rgba(123,77,255,.28);color:#6B3FE8}
+
+/* ijara va sotuv ham oq */
+#ijara,#sotuv{background:#F7F8FC;color:#141C33;border-radius:28px;
+  margin:0 var(--pad) 26px;padding:clamp(34px,5vw,60px) clamp(20px,4vw,48px);
+  box-shadow:0 26px 64px rgba(0,0,0,.4)}
+#ijara .sarlavha h2,#sotuv .sarlavha h2{color:#141C33}
+#ijara .sarlavha p,#sotuv .sarlavha p{color:#5A6383}
+#ijara .karta,#sotuv .karta{background:#FFF;border-color:rgba(20,28,51,.1);
+  box-shadow:0 6px 22px rgba(20,28,51,.09)}
+#ijara .k-tana h3,#sotuv .k-tana h3{color:#141C33}
+#ijara .k-spec span,#sotuv .k-spec span{color:#6B7391}
+#ijara .k-rasm,#sotuv .k-rasm{background:linear-gradient(135deg,#EDE9FB,#FBEAF2)}
+#ijara .k-narx,#sotuv .k-narx{background:linear-gradient(120deg,#7B4DFF,#FF4D9D);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+#ijara .k-belgi,#sotuv .k-belgi,.oq-bolim .k-belgi{
+  background:rgba(20,28,51,.82);color:#F0C868}
+#ijara .k-tug,#sotuv .k-tug{background:rgba(123,77,255,.1);
+  border-color:rgba(123,77,255,.28);color:#6B3FE8}
 </style>
 </head>
 <body>
@@ -383,6 +423,7 @@ img{display:block;max-width:100%}
 </div>
 
 <button class="ovoz" id="ovozTug" aria-label="Ovoz">&#128263;</button>
+<canvas id="yulduz" aria-hidden="true"></canvas>
 <canvas id="zar" aria-hidden="true"></canvas>
 <div class="kursor" id="kursor"></div>
 <canvas id="burgut" aria-hidden="true"></canvas>
@@ -1039,8 +1080,7 @@ if(cv&&!kamHarakat){
       var joy = document.getElementById('kategoriya');
       if(!joy) return;
       var html = K.map(function(k){
-        if(!(k.uylar||[]).length) return '';
-        var uy = k.uylar.map(function(u){
+        var uy = (k.uylar||[]).length ? k.uylar.map(function(u){
           return '<article class="karta">'+
             '<div class="k-rasm">'+
             (u.rasm?'<img src="'+e(u.rasm)+'" alt="" loading="lazy">':'')+
@@ -1056,8 +1096,9 @@ if(cv&&!kamHarakat){
             (u.izoh?'<p class="k-spec" style="margin-top:8px">'+e(u.izoh)+'</p>':'')+
             '<button class="k-tug" type="button">Batafsil</button>'+
             '</div></article>';
-        }).join('');
-        return '<section class="bolim kir ok" id="kat-'+k.id+'">'+
+        }).join('')
+          : '<p style="color:#6E77A2;font-size:14px">Bu kategoriyaga hali uy qo\u2019shilmagan.</p>';
+        return '<section class="bolim kir ok oq-bolim" id="kat-'+k.id+'">'+
           '<div class="sarlavha"><h2>'+e(k.nom)+'</h2>'+
           (k.izoh?'<p>'+e(k.izoh)+'</p>':'')+'</div>'+
           '<div class="setka">'+uy+'</div></section>';
@@ -1258,6 +1299,49 @@ if(cv&&!kamHarakat){
     }
   };
 })();
+</script>
+
+<script>
+/* ---- yulduzlar ---- */
+(function(){
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var c=document.getElementById('yulduz'); if(!c) return;
+  var x=c.getContext('2d'), w, h, ys=[];
+  function rs(){
+    w=c.width=innerWidth; h=c.height=innerHeight;
+    ys=[];
+    var n=innerWidth<700?90:200;
+    for(var i=0;i<n;i++) ys.push({
+      x:Math.random()*w, y:Math.random()*h,
+      r:Math.random()*1.3+.25,
+      o:Math.random()*.7+.15,
+      t:Math.random()*6.283,
+      v:0.6+Math.random()*1.8
+    });
+  }
+  rs(); addEventListener('resize',rs);
+  (function lp(){
+    x.clearRect(0,0,w,h);
+    for(var i=0;i<ys.length;i++){
+      var s=ys[i];
+      s.t+=0.016*s.v;
+      var o=s.o*(0.55+0.45*Math.sin(s.t));
+      x.beginPath(); x.arc(s.x,s.y,s.r,0,6.283);
+      x.fillStyle='rgba(226,234,255,'+o.toFixed(3)+')';
+      x.fill();
+    }
+    requestAnimationFrame(lp);
+  })();
+})();
+
+/* ---- kategoriya bosilsa silliq otish ---- */
+document.addEventListener('click',function(e){
+  var a=e.target.closest('#katSetka a[href^="#kat-"]');
+  if(!a) return;
+  e.preventDefault();
+  var t=document.querySelector(a.getAttribute('href'));
+  if(t) t.scrollIntoView({behavior:'smooth',block:'start'});
+});
 </script>
 </body>
 </html>
