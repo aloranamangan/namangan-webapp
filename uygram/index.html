@@ -270,6 +270,28 @@ img{display:block;max-width:100%}
   .kir{opacity:1;transform:none}
   .hero-rasm img{animation:none}
 }
+
+/* ---- reklama ---- */
+.rek{margin:0 var(--pad) clamp(40px,6vw,72px);max-width:1020px}
+.rek-sar{display:flex;align-items:center;gap:9px;margin-bottom:14px}
+.rek-sar b{font-size:12px;font-weight:800;color:var(--tuman2);letter-spacing:.08em}
+.rek-sar span{flex:1;height:1px;background:var(--chiziq)}
+.rek-setka{display:grid;grid-template-columns:repeat(auto-fill,minmax(248px,1fr));gap:18px}
+.rek-k{position:relative;border-radius:20px;overflow:hidden;
+  background:rgba(255,255,255,.04);border:1px solid rgba(232,196,104,.3);
+  transition:transform .35s}
+.rek-k:hover{transform:translateY(-6px)}
+.rek-belgi{position:absolute;top:11px;right:11px;z-index:2;
+  padding:4px 11px;border-radius:12px;background:var(--gradOltin);
+  color:#1A1305;font-size:10px;font-weight:800;letter-spacing:.04em}
+.rek-rasm{width:100%;aspect-ratio:16/10;object-fit:cover;display:block;
+  background:linear-gradient(135deg,rgba(123,77,255,.16),rgba(232,196,104,.08))}
+.rek-tana{padding:14px 16px 17px}
+.rek-tana h4{font-family:'Sora',sans-serif;font-size:15px;font-weight:700;margin-bottom:4px}
+.rek-tana p{font-size:12.5px;color:var(--tuman);margin-bottom:11px}
+.rek-tug{display:block;width:100%;padding:10px;border-radius:11px;text-align:center;
+  background:rgba(232,196,104,.12);border:1px solid rgba(232,196,104,.3);
+  color:var(--oltin);font-family:inherit;font-size:12.5px;font-weight:700}
 </style>
 </head>
 <body>
@@ -951,6 +973,46 @@ if(cv&&!kamHarakat){
           '<div class="setka">'+uy+'</div></section>';
       }).join('');
       if(html) joy.insertAdjacentHTML('afterend', html);
+    }).catch(function(){});
+})();
+</script>
+
+<script>
+/* ---- reklama ---- */
+(function(){
+  function e(s){ return String(s||'').replace(/[<>&"]/g,function(m){
+    return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[m]; }); }
+
+  fetch('https://api.namangan-ijara.uz/api/reklama?joy=feed')
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(!d || !d.ok) return;
+      var A = d.ads || d.reklama || [];
+      if(!A.length) return;
+
+      var box = document.getElementById('rekSetka');
+      var sec = document.getElementById('reklama');
+      if(!box || !sec) return;
+
+      box.innerHTML = A.slice(0,6).map(function(a){
+        var rasm = a.rasm || a.media || a.file_id || '';
+        var url  = a.havola || a.url || a.link || '';
+        var nom  = a.nom || a.sarlavha || a.title || 'Reklama';
+        var izoh = a.matn || a.izoh || a.text || '';
+        return '<article class="rek-k">'+
+          '<span class="rek-belgi">Reklama</span>'+
+          (rasm && String(rasm).indexOf('http')===0
+            ? '<img class="rek-rasm" src="'+e(rasm)+'" alt="" loading="lazy">'
+            : '<div class="rek-rasm"></div>')+
+          '<div class="rek-tana"><h4>'+e(nom)+'</h4>'+
+          (izoh?'<p>'+e(izoh).slice(0,90)+'</p>':'')+
+          (url?'<a class="rek-tug" href="'+e(url)+'" target="_blank" rel="noopener">Batafsil</a>'
+             :'<a class="rek-tug" href="#aloqa">Batafsil</a>')+
+          '</div></article>';
+      }).join('');
+
+      sec.style.display='';
+      sec.classList.add('ok');
     }).catch(function(){});
 })();
 </script>
