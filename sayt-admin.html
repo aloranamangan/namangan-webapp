@@ -105,6 +105,18 @@ input:focus,textarea:focus{border-color:rgba(212,175,55,.5)}
 </div>
 
 <div class="box">
+  <h2>Kategoriyalar va uylar</h2>
+  <p class="izoh">Kategoriya yaratib, ichiga uy qo'shasiz. Saytda shu ko'rinadi.</p>
+  <label>Yangi kategoriya nomi</label>
+  <input id="kNom" placeholder="Yangi binolar">
+  <label>Qisqa izoh</label>
+  <input id="kIzoh" placeholder="Yangi qurilgan uylar">
+  <button class="btn" id="kQosh">Kategoriya qo'shish</button>
+  <div class="msg" id="kMsg"></div>
+  <div id="katList" style="margin-top:18px"></div>
+</div>
+
+<div class="box">
   <h2>Ijtimoiy tarmoqlar</h2>
   <p class="izoh">To'liq havola yozing. Bo'sh qoldirilsa ko'rinmaydi.</p>
   <label>Telegram</label><input id="f_telegram" placeholder="https://t.me/uygram">
@@ -288,6 +300,99 @@ fetch(API+'/api/sayt').then(function(r){return r.json();})
       if(e&&s[k]) e.value=s[k];
     });
   }).catch(function(){});
+
+
+/* ---- kategoriyalar ---- */
+var KAT=[];
+
+function katChiz(){
+  var L=document.getElementById('katList');
+  if(!KAT.length){ L.innerHTML='<p class="izoh">Kategoriya yoq</p>'; return; }
+  L.innerHTML=KAT.map(function(k){
+    var uy=(k.uylar||[]).map(function(u){
+      return '<div class="rasm-q" style="padding:8px 0">'+
+        '<span class="nm"><b>'+esc(u.nom)+'</b>'+
+        '<span>'+esc(u.joy)+' \u00B7 '+esc(u.narx)+'</span></span>'+
+        '<button class="btn2" data-uo="'+u.id+'" '+
+        'style="border-color:rgba(232,67,61,.35);color:#E8433D">O\u2019chirish</button>'+
+        '</div>';
+    }).join('') || '<p class="izoh" style="margin:6px 0 0">Uy yoq</p>';
+
+    return '<div style="margin-bottom:16px;padding:13px;border-radius:13px;'+
+      'background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08)">'+
+      '<div style="display:flex;align-items:center;gap:9px;margin-bottom:8px">'+
+      '<b style="flex:1;font-size:14px">'+esc(k.nom)+'</b>'+
+      '<button class="btn2" data-ku="'+k.id+'">+ Uy</button>'+
+      '<button class="btn2" data-ko="'+k.id+'" '+
+      'style="border-color:rgba(232,67,61,.35);color:#E8433D">\u00D7</button>'+
+      '</div>'+uy+'</div>';
+  }).join('');
+}
+
+function esc(s){
+  return String(s||'').replace(/[<>&]/g,function(m){
+    return {'<':'&lt;','>':'&gt;','&':'&amp;'}[m]; });
+}
+
+function katYukla(){
+  fetch(API+'/api/sayt-kat').then(function(r){return r.json();})
+    .then(function(d){ if(d&&d.ok){ KAT=d.kategoriyalar||[]; katChiz(); } })
+    .catch(function(){});
+}
+
+function katAmal(body,keyin){
+  body.init_data=idata(); body.token=tok();
+  fetch(API+'/api/sayt-kat-amal',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(body)
+  }).then(function(r){return r.json();}).then(function(d){
+    if(keyin) keyin(d);
+    katYukla();
+  }).catch(function(){ if(keyin) keyin(null); });
+}
+
+document.getElementById('kQosh').onclick=function(){
+  var n=document.getElementById('kNom').value.trim();
+  if(!n){ xabar('kMsg','Nom kiriting','#E8433D'); return; }
+  var iz=document.getElementById('kIzoh').value.trim();
+  var b=this; b.disabled=true; xabar('kMsg','Saqlanmoqda...');
+  katAmal({amal:'kat-qosh',nom:n,izoh:iz},function(d){
+    b.disabled=false;
+    xabar('kMsg', d&&d.ok?'Qoshildi':'Xato', d&&d.ok?'#5BBF6A':'#E8433D');
+    if(d&&d.ok){
+      document.getElementById('kNom').value='';
+      document.getElementById('kIzoh').value='';
+    }
+  });
+};
+
+document.getElementById('katList').addEventListener('click',function(e){
+  var ko=e.target.closest('button[data-ko]');
+  if(ko){
+    if(!confirm('Kategoriya va ichidagi uylar ochiriladi. Davom etamizmi?')) return;
+    katAmal({amal:'kat-ochir',id:ko.dataset.ko});
+    return;
+  }
+  var uo=e.target.closest('button[data-uo]');
+  if(uo){
+    if(!confirm('Uy ochiriladi?')) return;
+    katAmal({amal:'uy-ochir',id:uo.dataset.uo});
+    return;
+  }
+  var ku=e.target.closest('button[data-ku]');
+  if(ku){
+    var nom=prompt('Uy nomi:',''); if(!nom) return;
+    var joy=prompt('Joylashuv:','')||'';
+    var narx=prompt('Narxi:','')||'';
+    var may=prompt('Maydoni:','')||'';
+    var xon=prompt('Xonalar soni:','')||'';
+    var qav=prompt('Qavat:','')||'';
+    katAmal({amal:'uy-qosh',kat_id:ku.dataset.ku,nom:nom,joy:joy,
+             narx:narx,maydon:may,xona:xon,qavat:qav});
+  }
+});
+
+katYukla();
 
 try{ if(window.Telegram&&Telegram.WebApp) Telegram.WebApp.expand(); }catch(e){}
 </script>
