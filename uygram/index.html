@@ -315,10 +315,27 @@ img{display:block;max-width:100%}
 .roy-q span{font-size:12.5px;color:var(--tuman)}
 .roy-tug{display:flex;gap:11px;justify-content:center;flex-wrap:wrap;position:relative}
 .roy-izoh{margin-top:18px;font-size:12px;color:var(--tuman2);position:relative}
+
+/* ---- zarrachalar va yorugllik ---- */
+#zar{position:fixed;inset:0;z-index:1;pointer-events:none}
+.kursor{position:fixed;width:320px;height:320px;border-radius:50%;
+  pointer-events:none;z-index:2;opacity:0;transition:opacity .4s;
+  transform:translate(-50%,-50%);
+  background:radial-gradient(circle,rgba(232,196,104,.07),transparent 66%)}
+
+/* ---- 3D kartochka ---- */
+.karta,.kat a,.nega li,.bitim div,.rek-k{
+  transform-style:preserve-3d;will-change:transform}
+
+/* ---- tolqin ---- */
+.tolqin{display:block;width:100%;height:52px;margin-bottom:-2px}
+.tolqin path{fill:rgba(123,77,255,.055)}
 </style>
 </head>
 <body>
 
+<canvas id="zar" aria-hidden="true"></canvas>
+<div class="kursor" id="kursor"></div>
 <canvas id="burgut" aria-hidden="true"></canvas>
 
 <header class="nav" id="nav">
@@ -1038,6 +1055,89 @@ if(cv&&!kamHarakat){
       sec.style.display='';
       sec.classList.add('ok');
     }).catch(function(){});
+})();
+</script>
+
+<script>
+/* ---- zarrachalar ---- */
+(function(){
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var c=document.getElementById('zar'); if(!c) return;
+  var x=c.getContext('2d'), w, h, ps=[], mx=-999, my=-999;
+  function rs(){ w=c.width=innerWidth; h=c.height=innerHeight; }
+  rs(); addEventListener('resize',rs);
+  var n=innerWidth<700?26:56;
+  for(var i=0;i<n;i++) ps.push({
+    x:Math.random()*w, y:Math.random()*h,
+    vx:(Math.random()-.5)*.22, vy:(Math.random()-.5)*.22,
+    r:Math.random()*1.6+.4, o:Math.random()*.34+.08
+  });
+  addEventListener('mousemove',function(e){
+    mx=e.clientX; my=e.clientY;
+    var k=document.getElementById('kursor');
+    if(k){ k.style.left=e.clientX+'px'; k.style.top=e.clientY+'px'; k.style.opacity=1; }
+  });
+  addEventListener('mouseout',function(){
+    mx=my=-999;
+    var k=document.getElementById('kursor'); if(k) k.style.opacity=0;
+  });
+  (function lp(){
+    x.clearRect(0,0,w,h);
+    for(var i=0;i<ps.length;i++){
+      var p=ps[i];
+      var dx=mx-p.x, dy=my-p.y, d=Math.sqrt(dx*dx+dy*dy);
+      if(d<120){ p.x+=dx/d*.4; p.y+=dy/d*.4; }
+      p.x+=p.vx; p.y+=p.vy;
+      if(p.x<0)p.x=w; if(p.x>w)p.x=0;
+      if(p.y<0)p.y=h; if(p.y>h)p.y=0;
+      x.beginPath(); x.arc(p.x,p.y,p.r,0,6.284);
+      x.fillStyle='rgba(232,196,104,'+p.o+')'; x.fill();
+    }
+    requestAnimationFrame(lp);
+  })();
+})();
+
+/* ---- 3D kartochka ---- */
+(function(){
+  if(window.matchMedia('(hover: none)').matches) return;
+  document.addEventListener('mousemove',function(e){
+    var k=e.target.closest('.karta,.kat a,.nega li,.bitim div,.rek-k');
+    if(!k) return;
+    var r=k.getBoundingClientRect();
+    var px=(e.clientX-r.left)/r.width-.5;
+    var py=(e.clientY-r.top)/r.height-.5;
+    k.style.transform='perspective(760px) rotateY('+(px*7)+'deg) '+
+      'rotateX('+(-py*7)+'deg) translateY(-6px)';
+  });
+  document.addEventListener('mouseleave',function(e){
+    var k=e.target.closest&&e.target.closest('.karta,.kat a,.nega li,.bitim div,.rek-k');
+    if(k) k.style.transform='';
+  },true);
+})();
+
+/* ---- kategoriyaga ikonka ---- */
+(function(){
+  var IK={'yangi':'\uD83C\uDFE2','kvartira':'\uD83C\uDFE0','uy':'\uD83C\uDFE1',
+          'dala':'\uD83C\uDF33','hovli':'\uD83C\uDF33','noturar':'\uD83C\uDFEC',
+          'bino':'\uD83C\uDFEC','ofis':'\uD83D\uDCBC','yer':'\uD83D\uDCCD'};
+  var kuz=new MutationObserver(function(){
+    document.querySelectorAll('#katSetka a').forEach(function(a){
+      if(a.querySelector('.kat-ik')) return;
+      var t=(a.querySelector('h3')||{}).textContent||'';
+      var em='\uD83C\uDFD8';
+      Object.keys(IK).forEach(function(k){
+        if(t.toLowerCase().indexOf(k)!==-1) em=IK[k];
+      });
+      var s=document.createElement('span');
+      s.className='kat-ik';
+      s.textContent=em;
+      s.style.cssText='position:absolute;top:16px;left:18px;z-index:2;font-size:30px;'+
+        'filter:drop-shadow(0 4px 10px rgba(0,0,0,.5))';
+      a.appendChild(s);
+    });
+  });
+  var box=document.getElementById('katSetka');
+  if(box) kuz.observe(box,{childList:true});
 })();
 </script>
 </body>
