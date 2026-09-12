@@ -400,6 +400,54 @@ document.getElementById('katList').addEventListener('click',function(e){
   }
 });
 
+
+/* ---- tartib ozgartirish ---- */
+function juft(list, id, yon){
+  var i=-1;
+  for(var k=0;k<list.length;k++){ if(String(list[k].id)===String(id)) i=k; }
+  if(i===-1) return null;
+  var j=i+yon;
+  if(j<0||j>=list.length) return null;
+  return {a:list[i], b:list[j], ai:i, bi:j};
+}
+
+function tartibYubor(amal, p, keyin){
+  var b1={amal:amal, id:p.a.id, tartib:p.bi, init_data:idata(), token:tok()};
+  var b2={amal:amal, id:p.b.id, tartib:p.ai, init_data:idata(), token:tok()};
+  fetch(API+'/api/sayt-kat-amal',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(b1)
+  }).then(function(){
+    return fetch(API+'/api/sayt-kat-amal',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(b2)
+    });
+  }).then(function(){ katYukla(); })
+    .catch(function(){ katYukla(); });
+}
+
+document.getElementById('katList').addEventListener('click',function(e){
+  var up=e.target.closest('button[data-up]');
+  var dn=e.target.closest('button[data-dn]');
+  if(up||dn){
+    var b=up||dn;
+    var kat=null;
+    for(var q=0;q<KAT.length;q++){
+      if(String(KAT[q].id)===String(b.dataset.k)) kat=KAT[q];
+    }
+    if(!kat) return;
+    var p=juft(kat.uylar||[], up?up.dataset.up:dn.dataset.dn, up?-1:1);
+    if(p) tartibYubor('uy-tartib', p);
+    return;
+  }
+  var ku=e.target.closest('button[data-kup]');
+  var kd=e.target.closest('button[data-kdn]');
+  if(ku||kd){
+    var p2=juft(KAT, ku?ku.dataset.kup:kd.dataset.kdn, ku?-1:1);
+    if(p2) tartibYubor('kat-tartib', p2);
+  }
+});
+
 katYukla();
 
 try{ if(window.Telegram&&Telegram.WebApp) Telegram.WebApp.expand(); }catch(e){}
