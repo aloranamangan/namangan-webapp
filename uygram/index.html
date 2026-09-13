@@ -1071,7 +1071,10 @@ if(cv&&!kamHarakat){
 
       box.innerHTML = K.map(function(k){
         var soni=(k.uylar||[]).length;
-        return '<a href="#kat-'+k.id+'"><span class="kat-bg"></span>'+
+        return '<a href="#kat-'+k.id+'"><span class="kat-bg"'+
+          (k.rasm?' style="background-image:url(\''+e(k.rasm)+
+            '\');background-size:cover;background-position:center"':'')+
+          '></span>'+
           '<span class="kat-tx"><h3>'+e(k.nom)+'</h3>'+
           '<span>'+soni+' ta uy</span></span></a>';
       }).join('');
