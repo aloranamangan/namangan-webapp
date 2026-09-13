@@ -53,6 +53,19 @@ input:focus,textarea:focus{border-color:rgba(212,175,55,.5)}
 .sw.on i{left:25px}
 .kv{padding:7px 10px;font-size:13px;line-height:1;flex:none}
 .btn2:disabled{opacity:.3}
+.oy-q{display:flex;align-items:center;gap:10px;padding:10px 12px;
+  margin-bottom:7px;border-radius:11px;
+  background:linear-gradient(135deg,rgba(123,77,255,.14),rgba(255,77,157,.07));
+  border:1px solid rgba(212,175,55,.2);transition:.3s}
+.oy-q.yangi{border-color:rgba(212,175,55,.7);
+  box-shadow:0 0 16px rgba(212,175,55,.25)}
+.oy-n{width:24px;height:24px;border-radius:50%;flex:none;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(212,175,55,.2);color:#F0C868;
+  font-size:11.5px;font-weight:800}
+.oy-t{flex:1;min-width:0}
+.oy-t b{display:block;font-size:13.5px}
+.oy-t span{font-size:10.5px;color:#9A9A90}
 </style>
 </head>
 <body>
@@ -105,6 +118,12 @@ input:focus,textarea:focus{border-color:rgba(212,175,55,.5)}
   <div id="boshqa"></div>
   <button class="btn" id="s3">Saqlash</button>
   <div class="msg" id="g3"></div>
+</div>
+
+<div class="box">
+  <h2>Ko'rinishi</h2>
+  <p class="izoh">Kategoriyalar saytda shu tartibda chiqadi.</p>
+  <div id="oyna"></div>
 </div>
 
 <div class="box">
@@ -345,7 +364,8 @@ function esc(s){
 
 function katYukla(){
   fetch(API+'/api/sayt-kat').then(function(r){return r.json();})
-    .then(function(d){ if(d&&d.ok){ KAT=d.kategoriyalar||[]; katChiz(); } })
+    .then(function(d){ if(d&&d.ok){ KAT=d.kategoriyalar||[]; katChiz();
+      oynaChiz(OY_OXIRGI); OY_OXIRGI=null; } })
     .catch(function(){});
 }
 
@@ -402,6 +422,34 @@ document.getElementById('katList').addEventListener('click',function(e){
 });
 
 
+
+/* ---- korish oynasi ---- */
+var OY_OXIRGI = null;
+
+function oynaChiz(belgi){
+  var o = document.getElementById('oyna');
+  if(!o) return;
+  if(!KAT.length){
+    o.innerHTML = '<p class="izoh">Kategoriya yoq</p>';
+    return;
+  }
+  o.innerHTML = KAT.map(function(k, i){
+    var yangi = (belgi && String(belgi) === String(k.id)) ? ' yangi' : '';
+    var soni = (k.uylar || []).length;
+    return '<div class="oy-q' + yangi + '">' +
+      '<span class="oy-n">' + (i + 1) + '</span>' +
+      '<span class="oy-t"><b>' + esc(k.nom) + '</b>' +
+      '<span>' + soni + ' ta uy</span></span></div>';
+  }).join('');
+
+  if(belgi){
+    setTimeout(function(){
+      var y = o.querySelector('.oy-q.yangi');
+      if(y) y.classList.remove('yangi');
+    }, 1500);
+  }
+}
+
 /* ---- tartib ozgartirish ---- */
 function juft(list, id, yon){
   var i=-1;
@@ -438,14 +486,14 @@ document.getElementById('katList').addEventListener('click',function(e){
     }
     if(!kat) return;
     var p=juft(kat.uylar||[], up?up.dataset.up:dn.dataset.dn, up?-1:1);
-    if(p) tartibYubor('uy-tartib', p);
+    if(p){ OY_OXIRGI = b.dataset.k; tartibYubor('uy-tartib', p); }
     return;
   }
   var ku=e.target.closest('button[data-kup]');
   var kd=e.target.closest('button[data-kdn]');
   if(ku||kd){
     var p2=juft(KAT, ku?ku.dataset.kup:kd.dataset.kdn, ku?-1:1);
-    if(p2) tartibYubor('kat-tartib', p2);
+    if(p2){ OY_OXIRGI = p2.a.id; tartibYubor('kat-tartib', p2); }
   }
 });
 
