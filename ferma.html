@@ -617,18 +617,150 @@ function sotibOl(tur){
   const h = FM.narxlar[tur];
   if(!h) return;
 
-  if((FM.balans || 0) < h.narx){
+  const balans = FM.balans || 0;
+  if(balans < h.narx){
     toast('UYcoin yetarli emas');
     haptic('medium');
     return;
   }
 
-  if(!confirm(h.nom + ' sotib olasizmi?\n\nNarxi: ' + fmt(h.narx) + ' UYcoin')) return;
+  const maks = Math.floor(balans / h.narx);
+  const em = EMOJI[tur] || '\uD83D\uDC3E';
 
-  apiPost('/api/ferma-amal', { action: 'sotib', tur: tur }).then(function(d){
-    if(d.ok){ haptic('medium'); toast(h.nom + ' qoshildi!'); boot(); }
-    else toast(d.error || 'Xato');
-  }).catch(function(){ toast('Server xatosi'); });
+  const ov = document.createElement('div');
+  ov.style.cssText = 'position:fixed;inset:0;z-index:999;display:flex;' +
+    'align-items:flex-end;justify-content:center;background:rgba(0,0,0,.72);' +
+    'backdrop-filter:blur(8px)';
+
+  ov.innerHTML =
+    '<div style="width:100%;max-width:440px;background:#101010;' +
+      'border-radius:22px 22px 0 0;padding:20px 18px calc(22px + env(safe-area-inset-bottom));' +
+      'border-top:1px solid rgba(212,175,55,.3)">' +
+      '<div style="text-align:center;margin-bottom:16px">' +
+        '<div style="font-size:42px;line-height:1">' + em + '</div>' +
+        '<div style="font-size:17px;font-weight:800;margin-top:5px">' + esc(h.nom) + '</div>' +
+        '<div style="font-size:12px;color:#9A9A90;margin-top:2px">' +
+          'Bittasi ' + fmt(h.narx) + ' \u00B7 soatiga ' + fmt(h.soat) +
+        '</div>' +
+      '</div>' +
+
+      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">' +
+        '<button id="soMin" style="width:46px;height:46px;border-radius:13px;' +
+          'border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);' +
+          'color:#fff;font-size:22px;font-weight:700;flex:none">\u2212</button>' +
+        '<input id="soIn" type="text" inputmode="numeric" value="1" ' +
+          'style="flex:1;min-width:0;text-align:center;padding:13px;border-radius:13px;' +
+          'background:rgba(255,255,255,.06);border:1px solid rgba(212,175,55,.3);' +
+          'color:#fff;font-family:inherit;font-size:22px;font-weight:800">' +
+        '<button id="soPlus" style="width:46px;height:46px;border-radius:13px;' +
+          'border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);' +
+          'color:#fff;font-size:22px;font-weight:700;flex:none">+</button>' +
+      '</div>' +
+
+      '<div style="display:flex;gap:7px;margin-bottom:14px">' +
+        '<button class="so-q" data-v="10" style="flex:1;padding:9px;border-radius:10px;' +
+          'border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);' +
+          'color:#fff;font-family:inherit;font-size:12.5px;font-weight:700">10</button>' +
+        '<button class="so-q" data-v="100" style="flex:1;padding:9px;border-radius:10px;' +
+          'border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);' +
+          'color:#fff;font-family:inherit;font-size:12.5px;font-weight:700">100</button>' +
+        '<button class="so-q" data-v="1000" style="flex:1;padding:9px;border-radius:10px;' +
+          'border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);' +
+          'color:#fff;font-family:inherit;font-size:12.5px;font-weight:700">1000</button>' +
+        '<button id="soMax" style="flex:1;padding:9px;border-radius:10px;' +
+          'border:1px solid rgba(212,175,55,.4);background:rgba(212,175,55,.14);' +
+          'color:#F0C868;font-family:inherit;font-size:12.5px;font-weight:800">MAX</button>' +
+      '</div>' +
+
+      '<div style="padding:12px 14px;border-radius:13px;background:rgba(255,255,255,.04);' +
+        'margin-bottom:14px">' +
+        '<div style="display:flex;justify-content:space-between;font-size:13px">' +
+          '<span style="color:#9A9A90">Jami narx</span>' +
+          '<b id="soNarx">' + fmt(h.narx) + '</b></div>' +
+        '<div style="display:flex;justify-content:space-between;font-size:13px;margin-top:5px">' +
+          '<span style="color:#9A9A90">Soatiga qoshiladi</span>' +
+          '<b id="soDar" style="color:#5BBF6A">+' + fmt(h.soat) + '</b></div>' +
+        '<div style="display:flex;justify-content:space-between;font-size:11.5px;margin-top:7px;' +
+          'padding-top:7px;border-top:1px solid rgba(255,255,255,.07)">' +
+          '<span style="color:#7A7A72">Puliga yetadi</span>' +
+          '<span style="color:#7A7A72">' + fmt(maks) + ' ta</span></div>' +
+      '</div>' +
+
+      '<div style="display:flex;gap:9px">' +
+        '<button id="soYop" style="flex:1;padding:14px;border-radius:13px;border:none;' +
+          'background:rgba(255,255,255,.08);color:#fff;font-family:inherit;' +
+          'font-size:14px;font-weight:700">Bekor</button>' +
+        '<button id="soOk" style="flex:2;padding:14px;border-radius:13px;border:none;' +
+          'background:linear-gradient(135deg,#F0C868,#D4AF37);color:#12100A;' +
+          'font-family:inherit;font-size:14px;font-weight:800">Sotib olish</button>' +
+      '</div>' +
+    '</div>';
+
+  document.body.appendChild(ov);
+
+  const inp = ov.querySelector('#soIn');
+
+  function son(){
+    let v = parseInt(String(inp.value).replace(/\D/g, '')) || 0;
+    if(v < 1) v = 1;
+    if(v > maks) v = maks;
+    return v;
+  }
+  function chiz(){
+    const v = son();
+    inp.value = v;
+    ov.querySelector('#soNarx').textContent = fmt(h.narx * v);
+    ov.querySelector('#soDar').textContent = '+' + fmt(h.soat * v);
+  }
+
+  inp.oninput = function(){
+    let v = parseInt(String(inp.value).replace(/\D/g, '')) || 0;
+    if(v > maks) v = maks;
+    inp.value = v || '';
+    if(v) chiz();
+  };
+  inp.onblur = chiz;
+
+  ov.querySelector('#soMin').onclick = function(){
+    inp.value = Math.max(1, son() - 1); chiz(); haptic('light');
+  };
+  ov.querySelector('#soPlus').onclick = function(){
+    inp.value = Math.min(maks, son() + 1); chiz(); haptic('light');
+  };
+  ov.querySelectorAll('.so-q').forEach(function(b){
+    b.onclick = function(){
+      inp.value = Math.min(maks, parseInt(b.dataset.v)); chiz(); haptic('light');
+    };
+  });
+  ov.querySelector('#soMax').onclick = function(){
+    inp.value = maks; chiz(); haptic('medium');
+  };
+
+  ov.querySelector('#soYop').onclick = function(){ ov.remove(); };
+  ov.onclick = function(e){ if(e.target === ov) ov.remove(); };
+
+  ov.querySelector('#soOk').onclick = function(){
+    const v = son();
+    const b = this;
+    b.disabled = true;
+    b.textContent = 'Olinmoqda...';
+    apiPost('/api/ferma-amal', { action: 'sotib', tur: tur, soni: v }).then(function(d){
+      if(d.ok){
+        haptic('medium');
+        toast(h.nom + ' \u00D7' + (d.soni || v) + ' qoshildi!');
+        ov.remove();
+        boot();
+      } else {
+        b.disabled = false;
+        b.textContent = 'Sotib olish';
+        toast(d.error || 'Xato');
+      }
+    }).catch(function(){
+      b.disabled = false;
+      b.textContent = 'Sotib olish';
+      toast('Server xatosi');
+    });
+  };
 }
 
 function reklamaOl(k){
