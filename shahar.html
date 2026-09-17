@@ -196,19 +196,25 @@ function chiz(){
   if(!D.davlat){
     document.getElementById('shNom').textContent = 'Shahar qurish';
     a.innerHTML =
-      '<div class="box"><h2>Davlat yaratish</h2>' +
-      '<p class="iz">Nom qo\u2019ying. Do\u2019stlaringizni kod bilan chaqirasiz \u2014 ' +
-      'bir davlatni ' + '4' + ' kishi birga quradi.</p>' +
-      '<input id="nNom" placeholder="Masalan: Namangan Respublikasi" maxlength="40">' +
-      '<button class="btn" id="bYarat">Davlat yaratish</button>' +
+      '<div class="box" style="text-align:center;padding:28px 20px">' +
+      '<div style="font-size:52px;line-height:1;margin-bottom:10px">\uD83C\uDFD9</div>' +
+      '<h2 style="font-size:19px;color:#F5F5F0;margin-bottom:6px">O\u2019z davlatingizni quring</h2>' +
+      '<p class="iz" style="margin-bottom:18px">Tog\u2019li yer sotib olasiz, tozalaysiz, ' +
+      'asfalt qilasiz va shahar qurasiz. Do\u2019stlaringizni ichkaridagi kod bilan ' +
+      'chaqirasiz \u2014 4 kishi birga quradi.</p>' +
+      '<input id="nNom" placeholder="Davlatingiz nomi" maxlength="40" ' +
+      'style="text-align:center;font-size:16px;font-weight:700">' +
+      '<button class="btn" id="bYarat">Boshlash</button>' +
       '<div class="msg" id="mYarat"></div></div>' +
 
       '<div class="box"><h2>Do\u2019st davlatiga qo\u2019shilish</h2>' +
-      '<p class="iz">Do\u2019stingiz bergan 6 harfli kodni kiriting.</p>' +
+      '<p class="iz">Agar do\u2019stingiz kod bergan bo\u2019lsa, shu yerga kiriting. ' +
+      'Aks holda yuqoridan o\u2019z davlatingizni yarating.</p>' +
       '<input id="nKod" placeholder="ABC123" maxlength="10" ' +
       'style="text-transform:uppercase;letter-spacing:3px;text-align:center;' +
       'font-size:19px;font-weight:800">' +
-      '<button class="btn" id="bQoshil">Qo\u2019shilish</button>' +
+      '<button class="btn" id="bQoshil" style="background:rgba(255,255,255,.08);' +
+      'color:#fff">Qo\u2019shilish</button>' +
       '<div class="msg" id="mQoshil"></div></div>';
 
     document.getElementById('bYarat').onclick = function(){
@@ -220,6 +226,10 @@ function chiz(){
         else { document.getElementById('bYarat').disabled = false;
                document.getElementById('mYarat').textContent = (r && r.error) || 'Xato'; }
       }).catch(function(){ document.getElementById('bYarat').disabled = false; });
+    };
+
+    document.getElementById('nNom').onkeydown = function(ev){
+      if(ev.key === 'Enter') document.getElementById('bYarat').click();
     };
 
     document.getElementById('bQoshil').onclick = function(){
