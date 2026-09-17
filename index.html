@@ -1034,7 +1034,8 @@ function oyinlarOch(){
   ov.querySelectorAll('.oy-item').forEach(function(it){
     it.onclick = function(){
       haptic('light');
-      location.href = it.dataset.k;
+      ov.remove();
+      location.replace(it.dataset.k);
     };
   });
 }
