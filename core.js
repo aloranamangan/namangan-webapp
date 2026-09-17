@@ -73,9 +73,14 @@ function haptic(t){
 
 function fmt(n){
   n = Number(n) || 0;
-  if(n >= 1000000) return (n/1000000).toFixed(1).replace('.0','') + 'mln';
-  if(n >= 1000) return (n/1000).toFixed(1).replace('.0','') + 'ming';
-  return String(n);
+  var z = n < 0 ? '-' : '';
+  n = Math.abs(n);
+  if(n >= 1e15) return z + (n/1e15).toFixed(1).replace('.0','') + 'kvdr';
+  if(n >= 1e12) return z + (n/1e12).toFixed(1).replace('.0','') + 'trln';
+  if(n >= 1e9)  return z + (n/1e9).toFixed(1).replace('.0','') + 'mlrd';
+  if(n >= 1e6)  return z + (n/1e6).toFixed(1).replace('.0','') + 'mln';
+  if(n >= 1000) return z + (n/1000).toFixed(1).replace('.0','') + 'ming';
+  return z + String(n);
 }
 
 function esc(s){
