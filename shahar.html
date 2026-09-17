@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Shahar qurish</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:#080A12;color:#F5F5F0;font-family:'Manrope',sans-serif;
+  font-size:15px;line-height:1.6;overflow-x:hidden}
+
+.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:11px;
+  padding:calc(13px + env(safe-area-inset-top)) 16px 13px;
+  background:linear-gradient(180deg,rgba(8,10,18,.97),rgba(8,10,18,.86));
+  backdrop-filter:blur(14px);border-bottom:1px solid rgba(212,175,55,.14)}
+.top .bk{width:34px;height:34px;border-radius:50%;border:none;flex:none;
+  background:rgba(255,255,255,.1);color:#fff;font-size:18px}
+.top h1{font-size:16px;font-weight:800;flex:1;min-width:0;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.stat{display:flex;gap:8px;padding:12px 16px;overflow-x:auto}
+.st{flex:none;padding:9px 14px;border-radius:13px;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08)}
+.st span{display:block;font-size:10px;color:#8A8A82}
+.st b{font-size:14px;font-weight:800}
+.st.gold b{color:#F0C868}
+.st.green b{color:#5BBF6A}
+
+/* karta */
+.kbox{margin:4px 0 0;padding:14px 16px 20px;overflow:auto}
+.karta{display:grid;gap:2px;width:max-content;margin:0 auto}
+.kt{width:34px;height:34px;border-radius:5px;position:relative;
+  background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.05);
+  display:flex;align-items:center;justify-content:center;font-size:17px;
+  cursor:pointer;transition:transform .15s}
+.kt:active{transform:scale(.9)}
+.kt.bosh{background:rgba(255,255,255,.02);border-style:dashed}
+.kt.xom{background:linear-gradient(140deg,#4A3A28,#2E2418)}
+.kt.tozalangan{background:linear-gradient(140deg,#5A4A32,#3A3020)}
+.kt.asfalt{background:linear-gradient(140deg,#3A3A42,#26262C)}
+.kt.qurilgan{background:linear-gradient(140deg,#2A3A5A,#1A2438)}
+.kt.tanlangan{border-color:#F0C868;box-shadow:0 0 0 2px rgba(240,200,104,.35)}
+.kt .jh{position:absolute;bottom:0;right:1px;font-size:7px;font-weight:800;
+  color:#F0C868;text-shadow:0 1px 2px #000}
+
+.tugmalar{display:flex;gap:8px;padding:0 16px 18px}
+.tg{flex:1;padding:13px;border-radius:13px;border:none;
+  font-family:inherit;font-size:13px;font-weight:800}
+.tg-1{background:linear-gradient(135deg,#F0C868,#D4AF37);color:#12100A}
+.tg-2{background:rgba(255,255,255,.07);color:#fff;border:1px solid rgba(255,255,255,.1)}
+
+.box{margin:0 16px 16px;padding:17px;border-radius:16px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(212,175,55,.2)}
+.box h2{font-size:13.5px;font-weight:800;color:#F0C868;margin-bottom:3px}
+.box p.iz{font-size:11.5px;color:#8A8A82;margin-bottom:13px}
+input{width:100%;padding:12px 14px;border-radius:11px;
+  border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);
+  color:#F5F5F0;font-family:inherit;font-size:14px;outline:none}
+input:focus{border-color:rgba(212,175,55,.5)}
+.btn{width:100%;padding:13px;border-radius:12px;border:none;margin-top:12px;
+  background:linear-gradient(135deg,#F0C868,#D4AF37);color:#12100A;
+  font-family:inherit;font-size:14px;font-weight:800}
+.btn:disabled{opacity:.5}
+.msg{text-align:center;font-size:12.5px;margin-top:10px;min-height:1.3em}
+
+.kod{display:flex;align-items:center;gap:10px;margin-top:12px;
+  padding:12px 14px;border-radius:12px;background:rgba(240,200,104,.09);
+  border:1px solid rgba(240,200,104,.26)}
+.kod b{flex:1;font-size:18px;font-weight:800;letter-spacing:3px;color:#F0C868}
+.kod button{padding:8px 13px;border-radius:9px;border:1px solid rgba(240,200,104,.3);
+  background:rgba(240,200,104,.12);color:#F0C868;font-family:inherit;
+  font-size:11.5px;font-weight:700}
+
+.azo{display:flex;align-items:center;gap:9px;padding:9px 0;
+  border-bottom:1px solid rgba(255,255,255,.06)}
+.azo:last-child{border:none}
+.azo .av{width:30px;height:30px;border-radius:50%;flex:none;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#F0C868,#D4AF37);color:#12100A;
+  font-size:13px;font-weight:800}
+.azo .nm{flex:1;min-width:0;font-size:13px;font-weight:700}
+.azo .nm span{display:block;font-size:10.5px;color:#8A8A82;font-weight:400}
+.azo .qs{font-size:12px;font-weight:800;color:#F0C868}
+
+/* pastdan chiqadigan oyna */
+.ov{position:fixed;inset:0;z-index:99;display:none;
+  align-items:flex-end;justify-content:center;
+  background:rgba(0,0,0,.74);backdrop-filter:blur(7px)}
+.ov.ochiq{display:flex}
+.sheet{width:100%;max-width:460px;max-height:86vh;overflow-y:auto;
+  background:#101218;border-radius:20px 20px 0 0;
+  padding:18px 16px calc(20px + env(safe-area-inset-bottom));
+  border-top:1px solid rgba(212,175,55,.3)}
+.sh-bosh{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.sh-bosh .em{font-size:30px}
+.sh-bosh .tx{flex:1;min-width:0}
+.sh-bosh .tx b{display:block;font-size:16px;font-weight:800}
+.sh-bosh .tx span{font-size:11.5px;color:#8A8A82}
+.sh-bosh .yp{width:32px;height:32px;border-radius:50%;border:none;flex:none;
+  background:rgba(255,255,255,.1);color:#fff;font-size:17px}
+
+.qator{display:flex;align-items:center;gap:11px;padding:11px 12px;
+  margin-bottom:7px;border-radius:12px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07)}
+.qator .em{font-size:22px;flex:none}
+.qator .tx{flex:1;min-width:0}
+.qator .tx b{display:block;font-size:13.5px;font-weight:700}
+.qator .tx span{font-size:11px;color:#8A8A82}
+.qator .ac{padding:9px 14px;border-radius:10px;border:none;flex:none;
+  background:linear-gradient(135deg,#F0C868,#D4AF37);color:#12100A;
+  font-family:inherit;font-size:12px;font-weight:800}
+.qator .ac:disabled{background:rgba(255,255,255,.08);color:#6A6A62}
+
+.tost{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);
+  z-index:200;padding:11px 20px;border-radius:24px;
+  background:rgba(20,20,26,.96);border:1px solid rgba(212,175,55,.3);
+  font-size:13px;font-weight:600;opacity:0;transition:opacity .3s;
+  pointer-events:none;max-width:88vw;text-align:center}
+.tost.ko{opacity:1}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <button class="bk" onclick="history.length>1?history.back():location.href='app.html'">&#8592;</button>
+  <h1 id="shNom">Shahar qurish</h1>
+</div>
+
+<div id="asosiy"></div>
+
+<div class="ov" id="ov"><div class="sheet" id="sheet"></div></div>
+<div class="tost" id="tost"></div>
+
+<script>
+var API = 'https://api.namangan-ijara.uz';
+var TG = null;
+try { TG = window.Telegram && Telegram.WebApp; if(TG) TG.expand(); } catch(e){}
+
+var D = null;      // holat
+var TANLOV = null; // tanlangan katak
+
+function idata(){
+  try { return (TG && TG.initData) || ''; } catch(e){ return ''; }
+}
+function tok(){ try { return localStorage.getItem('ni_token') || ''; } catch(e){ return ''; } }
+
+function fmt(n){
+  n = Number(n) || 0;
+  var z = n < 0 ? '-' : ''; n = Math.abs(n);
+  if(n >= 1e12) return z + (n/1e12).toFixed(1).replace('.0','') + 'trln';
+  if(n >= 1e9)  return z + (n/1e9).toFixed(1).replace('.0','') + 'mlrd';
+  if(n >= 1e6)  return z + (n/1e6).toFixed(1).replace('.0','') + 'mln';
+  if(n >= 1000) return z + (n/1000).toFixed(1).replace('.0','') + 'ming';
+  return z + String(n);
+}
+function esc(s){
+  return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];
+  });
+}
+function tost(m){
+  var t = document.getElementById('tost');
+  t.textContent = m; t.classList.add('ko');
+  clearTimeout(t._h);
+  t._h = setTimeout(function(){ t.classList.remove('ko'); }, 2400);
+}
+function hap(k){
+  try { if(TG && TG.HapticFeedback) TG.HapticFeedback.impactOccurred(k || 'light'); } catch(e){}
+}
+
+function post(url, body){
+  body = body || {};
+  body.init_data = idata();
+  body.token = tok();
+  return fetch(API + url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  }).then(function(r){ return r.json(); });
+}
+
+function yukla(){
+  post('/api/shahar').then(function(d){
+    if(!d || !d.ok){ tost('Yuklanmadi'); return; }
+    D = d;
+    chiz();
+  }).catch(function(){ tost('Server xatosi'); });
+}
+
+/* ---------- Asosiy ekran ---------- */
+function chiz(){
+  var a = document.getElementById('asosiy');
+
+  if(!D.davlat){
+    document.getElementById('shNom').textContent = 'Shahar qurish';
+    a.innerHTML =
+      '<div class="box"><h2>Davlat yaratish</h2>' +
+      '<p class="iz">Nom qo\u2019ying. Do\u2019stlaringizni kod bilan chaqirasiz \u2014 ' +
+      'bir davlatni ' + '4' + ' kishi birga quradi.</p>' +
+      '<input id="nNom" placeholder="Masalan: Namangan Respublikasi" maxlength="40">' +
+      '<button class="btn" id="bYarat">Davlat yaratish</button>' +
+      '<div class="msg" id="mYarat"></div></div>' +
+
+      '<div class="box"><h2>Do\u2019st davlatiga qo\u2019shilish</h2>' +
+      '<p class="iz">Do\u2019stingiz bergan 6 harfli kodni kiriting.</p>' +
+      '<input id="nKod" placeholder="ABC123" maxlength="10" ' +
+      'style="text-transform:uppercase;letter-spacing:3px;text-align:center;' +
+      'font-size:19px;font-weight:800">' +
+      '<button class="btn" id="bQoshil">Qo\u2019shilish</button>' +
+      '<div class="msg" id="mQoshil"></div></div>';
+
+    document.getElementById('bYarat').onclick = function(){
+      var n = document.getElementById('nNom').value.trim();
+      if(n.length < 3){ document.getElementById('mYarat').textContent = 'Nom kamida 3 harf'; return; }
+      this.disabled = true;
+      post('/api/shahar-amal', { act: 'yarat', nom: n }).then(function(r){
+        if(r && r.ok){ hap('medium'); tost('Davlat yaratildi!'); yukla(); }
+        else { document.getElementById('bYarat').disabled = false;
+               document.getElementById('mYarat').textContent = (r && r.error) || 'Xato'; }
+      }).catch(function(){ document.getElementById('bYarat').disabled = false; });
+    };
+
+    document.getElementById('bQoshil').onclick = function(){
+      var k = document.getElementById('nKod').value.trim().toUpperCase();
+      if(!k){ document.getElementById('mQoshil').textContent = 'Kod kiriting'; return; }
+      this.disabled = true;
+      post('/api/shahar-amal', { act: 'qoshil', kod: k }).then(function(r){
+        if(r && r.ok){ hap('medium'); tost('Qo\u2019shildingiz!'); yukla(); }
+        else { document.getElementById('bQoshil').disabled = false;
+               document.getElementById('mQoshil').textContent = (r && r.error) || 'Xato'; }
+      }).catch(function(){ document.getElementById('bQoshil').disabled = false; });
+    };
+    return;
+  }
+
+  /* --- davlat bor --- */
+  var dv = D.davlat;
+  document.getElementById('shNom').textContent = dv.bayroq + ' ' + dv.nom;
+
+  var qiymat = 0, daromad = 0;
+  (D.binolar || []).forEach(function(b){
+    qiymat += Number(b.qiymat) || 0;
+    daromad += Number(b.daromad) || 0;
+  });
+
+  a.innerHTML =
+    '<div class="stat">' +
+      '<div class="st gold"><span>UYcoin</span><b>' + fmt(D.balans) + '</b></div>' +
+      '<div class="st"><span>Aholi</span><b>' + fmt(dv.aholi) + '</b></div>' +
+      '<div class="st"><span>Binolar</span><b>' + (D.binolar || []).length + '</b></div>' +
+      '<div class="st"><span>Qiymat</span><b>' + fmt(qiymat) + '</b></div>' +
+      '<div class="st green"><span>Soatiga</span><b>+' + fmt(daromad) + '</b></div>' +
+    '</div>' +
+
+    '<div class="kbox"><div class="karta" id="karta"></div></div>' +
+
+    '<div class="tugmalar">' +
+      '<button class="tg tg-1" id="bYig">Daromad yig\u2019ish</button>' +
+      '<button class="tg tg-2" id="bRey">Reyting</button>' +
+    '</div>' +
+
+    '<div class="box"><h2>Davlat a\u2019zolari</h2>' +
+    '<p class="iz">Kim qancha qurgani ko\u2019rinadi.</p>' +
+    (D.azolar || []).map(function(z){
+      return '<div class="azo">' +
+        '<span class="av">' + esc(String(z.nom || '?').charAt(0).toUpperCase()) + '</span>' +
+        '<span class="nm">' + esc(z.nom || 'Quruvchi') +
+        '<span>' + esc(z.rol || 'quruvchi') + '</span></span>' +
+        '<span class="qs">' + fmt(z.qoshgan) + '</span></div>';
+    }).join('') +
+    (dv.kod ? '<div class="kod"><b>' + esc(dv.kod) + '</b>' +
+      '<button id="bKod">Nusxa</button></div>' +
+      '<p class="iz" style="margin:9px 0 0">Bu kodni do\u2019stlaringizga bering.</p>' : '') +
+    '</div>';
+
+  kartaChiz();
+
+  document.getElementById('bYig').onclick = function(){
+    var b = this; b.disabled = true;
+    post('/api/shahar-amal', { act: 'yig' }).then(function(r){
+      b.disabled = false;
+      if(r && r.ok){ hap('medium'); tost('+' + fmt(r.pul) + ' UYcoin'); yukla(); }
+      else tost((r && r.error) || 'Xato');
+    }).catch(function(){ b.disabled = false; tost('Server xatosi'); });
+  };
+
+  document.getElementById('bRey').onclick = reyting;
+
+  var bk = document.getElementById('bKod');
+  if(bk) bk.onclick = function(){
+    try { navigator.clipboard.writeText(dv.kod); tost('Kod nusxalandi'); } catch(e){}
+  };
+}
+
+/* ---------- Karta ---------- */
+function kartaChiz(){
+  var N = D.karta || 12;
+  var k = document.getElementById('karta');
+  if(!k) return;
+  k.style.gridTemplateColumns = 'repeat(' + N + ', 34px)';
+
+  var yerXar = {}, binoXar = {};
+  (D.yerlar || []).forEach(function(y){ yerXar[y.x + ':' + y.y] = y; });
+  (D.binolar || []).forEach(function(b){ binoXar[b.yer_id] = b; });
+
+  var h = '';
+  for(var y = 0; y < N; y++){
+    for(var x = 0; x < N; x++){
+      var yer = yerXar[x + ':' + y];
+      if(!yer){
+        h += '<div class="kt bosh" data-x="' + x + '" data-y="' + y + '"></div>';
+        continue;
+      }
+      var b = binoXar[yer.id];
+      var em = '';
+      var jh = '';
+      if(b){
+        var bi = (D.bino || {})[b.tur];
+        em = bi ? bi.emoji : '\uD83C\uDFE0';
+        if(Number(b.jihoz) > 0) jh = '<span class="jh">' + b.jihoz + '</span>';
+      } else if(yer.holat === 'asfalt'){
+        em = '';
+      } else if(yer.holat === 'tozalangan'){
+        em = '';
+      } else {
+        var yt = (D.yer_tur || {})[yer.tur];
+        em = yt ? yt.emoji : '\u26F0';
+      }
+      h += '<div class="kt ' + esc(yer.holat) + '" data-x="' + x + '" data-y="' + y +
+           '" data-id="' + yer.id + '">' + em + jh + '</div>';
+    }
+  }
+  k.innerHTML = h;
+
+  k.querySelectorAll('.kt').forEach(function(c){
+    c.onclick = function(){
+      k.querySelectorAll('.kt').forEach(function(z){ z.classList.remove('tanlangan'); });
+      c.classList.add('tanlangan');
+      hap('light');
+      katak(parseInt(c.dataset.x), parseInt(c.dataset.y),
+            c.dataset.id ? parseInt(c.dataset.id) : null);
+    };
+  });
+}
+
+/* ---------- Katak oynasi ---------- */
+function oyna(html){
+  document.getElementById('sheet').innerHTML = html;
+  document.getElementById('ov').classList.add('ochiq');
+}
+function yop(){ document.getElementById('ov').classList.remove('ochiq'); }
+document.getElementById('ov').onclick = function(e){ if(e.target.id === 'ov') yop(); };
+
+function katak(x, y, yerId){
+  /* --- bo'sh katak: yer sotib olish --- */
+  if(!yerId){
+    var turlar = D.yer_tur || {};
+    var h = '<div class="sh-bosh"><span class="em">\uD83D\uDCCD</span>' +
+      '<span class="tx"><b>Bo\u2019sh yer</b><span>Katak ' + x + ', ' + y + '</span></span>' +
+      '<button class="yp" onclick="yop()">\u00D7</button></div>';
+
+    Object.keys(turlar).forEach(function(t){
+      var yt = turlar[t];
+      var narx = yerNarx(t, x, y);
+      var yetar = (D.balans || 0) >= narx;
+      h += '<div class="qator"><span class="em">' + yt.emoji + '</span>' +
+        '<span class="tx"><b>' + esc(yt.nom) + '</b>' +
+        '<span>' + fmt(narx) + ' UYcoin</span></span>' +
+        '<button class="ac" data-yt="' + t + '" data-x="' + x + '" data-y="' + y + '"' +
+        (yetar ? '' : ' disabled') + '>' + (yetar ? 'Olish' : 'Pul yo\u2019q') + '</button></div>';
+    });
+    oyna(h);
+
+    document.getElementById('sheet').querySelectorAll('button[data-yt]').forEach(function(b){
+      b.onclick = function(){
+        b.disabled = true; b.textContent = '...';
+        post('/api/shahar-amal', { act: 'yer-ol', tur: b.dataset.yt,
+                                   x: parseInt(b.dataset.x), y: parseInt(b.dataset.y) })
+        .then(function(r){
+          if(r && r.ok){ hap('medium'); tost('Yer olindi'); yop(); yukla(); }
+          else { b.disabled = false; b.textContent = 'Olish'; tost((r && r.error) || 'Xato'); }
+        }).catch(function(){ b.disabled = false; b.textContent = 'Olish'; });
+      };
+    });
+    return;
+  }
+
+  /* --- yer bor --- */
+  var yer = null;
+  (D.yerlar || []).forEach(function(z){ if(z.id === yerId) yer = z; });
+  if(!yer) return;
+
+  var bino = null;
+  (D.binolar || []).forEach(function(b){ if(b.yer_id === yerId) bino = b; });
+
+  var yt = (D.yer_tur || {})[yer.tur] || {};
+  var h2 = '<div class="sh-bosh"><span class="em">' + (yt.emoji || '\u26F0') + '</span>' +
+    '<span class="tx"><b>' + esc(yt.nom || 'Yer') + '</b>' +
+    '<span>Katak ' + yer.x + ', ' + yer.y + ' \u00B7 qiymat ' + fmt(yer.qiymat) + '</span></span>' +
+    '<button class="yp" onclick="yop()">\u00D7</button></div>';
+
+  /* bino bor: jihozlash va sotish */
+  if(bino){
+    var bi = (D.bino || {})[bino.tur] || {};
+    var dj = Number(bino.jihoz) || 0;
+    h2 += '<div class="qator"><span class="em">' + (bi.emoji || '\uD83C\uDFE0') + '</span>' +
+      '<span class="tx"><b>' + esc(bi.nom || bino.tur) + '</b>' +
+      '<span>Jihoz ' + dj + '/10 \u00B7 soatiga +' + fmt(bino.daromad) + '</span></span></div>';
+
+    if(dj < 10){
+      var jn = Math.round((bi.narx || 0) * (0.25 + dj * 0.15));
+      var jy = (D.balans || 0) >= jn;
+      h2 += '<div class="qator"><span class="em">\uD83D\uDECB</span>' +
+        '<span class="tx"><b>Jihozlash</b>' +
+        '<span>' + fmt(jn) + ' UYcoin \u00B7 daromad +18%</span></span>' +
+        '<button class="ac" id="bJihoz"' + (jy ? '' : ' disabled') + '>' +
+        (jy ? 'Jihozlash' : 'Pul yo\u2019q') + '</button></div>';
+    }
+
+    h2 += '<div class="qator"><span class="em">\uD83D\uDCB0</span>' +
+      '<span class="tx"><b>Sotish</b>' +
+      '<span>' + fmt(Math.round((Number(bino.qiymat) || 0) * 0.92)) +
+      ' UYcoin olasiz</span></span>' +
+      '<button class="ac" id="bSot" style="background:rgba(232,67,61,.16);' +
+      'color:#F0A8A5">Sotish</button></div>';
+
+    oyna(h2);
+
+    var bj = document.getElementById('bJihoz');
+    if(bj) bj.onclick = function(){
+      bj.disabled = true; bj.textContent = '...';
+      post('/api/shahar-amal', { act: 'jihoz', bino_id: bino.id }).then(function(r){
+        if(r && r.ok){ hap('medium'); tost('Jihozlandi \u00B7 daraja ' + r.daraja);
+                       yop(); yukla(); }
+        else { bj.disabled = false; bj.textContent = 'Jihozlash';
+               tost((r && r.error) || 'Xato'); }
+      }).catch(function(){ bj.disabled = false; bj.textContent = 'Jihozlash'; });
+    };
+
+    document.getElementById('bSot').onclick = function(){
+      if(!confirm('Binoni sotasizmi?')) return;
+      var b = this; b.disabled = true;
+      post('/api/shahar-amal', { act: 'sot', bino_id: bino.id }).then(function(r){
+        if(r && r.ok){ hap('medium'); tost('+' + fmt(r.pul) + ' UYcoin'); yop(); yukla(); }
+        else { b.disabled = false; tost((r && r.error) || 'Xato'); }
+      }).catch(function(){ b.disabled = false; });
+    };
+    return;
+  }
+
+  /* bino yo'q: tozalash / asfalt / qurish */
+  if(yer.holat === 'xom'){
+    var ty = (D.balans || 0) >= 300000;
+    h2 += '<div class="qator"><span class="em">\uD83E\uDDF9</span>' +
+      '<span class="tx"><b>Tozalash</b><span>300ming UYcoin</span></span>' +
+      '<button class="ac" data-ac="tozala"' + (ty ? '' : ' disabled') + '>' +
+      (ty ? 'Boshlash' : 'Pul yo\u2019q') + '</button></div>';
+  } else if(yer.holat === 'tozalangan'){
+    var ay = (D.balans || 0) >= 700000;
+    h2 += '<div class="qator"><span class="em">\uD83D\uDEE4</span>' +
+      '<span class="tx"><b>Asfalt qilish</b><span>700ming UYcoin</span></span>' +
+      '<button class="ac" data-ac="asfalt"' + (ay ? '' : ' disabled') + '>' +
+      (ay ? 'Boshlash' : 'Pul yo\u2019q') + '</button></div>';
+  }
+
+  if(yer.holat === 'asfalt' || yer.holat === 'xom' || yer.holat === 'tozalangan'){
+    var bl = D.bino || {};
+    h2 += '<p class="iz" style="margin:14px 4px 9px;font-size:11.5px;color:#8A8A82">' +
+      (yer.holat === 'asfalt' ? 'Bino qurish:' :
+       'Yo\u2019l va daraxtni asfaltsiz ham qurasiz:') + '</p>';
+    Object.keys(bl).forEach(function(t){
+      var b = bl[t];
+      if(yer.holat !== 'asfalt' && t !== 'yol' && t !== 'daraxt') return;
+      var yetar = (D.balans || 0) >= b.narx;
+      h2 += '<div class="qator"><span class="em">' + b.emoji + '</span>' +
+        '<span class="tx"><b>' + esc(b.nom) + '</b><span>' + fmt(b.narx) +
+        (b.daromad ? ' \u00B7 soatiga +' + fmt(b.daromad) : '') +
+        (b.aholi ? ' \u00B7 ' + b.aholi + ' aholi' : '') + '</span></span>' +
+        '<button class="ac" data-qur="' + t + '"' + (yetar ? '' : ' disabled') + '>' +
+        (yetar ? 'Qurish' : 'Pul yo\u2019q') + '</button></div>';
+    });
+  }
+
+  oyna(h2);
+
+  document.getElementById('sheet').querySelectorAll('button[data-ac]').forEach(function(b){
+    b.onclick = function(){
+      b.disabled = true; b.textContent = '...';
+      post('/api/shahar-amal', { act: b.dataset.ac, yer_id: yerId }).then(function(r){
+        if(r && r.ok){ hap('medium'); tost('Bajarildi'); yop(); yukla(); }
+        else { b.disabled = false; b.textContent = 'Boshlash';
+               tost((r && r.error) || 'Xato'); }
+      }).catch(function(){ b.disabled = false; b.textContent = 'Boshlash'; });
+    };
+  });
+
+  document.getElementById('sheet').querySelectorAll('button[data-qur]').forEach(function(b){
+    b.onclick = function(){
+      b.disabled = true; b.textContent = '...';
+      post('/api/shahar-amal', { act: 'qur', yer_id: yerId, tur: b.dataset.qur })
+      .then(function(r){
+        if(r && r.ok){ hap('medium'); tost('Qurildi!'); yop(); yukla(); }
+        else { b.disabled = false; b.textContent = 'Qurish';
+               tost((r && r.error) || 'Xato'); }
+      }).catch(function(){ b.disabled = false; b.textContent = 'Qurish'; });
+    };
+  });
+}
+
+/* markazga yaqin yer qimmat — serverdagi formula bilan bir xil */
+function yerNarx(tur, x, y){
+  var t = (D.yer_tur || {})[tur];
+  if(!t) return 0;
+  var N = D.karta || 12, o = N / 2;
+  var m = Math.sqrt(Math.pow(x - o, 2) + Math.pow(y - o, 2));
+  var kof = 1 + Math.max(0, o - m) / o * 1.5;
+  return Math.round(t.narx * kof);
+}
+
+/* ---------- Reyting ---------- */
+function reyting(){
+  fetch(API + '/api/shahar-reyting').then(function(r){ return r.json(); })
+    .then(function(d){
+      var t = (d && d.top) || [];
+      var h = '<div class="sh-bosh"><span class="em">\uD83C\uDFC6</span>' +
+        '<span class="tx"><b>Eng zo\u2019r davlatlar</b>' +
+        '<span>Bino qiymati bo\u2019yicha</span></span>' +
+        '<button class="yp" onclick="yop()">\u00D7</button></div>';
+      if(!t.length){
+        h += '<p class="iz">Hozircha davlat yo\u2019q</p>';
+      } else {
+        h += t.map(function(x, i){
+          return '<div class="qator"><span class="em">' +
+            (i === 0 ? '\uD83E\uDD47' : i === 1 ? '\uD83E\uDD48' :
+             i === 2 ? '\uD83E\uDD49' : (i + 1)) + '</span>' +
+            '<span class="tx"><b>' + esc(x.bayroq) + ' ' + esc(x.nom) + '</b>' +
+            '<span>' + fmt(x.aholi) + ' aholi \u00B7 ' + x.binolar + ' bino</span></span>' +
+            '<span style="font-size:12.5px;font-weight:800;color:#F0C868">' +
+            fmt(x.qiymat) + '</span></div>';
+        }).join('');
+      }
+      oyna(h);
+    }).catch(function(){ tost('Yuklanmadi'); });
+}
+
+yukla();
+</script>
+</body>
+</html>
