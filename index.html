@@ -988,6 +988,57 @@ function showUserList(title, path){
   });
 }
 
+
+function oyinlarOch(){
+  var ov = document.createElement('div');
+  ov.style.cssText = 'position:fixed;inset:0;z-index:999;display:flex;' +
+    'align-items:flex-end;justify-content:center;background:rgba(0,0,0,.74);' +
+    'backdrop-filter:blur(8px)';
+
+  var OYIN = [
+    { k:'ferma.html',  em:'\uD83D\uDC14', n:'Ferma',
+      i:'Hayvon sotib olib UYcoin yig\u2019asiz' },
+    { k:'shahar.html', em:'\uD83C\uDFD9', n:'Shahar qurish',
+      i:'Yer olib, tozalab, davlat qurasiz' },
+    { k:'mayning.html',em:'\u26CF', n:'Mayning',
+      i:'UYcoin qazib olasiz' }
+  ];
+
+  ov.innerHTML =
+    '<div style="width:100%;max-width:460px;background:#101010;' +
+      'border-radius:22px 22px 0 0;padding:20px 16px calc(22px + env(safe-area-inset-bottom));' +
+      'border-top:1px solid rgba(212,175,55,.3)">' +
+      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">' +
+        '<b style="flex:1;font-size:17px;font-weight:800">\uD83C\uDFAE O\u2019yinlar</b>' +
+        '<button id="oyYop" style="width:32px;height:32px;border-radius:50%;' +
+          'border:none;background:rgba(255,255,255,.1);color:#fff;font-size:17px">\u00D7</button>' +
+      '</div>' +
+      OYIN.map(function(o){
+        return '<div class="oy-item" data-k="' + o.k + '" ' +
+          'style="display:flex;align-items:center;gap:13px;padding:15px 14px;' +
+          'margin-bottom:9px;border-radius:15px;background:rgba(255,255,255,.05);' +
+          'border:1px solid rgba(212,175,55,.2);cursor:pointer">' +
+          '<span style="font-size:30px;flex:none">' + o.em + '</span>' +
+          '<span style="flex:1;min-width:0">' +
+          '<b style="display:block;font-size:15px;font-weight:800">' + o.n + '</b>' +
+          '<span style="font-size:12px;color:#8A8A82">' + o.i + '</span></span>' +
+          '<span style="color:#F0C868;font-size:20px;flex:none">\u203A</span>' +
+          '</div>';
+      }).join('') +
+    '</div>';
+
+  document.body.appendChild(ov);
+
+  ov.querySelector('#oyYop').onclick = function(){ ov.remove(); };
+  ov.onclick = function(e){ if(e.target === ov) ov.remove(); };
+  ov.querySelectorAll('.oy-item').forEach(function(it){
+    it.onclick = function(){
+      haptic('light');
+      location.href = it.dataset.k;
+    };
+  });
+}
+
 document.addEventListener('DOMContentLoaded', function(){
   const hb = document.querySelector('.nav button[data-v="vHome"]');
   if(hb && IS_ADMIN && typeof isApk === 'function' && isApk()){
@@ -1468,7 +1519,7 @@ document.addEventListener('DOMContentLoaded', function(){
     const fb = el('fermaBtn');
     if(fb) fb.addEventListener('click', function(){
       haptic('light');
-      location.href = 'ferma.html';
+      oyinlarOch();
     });
 
     const mb = el('tbMenu');
