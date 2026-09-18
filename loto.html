@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>UYgram Loto</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:#0B0D14;color:#F2F2EE;font-family:'Manrope',sans-serif;
+  font-size:15px;min-height:100vh;padding-bottom:20px}
+
+.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:8px;
+  padding:calc(11px + env(safe-area-inset-top)) 13px 11px;
+  background:linear-gradient(180deg,rgba(11,13,20,.98),rgba(11,13,20,.88));
+  backdrop-filter:blur(14px);border-bottom:1px solid rgba(232,196,104,.14)}
+.top .x{width:32px;height:32px;border-radius:50%;border:none;flex:none;
+  background:rgba(255,255,255,.09);color:#fff;font-size:17px}
+.top h1{flex:1;font-size:16px;font-weight:800}
+.top .bal{padding:5px 11px;border-radius:10px;
+  background:rgba(232,196,104,.12);border:1px solid rgba(232,196,104,.26)}
+.top .bal span{display:block;font-size:8.5px;color:#9A8F72}
+.top .bal b{font-size:12.5px;font-weight:800;color:#E8C468}
+
+.bx{margin:11px 13px;padding:15px 14px;border-radius:16px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07)}
+.bx h2{font-size:13px;font-weight:800;color:#E8C468;margin-bottom:3px}
+.bx p.iz{font-size:11.5px;color:#7C8090;line-height:1.55;margin-bottom:12px}
+
+/* tikish tanlash */
+.tik{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tik button{padding:13px 9px;border-radius:13px;border:1px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.05);color:#fff;font-family:inherit;text-align:left}
+.tik button:disabled{opacity:.4}
+.tik button b{display:block;font-size:13px;font-weight:800}
+.tik button span{font-size:11px;color:#E8C468;font-weight:700}
+
+/* karta */
+.karta{display:grid;grid-template-columns:repeat(9,1fr);gap:3px;
+  padding:10px;border-radius:14px;
+  background:linear-gradient(150deg,#1A1E2C,#12151F);
+  border:1px solid rgba(232,196,104,.22)}
+.kt{aspect-ratio:1;border-radius:6px;display:flex;align-items:center;
+  justify-content:center;font-size:13px;font-weight:800;
+  background:rgba(255,255,255,.055);transition:.25s}
+.kt.bosh{background:rgba(255,255,255,.015)}
+.kt.ok{background:linear-gradient(135deg,#E8C468,#C9A036);color:#14110A;
+  transform:scale(1.06)}
+.kt.yangi{animation:puls .5s ease-out}
+@keyframes puls{0%{transform:scale(1.4);box-shadow:0 0 0 8px rgba(232,196,104,.4)}
+  100%{transform:scale(1.06);box-shadow:none}}
+
+/* chiqgan raqam */
+.son{text-align:center;padding:14px 0 4px}
+.son .big{display:inline-flex;align-items:center;justify-content:center;
+  width:78px;height:78px;border-radius:50%;
+  background:linear-gradient(140deg,#E8C468,#B8902A);color:#14110A;
+  font-size:32px;font-weight:800;
+  box-shadow:0 8px 28px rgba(232,196,104,.32)}
+.son .big.bosh{background:rgba(255,255,255,.06);color:#5E6270;font-size:24px;
+  box-shadow:none}
+.son .n{font-size:11px;color:#7C8090;margin-top:7px}
+
+/* chiqganlar ro'yxati */
+.royxat{display:flex;flex-wrap:wrap;gap:4px;margin-top:11px}
+.royxat span{padding:3px 7px;border-radius:6px;font-size:10.5px;font-weight:700;
+  background:rgba(255,255,255,.06);color:#9AA0B0}
+
+/* botlar */
+.bot{display:flex;align-items:center;gap:9px;padding:8px 10px;margin-bottom:5px;
+  border-radius:10px;background:rgba(255,255,255,.035)}
+.bot .av{width:26px;height:26px;border-radius:50%;flex:none;
+  display:flex;align-items:center;justify-content:center;font-size:11px;
+  font-weight:800;background:rgba(255,255,255,.1)}
+.bot .nm{flex:1;font-size:12.5px;font-weight:700}
+.bot .q{display:flex;gap:3px}
+.bot .q i{width:16px;height:5px;border-radius:3px;background:rgba(255,255,255,.12)}
+.bot .q i.on{background:#E8695F}
+
+.btn{width:100%;padding:14px;border-radius:13px;border:none;
+  background:linear-gradient(135deg,#E8C468,#C9A036);color:#14110A;
+  font-family:inherit;font-size:14.5px;font-weight:800;margin-top:11px}
+.btn.g2{background:rgba(255,255,255,.07);color:#fff}
+.btn:disabled{opacity:.45}
+
+.natija{text-align:center;padding:18px 14px;border-radius:15px;margin:11px 13px}
+.natija.yut{background:linear-gradient(150deg,rgba(91,191,106,.16),rgba(91,191,106,.05));
+  border:1px solid rgba(91,191,106,.35)}
+.natija.yoq{background:linear-gradient(150deg,rgba(232,105,95,.13),rgba(232,105,95,.04));
+  border:1px solid rgba(232,105,95,.3)}
+.natija .em{font-size:38px;line-height:1}
+.natija b{display:block;font-size:17px;font-weight:800;margin:6px 0 3px}
+.natija span{font-size:12.5px;color:#9AA0B0}
+.natija .pul{display:block;font-size:22px;font-weight:800;margin-top:7px;color:#5BBF6A}
+
+.ogoh{margin:11px 13px;padding:13px;border-radius:13px;font-size:12px;
+  line-height:1.6;background:rgba(232,105,95,.1);
+  border:1px solid rgba(232,105,95,.3);color:#F0A8A5}
+
+.chek{display:flex;justify-content:space-between;font-size:11px;
+  color:#7C8090;padding:5px 0}
+.chek b{color:#C0C5D0;font-weight:700}
+
+.tarix{display:flex;align-items:center;gap:9px;padding:7px 0;
+  border-bottom:1px solid rgba(255,255,255,.055);font-size:12px}
+.tarix:last-child{border:none}
+.tarix .h{flex:1}
+.tarix .v{font-weight:800}
+.tarix .v.y{color:#5BBF6A}
+.tarix .v.n{color:#E8695F}
+
+.tost{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);
+  z-index:200;padding:10px 18px;border-radius:21px;max-width:86vw;
+  background:rgba(16,19,28,.97);border:1px solid rgba(232,196,104,.3);
+  font-size:12.5px;font-weight:600;text-align:center;
+  opacity:0;transition:opacity .3s;pointer-events:none}
+.tost.ko{opacity:1}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <button class="x" onclick="location.replace('app.html')">&times;</button>
+  <h1>&#127920; Loto</h1>
+  <div class="bal"><span>UYcoin</span><b id="tBal">0</b></div>
+</div>
+
+<div id="asosiy"></div>
+<div class="tost" id="tost"></div>
+
+<script>
+var API='https://api.namangan-ijara.uz';
+var TG=null;
+try{ TG=window.Telegram&&Telegram.WebApp;
+  if(TG){ TG.expand(); TG.setHeaderColor&&TG.setHeaderColor('#0B0D14'); } }catch(e){}
+
+var D=null, OYIN=null, AVTO=null, OXIRGI=null;
+
+function fmt(n){
+  n=Number(n)||0; var z=n<0?'-':''; n=Math.abs(n);
+  if(n>=1e12) return z+(n/1e12).toFixed(1).replace('.0','')+'trln';
+  if(n>=1e9)  return z+(n/1e9).toFixed(1).replace('.0','')+'mlrd';
+  if(n>=1e6)  return z+(n/1e6).toFixed(1).replace('.0','')+'mln';
+  if(n>=1000) return z+(n/1000).toFixed(1).replace('.0','')+'ming';
+  return z+String(n);
+}
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){
+  return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+function tost(m){
+  var t=document.getElementById('tost');
+  t.textContent=m; t.classList.add('ko');
+  clearTimeout(t._h); t._h=setTimeout(function(){ t.classList.remove('ko'); },2600);
+}
+function hap(k){ try{ if(TG&&TG.HapticFeedback) TG.HapticFeedback.impactOccurred(k||'light'); }catch(e){} }
+function idata(){ try{ return (TG&&TG.initData)||''; }catch(e){ return ''; } }
+function tok(){ try{ return localStorage.getItem('ni_token')||''; }catch(e){ return ''; } }
+
+function post(url,body){
+  body=body||{}; body.init_data=idata(); body.token=tok();
+  return fetch(API+url,{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(body)}).then(function(r){ return r.json(); });
+}
+
+function yukla(){
+  post('/api/loto').then(function(d){
+    if(!d||!d.ok){ tost('Yuklanmadi'); return; }
+    D=d;
+    document.getElementById('tBal').textContent=fmt(d.balans);
+    if(d.faol){
+      OYIN={id:d.faol.id, tikish:d.faol.tikish, karta:d.faol.karta,
+            chiqgan:d.faol.chiqgan, botlar:d.faol.botlar};
+      oyinEkran();
+    } else {
+      OYIN=null; menyu();
+    }
+  }).catch(function(){ tost('Server xatosi'); });
+}
+
+/* ---------- menyu ---------- */
+function menyu(){
+  var k=D.kun||{};
+  var h='<div class="bx">'+
+    '<h2>Tikish tanlang</h2>'+
+    '<p class="iz">Kartangizdagi 15 raqam chiqsa yutasiz. '+
+    'Tez to\u2019lsa ko\u2019proq. '+D.bot_soni+' bot bilan o\u2019ynaysiz \u2014 '+
+    'kim birinchi to\u2019ldirsa o\u2019sha yutadi.</p>'+
+    '<div class="tik">';
+
+  (D.tikish||[]).forEach(function(t,i){
+    var ok=(D.balans||0)>=t.summa;
+    h+='<button data-t="'+i+'"'+(ok?'':' disabled')+'>'+
+      '<b>'+esc(t.nom)+'</b><span>'+fmt(t.summa)+'</span></button>';
+  });
+  h+='</div>';
+
+  h+='<div style="margin-top:14px;padding-top:12px;'+
+    'border-top:1px solid rgba(255,255,255,.07)">'+
+    '<div class="chek"><span>Bugungi o\u2019yin</span>'+
+    '<b>'+(k.oyin||0)+' / '+(k.chegara||20)+'</b></div>'+
+    '<div class="chek"><span>Bugun tikilgan</span>'+
+    '<b>'+fmt(k.tikilgan)+'</b></div>'+
+    '</div></div>';
+
+  /* yutuq jadvali */
+  h+='<div class="bx"><h2>Yutuq jadvali</h2>'+
+    '<p class="iz">Karta necha raqamda to\u2019lganiga qarab.</p>';
+  (D.yutuq||[]).forEach(function(y){
+    h+='<div class="chek"><span>'+y[0]+' raqamgacha</span>'+
+      '<b style="color:#E8C468">\u00D7'+y[1]+'</b></div>';
+  });
+  h+='<div class="chek" style="border-top:1px solid rgba(255,255,255,.07);'+
+    'margin-top:7px;padding-top:9px"><span>Bot yutsa, to\u2019lgan qator uchun</span>'+
+    '<b>'+Math.round((D.qator_yutuq||0)*100)+'% qaytim</b></div></div>';
+
+  /* tarix */
+  if((D.tarix||[]).length){
+    h+='<div class="bx"><h2>Oxirgi o\u2019yinlar</h2><div style="margin-top:9px">';
+    D.tarix.forEach(function(t){
+      var yut=t.yutuq>0;
+      h+='<div class="tarix"><span class="h">'+fmt(t.tikish)+' tikildi</span>'+
+        '<span class="v '+(yut?'y':'n')+'">'+
+        (yut?'+'+fmt(t.yutuq):'\u2014')+'</span></div>';
+    });
+    h+='</div></div>';
+  }
+
+  if((k.yoqotish||0)>=(k.ogoh||5)){
+    h+='<div class="ogoh">Ketma-ket '+k.yoqotish+' marta yo\u2019qotdingiz. '+
+      'Loto tasodif o\u2019yini \u2014 yo\u2019qotishni qaytarishga urinish '+
+      'ko\u2019pincha yana yo\u2019qotishga olib keladi. Biroz dam olsangiz yaxshi.</div>';
+  }
+
+  document.getElementById('asosiy').innerHTML=h;
+
+  document.querySelectorAll('button[data-t]').forEach(function(b){
+    b.onclick=function(){
+      b.disabled=true;
+      post('/api/loto-amal',{act:'boshla',tikish:parseInt(b.dataset.t)})
+      .then(function(r){
+        if(r&&r.ok){
+          hap('medium');
+          OYIN={id:r.id, tikish:r.tikish, karta:r.karta,
+                chiqgan:[], botlar:r.botlar};
+          document.getElementById('tBal').textContent=fmt(r.balans);
+          OXIRGI=null;
+          oyinEkran();
+        } else { b.disabled=false; tost((r&&r.msg)||'Xato'); }
+      }).catch(function(){ b.disabled=false; tost('Server xatosi'); });
+    };
+  });
+}
+
+/* ---------- o'yin ekrani ---------- */
+function oyinEkran(){
+  var ch=OYIN.chiqgan||[];
+  var h='<div class="son">'+
+    (OXIRGI
+      ? '<div class="big" id="bigSon">'+OXIRGI+'</div>'
+      : '<div class="big bosh">?</div>')+
+    '<div class="n">'+ch.length+' / 90 raqam chiqdi \u00B7 tikish '+
+    fmt(OYIN.tikish)+'</div></div>';
+
+  h+='<div style="margin:0 13px"><div class="karta" id="karta"></div></div>';
+
+  h+='<div class="bx" style="margin-top:11px"><h2>Raqiblar</h2>'+
+    '<div style="margin-top:9px" id="botlar"></div></div>';
+
+  if(ch.length){
+    h+='<div class="bx"><h2>Chiqgan raqamlar</h2>'+
+      '<div class="royxat">'+
+      ch.slice().sort(function(a,b){return a-b;}).map(function(n){
+        return '<span>'+n+'</span>'; }).join('')+
+      '</div></div>';
+  }
+
+  h+='<div style="margin:0 13px">'+
+    '<button class="btn" id="bTash">Raqam tashlash</button>'+
+    '<button class="btn g2" id="bAvto">Avtomatik o\u2019ynash</button>'+
+    '<button class="btn g2" id="bTox" style="margin-top:8px">O\u2019yindan chiqish</button>'+
+    '</div>';
+
+  document.getElementById('asosiy').innerHTML=h;
+  kartaChiz();
+  botChiz();
+
+  document.getElementById('bTash').onclick=tashla;
+  document.getElementById('bAvto').onclick=avtoBoshla;
+  document.getElementById('bTox').onclick=function(){
+    if(!confirm('O\u2019yindan chiqasizmi? Tikilgan pul qaytmaydi.')) return;
+    avtoToxta();
+    post('/api/loto-amal',{act:'toxta'}).then(function(){ yukla(); });
+  };
+}
+
+function kartaChiz(){
+  var k=document.getElementById('karta');
+  if(!k) return;
+  var ch=OYIN.chiqgan||[];
+  var h='';
+  (OYIN.karta||[]).forEach(function(q){
+    q.forEach(function(v){
+      if(!v){ h+='<div class="kt bosh"></div>'; return; }
+      var ok=ch.indexOf(v)!==-1;
+      var yangi=(OXIRGI===v);
+      h+='<div class="kt'+(ok?' ok':'')+(yangi?' yangi':'')+'">'+v+'</div>';
+    });
+  });
+  k.innerHTML=h;
+}
+
+function botChiz(){
+  var b=document.getElementById('botlar');
+  if(!b) return;
+  var ch=OYIN.chiqgan||[];
+  b.innerHTML=(OYIN.botlar||[]).map(function(x){
+    var q=0;
+    (x.karta||[]).forEach(function(qq){
+      var s=qq.filter(function(v){ return v; });
+      if(s.length&&s.every(function(v){ return ch.indexOf(v)!==-1; })) q++;
+    });
+    if(x.qator!==undefined) q=x.qator;
+    return '<div class="bot">'+
+      '<span class="av">'+esc(String(x.nom||'?').charAt(0))+'</span>'+
+      '<span class="nm">'+esc(x.nom)+'</span>'+
+      '<span class="q">'+[0,1,2].map(function(i){
+        return '<i class="'+(i<q?'on':'')+'"></i>'; }).join('')+'</span>'+
+      '</div>';
+  }).join('');
+}
+
+/* ---------- raqam tashlash ---------- */
+var BAND=false;
+function tashla(keyin){
+  if(BAND) return;
+  BAND=true;
+  var bt=document.getElementById('bTash');
+  if(bt) bt.disabled=true;
+
+  post('/api/loto-amal',{act:'tashla'}).then(function(r){
+    BAND=false;
+    if(bt) bt.disabled=false;
+    if(!r||!r.ok){
+      avtoToxta();
+      tost((r&&r.msg)||'Xato');
+      if(r&&r.error==='NO_GAME') yukla();
+      return;
+    }
+
+    OXIRGI=r.son;
+    OYIN.chiqgan=r.chiqgan;
+    OYIN.botlar=(OYIN.botlar||[]).map(function(b,i){
+      var nb=(r.botlar||[])[i];
+      if(nb) b.qator=nb.qator;
+      return b;
+    });
+
+    document.getElementById('tBal').textContent=fmt(r.balans);
+
+    var big=document.getElementById('bigSon');
+    if(big){ big.textContent=r.son; }
+    else {
+      var s=document.querySelector('.son .big');
+      if(s){ s.className='big'; s.id='bigSon'; s.textContent=r.son; }
+    }
+    var n=document.querySelector('.son .n');
+    if(n) n.textContent=r.chiqgan.length+' / 90 raqam chiqdi \u00B7 tikish '+
+      fmt(OYIN.tikish);
+
+    kartaChiz(); botChiz();
+    hap('light');
+
+    if(r.holat!=='faol'){
+      avtoToxta();
+      setTimeout(function(){ natija(r); }, 700);
+      return;
+    }
+    if(keyin) keyin();
+  }).catch(function(){
+    BAND=false;
+    if(bt) bt.disabled=false;
+    avtoToxta();
+    tost('Server xatosi');
+  });
+}
+
+/* ---------- avtomatik ---------- */
+function avtoBoshla(){
+  if(AVTO){ avtoToxta(); return; }
+  var b=document.getElementById('bAvto');
+  if(b){ b.textContent='To\u2019xtatish'; }
+  AVTO=setInterval(function(){ tashla(); }, 1100);
+  tashla();
+}
+function avtoToxta(){
+  if(AVTO){ clearInterval(AVTO); AVTO=null; }
+  var b=document.getElementById('bAvto');
+  if(b) b.textContent='Avtomatik o\u2019ynash';
+}
+
+/* ---------- natija ---------- */
+function natija(r){
+  var yut=r.holat==='yutdi';
+  hap(yut?'medium':'light');
+
+  var h='<div class="natija '+(yut?'yut':'yoq')+'">'+
+    '<div class="em">'+(yut?'\uD83C\uDF89':'\uD83D\uDE14')+'</div>'+
+    '<b>'+(yut?'Yutdingiz!':'Bu safar bo\u2019lmadi')+'</b>'+
+    '<span>'+esc(r.xabar||'')+'</span>'+
+    (r.yutuq>0?'<span class="pul">+'+fmt(r.yutuq)+' UYcoin</span>':'')+
+    '</div>';
+
+  if(r.ogohlantirish){
+    h+='<div class="ogoh">'+esc(r.ogohlantirish)+'</div>';
+  }
+
+  h+='<div style="margin:0 13px"><div class="karta" id="karta"></div></div>'+
+    '<div style="margin:11px 13px">'+
+    '<button class="btn" id="bYana">Yana o\u2019ynash</button></div>';
+
+  document.getElementById('asosiy').innerHTML=h;
+  kartaChiz();
+  document.getElementById('bYana').onclick=function(){
+    OXIRGI=null; yukla();
+  };
+}
+
+yukla();
+</script>
+</body>
+</html>
